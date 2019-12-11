@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/c_white">
@@ -16,39 +18,69 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleText="@string/cash_video"
+        app:rightText="@string/str_setting"
+        app:titleText="@string/str_motion_detection"
         app:titleTextColor="@color/text_main" />
 
-    <RelativeLayout
-        android:id="@+id/rl_cash"
+    <sunmi.common.utils.IVideoPlayer
+        android:id="@+id/player_video"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_300"
+        android:layout_height="0dp"
         android:background="@color/c_black"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar">
+        app:layout_constraintTop_toBottomOf="@+id/title_bar"
+        app:layout_constraintVertical_bias="0" />
 
-        <sunmi.common.utils.IVideoPlayer
-            android:id="@+id/ivp_cash"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/c_black"
-            android:visibility="invisible" />
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_control_panel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:background="@mipmap/ic_cash_bg"
+        app:layout_constraintBottom_toBottomOf="@+id/player_video"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <!--底部控制区-->
         <include
             android:id="@+id/icd_bottom_progress"
-            layout="@layout/include_ipc_bottom_progress" />
-    </RelativeLayout>
+            layout="@layout/include_ipc_bottom_progress"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_volume"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <include layout="@layout/include_cash_play" />
+        <ImageView
+            android:id="@+id/iv_volume"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:scaleType="center"
+            android:src="@mipmap/ic_volume"
+            app:layout_constraintBottom_toBottomOf="@+id/icd_bottom_progress"
+            app:layout_constraintEnd_toStartOf="@+id/iv_full_screen"
+            app:layout_constraintTop_toTopOf="@+id/icd_bottom_progress" />
+
+        <ImageView
+            android:id="@+id/iv_full_screen"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:scaleType="center"
+            android:src="@mipmap/ic_full_screen_enabled"
+            app:layout_constraintBottom_toBottomOf="@+id/icd_bottom_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/icd_bottom_progress" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <TextView
         android:id="@+id/tv_screenshot_tip"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_35"
-        android:layout_marginBottom="@dimen/dp_112"
         android:background="@drawable/setting_bg_tip_text"
         android:gravity="center"
         android:padding="@dimen/dp_8"
@@ -56,22 +88,44 @@
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_12"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/layout_control_panel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_date_tip"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_34"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
+        android:background="@color/bg_common"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintTop_toBottomOf="@+id/player_video" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_date_tip" />
 
     <ProgressBar
-        android:id="@+id/pBar_loading"
+        android:id="@+id/pb_loading"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
         android:indeterminate="false"
         android:indeterminateDrawable="@drawable/loading_common_white"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@+id/player_video"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+        app:layout_constraintTop_toTopOf="@+id/player_video"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/tv_play_fail"
@@ -83,28 +137,10 @@
         android:textColor="@color/text_normal"
         android:textSize="@dimen/sp_12"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="@+id/player_video"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
-
-    <ImageView
-        android:id="@+id/iv_video_change"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ctl_bottom_setting" />
+        app:layout_constraintTop_toTopOf="@+id/player_video"
+        tools:visibility="visible" />
 
 </android.support.constraint.ConstraintLayout>

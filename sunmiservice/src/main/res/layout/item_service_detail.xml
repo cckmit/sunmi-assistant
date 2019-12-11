@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
         android:layout_marginStart="@dimen/dp_25"
-        android:text="@string/ipc_sn"
+        android:text="@string/str_dev_sn"
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12"
         android:visibility="visible"/>

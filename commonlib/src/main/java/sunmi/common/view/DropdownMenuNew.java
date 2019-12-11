@@ -293,7 +293,9 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             if (menuParentId == 0) {
                 menuParent = (ViewGroup) getParent();
                 menuTitleGroup = DropdownMenuNew.this;
-                menuIndex = getIndexOfMenu();
+                if (menuIndex < 0) {
+                    menuIndex = getIndexOfMenu();
+                }
                 if (menuIndex < 0) {
                     throw new IllegalStateException("No DropdownMenu in the layout: "
                             + menuParent.getClass().getSimpleName());
