@@ -68,8 +68,8 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         //显示位置
         showAsDropDown(topToPopupWindowView);
         init();
-
         RecyclerView itemRecyclerView = viewLayout.findViewById(R.id.item_cash_recycler_view);
+        itemRecyclerView.getLayoutParams().width = ViewGroup.LayoutParams.MATCH_PARENT;
 
         if (mList.size() > SHOP_ITEM_SIZE) {
             itemRecyclerView.getLayoutParams().height =
@@ -194,4 +194,5 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             });
         }
     }
+
 }
