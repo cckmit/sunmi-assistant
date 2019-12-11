@@ -112,8 +112,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     RelativeLayout rlRecord;
     @ViewById(resName = "iv_screenshot")
     ImageView ivScreenshot;//截图
-    @ViewById(resName = "iv_live")
-    ImageView ivLive;//直播
     @ViewById(resName = "iv_pause")
     ImageView ivPlay;//开始播放
     @ViewById(resName = "iv_full_screen")

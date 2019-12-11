@@ -130,7 +130,9 @@ public class P2pService extends Service
 
     @Override
     public void onAudioReceived(byte[] audioBuffer) {
-        audioDecoder.setAudioData(audioBuffer);
+        if (audioDecoder != null) {
+            audioDecoder.setAudioData(audioBuffer);
+        }
     }
 
     public void init(Surface surface, OnPlayStatusChangedListener statusCallback) {
