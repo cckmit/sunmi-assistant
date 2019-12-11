@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.MotionVideo;
+import com.sunmi.ipc.view.activity.setting.MDSettingActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -36,6 +37,7 @@ import java.util.List;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
+import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.IVideoPlayer;
@@ -91,9 +93,7 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     RecyclerView rvList;
 
     @Extra
-    int deviceId;
-    @Extra
-    String deviceModel;
+    SunmiDevice device;
     @Extra
     MotionVideo motionVideo;
 
@@ -133,9 +133,8 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     private void initTitle() {
         tbTitle.getLeftLayout().setOnClickListener(v -> onBackPressed());
-        tbTitle.getRightText().setOnClickListener(v -> {
-            // TODO: 跳设置
-        });
+        tbTitle.getRightText().setOnClickListener(v ->
+                MDSettingActivity_.intent(this).mDevice(device).start());
         tvDateTip.setText(DateTimeUtils.secondToDate(motionVideo.getDetectTime(), "yyyy-MM-dd"));
     }
 
@@ -162,7 +161,7 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     private void initVideoRatio() {
         ConstraintSet set = new ConstraintSet();
         set.clone(clContent);
-        String videoRatio = DeviceTypeUtils.getInstance().isSS1(deviceModel) ? "1:1" : "16:9";
+        String videoRatio = DeviceTypeUtils.getInstance().isSS1(device.getModel()) ? "1:1" : "16:9";
         set.setDimensionRatio(player.getId(), videoRatio);
         set.applyTo(clContent);
     }
