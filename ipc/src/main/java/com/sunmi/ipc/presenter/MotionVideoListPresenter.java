@@ -174,7 +174,7 @@ public class MotionVideoListPresenter extends BasePresenter<MotionVideoListContr
                         }
                         List<MotionVideo> list = data.getMotionList();
                         mLoadedCount += list.size();
-                        mHasMore = mLoadedCount < data.getCount();
+                        mHasMore = mLoadedCount < data.getTotalCount();
                         if (isLoadMore) {
                             mView.addData(list);
                         } else {

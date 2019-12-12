@@ -60,6 +60,8 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     @ViewById(resName = "content")
     ConstraintLayout clContent;
+    @ViewById(resName = "player_mask")
+    View playerMask;
     @ViewById(resName = "title_bar")
     TitleBarView tbTitle;
     @ViewById(resName = "player_video")
@@ -164,6 +166,7 @@ public class MotionVideoPlayActivity extends BaseActivity implements
         set.clone(clContent);
         String videoRatio = DeviceTypeUtils.getInstance().isSS1(device.getModel()) ? "1:1" : "16:9";
         set.setDimensionRatio(player.getId(), videoRatio);
+        set.setDimensionRatio(playerMask.getId(), videoRatio);
         set.applyTo(clContent);
     }
 
@@ -190,7 +193,20 @@ public class MotionVideoPlayActivity extends BaseActivity implements
         stopPlay();
     }
 
+    private void updatePlayerMask(int orientation) {
+        ConstraintSet set = new ConstraintSet();
+        set.clone(clContent);
+        String videoRatio = DeviceTypeUtils.getInstance().isSS1(device.getModel()) ? "1:1" : "16:9";
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            set.setDimensionRatio(playerMask.getId(), "");
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            set.setDimensionRatio(playerMask.getId(), videoRatio);
+        }
+        set.applyTo(clContent);
+    }
+
     private void switchOrientation(int orientation) {
+        updatePlayerMask(orientation);
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             layoutTop.setVisibility(View.VISIBLE);
@@ -368,6 +384,14 @@ public class MotionVideoPlayActivity extends BaseActivity implements
             return false;
         } else {
             return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!isPaused) {
+            pausePlayClick();
         }
     }
 

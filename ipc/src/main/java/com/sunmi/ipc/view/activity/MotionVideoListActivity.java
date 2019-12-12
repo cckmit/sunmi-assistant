@@ -127,7 +127,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
 
         mFilterSourceAdapter = new DropdownAdapterNew(this);
         mFilterSourceAdapter.setOnItemClickListener((adapter, model, position) ->
-                mPresenter.load(model.getId()));
+                mPresenter.load(model.getId() < 0 ? 0 : model.getId()));
         dmFilterSource.setAnim(new DropdownAnimNew());
         dmFilterSource.setAdapter(mFilterSourceAdapter);
         initFilterData();
@@ -151,7 +151,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
         BGANormalRefreshViewHolder refreshViewHolder =
                 new BGANormalRefreshViewHolder(this, true);
         refreshLayout.setRefreshViewHolder(refreshViewHolder);
-        refreshLayout.setPullDownRefreshEnable(false);
+        refreshLayout.setPullDownRefreshEnable(true);
         refreshLayout.setIsShowLoadingMoreView(true);
     }
 
@@ -215,11 +215,13 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
     @Override
     public void setData(List<MotionVideo> data) {
         showContent();
+        refreshLayout.endRefreshing();
         mAdapter.setData(data);
     }
 
     @Override
     public void addData(List<MotionVideo> data) {
+        refreshLayout.endLoadingMore();
         mAdapter.add(data);
     }
 
@@ -254,6 +256,10 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            shortTip(R.string.toast_networkIsExceptional);
+        }
+        mPresenter.load();
     }
 
     @Override
@@ -297,8 +303,12 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
             String type = mSourceName.get(model.getSource());
             content.setText(type == null ? "" : type);
             if (!TextUtils.isEmpty(model.getSnapshotAddress())) {
-                Glide.with(holder.getContext()).load(model.getSnapshotAddress())
-                        .transform(new GlideRoundTransform(holder.getContext())).into(snapshot);
+                Glide.with(holder.getContext())
+                        .load(model.getSnapshotAddress())
+                        .placeholder(isSs ? R.mipmap.ipc_motion_ss_snapshot_placeholder :
+                                R.mipmap.ipc_motion_fs_snapshot_placeholder)
+                        .transform(new GlideRoundTransform(holder.getContext()))
+                        .into(snapshot);
             }
         }
     }

@@ -100,6 +100,13 @@
             app:layout_constraintStart_toEndOf="@+id/dm_time"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <View
+            android:id="@+id/dm_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:background="@color/c_divider"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
 
     <View
