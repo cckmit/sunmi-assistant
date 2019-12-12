@@ -115,6 +115,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);
+        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         mPresenter = new CashVideoListPresenter();
         mPresenter.attachView(this);
         fastPlayStart = startTime;
