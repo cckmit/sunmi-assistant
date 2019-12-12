@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -185,6 +186,14 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     private boolean isPlayLoop;
     /**
+     * 是否手势操作 1滑动上下一个 , 2点击视频下拉列表播放
+     */
+    private boolean isGestureOperatePlay;
+    /**
+     * 是否播放error
+     */
+    private boolean isPlayError;
+    /**
      * 播放视频的index ,当前播放的position
      */
     private int playIndex, currentPlayPosition;
@@ -198,53 +207,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     private List<CashOrderResp.ProductListBean> productList = new ArrayList<>();
     private CashVideoPopupWindow popupWindow;
-    private float posX, posY, curPosX;
     private VolumeHelper volumeHelper = null;
     private FFmpegMediaMetadataRetriever retriever;
-    private View.OnTouchListener cashTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    posX = event.getX();
-                    posY = event.getY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    curPosX = event.getX();
-                    ivVideoChange.setVisibility(View.VISIBLE);
-                    if ((curPosX - posX > 0) && (Math.abs(curPosX - posX) > MOVE_SCREEN_POSITION)) {
-                        ivVideoChange.setImageResource(R.mipmap.ic_cash_previous);
-                    } else if ((curPosX - posX < 0) && (Math.abs(curPosX - posX) > MOVE_SCREEN_POSITION)) {
-                        ivVideoChange.setImageResource(R.mipmap.ic_cash_next);
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    ivVideoChange.setVisibility(View.GONE);
-                    if (posY > CommonHelper.getScreenWidth(context) - context.getResources().getDimension(R.dimen.dp_100)) {
-                        return false;
-                    }
-                    if ((curPosX - posX > 0) && (Math.abs(curPosX - posX) > MOVE_SCREEN_POSITION)) {
-                        if (playIndex > 0) {
-                            playIndex--;
-                            initCashVideoPlay();
-                        } else {
-                            shortTip(R.string.cash_no_more_video);
-                        }
-                    } else if ((curPosX - posX < 0) && (Math.abs(curPosX - posX) > MOVE_SCREEN_POSITION)) {
-                        if (playIndex < videoList.size() - 1) {
-                            playIndex++;
-                            initCashVideoPlay();
-                        } else {
-                            loadMoreVideoList();
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-            return true;
-        }
-    };
+    private GestureDetector gestureDetector = null;
+    private View.OnTouchListener cashTouchListener = (v, event) -> gestureDetector.onTouchEvent(event);
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -269,10 +235,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         initScreenWidthHeight();
         initInfo();
         showLoading();
+        LogCat.e(TAG, "11111 isWholeDayVideoPlay=" + isWholeDayVideoPlay + " size=" + videoList.size());
         if (isWholeDayVideoPlay) {
             //初始化一天快放
             hasMore = true;
-//            isPlayLoop = true;
             loadMoreVideoList();
         } else {
             playIndex = videoListPosition;
@@ -327,6 +293,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         titleBar.getAppTitle().setOnClickListener(v -> setTitleView());
         new Handler().postDelayed(() -> ivpCash.setVisibility(View.VISIBLE), 800);
         ivpCash.setOnTouchListener(cashTouchListener);
+        //手势
+        gestureDetector = new GestureDetector(this, new GestureScaleListener());
+        ivpCash.setLongClickable(true);
     }
 
     private void initVolume() {
@@ -353,6 +322,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             popupWindow.dismiss();
             return;
         }
+        LogCat.e(TAG, "11111 22isWholeDayVideoPlay=" + isWholeDayVideoPlay + " size=" + videoList.size());
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_big_gray), null);
         popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, currentPlayPosition,
@@ -438,10 +408,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (hasMore) {
             if (isWholeDayVideoPlay) {
                 //一天快放
-                mPresenter.getCashVideoList(ipcName, deviceId, -1, startTime, endTime, mWholeDayPlayPageNum++, 10);
+                mPresenter.getCashVideoList(ipcName, deviceId, -1, startTime, endTime, ++mWholeDayPlayPageNum, 10);
             } else {
                 //item点击进入是否有更多
-                mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, pageNum++, 10);
+                mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, ++pageNum, 10);
             }
         } else {
             shortTip(R.string.tip_no_more_data);
@@ -603,7 +573,13 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @Click(resName = "iv_play_type")
     void playTypeClick() {
         isPlayLoop = !isPlayLoop;
-        ivPlayType.setImageResource(isPlayLoop ? R.mipmap.ic_loop : R.mipmap.ic_single);
+        if (isPlayLoop) {
+            ivPlayType.setImageResource(R.mipmap.ic_loop);
+            shortTip(R.string.cash_auth_paly_loop);
+        } else {
+            ivPlayType.setImageResource(R.mipmap.ic_single);
+            shortTip(R.string.cash_paly_single);
+        }
     }
 
     /**
@@ -652,11 +628,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * 初始化播放
      */
     private void initCashVideoPlay() {
+        isPlayError = false;
         if (!NetworkUtils.isNetworkAvailable(context)) {
             showPlayFail(getStringById(R.string.network_error));
             return;
         }
-        LogCat.e(TAG, "11111 00playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
         if (videoList != null) {
             if (playIndex >= videoList.size() - 1 && isPlayLoop) {
                 if (hasMore) {
@@ -668,10 +644,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             }
             showLoading();
             //自动下一段播放
-            if (isPlayLoop) {
+            if (isPlayLoop && !isGestureOperatePlay) {
                 playIndex++;
             }
-            //异常标记
+            isGestureOperatePlay = false;
             setViewVideoTag();
             currentPlayPosition = playIndex;
             LogCat.e(TAG, "11111 11playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
@@ -779,7 +755,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
     }
 
-
     /**
      * 音量改变
      *
@@ -839,6 +814,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
         LogCat.e(TAG, "1111 onCompletion");
+        if (isPlayError) {
+            return;
+        }
         if (ivpCash != null) {
             isPaused = true;
             ibPlay.setBackgroundResource(R.mipmap.play_normal);
@@ -857,7 +835,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @Override
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
         LogCat.e(TAG, "1111 onError" + i + ", " + i1);
-        hideLoading();
+        isPlayError = true;
         showPlayFail(getStringById(R.string.network_error));
         return false;
     }
@@ -1002,8 +980,77 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
         if (id == CommonNotifications.cashVideoPlayPosition) {
             playIndex = (int) args[0];
+            isGestureOperatePlay = true;
             LogCat.e(TAG, "1111 didReceivedNotification playIndex=" + playIndex);
             initCashVideoPlay();
+        }
+    }
+
+    /**
+     * 手势左右滑动
+     */
+    class GestureScaleListener implements GestureDetector.OnGestureListener {
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            if (e1.getY() > CommonHelper.getScreenWidth(context) - context.getResources().getDimension(R.dimen.dp_100)) {
+                return false;
+            }
+            ivVideoChange.setVisibility(View.VISIBLE);
+            if (e1.getX() - e2.getX() > MOVE_SCREEN_POSITION) {
+                ivVideoChange.setImageResource(R.mipmap.ic_cash_previous);
+            } else if (e2.getX() - e1.getX() > MOVE_SCREEN_POSITION) {
+                ivVideoChange.setImageResource(R.mipmap.ic_cash_next);
+            }
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            ivVideoChange.setVisibility(View.GONE);
+            if (e1.getY() > CommonHelper.getScreenWidth(context) - context.getResources().getDimension(R.dimen.dp_100)) {
+                return false;
+            }
+            if (e1.getX() - e2.getX() > MOVE_SCREEN_POSITION) {
+                if (playIndex > 0) {
+                    isGestureOperatePlay = true;
+                    playIndex--;
+                    initCashVideoPlay();
+                } else {
+                    shortTip(R.string.cash_left_first_video);
+                }
+                return true;
+            } else if (e2.getX() - e1.getX() > MOVE_SCREEN_POSITION) {
+                if (playIndex < videoList.size() - 1) {
+                    isGestureOperatePlay = true;
+                    playIndex++;
+                    initCashVideoPlay();
+                } else {
+                    loadMoreVideoList();
+                }
+                return true;
+            }
+            return false;
         }
     }
 

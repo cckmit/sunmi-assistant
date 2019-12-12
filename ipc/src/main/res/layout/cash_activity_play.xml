@@ -84,6 +84,7 @@
                 android:textSize="@dimen/sp_10" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_total_commodity_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -94,6 +95,7 @@
                 android:textSize="@dimen/sp_10" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_total_commodity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
