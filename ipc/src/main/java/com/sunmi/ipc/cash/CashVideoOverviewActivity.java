@@ -281,7 +281,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         items.get(1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items)
-                .total(deviceCashCount).startForResult(REQUEST);
+                .isSingleDevice(isSingleDevice).total(deviceCashCount).startForResult(REQUEST);
     }
 
     private void clearItems() {
@@ -332,7 +332,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         ImageUtils.loadImage(context, bean.getImgUrl(), civIpc, false, -1);
         tvIpcName.setText(bean.getDeviceName());
         tvIpcSn.setText(getString(R.string.str_dev_sn, bean.getDeviceSn()));
-        deviceCashCount =bean.getTotalCount();
+        deviceCashCount = bean.getTotalCount();
         tvCountCash.setText(String.valueOf(deviceCashCount));
         tvCountAbnormal.setText(String.valueOf(bean.getAbnormalVideoCount()));
     }
