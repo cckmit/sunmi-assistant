@@ -43,7 +43,6 @@ public class BaseJSCall {
 
     @JavascriptInterface
     public void lastPageBack() {
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
         context.runOnUiThread(() -> context.onBackPressed());
     }
 

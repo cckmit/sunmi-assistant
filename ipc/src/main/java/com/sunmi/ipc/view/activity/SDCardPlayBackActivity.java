@@ -570,8 +570,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageOpened,
+    public int[] getStickNotificationId() {
+        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange,
                 OpcodeConstants.getSdStatus};
     }
 
@@ -586,7 +586,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
                     titleBar.setAppTitle(device.getName());
                 }
             }
-        } else if (id == CommonNotifications.cloudStorageOpened) {
+        } else if (id == CommonNotifications.cloudStorageChange) {
             cloudStorageServiceOpened();
         } else if (id == OpcodeConstants.getSdStatus) {
             if (hasGetSdcardStatus) return;
