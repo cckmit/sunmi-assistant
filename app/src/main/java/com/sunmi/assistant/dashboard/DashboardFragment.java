@@ -292,7 +292,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (isFastClick(500)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=").start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
     }
 
     @Override
