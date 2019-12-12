@@ -54,6 +54,9 @@ public class CommonConstants {
 
     //储捆绑服务状态
     public static final int SERVICE_INACTIVATED = 1;
-    public static final int SERVICE_ACTIVATED =2;
+    public static final int SERVICE_ACTIVATED = 2;
+
+    public static final int CONFIG_IPC_FROM_COMMON = 1;
+    public static final int CONFIG_IPC_FROM_CASH_VIDEO = 2;
 
 }

@@ -37,6 +37,8 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
     int ipcType;
     @Extra
     int network;
+    @Extra
+    int source;
 
     @AfterViews
     void init() {
@@ -66,9 +68,9 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
             return;
         }
         if (network == IpcConstants.IPC_WIRED_NETWORK) {
-            IpcStartLinkedActivity_.intent(context).ipcType(ipcType).start();
+            IpcStartLinkedActivity_.intent(context).ipcType(ipcType).source(source).start();
         } else {
-            IPCSearchActivity_.intent(context).deviceType(ipcType).network(network).shopId(SpUtils.getShopId() + "").start();
+            IPCSearchActivity_.intent(context).deviceType(ipcType).network(network).shopId(SpUtils.getShopId() + "").source(source).start();
         }
     }
 }
