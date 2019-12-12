@@ -388,6 +388,14 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (!isPaused) {
+            pausePlayClick();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mVolumeHelper.unregisterVolumeReceiver();
