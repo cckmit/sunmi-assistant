@@ -113,7 +113,14 @@
             android:name=".view.activity.CloudPlaybackActivity_"
             android:configChanges="keyboardHidden|screenSize|orientation"
             android:hardwareAccelerated="false"
-            android:largeHeap="true" />
+            android:largeHeap="true"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.SDCardPlayBackActivity_"
+            android:configChanges="keyboardHidden|screenSize|orientation"
+            android:hardwareAccelerated="false"
+            android:largeHeap="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.activity.IpcChooseInternetActivity_"
             android:screenOrientation="portrait" />
@@ -132,11 +139,6 @@
         <activity
             android:name=".cash.CashPlayActivity_"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".view.activity.SDCardPlayBackActivity_"
-            android:configChanges="keyboardHidden|screenSize|orientation"
-            android:hardwareAccelerated="false"
-            android:largeHeap="true" />
 
         <service android:name=".service.P2pService" />
     </application>
