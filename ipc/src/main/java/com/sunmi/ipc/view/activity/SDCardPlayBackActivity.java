@@ -341,7 +341,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         if (isServiceUnopened()) {
             ArrayList<String> snList = new ArrayList<>();
             snList.add(device.getDeviceid());
-            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
+            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL+"cloudStorage?topPadding=", snList);
         } else {
             CloudPlaybackActivity_.intent(context).device(device)
                     .cloudStorageServiceStatus(cloudStorageServiceStatus)

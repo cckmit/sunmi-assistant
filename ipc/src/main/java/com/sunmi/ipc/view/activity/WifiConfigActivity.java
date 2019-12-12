@@ -63,6 +63,8 @@ public class WifiConfigActivity extends BaseActivity
     int deviceType;
     @Extra
     SunmiDevice sunmiDevice;
+    @Extra
+    int source;
 
     private static int TIMEOUT_GET_WIFI = 15_000;
     private static int TIMEOUT_GET_IPC_STATUS_FAIL = 10_000;
@@ -257,7 +259,7 @@ public class WifiConfigActivity extends BaseActivity
         list.add(sunmiDevice);
         if (list.size() > 0) {
             IpcConfiguringActivity_.intent(context)
-                    .deviceType(deviceType).sunmiDevices(list).shopId(shopId).start();
+                    .deviceType(deviceType).sunmiDevices(list).shopId(shopId).source(source).start();
             hideLoadingDialog();
             finish();
         }
