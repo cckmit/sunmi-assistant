@@ -1,44 +1,42 @@
 package com.sunmi.sunmiservice;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
-import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
-import com.tencent.mm.opensdk.modelmsg.WXMiniProgramObject;
-import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.xiaojinzi.component.impl.Router;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.router.AppApi;
+import sunmi.common.router.IpcApi;
 import sunmi.common.utils.SpUtils;
-import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
+import sunmi.common.view.webview.BaseJSCall;
 import sunmi.common.view.webview.SMWebView;
+import sunmi.common.view.webview.SsConstants;
 
-public class JSCall {
+public class JSCall extends BaseJSCall {
 
-    private BaseActivity context;
-    private SMWebView webView;
     private Handler handler = new Handler();
-    private IWXAPI api;
 
     public JSCall(BaseActivity context, SMWebView webView) {
-        this.context = context;
-        this.webView = webView;
+        super(context, webView);
     }
 
-    public void setApi(IWXAPI api) {
-        this.api = api;
-    }
 
-    @JavascriptInterface
+   /* @JavascriptInterface
     public void openMiniProgram(String arg) {
         try {
             JSONObject jsonObject = new JSONObject(arg);
@@ -50,7 +48,7 @@ public class JSCall {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @JavascriptInterface
     public void pushWindow(String arg) {
@@ -170,24 +168,22 @@ public class JSCall {
         return "";
     }
 
-    @JavascriptInterface
-    public void lastPageBack() {
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
-        context.finish();
-    }
 
     @JavascriptInterface
-    public void setStatusBarDefaultColor(String arg) {
+    public void jumpPage(String arg) {
         try {
             JSONObject jsonObject = new JSONObject(arg);
-            final String color = jsonObject.getString("color");
+            final String url = jsonObject.getString("url");
             context.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (TextUtils.equals(color, SsConstants.JS_COLOR_WHITE)) {
-                        StatusBarUtils.setStatusBarFullTransparent(context);
-                    } else {
-                        StatusBarUtils.StatusBarLightMode(context);
+                    if (TextUtils.equals(url, SsConstants.JS_BIND_SS)) {
+                        Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_SS, CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO);
+                    } else if (TextUtils.equals(url, SsConstants.JS_BIND_SAAS)) {
+                        Router.withApi(AppApi.class).gotoImportOrderPreview(context);
+                    } else if (TextUtils.equals(url, SsConstants.JS_MALL_ORDER)) {
+                        WebViewSunmiMallActivity_.intent(context).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
+                                + "my-order?channel=2&subchannel=4").start();
                     }
                 }
             });
@@ -196,7 +192,29 @@ public class JSCall {
         }
     }
 
-    private void launchMiniProgram(String userName, String path, String miniProgramType) {
+    @JavascriptInterface
+    public void cashVideoSubscribe() {
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.cashVideoSubscribe);
+        context.finish();
+    }
+
+    @JavascriptInterface
+    public void copy(String arg) {
+        try {
+            JSONObject jsonObject = new JSONObject(arg);
+            String content = jsonObject.getString("content");
+            if (content != null) {
+                ClipboardManager cm = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText("content", content);
+                cm.setPrimaryClip(clipData);
+                context.shortTip(R.string.tip_copy_success);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*private void launchMiniProgram(String userName, String path, String miniProgramType) {
         if (api == null) return;
         if (!api.isWXAppInstalled()) {
             context.shortTip(R.string.tip_wechat_not_installed);
@@ -215,7 +233,7 @@ public class JSCall {
         miniProgramReq.path = path; //拉起小程序页面的可带参路径，不填默认拉起小程序首页
         miniProgramReq.miniprogramType = miniProgramTypeInt;// 可选打开 开发版，体验版和正式版
         api.sendReq(miniProgramReq);
-    }
+    }*/
 
     /**
      * 拨打电话

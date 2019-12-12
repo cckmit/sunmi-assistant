@@ -156,6 +156,11 @@ public class H264Decoder {
         }
     }
 
+    public synchronized void changeSurface(Surface surface) {
+        this.surface = surface;
+        startDecode();
+    }
+
     public synchronized void startDecode() {
         initMediaCodec();
         ThreadPool.getCachedThreadPool().submit(new DecodeH264Thread());//开启解码线程

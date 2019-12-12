@@ -11,12 +11,11 @@ import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
-import com.sunmi.ipc.model.StorageListResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
-import com.sunmi.ipc.setting.IpcSettingSdcardActivity_;
-import com.sunmi.ipc.setting.RecognitionSettingActivity_;
 import com.sunmi.ipc.utils.IpcUtils;
+import com.sunmi.ipc.view.activity.setting.IpcSettingSdcardActivity_;
+import com.sunmi.ipc.view.activity.setting.RecognitionSettingActivity_;
 import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
@@ -34,6 +33,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.AppApi;
 import sunmi.common.router.SunmiServiceApi;
@@ -84,6 +84,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     boolean isSunmiLink;
     @Extra
     ArrayList<SunmiDevice> sunmiDevices;
+    @Extra
+    int source;
 
     SunmiDevice deviceChoose;
     private List<SunmiDevice> list = new ArrayList<>();
@@ -143,14 +145,22 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 setResult(RESULT_OK, intent);
                 finish();
             } else {
-                Router.withApi(AppApi.class).goToMain(context);
+                if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
+                    Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+                } else {
+                    Router.withApi(AppApi.class).goToMain(context);
+                }
             }
         }
     }
 
     @Click(resName = "btn_finish")
     void finishClick() {
-        Router.withApi(AppApi.class).goToMain(context, this::finish);
+        if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
+            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+        } else {
+            Router.withApi(AppApi.class).goToMain(context, this::finish);
+        }
     }
 
     @Click(resName = "btn_retry")
@@ -158,14 +168,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         if (isSunmiLink) {
             setResult(RESULT_OK);
         } else {
-            IpcStartConfigActivity_.intent(context).ipcType(deviceType).start();
+            IpcStartConfigActivity_.intent(context).ipcType(deviceType).source(source).start();
         }
         finish();
     }
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
     }
 
     @Override
@@ -251,13 +261,13 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
 
     protected void initSs() {
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<StorageListResp>() {
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
             @Override
-            public void onSuccess(int code, String msg, StorageListResp data) {
-                List<StorageListResp.DeviceListBean> beans = data.getDeviceList();
+            public void onSuccess(int code, String msg, ServiceListResp data) {
+                List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
                 snList.clear();
-                for (StorageListResp.DeviceListBean bean : beans) {
-                    if (bean.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED) {
+                for (ServiceListResp.DeviceListBean bean : beans) {
+                    if (bean.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED) {
                         snList.add(bean.getDeviceSn());
                     }
                 }
@@ -272,7 +282,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             }
 
             @Override
-            public void onFail(int code, String msg, StorageListResp data) {
+            public void onFail(int code, String msg, ServiceListResp data) {
                 btnComplete.setVisibility(View.VISIBLE);
             }
         });

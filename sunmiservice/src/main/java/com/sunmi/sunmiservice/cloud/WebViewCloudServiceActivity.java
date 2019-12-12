@@ -20,7 +20,6 @@ import com.alipay.sdk.util.H5PayResultModel;
 import com.sunmi.sunmiservice.H5FaceWebChromeClient;
 import com.sunmi.sunmiservice.JSCall;
 import com.sunmi.sunmiservice.R;
-import com.sunmi.sunmiservice.SsConstants;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
@@ -47,6 +46,7 @@ import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
+import sunmi.common.view.webview.SsConstants;
 
 /**
  * Description:
@@ -226,12 +226,20 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                     closeTimer();
                     try {
                         JSONArray array = new JSONArray(snList);
-                        String params = new JSONObject()
+                        JSONObject userInfo = new JSONObject()
                                 .put("token", SpUtils.getStoreToken())
                                 .put("company_id", SpUtils.getCompanyId())
-                                .put("shop_id", SpUtils.getShopId())
-                                .put("sn_list", array).toString();
-                        webView.evaluateJavascript("javascript:getDeviceInfo('" + params + "')", new ValueCallback<String>() {
+                                .put("shop_id", SpUtils.getShopId());
+                        JSONObject cloudStorage = new JSONObject()
+                                .put("sn_list", array);
+                        JSONObject cashVideo = new JSONObject()
+                                .put("shop_name", SpUtils.getShopName());
+                        String params = new JSONObject()
+                                .put("userInfo", userInfo)
+                                .put("cloudStorage", cloudStorage)
+                                .put("cashVideo", cashVideo)
+                                .toString();
+                        webView.evaluateJavascript("javascript:getDataFromApp('" + params + "')", new ValueCallback<String>() {
                             @Override
                             public void onReceiveValue(String value) {
 
@@ -294,14 +302,14 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     public void onBackPressed() {
-        if (webView.isShown()) {
-            webView.evaluateJavascript("javascript:nativePageBack()", new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
-                }
-            });
+        if (webView == null) {
             return;
         }
+        if (webView.canGoBack()) {
+            webView.goBack();
+            return;
+        }
+        webView.clearCache(true);
         super.onBackPressed();
     }
 }

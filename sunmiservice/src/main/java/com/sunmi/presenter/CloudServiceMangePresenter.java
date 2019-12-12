@@ -152,7 +152,7 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());
         device.setName(bean.getDevice_name());
-        device.setIp(bean.getCdn_address());
+        device.setImgPath(bean.getCdn_address());
         device.setUid(bean.getUid());
         device.setShopId(bean.getShop_id());
         device.setId(bean.getId());

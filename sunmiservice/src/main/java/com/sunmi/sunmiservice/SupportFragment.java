@@ -15,6 +15,8 @@ import com.tencent.mm.opensdk.modelmsg.WXMiniProgramObject;
 import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.service.ServiceManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -23,10 +25,19 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sunmi.common.base.BaseFragment;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.ShopBundledCloudInfo;
+import sunmi.common.router.IpcApi;
+import sunmi.common.router.IpcCloudApiAnno;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
@@ -42,9 +53,13 @@ public class SupportFragment extends BaseFragment
     TextView tvCloudStorage;
     @ViewById(resName = "iv_tip_free")
     ImageView ivTipFree;
+    @ViewById(resName = "tv_cash_video")
+    TextView tvCashVideo;
 
 
     private IWXAPI api;// 第三方app和微信通信的openApi接口
+    private ArrayList<CashVideoServiceBean> cashVideoServiceBeans = new ArrayList<>();
+    private IpcCloudApiAnno ipcCloudApi;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +70,8 @@ public class SupportFragment extends BaseFragment
     @AfterViews
     void init() {
         titleBar.getRightTextView().setOnClickListener(this);
+        ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
+        changeCashVideoCard();
         changeCloudCard();
     }
 
@@ -75,12 +92,24 @@ public class SupportFragment extends BaseFragment
         ServiceManageActivity_.intent(mActivity).start();
     }
 
+    @Click(resName = "ll_cash_video")
+    void cashVidoClick() {
+        if (isFastClick(500)) {
+            return;
+        }
+        if (cashVideoServiceBeans.size() > 0) {
+            Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false);
+        } else {
+            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO).start();
+        }
+    }
+
     @Click(resName = "ll_cloud_storage")
     void cloudStorageClick() {
         if (!checkNetwork() || isFastClick(500)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
     }
 
     @Click(resName = "ll_after_sales")
@@ -114,6 +143,40 @@ public class SupportFragment extends BaseFragment
             return false;
         }
         return true;
+    }
+
+    private void changeCashVideoCard() {
+        cashVideoServiceBeans.clear();
+        if (ipcCloudApi != null) {
+            ipcCloudApi.getAuditVideoServiceList(null, new RetrofitCallback<ServiceListResp>() {
+                @Override
+                public void onSuccess(int code, String msg, ServiceListResp data) {
+                    List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
+                    if (beans.size() > 0) {
+                        for (ServiceListResp.DeviceListBean bean : beans) {
+                            if (bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
+                                CashVideoServiceBean info = new CashVideoServiceBean();
+                                info.setDeviceId(bean.getDeviceId());
+                                info.setDeviceSn(bean.getDeviceSn());
+                                info.setDeviceName(bean.getDeviceName());
+                                info.setImgUrl(bean.getImgUrl());
+                                cashVideoServiceBeans.add(info);
+                            }
+                        }
+                    }
+                    if (cashVideoServiceBeans.size() > 0) {
+                        tvCashVideo.setText(R.string.str_setting_detail);
+                    } else {
+                        tvCashVideo.setText(R.string.str_learn_more);
+                    }
+                }
+
+                @Override
+                public void onFail(int code, String msg, ServiceListResp data) {
+                    changeCashVideoCard();
+                }
+            });
+        }
     }
 
     /*private void initRefreshLayout() {
@@ -170,7 +233,7 @@ public class SupportFragment extends BaseFragment
     @Override
     public int[] getStickNotificationId() {
         return new int[]{
-                CommonNotifications.activeCloudChange
+                CommonNotifications.activeCloudChange, CommonNotifications.cashVideoSubscribe, CommonNotifications.shopSwitched
         };
     }
 
@@ -178,6 +241,8 @@ public class SupportFragment extends BaseFragment
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.activeCloudChange) {
             changeCloudCard();
+        } else if (id == CommonNotifications.cashVideoSubscribe || id == CommonNotifications.shopSwitched) {
+            changeCashVideoCard();
         }
     }
 

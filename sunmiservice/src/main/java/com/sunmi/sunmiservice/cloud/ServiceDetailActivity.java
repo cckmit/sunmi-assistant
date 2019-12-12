@@ -120,7 +120,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             tvDeviceSn.setText(sn);
             tvSubScribeTime.setText(DateTimeUtils.secondToDate(bean.getSubscribeTime(), "yyyy-MM-dd HH:mm"));
             tvExpireTime.setText(DateTimeUtils.secondToDate(bean.getExpireTime(), "yyyy-MM-dd HH:mm"));
-            if (bean.getStatus() != CommonConstants.CLOUD_STORAGE_EXPIRED) {
+            if (bean.getStatus() != CommonConstants.SERVICE_EXPIRED) {
                 tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime()));
             } else {
                 tvStatus.setText(R.string.str_expired);
@@ -174,7 +174,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         } else {
             ArrayList<String> snList = new ArrayList<>();
             snList.add(mSn);
-            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
         }
     }
 

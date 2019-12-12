@@ -43,17 +43,25 @@ public class CommonConstants {
 
     public static final String GOOGLE_PLAY = "google";
 
-    //云存储服务订阅状态
-    public static final int CLOUD_STORAGE_ALREADY_OPENED = 1;
-    public static final int CLOUD_STORAGE_NOT_OPENED = 2;
-    public static final int CLOUD_STORAGE_EXPIRED = 3;
+    //服务订阅状态
+    public static final int SERVICE_ALREADY_OPENED = 1;
+    public static final int SERVICE_NOT_OPENED = 2;
+    public static final int SERVICE_EXPIRED = 3;
 
     //云存储续费状态
     public static final int CLOUD_STORAGE_RENEWABLE = 1;
     public static final int CLOUD_STORAGE_NOT_RENEWABLE = 2;
 
-    //云存储捆绑服务状态
-    public static final int ACTIVE_CLOUD_INACTIVATED = 1;
-    public static final int ACTIVE_CLOUD_ACTIVATED=2;
+    //储捆绑服务状态
+    public static final int SERVICE_INACTIVATED = 1;
+    public static final int SERVICE_ACTIVATED = 2;
+
+    public static final int CONFIG_IPC_FROM_COMMON = 1;
+    public static final int CONFIG_IPC_FROM_CASH_VIDEO = 2;
+
+    //H5后序地址
+    public static final String H5_CLOUD_STORAGE = "cloudStorage?topPadding=";
+    public static final String H5_CASH_VIDEO = "cashvideo/welcome?topPadding=";
+    public static final String H5_ORDER_MANAGE ="orderManagement/orderList?topPadding=";
 
 }

@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:showDivider="top"
-                app:title="@string/ipc_face_age"
+                app:title="@string/str_common_age"
                 app:type="arrow" />
 
             <sunmi.common.view.SettingItemLayout

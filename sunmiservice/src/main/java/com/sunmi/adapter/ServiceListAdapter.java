@@ -42,7 +42,7 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
         TextView tvDeviceSn = helper.getView(R.id.tv_device_sn);
         TextView tvDeviceName = helper.getView(R.id.tv_device_name);
         helper.setText(R.id.tv_service_name, item.getServiceName());
-        if (item.getStatus() != CommonConstants.CLOUD_STORAGE_EXPIRED) {
+        if (item.getStatus() != CommonConstants.SERVICE_EXPIRED) {
             helper.setText(R.id.tv_remaining, context.getString(R.string.str_remaining_validity_period,
                     DateTimeUtils.secondToPeriod(item.getValidTime())));
         } else {
@@ -53,7 +53,7 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
             helper.getView(R.id.tv_unbind).setVisibility(View.GONE);
             tvDeviceSn.setVisibility(View.VISIBLE);
             tvDeviceName.setVisibility(View.VISIBLE);
-            tvDeviceSn.setText(context.getString(R.string.ipc_sn, item.getDeviceSn()));
+            tvDeviceSn.setText(context.getString(R.string.str_dev_sn, item.getDeviceSn()));
             tvDeviceName.setText(context.getString(R.string.ipc_device_name, item.getDeviceName()));
         } else {
             btnRenewal.setVisibility(View.GONE);

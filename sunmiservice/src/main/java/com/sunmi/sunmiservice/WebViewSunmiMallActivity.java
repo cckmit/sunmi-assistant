@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -32,6 +33,7 @@ import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
+import sunmi.common.view.webview.SsConstants;
 
 /**
  * Description:商米商城
@@ -143,6 +145,7 @@ public class WebViewSunmiMallActivity extends BaseActivity
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Log.e(TAG, "支付宝：" + url);
                                     view.loadUrl(url);
                                 }
                             });
@@ -163,6 +166,7 @@ public class WebViewSunmiMallActivity extends BaseActivity
                     if (!(url.startsWith("http") || url.startsWith("https"))) {
                         return true;
                     }
+                    Log.e(TAG, "支付宝：" + url);
                     view.loadUrl(url);
                 }
                 return true;
