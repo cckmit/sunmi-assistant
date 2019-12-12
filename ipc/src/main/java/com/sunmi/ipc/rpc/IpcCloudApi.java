@@ -886,7 +886,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId());
             if (deviceId != -1) {
-                jsonObject.put("device_id", deviceId);
+                jsonObject.put("id", deviceId);
             }
             if (source != 0) {
                 jsonObject.put("source", source);
