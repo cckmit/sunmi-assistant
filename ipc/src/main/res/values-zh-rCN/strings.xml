@@ -389,4 +389,7 @@
     <string name="motion_detection_source_both_name">声音和画面异常变动</string>
     <string name="motion_detection_get_config_error">暂时无法获取动态侦测配置，请稍后重试</string>
     <string name="cash_video_total_commodity">共%d个商品</string>
+    <string name="cash_left_first_video">已经第一个视频了</string>
+    <string name="cash_auth_paly_loop">自动连播</string>
+    <string name="cash_paly_single">单个循环</string>
 </resources>
