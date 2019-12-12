@@ -122,7 +122,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
 
     @Click(resName = "btn_open")
     void onpenClick() {
-        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=").start();
     }
 
     private void initServiceList() {
@@ -140,7 +140,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
                         ArrayList<String> snList = new ArrayList<>();
                         snList.add(bean.getDeviceSn());
                         WebViewCloudServiceActivity_.intent(context).snList(snList)
-                                .mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+                                .mUrl(CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=").start();
                     }
                 }
             });

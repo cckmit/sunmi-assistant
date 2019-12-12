@@ -38,6 +38,7 @@ import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.SMWebChromeClient;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
+import sunmi.common.view.webview.SsConstants;
 
 @EActivity(resName = "activity_webview")
 public class WebViewActivity extends BaseActivity

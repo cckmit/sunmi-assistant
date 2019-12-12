@@ -9,9 +9,6 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
-import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
-import com.tencent.mm.opensdk.modelmsg.WXMiniProgramObject;
-import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.xiaojinzi.component.impl.Router;
 
 import org.json.JSONException;
@@ -24,28 +21,22 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.router.IpcApi;
 import sunmi.common.utils.SpUtils;
-import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
+import sunmi.common.view.webview.BaseJSCall;
 import sunmi.common.view.webview.SMWebView;
+import sunmi.common.view.webview.SsConstants;
 
-public class JSCall {
+public class JSCall extends BaseJSCall {
 
-    private BaseActivity context;
-    private SMWebView webView;
     private Handler handler = new Handler();
-    private IWXAPI api;
 
     public JSCall(BaseActivity context, SMWebView webView) {
-        this.context = context;
-        this.webView = webView;
+        super(context, webView);
     }
 
-    public void setApi(IWXAPI api) {
-        this.api = api;
-    }
 
-    @JavascriptInterface
+   /* @JavascriptInterface
     public void openMiniProgram(String arg) {
         try {
             JSONObject jsonObject = new JSONObject(arg);
@@ -57,7 +48,7 @@ public class JSCall {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @JavascriptInterface
     public void pushWindow(String arg) {
@@ -177,44 +168,6 @@ public class JSCall {
         return "";
     }
 
-    @JavascriptInterface
-    public void lastPageBack(String arg) {
-        try {
-            JSONObject jsonObject = new JSONObject(arg);
-            int result = jsonObject.getInt("subscribeResult");
-            if (result == 1) {
-                BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        context.finish();
-    }
-
-    @JavascriptInterface
-    public void lastPageBack() {
-        context.finish();
-    }
-
-    @JavascriptInterface
-    public void setStatusBarDefaultColor(String arg) {
-        try {
-            JSONObject jsonObject = new JSONObject(arg);
-            final String color = jsonObject.getString("color");
-            context.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (TextUtils.equals(color, SsConstants.JS_COLOR_WHITE)) {
-                        StatusBarUtils.setStatusBarFullTransparent(context);
-                    } else {
-                        StatusBarUtils.StatusBarLightMode(context);
-                    }
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     @JavascriptInterface
     public void jumpPage(String arg) {
@@ -225,7 +178,7 @@ public class JSCall {
                 @Override
                 public void run() {
                     if (TextUtils.equals(url, SsConstants.JS_BIND_SS)) {
-                        Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_SS);
+                        Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_SS, CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO);
                     } else if (TextUtils.equals(url, SsConstants.JS_BIND_SAAS)) {
                         Router.withApi(AppApi.class).gotoImportOrderPreview(context);
                     } else if (TextUtils.equals(url, SsConstants.JS_MALL_ORDER)) {
@@ -261,7 +214,7 @@ public class JSCall {
         }
     }
 
-    private void launchMiniProgram(String userName, String path, String miniProgramType) {
+    /*private void launchMiniProgram(String userName, String path, String miniProgramType) {
         if (api == null) return;
         if (!api.isWXAppInstalled()) {
             context.shortTip(R.string.tip_wechat_not_installed);
@@ -280,7 +233,7 @@ public class JSCall {
         miniProgramReq.path = path; //拉起小程序页面的可带参路径，不填默认拉起小程序首页
         miniProgramReq.miniprogramType = miniProgramTypeInt;// 可选打开 开发版，体验版和正式版
         api.sendReq(miniProgramReq);
-    }
+    }*/
 
     /**
      * 拨打电话

@@ -177,6 +177,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                                 info.setDeviceId(deviceId);
                                 info.setDeviceSn(device.getDeviceSn());
                                 info.setDeviceName(device.getDeviceName());
+                                info.setImgUrl(device.getImgUrl());
                                 devices.add(info);
                                 break;
                             }

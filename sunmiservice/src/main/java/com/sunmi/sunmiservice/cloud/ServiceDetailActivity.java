@@ -174,7 +174,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         } else {
             ArrayList<String> snList = new ArrayList<>();
             snList.add(mSn);
-            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConfig.SERVICE_H5_URL+"cloudStorage?topPadding=").start();
         }
     }
 
