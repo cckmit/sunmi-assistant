@@ -1,4 +1,4 @@
-package com.sunmi.sunmiservice;
+package sunmi.common.view.webview;
 
 /**
  * Description:

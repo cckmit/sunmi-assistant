@@ -46,17 +46,19 @@ public class IpcStartLinkedActivity extends BaseActivity {
 
     @Extra
     int ipcType;
+    @Extra
+    int source;
 
     private List<CharSequence> list = new ArrayList<>();
 
     @AfterViews
-    void init(){
+    void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         tvContent.setText(R.string.str_confirm_ipc_linked);
         tvConfigTip.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_4)));
-        if (ipcType == CommonConstants.TYPE_IPC_FS){
+        if (ipcType == CommonConstants.TYPE_IPC_FS) {
             ivIpc.setBackgroundResource(R.drawable.ic_ipc_config_fs_blue);
-        }else {
+        } else {
             ivIpc.setBackgroundResource(R.drawable.ic_ipc_config_ss_blue);
         }
         tvIndicator.setVisibility(View.VISIBLE);
@@ -71,7 +73,8 @@ public class IpcStartLinkedActivity extends BaseActivity {
         if (isFastClick(500)) {
             return;
         }
-        IPCSearchActivity_.intent(context).deviceType(ipcType).network(IpcConstants.IPC_WIRED_NETWORK).shopId(SpUtils.getShopId() + "").start();
+        IPCSearchActivity_.intent(context).deviceType(ipcType).network(IpcConstants.IPC_WIRED_NETWORK)
+                .shopId(SpUtils.getShopId() + "").source(source).start();
     }
 
     @Click(resName = "tv_indicator_light")

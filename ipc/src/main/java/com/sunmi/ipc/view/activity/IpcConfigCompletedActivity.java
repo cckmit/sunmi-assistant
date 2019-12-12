@@ -1,6 +1,5 @@
 package com.sunmi.ipc.view.activity;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.StringRes;
@@ -12,12 +11,11 @@ import android.widget.TextView;
 
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
-import sunmi.common.model.ServiceListResp;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
+import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.setting.IpcSettingSdcardActivity_;
 import com.sunmi.ipc.view.activity.setting.RecognitionSettingActivity_;
-import com.sunmi.ipc.utils.IpcUtils;
 import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
@@ -35,6 +33,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.AppApi;
 import sunmi.common.router.SunmiServiceApi;
@@ -85,6 +84,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     boolean isSunmiLink;
     @Extra
     ArrayList<SunmiDevice> sunmiDevices;
+    @Extra
+    int source;
 
     SunmiDevice deviceChoose;
     private List<SunmiDevice> list = new ArrayList<>();
@@ -144,14 +145,22 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 setResult(RESULT_OK, intent);
                 finish();
             } else {
-                Router.withApi(AppApi.class).goToMain(context);
+                if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
+                    Router.withApi(SunmiServiceApi.class).goToWebViewCash(context, CommonConfig.SERVICE_H5_URL + "cashvideo/welcome?topPadding=");
+                } else {
+                    Router.withApi(AppApi.class).goToMain(context);
+                }
             }
         }
     }
 
     @Click(resName = "btn_finish")
     void finishClick() {
-        Router.withApi(AppApi.class).goToMain(context, this::finish);
+        if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
+            Router.withApi(SunmiServiceApi.class).goToWebViewCash(context, CommonConfig.SERVICE_H5_URL + "cashvideo/welcome?topPadding=");
+        } else {
+            Router.withApi(AppApi.class).goToMain(context, this::finish);
+        }
     }
 
     @Click(resName = "btn_retry")
@@ -159,14 +168,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         if (isSunmiLink) {
             setResult(RESULT_OK);
         } else {
-            IpcStartConfigActivity_.intent(context).ipcType(deviceType).start();
+            IpcStartConfigActivity_.intent(context).ipcType(deviceType).source(source).start();
         }
         finish();
     }
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=", snList);
     }
 
     @Override

@@ -80,7 +80,7 @@ public class ChooseDeviceDialog extends Dialog {
                 if (pos == CommonConstants.TYPE_PRINTER) {
                     Router.withApi(CloudPrinterApi.class).goToSartConfigPrinter(getContext(), shopId);
                 } else if (pos == CommonConstants.TYPE_IPC_FS || pos == CommonConstants.TYPE_IPC_SS) {
-                    Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), pos);
+                    Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), pos, CommonConstants.CONFIG_IPC_FROM_COMMON);
                 } else {
                     StartConfigSMDeviceActivity_.intent(getContext())
                             .deviceType(pos).shopId(shopId + "").start();

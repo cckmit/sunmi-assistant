@@ -792,7 +792,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 ArrayList<String> snList = new ArrayList<>();
                                 snList.add(device.getDeviceid());
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConfig.CLOUD_STORAGE_URL, snList);
+                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL+"cloudStorage?topPadding=", snList);
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
@@ -803,7 +803,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 shortTip(R.string.cash_video_other_device_already_subscribe_tip);
                             } else {//去开通
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCash(context, CommonConfig.CASH_VIDEO_URL);
+                                        .goToWebViewCash(context, CommonConfig.SERVICE_H5_URL+"cashvideo/welcome?topPadding=");
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_DETECT:

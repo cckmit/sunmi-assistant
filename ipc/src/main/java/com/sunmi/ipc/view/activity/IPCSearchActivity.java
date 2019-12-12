@@ -74,6 +74,8 @@ public class IPCSearchActivity extends BaseActivity
     boolean isSunmiLink;//是否是sunmi link模式
     @Extra
     int network;
+    @Extra
+    int source;
 
     private boolean isApMode;//是否ap模式
     IPCListAdapter ipcListAdapter;
@@ -279,7 +281,7 @@ public class IPCSearchActivity extends BaseActivity
         hideLoadingDialog();
         if (ipcList != null && ipcList.size() > 0)
             WifiConfigActivity_.intent(context)
-                    .deviceType(deviceType).sunmiDevice(ipcList.get(0)).shopId(shopId).start();
+                    .deviceType(deviceType).sunmiDevice(ipcList.get(0)).shopId(shopId).source(source).start();
     }
 
     private void gotoIpcConfigActivity() {
@@ -290,7 +292,7 @@ public class IPCSearchActivity extends BaseActivity
         }
         if (selectedList.size() > 0)
             IpcConfiguringActivity_.intent(context)
-                    .deviceType(deviceType).sunmiDevices(selectedList).shopId(shopId).start();
+                    .deviceType(deviceType).sunmiDevices(selectedList).shopId(shopId).source(source).start();
     }
 
 }

@@ -15,7 +15,6 @@ import android.webkit.WebView;
 
 import com.sunmi.sunmiservice.H5FaceWebChromeClient;
 import com.sunmi.sunmiservice.JSCall;
-import com.sunmi.sunmiservice.SsConstants;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
@@ -37,6 +36,7 @@ import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
+import sunmi.common.view.webview.SsConstants;
 
 /**
  * Description:
