@@ -151,7 +151,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
         BGANormalRefreshViewHolder refreshViewHolder =
                 new BGANormalRefreshViewHolder(this, true);
         refreshLayout.setRefreshViewHolder(refreshViewHolder);
-        refreshLayout.setPullDownRefreshEnable(false);
+        refreshLayout.setPullDownRefreshEnable(true);
         refreshLayout.setIsShowLoadingMoreView(true);
     }
 
@@ -215,6 +215,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
     @Override
     public void setData(List<MotionVideo> data) {
         showContent();
+        refreshLayout.endRefreshing();
         mAdapter.setData(data);
     }
 
@@ -255,6 +256,10 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
 
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            shortTip(R.string.toast_networkIsExceptional);
+        }
+        mPresenter.load();
     }
 
     @Override
