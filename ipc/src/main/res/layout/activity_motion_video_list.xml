@@ -14,7 +14,9 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_motion_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:overScrollMode="never"
             android:background="@color/c_white" />
 
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
