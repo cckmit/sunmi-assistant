@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sunmi.sunmiservice.cloud.WebViewCashServiceActivity_;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
@@ -101,7 +100,7 @@ public class SupportFragment extends BaseFragment
         if (cashVideoServiceBeans.size() > 0) {
             Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false);
         } else {
-            WebViewCashServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + "cashvideo/welcome?topPadding=").start();
+            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO).start();
         }
     }
 
@@ -110,7 +109,7 @@ public class SupportFragment extends BaseFragment
         if (!checkNetwork() || isFastClick(500)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=").start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
     }
 
     @Click(resName = "ll_after_sales")

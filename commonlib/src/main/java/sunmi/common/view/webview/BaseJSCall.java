@@ -37,13 +37,14 @@ public class BaseJSCall {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        context.finish();
+        context.runOnUiThread(() -> context.onBackPressed());
+
     }
 
     @JavascriptInterface
     public void lastPageBack() {
         BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
-        context.finish();
+        context.runOnUiThread(() -> context.onBackPressed());
     }
 
     @JavascriptInterface
