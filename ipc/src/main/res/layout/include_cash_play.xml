@@ -44,7 +44,7 @@
         android:layout_marginEnd="@dimen/dp_6"
         android:background="@drawable/bg_round_corner_black_15"
         android:scaleType="center"
-        android:src="@mipmap/ic_single"
+        android:src="@mipmap/ic_loop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/iv_volume"
         app:layout_constraintRight_toLeftOf="@id/iv_cloud"
