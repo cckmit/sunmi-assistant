@@ -55,8 +55,13 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                             mView.endRefresh();
                             mView.getAdListSuccess(data);
                         }
-                        DataSupport.deleteAll(AdListBean.class);
-                        DataSupport.saveAll(data.getAd_list());
+                        try {
+                            DataSupport.deleteAll(AdListBean.class);
+                            DataSupport.saveAll(data.getAd_list());
+                        } catch (Exception e) {
+                            DataSupport.saveAll(data.getAd_list());
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
