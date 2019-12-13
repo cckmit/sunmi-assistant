@@ -141,6 +141,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         webSettings.setGeolocationEnabled(true);//启用地理定位
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         // 可以运行JavaScript
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
@@ -262,14 +263,10 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     protected void onNewIntent(Intent intent) {
+        hasSendDeviceInfo = false;
         webView.reload();
         startTimer();
         super.onNewIntent(intent);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 
     @Click(resName = "btn_refresh")
@@ -313,11 +310,12 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     public void onBackPressed() {
-        if (webView == null) {
-            return;
-        }
-        if (webView.canGoBack()) {
-            webView.goBack();
+        if (webView.isShown()) {
+            webView.evaluateJavascript("javascript:emitPageBack()", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                }
+            });
             return;
         }
         webView.clearCache(true);
