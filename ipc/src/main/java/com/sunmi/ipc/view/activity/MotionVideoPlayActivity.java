@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -86,8 +85,8 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     @ViewById(resName = "tv_screenshot_tip")
     TextView tvScreenshotTip;
 
-    @ViewById(resName = "pb_loading")
-    ProgressBar pbLoading;
+    @ViewById(resName = "layout_loading")
+    View layoutLoading;
     @ViewById(resName = "layout_video_error")
     View layoutError;
 
@@ -180,17 +179,17 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     }
 
     private void showLoading() {
-        pbLoading.setVisibility(View.VISIBLE);
+        layoutLoading.setVisibility(View.VISIBLE);
         layoutError.setVisibility(View.GONE);
     }
 
     private void hideLoading() {
-        pbLoading.setVisibility(View.GONE);
+        layoutLoading.setVisibility(View.GONE);
         layoutError.setVisibility(View.GONE);
     }
 
     private void showError() {
-        pbLoading.setVisibility(View.GONE);
+        layoutLoading.setVisibility(View.GONE);
         layoutError.setVisibility(View.VISIBLE);
         stopPlay();
     }
