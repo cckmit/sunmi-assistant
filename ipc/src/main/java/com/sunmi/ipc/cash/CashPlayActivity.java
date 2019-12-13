@@ -61,7 +61,6 @@ import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.InputDialog;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -242,7 +241,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             playIndex = videoListPosition;
             initCashVideoPlay();
         }
-        LogCat.e(TAG, "1111111 videoListPosition= " + videoListPosition + " playIndex=" + playIndex);
     }
 
     @Override
