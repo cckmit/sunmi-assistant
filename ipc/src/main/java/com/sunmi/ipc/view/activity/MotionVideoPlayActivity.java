@@ -87,8 +87,8 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     @ViewById(resName = "pb_loading")
     ProgressBar pbLoading;
-    @ViewById(resName = "tv_play_fail")
-    TextView tvError;
+    @ViewById(resName = "layout_video_error")
+    View layoutError;
 
     @ViewById(resName = "tv_date_tip")
     TextView tvDateTip;
@@ -179,17 +179,17 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     private void showLoading() {
         pbLoading.setVisibility(View.VISIBLE);
-        tvError.setVisibility(View.GONE);
+        layoutError.setVisibility(View.GONE);
     }
 
     private void hideLoading() {
         pbLoading.setVisibility(View.GONE);
-        tvError.setVisibility(View.GONE);
+        layoutError.setVisibility(View.GONE);
     }
 
     private void showError() {
         pbLoading.setVisibility(View.GONE);
-        tvError.setVisibility(View.VISIBLE);
+        layoutError.setVisibility(View.VISIBLE);
         stopPlay();
     }
 
@@ -251,6 +251,12 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     private boolean isLandscape() {
         return getRequestedOrientation() == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+    }
+
+    @Click(resName = "btn_retry")
+    void retry() {
+        player.setUrlQueue(urls);
+        startPlay();
     }
 
     @Click(resName = "iv_back")

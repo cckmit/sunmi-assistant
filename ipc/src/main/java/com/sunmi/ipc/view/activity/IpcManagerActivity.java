@@ -53,6 +53,7 @@ import java.util.TimeZone;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.CashVideoServiceBean;
@@ -518,7 +519,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange,
                 CommonNotifications.cashVideoSubscribe};
     }
@@ -802,7 +803,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 ArrayList<String> snList = new ArrayList<>();
                                 snList.add(device.getDeviceid());
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=", snList);
+                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
@@ -813,7 +814,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 shortTip(R.string.cash_video_other_device_already_subscribe_tip);
                             } else {//去开通
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCash(context, CommonConfig.SERVICE_H5_URL + "cashvideo/welcome?topPadding=");
+                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_DETECT:
