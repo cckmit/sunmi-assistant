@@ -770,13 +770,16 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             cashVideoItem = new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_CASH, R.mipmap.ipc_manage_cashier, getString(R.string.cash_video),
                     getString(R.string.cash_video_item_content), getString(R.string.str_learn_more), true);
             list.add(cashVideoItem);
+
+        }
+        list.add(new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_DETECT, R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
+                getString(R.string.str_md_exception), getString(R.string.str_setting_detail), true));
+        if (isSS1()) {
             cloudStorageItem = new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_CLOUD, R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
                     context.getString(R.string.str_setting_detail));
             cloudStorageItem.setEnabled(false);
             list.add(cloudStorageItem);
         }
-        list.add(new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_DETECT, R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
-                getString(R.string.str_md_exception), getString(R.string.str_setting_detail), true));
         adapter = new CommonListAdapter<IpcManageBean>(context, R.layout.item_ipc_manager, list) {
             @Override
             public void convert(ViewHolder holder, IpcManageBean bean) {

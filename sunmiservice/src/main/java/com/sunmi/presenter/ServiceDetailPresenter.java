@@ -16,8 +16,8 @@ public class ServiceDetailPresenter extends BasePresenter<ServiceDetailContract.
         implements ServiceDetailContract.Presenter {
 
     @Override
-    public void getServiceDetailByDevice(String deviceSn) {
-        ServiceApi.getInstance().getServiceDetailByDevice(deviceSn, new RetrofitCallback<ServiceDetailBean>() {
+    public void getServiceDetailByDevice(String deviceSn, int category) {
+        ServiceApi.getInstance().getServiceDetailByDevice(deviceSn, category, new RetrofitCallback<ServiceDetailBean>() {
             @Override
             public void onSuccess(int code, String msg, ServiceDetailBean data) {
                 if (isViewAttached()) {

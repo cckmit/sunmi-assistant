@@ -31,11 +31,12 @@ public class ServiceApi {
         return Singleton.INSTANCE;
     }
 
-    public void getSubscriptionList(int pageNum, int pageSize, RetrofitCallback<SubscriptionListBean> callback) {
+    public void getSubscriptionList(int pageNum, int pageSize, int category, RetrofitCallback<SubscriptionListBean> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
+                    .put("service_category", category)
                     .put("page_num", pageNum)
                     .put("page_size", pageSize)
                     .toString();
@@ -47,12 +48,13 @@ public class ServiceApi {
         }
     }
 
-    public void getServiceDetailByDevice(String deviceSn, RetrofitCallback<ServiceDetailBean> callback) {
+    public void getServiceDetailByDevice(String deviceSn, int category, RetrofitCallback<ServiceDetailBean> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
                     .put("device_sn", deviceSn)
+                    .put("service_category", category)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ServiceInterface.class)
                     .getServiceDetailByDevice(new BaseRequest(params))
