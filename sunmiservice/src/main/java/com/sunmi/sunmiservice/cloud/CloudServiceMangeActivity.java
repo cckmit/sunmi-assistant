@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 
 import com.sunmi.adapter.ServiceListAdapter;
 import com.sunmi.bean.ServiceDetailBean;
+import com.sunmi.constans.ServiceConstants;
 import com.sunmi.contract.CloudServiceMangeContract;
 import com.sunmi.presenter.CloudServiceMangePresenter;
 import com.sunmi.sunmiservice.R;
@@ -167,7 +168,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (NetworkUtils.isNetworkAvailable(context) && !loadFinish) {
-            mPresenter.getSubscriptionList(pageNum, pageSize);
+            mPresenter.getSubscriptionList(pageNum, pageSize, ServiceConstants.CLOUD_STORAGE_CATEGORY);
             return true;
         }
         return false;
@@ -189,6 +190,6 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
         pageNum = 1;
         pageSize = 10;
         loadFinish = false;
-        mPresenter.getSubscriptionList(pageNum, pageSize);
+        mPresenter.getSubscriptionList(pageNum, pageSize, ServiceConstants.CLOUD_STORAGE_CATEGORY);
     }
 }
