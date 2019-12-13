@@ -45,7 +45,6 @@ public class SunmiPrinterClient implements BluetoothAdapter.LeScanCallback {
     //回调
     private IPrinterClient iPrinterClient;
 
-
     private byte[] receivedData;
     private int receivedLen;
     private int retryCount;

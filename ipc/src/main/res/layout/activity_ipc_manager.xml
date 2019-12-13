@@ -45,7 +45,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true" />
 
-                <!--<include layout="@layout/include_video_controller_landscape" />-->
                 <include layout="@layout/include_video_control_panel" />
 
             </RelativeLayout>
