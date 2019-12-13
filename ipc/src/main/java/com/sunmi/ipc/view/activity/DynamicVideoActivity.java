@@ -40,7 +40,6 @@ import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -413,7 +412,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int i) {
-        LogCat.e(TAG, "onBufferingUpdate i=" + i);
         if (iVideoPlayer != null) {
             bufferingUpdate = i;
             int onBufferingProgress;
@@ -451,7 +449,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-        LogCat.e(TAG, "onError");
         timeoutStop();
         shortTip(R.string.str_server_exception);
         errorView();
@@ -464,7 +461,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public void onPrepared(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "onPrepared");
         if (iVideoPlayer != null) {
             isShowBottomView();
             timeoutStop();

@@ -59,7 +59,6 @@ import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.InputDialog;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -642,7 +641,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             isGestureOperatePlay = false;
             setViewVideoTag();
             currentPlayPosition = playIndex;
-            LogCat.e(TAG, "11111 11playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
             ivpCash.release();
             sbBar.setProgress(0);
             new Handler().postDelayed(() -> {
@@ -803,7 +801,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "1111 onCompletion");
         if (ivpCash != null) {
             isPaused = true;
             ibPlay.setBackgroundResource(R.mipmap.play_normal);
@@ -822,7 +819,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-        LogCat.e(TAG, "1111 onError" + i + ", " + i1);
         showPlayFail(getStringById(R.string.network_error));
         return true;
     }
@@ -834,7 +830,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onPrepared(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "1111 onPrepared");
         startCashPreparedPlay();
     }
 
@@ -968,7 +963,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (id == CommonNotifications.cashVideoPlayPosition) {
             playIndex = (int) args[0];
             isGestureOperatePlay = true;
-            LogCat.e(TAG, "1111 didReceivedNotification playIndex=" + playIndex);
             initCashVideoPlay();
         }
     }
