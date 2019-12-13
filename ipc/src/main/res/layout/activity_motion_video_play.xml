@@ -142,24 +142,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_date_tip" />
 
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:indeterminate="false"
-        android:indeterminateDrawable="@drawable/loading_common_white"
+    <LinearLayout
+        android:id="@+id/layout_loading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black_60"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/player_mask"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/player_mask"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="@+id/player_mask">
+
+        <ProgressBar
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:indeterminate="false"
+            android:indeterminateDrawable="@drawable/loading_common_white" />
+
+    </LinearLayout>
 
     <include
         android:id="@+id/layout_video_error"
         layout="@layout/include_video_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/player_mask"
         app:layout_constraintEnd_toEndOf="parent"

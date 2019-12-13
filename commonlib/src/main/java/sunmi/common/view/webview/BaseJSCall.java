@@ -37,13 +37,12 @@ public class BaseJSCall {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        context.runOnUiThread(() -> context.onBackPressed());
-
+        context.finish();
     }
 
     @JavascriptInterface
     public void lastPageBack() {
-        context.runOnUiThread(() -> context.onBackPressed());
+        context.finish();
     }
 
     @JavascriptInterface

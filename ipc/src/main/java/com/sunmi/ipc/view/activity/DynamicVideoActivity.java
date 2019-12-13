@@ -40,7 +40,6 @@ import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import wseemann.media.FFmpegMediaMetadataRetriever;
 
@@ -305,7 +304,7 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Click(resName = "ib_play")
     void onPlayClick() {
-        if (iVideoPlayer == null || sbBar.getProgress() >= iVideoPlayer.getDuration()) {
+        if (iVideoPlayer == null) {
             return;
         }
         ibPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
@@ -313,7 +312,17 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (isPaused) {
             iVideoPlayer.pauseVideo();
         } else {
-            iVideoPlayer.startVideo();
+            if (sbBar.getProgress() == sbBar.getMax()) {
+                //循环播放
+                iVideoPlayer.seekTo(0);
+                if (!iVideoPlayer.isPlaying()) {
+                    iVideoPlayer.startVideo();
+                }
+                isDragging = false;
+                mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
+            } else {
+                iVideoPlayer.startVideo();
+            }
         }
     }
 
@@ -403,7 +412,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int i) {
-        LogCat.e(TAG, "onBufferingUpdate i=" + i);
         if (iVideoPlayer != null) {
             bufferingUpdate = i;
             int onBufferingProgress;
@@ -441,7 +449,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-        LogCat.e(TAG, "onError");
         timeoutStop();
         shortTip(R.string.str_server_exception);
         errorView();
@@ -454,7 +461,6 @@ public class DynamicVideoActivity extends BaseActivity implements
      **/
     @Override
     public void onPrepared(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "onPrepared");
         if (iVideoPlayer != null) {
             isShowBottomView();
             timeoutStop();

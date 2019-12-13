@@ -69,7 +69,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @Extra
     ArrayList<String> snList;
     private boolean hasSendDeviceInfo = false;
-    private boolean beginLoading = false;
     private CountDownTimer countDownTimer;
 
     /**
@@ -142,6 +141,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         webSettings.setGeolocationEnabled(true);//启用地理定位
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         // 可以运行JavaScript
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
@@ -261,13 +261,20 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         });
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        hasSendDeviceInfo = false;
+        webView.reload();
+        startTimer();
+        super.onNewIntent(intent);
+    }
+
     @Click(resName = "btn_refresh")
     void refreshClick() {
         networkError.setVisibility(View.GONE);
         titleBar.setVisibility(View.GONE);
         webView.setVisibility(View.VISIBLE);
-        initWebView();
-        webView.loadUrl(mUrl + Utils.getWebViewStatusBarHeight(context));
+        webView.reload();
         startTimer();
     }
 
@@ -277,6 +284,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         webView.setVisibility(View.GONE);
         networkError.setVisibility(View.VISIBLE);
         titleBar.setVisibility(View.VISIBLE);
+        hasSendDeviceInfo = false;
         hideLoadingDialog();
     }
 
@@ -302,11 +310,12 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     public void onBackPressed() {
-        if (webView == null) {
-            return;
-        }
-        if (webView.canGoBack()) {
-            webView.goBack();
+        if (webView.isShown()) {
+            webView.evaluateJavascript("javascript:emitPageBack()", new ValueCallback<String>() {
+                @Override
+                public void onReceiveValue(String value) {
+                }
+            });
             return;
         }
         webView.clearCache(true);

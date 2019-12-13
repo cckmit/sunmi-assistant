@@ -184,6 +184,7 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
                     .setOkButton(R.string.str_confirm, (dialog, which) -> {
                         if (calendarSelected != null) {
                             dmFilterDateTitle.setText(DateTimeUtils.formatDateTime(calendarSelected.getTime()));
+                            dmFilterDateTitle.setSelected(!DateTimeUtils.isToday(calendarSelected));
                             mPresenter.load(calendarSelected);
                         }
                     }).create();

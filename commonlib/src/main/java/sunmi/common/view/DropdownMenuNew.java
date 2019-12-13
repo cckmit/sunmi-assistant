@@ -116,11 +116,9 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
 
         // 列表最大高度所展示的列表元素个数 / 列表最大高度限定，元素个数优先级高
-        float count = a.getFloat(R.styleable.DropdownMenuNew_dm_maxHeightCount, -1);
+        float count = a.getFloat(R.styleable.DropdownMenuNew_dm_maxHeightCount, 6.5f);
         float height = a.getDimension(R.styleable.DropdownMenuNew_dm_maxHeight, -1);
-        if (count > 0 || height > 0) {
-            manager = new FixedLayoutManager(context, count, height);
-        }
+        manager = new FixedLayoutManager(context, count, height);
 
         // 点击选择后是否自动dismiss菜单
         isAutoDismiss = a.getBoolean(R.styleable.DropdownMenuNew_dm_autoDismiss, isAutoDismiss);
@@ -570,11 +568,11 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             this.itemRes = itemRes;
         }
 
-        public void setMenu(DropdownMenuNew menu) {
+        private void setMenu(DropdownMenuNew menu) {
             this.dropdownMenu = menu;
         }
 
-        public void setContent(View content) {
+        private void setContent(View content) {
             this.content = new ViewHolder<>(content);
         }
 
@@ -657,7 +655,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             listener = l;
         }
 
-        public ViewHolder getTitle() {
+        public ViewHolder<T> getTitle() {
             return title;
         }
 

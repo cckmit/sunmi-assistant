@@ -64,7 +64,7 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_ID = "2882303761518131146";
         MI_PUSH_APP_KEY = "5611813137146";
 
-        SERVICE_H5_URL = "https://wifi.cdn.sunmi.com/H5/CloudStorage/index.html#/";
+        SERVICE_H5_URL = "https://wifi.cdn.sunmi.com/H5/Sunmi-Assistant/index.html#/";
     }
 
     @Override
