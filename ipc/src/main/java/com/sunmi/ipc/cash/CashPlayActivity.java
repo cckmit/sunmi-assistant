@@ -59,7 +59,6 @@ import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.InputDialog;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -190,10 +189,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     private boolean isGestureOperatePlay;
     /**
-     * 是否播放error
-     */
-    private boolean isPlayError;
-    /**
      * 播放视频的index ,当前播放的position
      */
     private int playIndex, currentPlayPosition;
@@ -235,7 +230,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         initScreenWidthHeight();
         initInfo();
         showLoading();
-        LogCat.e(TAG, "11111 isWholeDayVideoPlay=" + isWholeDayVideoPlay + " size=" + videoList.size());
         if (isWholeDayVideoPlay) {
             //初始化一天快放
             hasMore = true;
@@ -322,7 +316,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             popupWindow.dismiss();
             return;
         }
-        LogCat.e(TAG, "11111 22isWholeDayVideoPlay=" + isWholeDayVideoPlay + " size=" + videoList.size());
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_big_gray), null);
         popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, currentPlayPosition,
@@ -537,7 +530,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (pBarLoading.isShown()) {
             return;
         }
-        LogCat.e(TAG, "1111 screenshot isPlayLoop=" + isPlayLoop);
         checkRequestPermissions();
     }
 
@@ -628,7 +620,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * 初始化播放
      */
     private void initCashVideoPlay() {
-        isPlayError = false;
         if (!NetworkUtils.isNetworkAvailable(context)) {
             showPlayFail(getStringById(R.string.network_error));
             return;
@@ -650,7 +641,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             isGestureOperatePlay = false;
             setViewVideoTag();
             currentPlayPosition = playIndex;
-            LogCat.e(TAG, "11111 11playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
             ivpCash.release();
             sbBar.setProgress(0);
             new Handler().postDelayed(() -> {
@@ -689,9 +679,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @UiThread
     public void showLoading() {
         startCountDownTimer();
-        if (!pBarLoading.isShown()) {
-            pBarLoading.setVisibility(View.VISIBLE);
-        }
+        pBarLoading.setVisibility(View.VISIBLE);
         llPlayFail.setVisibility(View.GONE);
         rlOrderInfo.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE);
@@ -813,10 +801,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "1111 onCompletion");
-        if (isPlayError) {
-            return;
-        }
         if (ivpCash != null) {
             isPaused = true;
             ibPlay.setBackgroundResource(R.mipmap.play_normal);
@@ -831,13 +815,12 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     /**
      * 失败
+     * return true不执行onCompletion  false执行onCompletion
      */
     @Override
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-        LogCat.e(TAG, "1111 onError" + i + ", " + i1);
-        isPlayError = true;
         showPlayFail(getStringById(R.string.network_error));
-        return false;
+        return true;
     }
 
     /**
@@ -847,7 +830,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onPrepared(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "1111 onPrepared");
         startCashPreparedPlay();
     }
 
@@ -981,7 +963,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (id == CommonNotifications.cashVideoPlayPosition) {
             playIndex = (int) args[0];
             isGestureOperatePlay = true;
-            LogCat.e(TAG, "1111 didReceivedNotification playIndex=" + playIndex);
             initCashVideoPlay();
         }
     }
