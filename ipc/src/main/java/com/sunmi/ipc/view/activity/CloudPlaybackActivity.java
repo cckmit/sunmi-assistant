@@ -381,7 +381,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void openServiceClick() {
         ArrayList<String> snList = new ArrayList<>();
         snList.add(device.getDeviceid());
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL+"cloudStorage?topPadding=", snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
     }
 
     @Click(resName = "rl_top")
@@ -524,8 +524,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageOpened};
+    public int[] getStickNotificationId() {
+        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange};
     }
 
     @Override
@@ -539,7 +539,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
                     titleBar.setAppTitle(device.getName());
                 }
             }
-        } else if (id == CommonNotifications.cloudStorageOpened) {
+        } else if (id == CommonNotifications.cloudStorageChange) {
             cloudStorageServiceOpened();
         }
     }

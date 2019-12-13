@@ -38,7 +38,6 @@ public class RouterConfig {
         public static final String NAME = "sunmiservice";
         public static final String WEB_VIEW_CLOUD = "webViewCloud";
         public static final String SERVICE_DETAIL = "serviceDetail";
-        public static final String WEB_VIEW_CASH = "webViewCash";
     }
 
 }

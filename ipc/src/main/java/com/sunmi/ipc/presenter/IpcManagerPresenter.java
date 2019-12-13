@@ -17,10 +17,8 @@ import java.util.List;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.ServiceListResp;
-import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 
@@ -206,7 +204,6 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                 item.setRightText(context.getString(R.string.str_use_free));
                 item.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
             } else if (data.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageOpened);
                 item.setTitle(data.getServiceName());
                 item.setSummary(context.getString(R.string.str_remaining_validity_period,
                         DateTimeUtils.secondToPeriod(data.getValidTime())));

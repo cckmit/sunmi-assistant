@@ -53,6 +53,7 @@ import java.util.TimeZone;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.CashVideoServiceBean;
@@ -144,6 +145,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private int qualityType = 0;//0-超清，1-高清
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
+    private boolean isPlayFailShown;
 
     private Handler handler = new Handler();
     private VolumeHelper volumeHelper = null;
@@ -157,7 +159,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private IpcManageBean cloudStorageItem;
     private IpcManageBean cashVideoItem;
     private boolean cashVideoSubscribed = false;
-    ArrayList<CashVideoServiceBean> serviceBeans = new ArrayList<>();
+    private ArrayList<CashVideoServiceBean> serviceBeans = new ArrayList<>();
 
     P2pService p2pService;
     boolean isBind;
@@ -407,7 +409,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //点击屏幕
     @Click(resName = "rl_video")
     void screenClick() {
-        if (llPlayFail != null && llPlayFail.isShown()) {
+        if (isPlayFailShown) {
             return;
         }
         if (isControlPanelShow) {
@@ -517,7 +519,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
+    public int[] getStickNotificationId() {
         return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange,
                 CommonNotifications.cashVideoSubscribe};
     }
@@ -544,7 +546,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (p2pService == null) {
             return;
         }
-        if (llPlayFail != null && llPlayFail.isShown()) {
+        if (isPlayFailShown) {
             hideVideoLoading();
             return;
         }
@@ -573,6 +575,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @UiThread
     public void showPlayFail(int type) {
+        isPlayFailShown = true;
         if (PLAY_FAIL_OFFLINE == type) {
             btnRetry.setVisibility(View.GONE);
             tvPlayFail.setText(R.string.tip_ipc_offline);
@@ -581,11 +584,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             tvPlayFail.setText(R.string.tip_network_fail_retry);
         }
         llPlayFail.setVisibility(View.VISIBLE);
-        setTvLivingVisibility(View.VISIBLE);
+        setTvLivingVisibility(View.GONE);
     }
 
     @UiThread
     public void hidePlayFail() {
+        isPlayFailShown = false;
         llPlayFail.setVisibility(View.GONE);
     }
 
@@ -695,6 +699,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void setPanelVisible(int visible) {
+        if (isPlayFailShown) {
+            return;
+        }
         if (rlTopBar != null && rlBottomBar != null) {
             rlTopBar.setVisibility(isPortrait() ? View.GONE : visible);
             rlBottomBar.setVisibility(visible);
@@ -796,7 +803,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 ArrayList<String> snList = new ArrayList<>();
                                 snList.add(device.getDeviceid());
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=", snList);
+                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
@@ -807,7 +814,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 shortTip(R.string.cash_video_other_device_already_subscribe_tip);
                             } else {//去开通
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCash(context, CommonConfig.SERVICE_H5_URL + "cashvideo/welcome?topPadding=");
+                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_DETECT:

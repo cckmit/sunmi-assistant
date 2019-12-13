@@ -341,7 +341,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         if (isServiceUnopened()) {
             ArrayList<String> snList = new ArrayList<>();
             snList.add(device.getDeviceid());
-            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL+"cloudStorage?topPadding=", snList);
+            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL+CommonConstants.H5_CLOUD_STORAGE, snList);
         } else {
             CloudPlaybackActivity_.intent(context).device(device)
                     .cloudStorageServiceStatus(cloudStorageServiceStatus)
@@ -570,8 +570,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     @Override
-    public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageOpened,
+    public int[] getStickNotificationId() {
+        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange,
                 OpcodeConstants.getSdStatus};
     }
 
@@ -586,7 +586,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
                     titleBar.setAppTitle(device.getName());
                 }
             }
-        } else if (id == CommonNotifications.cloudStorageOpened) {
+        } else if (id == CommonNotifications.cloudStorageChange) {
             cloudStorageServiceOpened();
         } else if (id == OpcodeConstants.getSdStatus) {
             if (hasGetSdcardStatus) return;

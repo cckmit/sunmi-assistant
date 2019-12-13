@@ -16,11 +16,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -59,7 +61,6 @@ import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.InputDialog;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -95,6 +96,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     private static final int CASH_TAG_NORMAL = 1;
     private static final int CASH_TAG_EXCEPTION = 2;
+    private static final int CASH_TAG_MAX_LENGTH = 36;
     /**
      * 读写权限
      */
@@ -190,10 +192,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     private boolean isGestureOperatePlay;
     /**
-     * 是否播放error
-     */
-    private boolean isPlayError;
-    /**
      * 播放视频的index ,当前播放的position
      */
     private int playIndex, currentPlayPosition;
@@ -235,7 +233,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         initScreenWidthHeight();
         initInfo();
         showLoading();
-        LogCat.e(TAG, "11111 isWholeDayVideoPlay=" + isWholeDayVideoPlay + " size=" + videoList.size());
         if (isWholeDayVideoPlay) {
             //初始化一天快放
             hasMore = true;
@@ -322,7 +319,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             popupWindow.dismiss();
             return;
         }
-        LogCat.e(TAG, "11111 22isWholeDayVideoPlay=" + isWholeDayVideoPlay + " size=" + videoList.size());
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_big_gray), null);
         popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, currentPlayPosition,
@@ -537,7 +533,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (pBarLoading.isShown()) {
             return;
         }
-        LogCat.e(TAG, "1111 screenshot isPlayLoop=" + isPlayLoop);
         checkRequestPermissions();
     }
 
@@ -606,29 +601,45 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         InputDialog inputDialog = new InputDialog.Builder(this)
                 .setTitle(R.string.cash_input_title_tag_type)
                 .setHint(R.string.cash_input_title_tag_tip)
-                .setCancelButton(R.string.sm_cancel, (dialog, which) -> pausedVideo(false))
+                .setInputWatcher(new InputDialog.TextChangeListener() {
+                    @Override
+                    public void onTextChange(EditText view, Editable s) {
+                        if (TextUtils.isEmpty(s.toString())) {
+                            return;
+                        }
+                        String name = s.toString().trim();
+                        if (name.length() > CASH_TAG_MAX_LENGTH) {
+                            shortTip(R.string.ipc_cash_tag_length_tip);
+                            do {
+                                name = name.substring(0, name.length() - 1);
+                            }
+                            while (name.length() > CASH_TAG_MAX_LENGTH);
+                            view.setText(name);
+                            view.setSelection(name.length());
+                        }
+                    }
+                })
+                .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
                     if (TextUtils.isEmpty(input)) {
                         shortTip(R.string.cash_input_title_tag_type);
                         return;
                     }
-                    if (input.length() > 30) {
-                        shortTip(R.string.ipc_face_name_length_tip);
+                    if (input.length() > CASH_TAG_MAX_LENGTH) {
+                        shortTip(R.string.ipc_cash_tag_length_tip);
                         return;
                     }
-                    pausedVideo(false);
                     dialog.dismiss();
                     requestAddTag(input);
                 }).create();
-        inputDialog.setCancelable(false);
         inputDialog.showWithOutTouchable(false);
+        inputDialog.setOnDismissListener(dialog -> pausedVideo(false));
     }
 
     /**
      * 初始化播放
      */
     private void initCashVideoPlay() {
-        isPlayError = false;
         if (!NetworkUtils.isNetworkAvailable(context)) {
             showPlayFail(getStringById(R.string.network_error));
             return;
@@ -650,7 +661,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             isGestureOperatePlay = false;
             setViewVideoTag();
             currentPlayPosition = playIndex;
-            LogCat.e(TAG, "11111 11playIndex=" + playIndex + ", currentPlayPosition=" + currentPlayPosition);
             ivpCash.release();
             sbBar.setProgress(0);
             new Handler().postDelayed(() -> {
@@ -689,9 +699,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @UiThread
     public void showLoading() {
         startCountDownTimer();
-        if (!pBarLoading.isShown()) {
-            pBarLoading.setVisibility(View.VISIBLE);
-        }
+        pBarLoading.setVisibility(View.VISIBLE);
         llPlayFail.setVisibility(View.GONE);
         rlOrderInfo.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE);
@@ -813,10 +821,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onCompletion(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "1111 onCompletion");
-        if (isPlayError) {
-            return;
-        }
         if (ivpCash != null) {
             isPaused = true;
             ibPlay.setBackgroundResource(R.mipmap.play_normal);
@@ -831,13 +835,12 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     /**
      * 失败
+     * return true不执行onCompletion  false执行onCompletion
      */
     @Override
     public boolean onError(IMediaPlayer iMediaPlayer, int i, int i1) {
-        LogCat.e(TAG, "1111 onError" + i + ", " + i1);
-        isPlayError = true;
         showPlayFail(getStringById(R.string.network_error));
-        return false;
+        return true;
     }
 
     /**
@@ -847,7 +850,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onPrepared(IMediaPlayer iMediaPlayer) {
-        LogCat.e(TAG, "1111 onPrepared");
         startCashPreparedPlay();
     }
 
@@ -981,7 +983,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (id == CommonNotifications.cashVideoPlayPosition) {
             playIndex = (int) args[0];
             isGestureOperatePlay = true;
-            LogCat.e(TAG, "1111 didReceivedNotification playIndex=" + playIndex);
             initCashVideoPlay();
         }
     }

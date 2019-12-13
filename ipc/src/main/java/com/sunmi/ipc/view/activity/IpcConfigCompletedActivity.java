@@ -146,7 +146,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 finish();
             } else {
                 if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
-                    Router.withApi(SunmiServiceApi.class).goToWebViewCash(context, CommonConfig.SERVICE_H5_URL + "cashvideo/welcome?topPadding=");
+                    Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
                 } else {
                     Router.withApi(AppApi.class).goToMain(context);
                 }
@@ -157,7 +157,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     @Click(resName = "btn_finish")
     void finishClick() {
         if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
-            Router.withApi(SunmiServiceApi.class).goToWebViewCash(context, CommonConfig.SERVICE_H5_URL + "cashvideo/welcome?topPadding=");
+            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
         } else {
             Router.withApi(AppApi.class).goToMain(context, this::finish);
         }
@@ -175,7 +175,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=", snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
     }
 
     @Override

@@ -44,12 +44,8 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".cloud.WebViewCloudServiceActivity_"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity
-            android:name=".cloud.WebViewCashServiceActivity_"
-            android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
     </application>
 
