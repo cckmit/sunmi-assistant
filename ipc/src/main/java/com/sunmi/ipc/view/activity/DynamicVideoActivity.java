@@ -305,7 +305,7 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Click(resName = "ib_play")
     void onPlayClick() {
-        if (iVideoPlayer == null || sbBar.getProgress() >= iVideoPlayer.getDuration()) {
+        if (iVideoPlayer == null) {
             return;
         }
         ibPlay.setBackgroundResource(isPaused ? R.mipmap.pause_normal : R.mipmap.play_normal);
@@ -313,7 +313,17 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (isPaused) {
             iVideoPlayer.pauseVideo();
         } else {
-            iVideoPlayer.startVideo();
+            if (sbBar.getProgress() == sbBar.getMax()) {
+                //循环播放
+                iVideoPlayer.seekTo(0);
+                if (!iVideoPlayer.isPlaying()) {
+                    iVideoPlayer.startVideo();
+                }
+                isDragging = false;
+                mHandler.sendEmptyMessageDelayed(MESSAGE_SHOW_PROGRESS, DELAY_MILLIS);
+            } else {
+                iVideoPlayer.startVideo();
+            }
         }
     }
 
