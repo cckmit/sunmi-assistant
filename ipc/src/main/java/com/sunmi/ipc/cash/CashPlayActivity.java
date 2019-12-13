@@ -16,11 +16,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -94,6 +96,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     private static final int CASH_TAG_NORMAL = 1;
     private static final int CASH_TAG_EXCEPTION = 2;
+    private static final int CASH_TAG_MAX_LENGTH = 36;
     /**
      * 读写权限
      */
@@ -598,22 +601,39 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         InputDialog inputDialog = new InputDialog.Builder(this)
                 .setTitle(R.string.cash_input_title_tag_type)
                 .setHint(R.string.cash_input_title_tag_tip)
-                .setCancelButton(R.string.sm_cancel, (dialog, which) -> pausedVideo(false))
+                .setInputWatcher(new InputDialog.TextChangeListener() {
+                    @Override
+                    public void onTextChange(EditText view, Editable s) {
+                        if (TextUtils.isEmpty(s.toString())) {
+                            return;
+                        }
+                        String name = s.toString().trim();
+                        if (name.length() > CASH_TAG_MAX_LENGTH) {
+                            shortTip(R.string.ipc_cash_tag_length_tip);
+                            do {
+                                name = name.substring(0, name.length() - 1);
+                            }
+                            while (name.length() > CASH_TAG_MAX_LENGTH);
+                            view.setText(name);
+                            view.setSelection(name.length());
+                        }
+                    }
+                })
+                .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
                     if (TextUtils.isEmpty(input)) {
                         shortTip(R.string.cash_input_title_tag_type);
                         return;
                     }
-                    if (input.length() > 30) {
-                        shortTip(R.string.ipc_face_name_length_tip);
+                    if (input.length() > CASH_TAG_MAX_LENGTH) {
+                        shortTip(R.string.ipc_cash_tag_length_tip);
                         return;
                     }
-                    pausedVideo(false);
                     dialog.dismiss();
                     requestAddTag(input);
                 }).create();
-        inputDialog.setCancelable(false);
         inputDialog.showWithOutTouchable(false);
+        inputDialog.setOnDismissListener(dialog -> pausedVideo(false));
     }
 
     /**
