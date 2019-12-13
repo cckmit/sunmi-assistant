@@ -669,8 +669,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
-    @UiThread
-    void refreshList() {
+    private void refreshList() {
         hideLoadingDialog();
         if (deviceList != null) {
             endRefresh();
