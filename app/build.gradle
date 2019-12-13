@@ -53,7 +53,7 @@ android {
         debug {
             applicationIdSuffix ".dev"
             manifestPlaceholders = [
-                    ENV_VALUE       : "ENV_DEV",
+                    ENV_VALUE       : "ENV_TEST",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手dev",
                     MTA_APPKEY      : "A6INR132MGAI"]

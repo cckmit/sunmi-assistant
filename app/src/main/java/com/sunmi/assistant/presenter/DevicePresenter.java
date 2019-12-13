@@ -59,7 +59,6 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                             DataSupport.deleteAll(AdListBean.class);
                             DataSupport.saveAll(data.getAd_list());
                         } catch (Exception e) {
-                            DataSupport.saveAll(data.getAd_list());
                             e.printStackTrace();
                         }
                     }
