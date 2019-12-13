@@ -66,6 +66,10 @@ android {
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手test",
                     MTA_APPKEY      : "A6INR132MGAI"]
+            zipAlignEnabled true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
         }
 
         uat {
