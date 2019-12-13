@@ -20,7 +20,7 @@ platform :android do
   lane :testEnv do
     gradle(
       task: "clean assemble",
-      build_type: "debug",
+      build_type: "smtest",
 	  flavor: "myapp",
       properties: {
         "android.injected.signing.store.file" => ENV["WORKSPACE"] + "/Keystore.jks",
@@ -33,7 +33,7 @@ platform :android do
   lane :googleTestEnv do
     gradle(
       task: "clean assemble",
-      build_type: "debug",
+      build_type: "smtest",
 	  flavor: "google",
       properties: {
         "android.injected.signing.store.file" => ENV["WORKSPACE"] + "/Keystore.jks",
