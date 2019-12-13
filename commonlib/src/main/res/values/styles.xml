@@ -121,12 +121,12 @@
 
     <!-- 中等按钮样式 透明按钮 常用于视频播放网络异常刷新 -->
     <style name="BtnMediumVideo" parent="@style/Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">@dimen/dp_104</item>
-        <item name="android:layout_height">@dimen/dp_36</item>
+        <item name="android:layout_width">@dimen/dp_72</item>
+        <item name="android:layout_height">@dimen/dp_28</item>
         <item name="android:background">@drawable/btn_common_bg_video</item>
         <item name="android:textColor">@color/text_common_white</item>
         <item name="android:gravity">center</item>
-        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:textSize">@dimen/sp_12</item>
     </style>
 
     <!-- 小按钮样式 橙色边框按钮 -->
