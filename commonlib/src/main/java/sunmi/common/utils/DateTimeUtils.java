@@ -916,6 +916,13 @@ public class DateTimeUtils {
         return res;
     }
 
+    public static boolean isToday(Calendar c) {
+        Calendar today = Calendar.getInstance();
+        return today.get(Calendar.YEAR) == c.get(Calendar.YEAR)
+                && today.get(Calendar.MONTH) == c.get(Calendar.MONTH)
+                && today.get(Calendar.DATE) == c.get(Calendar.DATE);
+    }
+
     public enum DateTimePattern {
         /**
          * yyyy-MM-dd HH:mm:ss

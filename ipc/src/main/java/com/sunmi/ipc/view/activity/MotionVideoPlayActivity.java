@@ -55,8 +55,9 @@ public class MotionVideoPlayActivity extends BaseActivity implements
         SeekBar.OnSeekBarChangeListener {
 
     private static final int CLICK_SHAKE_THRESHOLD = 1000;
-    private static final int PLAY_DELAY = 200;
-    private static final int PLAY_UPDATE_INTERVAL = 10;
+    private static final int PLAY_DELAY = 1500;
+    private static final int PROGRESS_MAX_INTERVAL_COUNT = 500;
+    private static final int PROGRESS_MIN_INTERVAL = 50;
 
     @ViewById(resName = "content")
     ConstraintLayout clContent;
@@ -107,6 +108,7 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     private SparseArray<String> mSourceName = new SparseArray<>(3);
 
     private List<String> urls = new ArrayList<>();
+    private int progressUpdateInterval = PROGRESS_MIN_INTERVAL;
     private boolean isPaused;
     private boolean isComplete;
     private boolean isDragging;
@@ -340,15 +342,19 @@ public class MotionVideoPlayActivity extends BaseActivity implements
 
     @Override
     public void onStartPlay() {
-        hideLoading();
-        player.setVisibility(View.VISIBLE);
-        isPaused = false;
-        isComplete = false;
-        mHandler.post(mTask);
-        long duration = player.getDuration();
-        sbProgress.setMax((int) duration);
-        tvTotalTime.setText(player.generateTime(duration));
-        tvCurrentTime.setText(player.generateTime(0));
+        // 延迟1.5s，优化体验，掩饰开始播放后播放器获取进度错误，导致进度条会有大约2s停在0位置处的错误。
+        mHandler.postDelayed(() -> {
+            hideLoading();
+            player.setVisibility(View.VISIBLE);
+            isPaused = false;
+            isComplete = false;
+            mHandler.post(mTask);
+            long duration = player.getDuration();
+            progressUpdateInterval = Math.max((int) (duration / PROGRESS_MAX_INTERVAL_COUNT), 50);
+            sbProgress.setMax((int) duration);
+            tvTotalTime.setText(player.generateTime(duration));
+            tvCurrentTime.setText(player.generateTime(0));
+        }, PLAY_DELAY);
     }
 
     @Override
@@ -416,7 +422,7 @@ public class MotionVideoPlayActivity extends BaseActivity implements
                 return;
             }
             updateSeekBar((int) player.getCurrentPosition());
-            mHandler.postDelayed(this, PLAY_UPDATE_INTERVAL);
+            mHandler.postDelayed(this, progressUpdateInterval);
         }
     }
 
