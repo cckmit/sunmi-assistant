@@ -20,7 +20,6 @@ import com.alipay.sdk.util.H5PayResultModel;
 import com.sunmi.sunmiservice.H5FaceWebChromeClient;
 import com.sunmi.sunmiservice.JSCall;
 import com.sunmi.sunmiservice.R;
-import com.sunmi.sunmiservice.SsConstants;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
@@ -47,6 +46,7 @@ import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
+import sunmi.common.view.webview.SsConstants;
 
 /**
  * Description:
@@ -69,7 +69,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @Extra
     ArrayList<String> snList;
     private boolean hasSendDeviceInfo = false;
-    private boolean beginLoading = false;
     private CountDownTimer countDownTimer;
 
     /**
@@ -142,6 +141,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         webSettings.setGeolocationEnabled(true);//启用地理定位
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
         // 可以运行JavaScript
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
@@ -226,12 +226,20 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                     closeTimer();
                     try {
                         JSONArray array = new JSONArray(snList);
-                        String params = new JSONObject()
+                        JSONObject userInfo = new JSONObject()
                                 .put("token", SpUtils.getStoreToken())
                                 .put("company_id", SpUtils.getCompanyId())
-                                .put("shop_id", SpUtils.getShopId())
-                                .put("sn_list", array).toString();
-                        webView.evaluateJavascript("javascript:getDeviceInfo('" + params + "')", new ValueCallback<String>() {
+                                .put("shop_id", SpUtils.getShopId());
+                        JSONObject cloudStorage = new JSONObject()
+                                .put("sn_list", array);
+                        JSONObject cashVideo = new JSONObject()
+                                .put("shop_name", SpUtils.getShopName());
+                        String params = new JSONObject()
+                                .put("userInfo", userInfo)
+                                .put("cloudStorage", cloudStorage)
+                                .put("cashVideo", cashVideo)
+                                .toString();
+                        webView.evaluateJavascript("javascript:getDataFromApp('" + params + "')", new ValueCallback<String>() {
                             @Override
                             public void onReceiveValue(String value) {
 
@@ -253,13 +261,20 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         });
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        hasSendDeviceInfo = false;
+        webView.reload();
+        startTimer();
+        super.onNewIntent(intent);
+    }
+
     @Click(resName = "btn_refresh")
     void refreshClick() {
         networkError.setVisibility(View.GONE);
         titleBar.setVisibility(View.GONE);
         webView.setVisibility(View.VISIBLE);
-        initWebView();
-        webView.loadUrl(mUrl + Utils.getWebViewStatusBarHeight(context));
+        webView.reload();
         startTimer();
     }
 
@@ -269,6 +284,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         webView.setVisibility(View.GONE);
         networkError.setVisibility(View.VISIBLE);
         titleBar.setVisibility(View.VISIBLE);
+        hasSendDeviceInfo = false;
         hideLoadingDialog();
     }
 
@@ -295,13 +311,14 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @Override
     public void onBackPressed() {
         if (webView.isShown()) {
-            webView.evaluateJavascript("javascript:nativePageBack()", new ValueCallback<String>() {
+            webView.evaluateJavascript("javascript:emitPageBack()", new ValueCallback<String>() {
                 @Override
                 public void onReceiveValue(String value) {
                 }
             });
             return;
         }
+        webView.clearCache(true);
         super.onBackPressed();
     }
 }

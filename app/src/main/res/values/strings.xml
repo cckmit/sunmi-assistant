@@ -67,9 +67,6 @@
     <string name="dashboard_card_tab_gender">性别</string>
     <string name="dashboard_card_male">男性</string>
     <string name="dashboard_card_female">女性</string>
-    <string name="dashboard_card_male_label">男</string>
-    <string name="dashboard_card_female_label">女</string>
-    <string name="dashboard_card_tab_age">年龄</string>
     <string name="dashboard_card_age_label">岁</string>
     <string name="dashboard_card_pie_hole_ratio">%s占比</string>
     <string name="dashboard_card_customer_none">暂无客流数据</string>

@@ -86,6 +86,20 @@ public class DateTimeUtils {
     }
 
     /**
+     * calendar 转化为指定日期格式
+     *
+     * @param calendar
+     * @param pattern
+     * @return
+     */
+    public static String calendarToDate(Calendar calendar, String pattern) {
+        Date date = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.getDefault());
+        return format.format(date);
+    }
+
+
+    /**
      * 获取当前日期
      *
      * @return 返回当前日期
@@ -738,7 +752,19 @@ public class DateTimeUtils {
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
+    }
+
+    public static Calendar getDayStart(Calendar cal) {
+        if (cal == null) {
+            return null;
+        }
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal;
     }
 
     /**
@@ -809,74 +835,6 @@ public class DateTimeUtils {
         return null;
     }
 
-    /**
-     * 遍历指定年月，以周为循环生成一个6*7的二维数组，空闲位为Null
-     *
-     * @param year  指定年
-     * @param month 指定月
-     * @return Date数组对象
-     */
-    public static Date[][] makeCalendar(int year, int month) {
-        Date[][] dateArray = new Date[6][7];
-        // Object[][]
-        // 指定年月的第一天
-        Date date = DateTimeUtils.getDate(year + "-" + month + "-01");
-        // 次月的第一天
-        Date lastDate = DateTimeUtils.addMonth2Date(1, date);
-        // 第一天是周几
-        int firstDayWeek = DateTimeUtils.getDayOfWeek(date);
-        // 将星期日处理为一周的最后一天
-        if (1 == firstDayWeek) {
-            firstDayWeek = 8;
-        }
-        int row = 0;
-        int col = firstDayWeek - 2;
-        // 遍历一个月，以周为循环生成二维数组
-        while (DateTimeUtils.getDiffDays(date, lastDate) > 0) {
-            if (col > 6) {
-                row = row + 1;
-                col = 0;
-            }
-            dateArray[row][col] = date;
-            date = DateTimeUtils.addDay2Date(1, date);
-            col++;
-        }
-
-        return dateArray;
-    }
-
-    /**
-     * 根据给定的开始、结束日期，以周为循环生成一个n*7列的二维数组，空闲位为Null
-     *
-     * @param startDate 开始日期
-     * @param endDate   结束日期
-     * @return Date[][]
-     */
-    public static Date[][] makeCalendar(Date startDate, Date endDate) {
-        int n = getDiffDays(startDate, endDate) / 7 + 1;
-        Date[][] dateArray = new Date[n][7];
-        // 开始日期是周几
-        int firstDayWeek = DateTimeUtils.getDayOfWeek(startDate);
-
-        // 将星期日处理为一周的最后一天
-        if (1 == firstDayWeek) {
-            firstDayWeek = 8;
-        }
-        int row = 0;
-        int col = firstDayWeek - 2;
-        // 遍历开始日期和结束日期之间的所有日期（包括开始日期和结束日期），以周为循环生成二维数组
-        while (DateTimeUtils.getDiffDays(startDate, endDate) >= 0) {
-            if (col > 6) {
-                row = row + 1;
-                col = 0;
-            }
-            dateArray[row][col] = startDate;
-            startDate = DateTimeUtils.addDay2Date(1, startDate);
-            col++;
-        }
-
-        return dateArray;
-    }
 
     /**
      * 获取指定年份的休息日列表
@@ -889,7 +847,7 @@ public class DateTimeUtils {
         // 次年的第一天
         Date lastDate = DateTimeUtils.addYear2Date(1, date);
         List<Date> weekendList = new ArrayList<Date>();
-        while (DateTimeUtils.getDiffDays(date, lastDate) > 0) {
+        while (getDiffDays(date, lastDate) > 0) {
             int dayOfweek = DateTimeUtils.getChinaDayOfWeek(date);
             if (6 == dayOfweek || 7 == dayOfweek) {
                 // System.out.println(DateTimeUtils.formatDate("yyyy-mMM-dd",
@@ -900,24 +858,6 @@ public class DateTimeUtils {
             date = DateTimeUtils.addDay2Date(1, date);
         }
         return weekendList;
-    }
-
-    /**
-     * 获取指定年份的休息日列表
-     *
-     * @param year 指定年
-     * @return 指定年份的休息日数组
-     */
-    public static List<Date> getDayList(Integer year) {
-        Date date = DateTimeUtils.getDate(year + "-01-01");
-        // 次年的第一天
-        Date lastDate = DateTimeUtils.addYear2Date(1, date);
-        List<Date> dayList = new ArrayList<Date>();
-        while (DateTimeUtils.getDiffDays(date, lastDate) > 0) {
-            dayList.add(date);
-            date = DateTimeUtils.addDay2Date(1, date);
-        }
-        return dayList;
     }
 
     public static String getCurrentDateTimeString() {
@@ -974,6 +914,13 @@ public class DateTimeUtils {
         Date date = new Date(lt);
         res = simpleDateFormat.format(date);
         return res;
+    }
+
+    public static boolean isToday(Calendar c) {
+        Calendar today = Calendar.getInstance();
+        return today.get(Calendar.YEAR) == c.get(Calendar.YEAR)
+                && today.get(Calendar.MONTH) == c.get(Calendar.MONTH)
+                && today.get(Calendar.DATE) == c.get(Calendar.DATE);
     }
 
     public enum DateTimePattern {

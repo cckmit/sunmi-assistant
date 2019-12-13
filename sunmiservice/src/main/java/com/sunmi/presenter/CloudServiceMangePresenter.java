@@ -37,8 +37,8 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
     }
 
     @Override
-    public void getSubscriptionList(int pageNum, int pageSize) {
-        ServiceApi.getInstance().getSubscriptionList(pageNum, pageSize, new RetrofitCallback<SubscriptionListBean>() {
+    public void getSubscriptionList(int pageNum, int pageSize,int category) {
+        ServiceApi.getInstance().getSubscriptionList(pageNum, pageSize, category,new RetrofitCallback<SubscriptionListBean>() {
             @Override
             public void onSuccess(int code, String msg, final SubscriptionListBean data) {
                 final List<ServiceDetailBean> beans = data.getServiceList();
@@ -152,7 +152,7 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());
         device.setName(bean.getDevice_name());
-        device.setIp(bean.getCdn_address());
+        device.setImgPath(bean.getCdn_address());
         device.setUid(bean.getUid());
         device.setShopId(bean.getShop_id());
         device.setId(bean.getId());

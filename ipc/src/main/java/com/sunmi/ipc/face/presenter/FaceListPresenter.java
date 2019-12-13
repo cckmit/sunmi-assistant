@@ -63,10 +63,10 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
                 context.getString(R.string.ipc_face_gender_all));
         allGender.setChecked(true);
         mFilterGenderList.add(allGender);
-        mFilterGenderList.add(new FilterItem(1, context.getString(R.string.ipc_face_gender_male)));
-        mFilterGenderList.add(new FilterItem(2, context.getString(R.string.ipc_face_gender_female)));
+        mFilterGenderList.add(new FilterItem(1, context.getString(R.string.str_gender_male)));
+        mFilterGenderList.add(new FilterItem(2, context.getString(R.string.str_gender_female)));
 
-        FilterItem allAge = new FilterItem(-1, context.getString(R.string.ipc_face_age),
+        FilterItem allAge = new FilterItem(-1, context.getString(R.string.str_common_age),
                 context.getString(R.string.ipc_face_age_all));
         allAge.setChecked(true);
         mFilterAgeList.add(allAge);

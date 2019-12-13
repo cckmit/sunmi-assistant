@@ -49,6 +49,10 @@ public interface DashboardContract {
 
         int getPeriod();
 
+        void startAutoRefresh();
+
+        void stopAutoRefresh();
+
     }
 
 }

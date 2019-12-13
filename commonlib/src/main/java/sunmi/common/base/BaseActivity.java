@@ -128,16 +128,13 @@ public abstract class BaseActivity extends FragmentActivity
      * 常用于空白页面的Loading
      */
     public void showLoadingDialog() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (loadingDialog == null || loadingDialog.isShowing()) {
-                    return;
-                }
-                loadingDialog.setLoadingOrange();
-                loadingDialog.setContent(null);
-                loadingDialog.show();
+        runOnUiThread(() -> {
+            if (loadingDialog == null || loadingDialog.isShowing() || isDestroyed()) {
+                return;
             }
+            loadingDialog.setLoadingOrange();
+            loadingDialog.setContent(null);
+            loadingDialog.show();
         });
     }
 
@@ -148,16 +145,13 @@ public abstract class BaseActivity extends FragmentActivity
      * @param content 说明
      */
     public void showLoadingDialog(final String content) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (loadingDialog == null || loadingDialog.isShowing()) {
-                    return;
-                }
-                loadingDialog.setLoadingOrange();
-                loadingDialog.setContent(content);
-                loadingDialog.show();
+        runOnUiThread(() -> {
+            if (loadingDialog == null || loadingDialog.isShowing() || isDestroyed()) {
+                return;
             }
+            loadingDialog.setLoadingOrange();
+            loadingDialog.setContent(content);
+            loadingDialog.show();
         });
     }
 
@@ -169,16 +163,13 @@ public abstract class BaseActivity extends FragmentActivity
      * @param textColor 文字颜色
      */
     public void showLoadingDialog(final String content, @ColorInt final int textColor) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (loadingDialog == null || loadingDialog.isShowing()) {
-                    return;
-                }
-                loadingDialog.setLoadingOrange();
-                loadingDialog.setContent(content, textColor);
-                loadingDialog.show();
+        runOnUiThread(() -> {
+            if (loadingDialog == null || loadingDialog.isShowing() || isDestroyed()) {
+                return;
             }
+            loadingDialog.setLoadingOrange();
+            loadingDialog.setContent(content, textColor);
+            loadingDialog.show();
         });
     }
 
@@ -187,16 +178,13 @@ public abstract class BaseActivity extends FragmentActivity
      * 常用于已有内容页面的Loading
      */
     public void showDarkLoading() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (loadingDialog == null || loadingDialog.isShowing()) {
-                    return;
-                }
-                loadingDialog.setLoadingDark();
-                loadingDialog.setContent(null);
-                loadingDialog.show();
+        runOnUiThread(() -> {
+            if (loadingDialog == null || loadingDialog.isShowing() || isDestroyed()) {
+                return;
             }
+            loadingDialog.setLoadingDark();
+            loadingDialog.setContent(null);
+            loadingDialog.show();
         });
     }
 
@@ -207,16 +195,13 @@ public abstract class BaseActivity extends FragmentActivity
      * @param content 说明
      */
     public void showDarkLoading(final String content) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (loadingDialog == null || loadingDialog.isShowing()) {
-                    return;
-                }
-                loadingDialog.setLoadingDark();
-                loadingDialog.setContent(content);
-                loadingDialog.show();
+        runOnUiThread(() -> {
+            if (loadingDialog == null || loadingDialog.isShowing() || isDestroyed()) {
+                return;
             }
+            loadingDialog.setLoadingDark();
+            loadingDialog.setContent(content);
+            loadingDialog.show();
         });
     }
 
@@ -228,16 +213,13 @@ public abstract class BaseActivity extends FragmentActivity
      * @param textColor 文字颜色
      */
     public void showDarkLoading(final String content, @ColorInt final int textColor) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (loadingDialog == null || loadingDialog.isShowing()) {
-                    return;
-                }
-                loadingDialog.setLoadingDark();
-                loadingDialog.setContent(content, textColor);
-                loadingDialog.show();
+        runOnUiThread(() -> {
+            if (loadingDialog == null || loadingDialog.isShowing() || isDestroyed()) {
+                return;
             }
+            loadingDialog.setLoadingDark();
+            loadingDialog.setContent(content, textColor);
+            loadingDialog.show();
         });
     }
 
@@ -245,14 +227,11 @@ public abstract class BaseActivity extends FragmentActivity
      * 取消Loading
      */
     public void hideLoadingDialog() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (loadingDialog == null) {
-                    return;
-                }
-                loadingDialog.dismiss();
+        runOnUiThread(() -> {
+            if (loadingDialog == null || isDestroyed()) {
+                return;
             }
+            loadingDialog.dismiss();
         });
     }
 

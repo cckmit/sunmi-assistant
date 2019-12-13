@@ -27,9 +27,11 @@ public interface CloudPlaybackContract {
     }
 
     interface Presenter {
+
         void getTimeSlots(int deviceId, long startTime, long endTime);
 
         void getCloudVideoList(int deviceId, long start, long end);
+
     }
 
 }

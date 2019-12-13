@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_play_fail"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/black_60"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_50"
-    android:visibility="gone"
-    tools:showIn="@layout/activity_ipc_manager">
+    android:paddingBottom="@dimen/dp_42"
+    android:visibility="gone">
 
     <TextView
         android:id="@+id/tv_play_fail"
@@ -22,7 +20,7 @@
         android:textSize="@dimen/sp_12" />
 
     <Button
-        android:id="@+id/tv_retry"
+        android:id="@+id/btn_retry"
         style="@style/BtnMediumVideo"
         android:layout_marginTop="@dimen/dp_16"
         android:text="@string/str_refresh" />

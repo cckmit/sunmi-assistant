@@ -20,13 +20,13 @@ pipeline{
                 export LC_ALL=en_US.UTF-8
                 export LANG=en_US.UTF-8
                 export ANDROID_HOME=/Users/admin/Library/Android/sdk
-                export ANDROID_NDK_HOME=/Users/admin/Library/Android/ndk-bundle/android-ndk-r19c
+                export ANDROID_NDK_HOME=/Users/admin/Library/Android/sdk/ndk-bundle
                 curl http://api.fir.im/apps/latest/5d5e7e16b2eb460fec98ccb6?api_token=8abeee66a3604b68f707d9c2753f7fb4 > info.json
                 mkdir -p build
                 fastlane testEnv
                 ''')
-              archiveArtifacts(artifacts: 'app/build/outputs/apk/**/app-myapp-universal-debug.apk', onlyIfSuccessful: true)
-              stash(includes: 'app/build/outputs/apk/**/app-myapp-universal-debug.apk', name: 'apk')
+              archiveArtifacts(artifacts: 'app/build/outputs/apk/**/app-myapp-universal-smtest.apk', onlyIfSuccessful: true)
+              stash(includes: 'app/build/outputs/apk/**/app-myapp-universal-smtest.apk', name: 'apk')
             }catch(e){
               def stageName = 'build'
               if(currentBuild.currentResult == "FAILURE"){
@@ -54,7 +54,7 @@ pipeline{
               export LC_ALL=en_US.UTF-8
               export LANG=en_US.UTF-8
               fir login 8abeee66a3604b68f707d9c2753f7fb4
-              fir publish app/build/outputs/apk/myapp/debug/app-myapp-universal-*.apk
+              fir publish app/build/outputs/apk/myapp/smtest/app-myapp-universal-*.apk
               ''')
           }catch(e){
             def stageName = 'release'

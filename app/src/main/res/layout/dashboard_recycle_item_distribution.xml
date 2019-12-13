@@ -48,7 +48,7 @@
         android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_24"
         android:gravity="center"
-        android:text="@string/dashboard_card_tab_age"
+        android:text="@string/str_common_age"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"

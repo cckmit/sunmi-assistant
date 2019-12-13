@@ -54,6 +54,8 @@ public class IpcStartConfigActivity extends BaseActivity {
 
     @Extra
     int ipcType;
+    @Extra
+    int source;
 
     private List<CharSequence> list = new ArrayList<>();
     private AnimationDrawable drawable;
@@ -100,7 +102,7 @@ public class IpcStartConfigActivity extends BaseActivity {
             shortTip(R.string.tip_agree_protocol);
             return;
         }
-        IpcChooseInternetActivity_.intent(context).ipcType(ipcType).start();
+        IpcChooseInternetActivity_.intent(context).ipcType(ipcType).source(source).start();
     }
 
     @Click(resName = "tv_indicator_light")

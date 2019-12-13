@@ -34,7 +34,6 @@ import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.rpc.sunmicall.ResponseBean;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.dialog.CommonDialog;
@@ -58,6 +57,8 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     int deviceType;
     @Extra
     ArrayList<SunmiDevice> sunmiDevices;
+    @Extra
+    int source;
 
     Set<String> deviceIds = new HashSet<>();
     private boolean isTimeoutStart;
@@ -103,7 +104,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
                     || retryCount == 20//20次已经尝试完
                     || code == 5501 || code == 5508 || code == 5509 || code == 5510
                     || code == 5511 || code == 5512 || code == 5013 || code == 5514
-                    ) {
+            ) {
                 startCountDown();
                 setDeviceStatus(sn, code);
                 return;
@@ -208,7 +209,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
         BaseNotification.newInstance().postNotificationName(IpcConstants.refreshIpcList);
         if (deviceIds.isEmpty()) {
             IpcConfigCompletedActivity_.intent(context).shopId(shopId)
-                    .deviceType(deviceType).sunmiDevices(sunmiDevices).start();
+                    .deviceType(deviceType).sunmiDevices(sunmiDevices).source(source).start();
             finish();
         }
     }

@@ -16,6 +16,7 @@ import com.sunmi.assistant.mine.setting.SettingActivity_;
 import com.sunmi.assistant.mine.shop.ShopListActivity_;
 import com.sunmi.sunmiservice.SunmiServiceConfig;
 import com.sunmi.sunmiservice.WebViewSunmiMallActivity_;
+import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -25,9 +26,10 @@ import org.androidannotations.annotations.ViewById;
 
 import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
 import sunmi.common.base.BaseMvpFragment;
+import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
@@ -160,8 +162,8 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
      */
     @Click(R.id.sil_order)
     public void orderClick() {
-        WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
-                + "my-order?channel=2&subchannel=4").start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_ORDER_MANAGE)
+                .start();
     }
 
     /**

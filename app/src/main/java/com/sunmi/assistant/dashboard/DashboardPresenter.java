@@ -76,10 +76,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
         load(Constants.FLAG_ALL_MASK, true, true);
-        if (mTask == null) {
-            mTask = new RefreshTask();
-            mHandler.postDelayed(mTask, REFRESH_TIME_PERIOD);
-        }
     }
 
     @Override
@@ -146,6 +142,20 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         } else {
             return Constants.TIME_PERIOD_INIT;
         }
+    }
+
+    @Override
+    public void startAutoRefresh() {
+        if (mTask == null) {
+            mTask = new RefreshTask();
+        }
+        mHandler.removeCallbacks(mTask);
+        mHandler.postDelayed(mTask, REFRESH_TIME_PERIOD);
+    }
+
+    @Override
+    public void stopAutoRefresh() {
+        mHandler.removeCallbacks(mTask);
     }
 
     @Override
@@ -365,7 +375,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 Set<String> newSet = new HashSet<>();
                 if (beans != null && beans.size() > 0) {
                     for (BundleServiceMsg.SubscriptionListBean bean : beans) {
-                        if (bean.getActiveStatus() == CommonConstants.ACTIVE_CLOUD_INACTIVATED) {
+                        if (bean.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED) {
                             newSet.add(bean.getDeviceSn());
                             if (!oldSet.contains(bean.getDeviceSn())) {
                                 mShowFloating = true;
@@ -422,7 +432,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void detachView() {
         super.detachView();
         mContext = null;
-        mHandler.removeCallbacks(mTask);
+        stopAutoRefresh();
         for (int i = 0, size = mPages.size(); i < size; i++) {
             PageContract.PagePresenter page = mPages.valueAt(i);
             page.release();

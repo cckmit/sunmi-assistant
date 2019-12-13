@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/bga_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/c_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_filter">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_cash_video"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+
+    <include
+        android:id="@+id/layout_network_error"
+        layout="@layout/include_network_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_quick" />
+
+    <TextView
+        android:id="@+id/tv_no_cash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableTop="@mipmap/ic_no_cash_video"
+        android:drawablePadding="@dimen/dp_8"
+        android:text="@string/str_no_cash_video"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_filter" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/cl_filter"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:background="@drawable/bg_top_white_radius"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rl_quick">
+
+        <sunmi.common.view.DropdownMenuNew
+            android:id="@+id/dm_device"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/dp_20"
+            app:dm_menuIndex="3"
+            app:dm_menuParent="@+id/content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/dm_time"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <sunmi.common.view.DropdownMenuNew
+            android:id="@+id/dm_time"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:dm_autoDismiss="false"
+            app:dm_layout="@layout/cash_video_dropdown_time"
+            app:dm_list="@+id/rv_list"
+            app:dm_menuIndex="3"
+            app:dm_menuParent="@+id/content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_abnormal"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/dm_device"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_abnormal"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:gravity="center"
+            android:text="@string/abnormal_video"
+            android:textColor="@color/text_common_normal_checkable"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/dm_time"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/dm_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_0_5"
+            android:background="@color/c_divider"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:id="@+id/v1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_dark_top"
+        app:layout_constraintBottom_toBottomOf="@+id/rl_quick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:dividerShow="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_light"
+        app:titleText="@string/cash_video_list"
+        app:titleTextColor="@color/c_white" />
+
+    <RelativeLayout
+        android:id="@+id/rl_quick"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_88"
+        android:background="@color/transparent"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar">
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_18"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_24"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_date"
+            android:text="@string/tip_fast_play"
+            android:textColor="@color/white_60a"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/tv_fast_play"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_36"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_25"
+            android:background="@drawable/btn_edge_white60"
+            android:gravity="center"
+            android:text="@string/str_fast_play"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_14" />
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

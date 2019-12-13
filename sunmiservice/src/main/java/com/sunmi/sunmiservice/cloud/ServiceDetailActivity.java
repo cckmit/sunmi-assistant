@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.bean.ServiceDetailBean;
+import com.sunmi.constans.ServiceConstants;
 import com.sunmi.contract.ServiceDetailContract;
 import com.sunmi.presenter.ServiceDetailPresenter;
 import com.sunmi.sunmiservice.R;
@@ -96,7 +97,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new ServiceDetailPresenter();
         mPresenter.attachView(this);
-        mPresenter.getServiceDetailByDevice(mSn);
+        mPresenter.getServiceDetailByDevice(mSn, ServiceConstants.CLOUD_STORAGE_CATEGORY);
         showLoadingDialog();
     }
 
@@ -120,7 +121,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             tvDeviceSn.setText(sn);
             tvSubScribeTime.setText(DateTimeUtils.secondToDate(bean.getSubscribeTime(), "yyyy-MM-dd HH:mm"));
             tvExpireTime.setText(DateTimeUtils.secondToDate(bean.getExpireTime(), "yyyy-MM-dd HH:mm"));
-            if (bean.getStatus() != CommonConstants.CLOUD_STORAGE_EXPIRED) {
+            if (bean.getStatus() != CommonConstants.SERVICE_EXPIRED) {
                 tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime()));
             } else {
                 tvStatus.setText(R.string.str_expired);
@@ -142,7 +143,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (CommonNotifications.cloudStorageChange == id) {
-            mPresenter.getServiceDetailByDevice(mSn);
+            mPresenter.getServiceDetailByDevice(mSn, ServiceConstants.CLOUD_STORAGE_CATEGORY);
         }
     }
 
@@ -174,12 +175,12 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         } else {
             ArrayList<String> snList = new ArrayList<>();
             snList.add(mSn);
-            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
         }
     }
 
     @Click(resName = "btn_refresh")
     void refreshClick() {
-        mPresenter.getServiceDetailByDevice(mSn);
+        mPresenter.getServiceDetailByDevice(mSn,ServiceConstants.CLOUD_STORAGE_CATEGORY);
     }
 }

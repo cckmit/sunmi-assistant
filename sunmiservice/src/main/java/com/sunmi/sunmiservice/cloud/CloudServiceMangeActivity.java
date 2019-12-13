@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 
 import com.sunmi.adapter.ServiceListAdapter;
 import com.sunmi.bean.ServiceDetailBean;
+import com.sunmi.constans.ServiceConstants;
 import com.sunmi.contract.CloudServiceMangeContract;
 import com.sunmi.presenter.CloudServiceMangePresenter;
 import com.sunmi.sunmiservice.R;
@@ -25,6 +26,7 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.NetworkUtils;
@@ -122,7 +124,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
 
     @Click(resName = "btn_open")
     void onpenClick() {
-        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
     }
 
     private void initServiceList() {
@@ -140,7 +142,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
                         ArrayList<String> snList = new ArrayList<>();
                         snList.add(bean.getDeviceSn());
                         WebViewCloudServiceActivity_.intent(context).snList(snList)
-                                .mUrl(CommonConfig.CLOUD_STORAGE_URL).start();
+                                .mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
                     }
                 }
             });
@@ -166,7 +168,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
     @Override
     public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
         if (NetworkUtils.isNetworkAvailable(context) && !loadFinish) {
-            mPresenter.getSubscriptionList(pageNum, pageSize);
+            mPresenter.getSubscriptionList(pageNum, pageSize, ServiceConstants.CLOUD_STORAGE_CATEGORY);
             return true;
         }
         return false;
@@ -188,6 +190,6 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
         pageNum = 1;
         pageSize = 10;
         loadFinish = false;
-        mPresenter.getSubscriptionList(pageNum, pageSize);
+        mPresenter.getSubscriptionList(pageNum, pageSize, ServiceConstants.CLOUD_STORAGE_CATEGORY);
     }
 }

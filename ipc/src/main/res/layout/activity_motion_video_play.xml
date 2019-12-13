@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_white">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_dark"
+        app:rightText="@string/str_setting"
+        app:titleText="@string/str_motion_detection"
+        app:titleTextColor="@color/text_main" />
+
+    <View
+        android:id="@+id/player_mask"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/c_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar"
+        app:layout_constraintVertical_bias="0" />
+
+    <sunmi.common.utils.IVideoPlayer
+        android:id="@+id/player_video"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar"
+        app:layout_constraintVertical_bias="0" />
+
+    <LinearLayout
+        android:id="@+id/layout_landscape_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_64"
+        android:animateLayoutChanges="true"
+        android:background="@mipmap/bg_video_controller_top"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/dp_64"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:src="@drawable/ic_back_light_shadow" />
+
+    </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_control_panel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:background="@mipmap/ic_cash_bg"
+        app:layout_constraintBottom_toBottomOf="@+id/player_mask"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <include
+            android:id="@+id/icd_bottom_progress"
+            layout="@layout/include_ipc_bottom_progress"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_48"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_volume"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_volume"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:scaleType="center"
+            android:src="@mipmap/ic_volume"
+            app:layout_constraintBottom_toBottomOf="@+id/icd_bottom_progress"
+            app:layout_constraintEnd_toStartOf="@+id/iv_full_screen"
+            app:layout_constraintTop_toTopOf="@+id/icd_bottom_progress" />
+
+        <ImageView
+            android:id="@+id/iv_full_screen"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:scaleType="center"
+            android:src="@mipmap/ic_full_screen_enabled"
+            app:layout_constraintBottom_toBottomOf="@+id/icd_bottom_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/icd_bottom_progress" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tv_screenshot_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_35"
+        android:background="@drawable/setting_bg_tip_text"
+        android:gravity="center"
+        android:padding="@dimen/dp_8"
+        android:text="@string/ipc_save_picture_tip"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/layout_control_panel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tv_date_tip"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_34"
+        android:background="@color/bg_common"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintTop_toBottomOf="@+id/player_mask" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_date_tip" />
+
+    <LinearLayout
+        android:id="@+id/layout_loading"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black_60"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/player_mask"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/player_mask">
+
+        <ProgressBar
+            android:layout_width="@dimen/dp_32"
+            android:layout_height="@dimen/dp_32"
+            android:indeterminate="false"
+            android:indeterminateDrawable="@drawable/loading_common_white" />
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/layout_video_error"
+        layout="@layout/include_video_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/player_mask"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/player_mask"
+        tools:visibility="visible" />
+
+</android.support.constraint.ConstraintLayout>

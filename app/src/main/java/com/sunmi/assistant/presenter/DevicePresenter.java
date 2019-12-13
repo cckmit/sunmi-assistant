@@ -55,8 +55,12 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                             mView.endRefresh();
                             mView.getAdListSuccess(data);
                         }
-                        DataSupport.deleteAll(AdListBean.class);
-                        DataSupport.saveAll(data.getAd_list());
+                        try {
+                            DataSupport.deleteAll(AdListBean.class);
+                            DataSupport.saveAll(data.getAd_list());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     @Override
@@ -359,7 +363,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());
         device.setName(bean.getDevice_name());
-        device.setIp(bean.getCdn_address());
+        device.setImgPath(bean.getCdn_address());
         device.setUid(bean.getUid());
         device.setShopId(bean.getShop_id());
         device.setId(bean.getId());

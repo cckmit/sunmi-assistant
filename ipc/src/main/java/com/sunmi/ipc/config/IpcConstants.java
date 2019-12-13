@@ -16,4 +16,17 @@ public class IpcConstants {
     public static final int IPC_WIRED_NETWORK = 1;
     public static final int IPC_WIRELESS_NETWORK = 2;
 
+    public static final int CASH_VIDEO_ALL = 0;
+    public static final int CASH_VIDEO_NORMAL = 1;
+    public static final int CASH_VIDEO_ABNORMAL = 2;
+
+    public static final int MOTION_DETECTION_SOURCE_ALL = 0;
+    public static final int MOTION_DETECTION_SOURCE_VIDEO = 1;
+    public static final int MOTION_DETECTION_SOURCE_SOUND = 2;
+    public static final int MOTION_DETECTION_SOURCE_BOTH = 3;
+
+    public static final int IPC_MANAGE_TYPE_CLOUD = 1;
+    public static final int IPC_MANAGE_TYPE_CASH = 2;
+    public static final int IPC_MANAGE_TYPE_DETECT = 3;
+
 }

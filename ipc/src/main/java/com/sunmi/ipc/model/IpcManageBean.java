@@ -6,6 +6,7 @@ package com.sunmi.ipc.model;
  */
 public class IpcManageBean {
 
+    private int type;
     private int leftImageResId;
     private String title;
     private String summary;
@@ -14,18 +15,24 @@ public class IpcManageBean {
     private int status;
     private int tagImageResId = -1;
 
-    public IpcManageBean(int leftImageResId, String title, String rightText) {
+    public IpcManageBean(int type, int leftImageResId, String title, String rightText) {
+        this.type = type;
         this.leftImageResId = leftImageResId;
         this.title = title;
         this.rightText = rightText;
     }
 
-    public IpcManageBean(int leftImageResId, String title, String summary, String rightText, boolean isEnabled) {
+    public IpcManageBean(int type, int leftImageResId, String title, String summary, String rightText, boolean isEnabled) {
+        this.type = type;
         this.leftImageResId = leftImageResId;
         this.title = title;
         this.summary = summary;
         this.rightText = rightText;
         this.isEnabled = isEnabled;
+    }
+
+    public int getType() {
+        return type;
     }
 
     public int getLeftImageResId() {

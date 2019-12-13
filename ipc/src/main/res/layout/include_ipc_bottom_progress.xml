@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_48"
+    android:layout_alignParentBottom="true"
+    android:animateLayoutChanges="true"
+    android:gravity="center_vertical">
+
+    <ImageButton
+        android:id="@+id/ib_play"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/dp_20"
+        android:background="@mipmap/pause_normal"
+        tools:ignore="ContentDescription" />
+
+    <SeekBar
+        android:id="@+id/sb_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/dp_6"
+        android:layout_toStartOf="@id/tv_current_play_time"
+        android:layout_toEndOf="@id/ib_play"
+        android:maxHeight="@dimen/dp_3"
+        android:minHeight="@dimen/dp_2"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_8"
+        android:progressDrawable="@drawable/seekbar_white_progress_secondary"
+        android:thumb="@drawable/seekbar_oval_point_white" />
+
+    <TextView
+        android:id="@+id/tv_current_play_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/dp_2"
+        android:layout_toStartOf="@id/tv_count_play_time"
+        android:text="0:00"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_10" />
+
+    <TextView
+        android:id="@+id/tv_count_play_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:text="/0:00"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_10" />
+
+</RelativeLayout>
