@@ -462,6 +462,18 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mPresenter.startAutoRefresh();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mPresenter.stopAutoRefresh();
+    }
+
     private class PageAdapter extends FragmentStatePagerAdapter {
 
         public PageAdapter(FragmentManager fm) {
