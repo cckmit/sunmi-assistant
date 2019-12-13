@@ -39,6 +39,11 @@ android {
                     MI_PERMISSION_NAME: "com.sunmi.assistant.test.permission.MIPUSH_RECEIVE",
                     GAO_MAP_KEY       : "c80ca3ce3b15895e2f018f8f2cd99c84"]
         }
+        smtest {
+            manifestPlaceholders = [
+                    MI_PERMISSION_NAME: "com.sunmi.assistant.test.permission.MIPUSH_RECEIVE",
+                    GAO_MAP_KEY       : "c80ca3ce3b15895e2f018f8f2cd99c84"]
+        }
         uat {
             manifestPlaceholders = [
                     MI_PERMISSION_NAME: "com.sunmi.assistant.permission.MIPUSH_RECEIVE",
