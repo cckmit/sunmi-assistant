@@ -25,8 +25,8 @@ pipeline{
                 mkdir -p build
                 fastlane testEnv
                 ''')
-              archiveArtifacts(artifacts: 'app/build/outputs/apk/**/app-myapp-universal-debug.apk', onlyIfSuccessful: true)
-              stash(includes: 'app/build/outputs/apk/**/app-myapp-universal-debug.apk', name: 'apk')
+              archiveArtifacts(artifacts: 'app/build/outputs/apk/**/app-myapp-universal-smtest.apk', onlyIfSuccessful: true)
+              stash(includes: 'app/build/outputs/apk/**/app-myapp-universal-smtest.apk', name: 'apk')
             }catch(e){
               def stageName = 'build'
               if(currentBuild.currentResult == "FAILURE"){
