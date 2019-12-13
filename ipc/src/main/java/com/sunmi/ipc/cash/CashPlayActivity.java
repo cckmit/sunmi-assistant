@@ -186,7 +186,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     /**
      * 是否自动播放
      */
-    private boolean isPlayLoop = true;
+    private boolean isPlayLoop;
     /**
      * 是否手势操作 1滑动上下一个 , 2点击视频下拉列表播放
      */
