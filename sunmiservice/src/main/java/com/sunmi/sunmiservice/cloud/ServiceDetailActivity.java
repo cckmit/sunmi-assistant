@@ -7,6 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.bean.ServiceDetailBean;
+import com.sunmi.constans.ServiceConstants;
 import com.sunmi.contract.ServiceDetailContract;
 import com.sunmi.presenter.ServiceDetailPresenter;
 import com.sunmi.sunmiservice.R;
@@ -96,7 +97,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new ServiceDetailPresenter();
         mPresenter.attachView(this);
-        mPresenter.getServiceDetailByDevice(mSn);
+        mPresenter.getServiceDetailByDevice(mSn, ServiceConstants.CLOUD_STORAGE_CATEGORY);
         showLoadingDialog();
     }
 
@@ -142,7 +143,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (CommonNotifications.cloudStorageChange == id) {
-            mPresenter.getServiceDetailByDevice(mSn);
+            mPresenter.getServiceDetailByDevice(mSn, ServiceConstants.CLOUD_STORAGE_CATEGORY);
         }
     }
 
@@ -180,6 +181,6 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
 
     @Click(resName = "btn_refresh")
     void refreshClick() {
-        mPresenter.getServiceDetailByDevice(mSn);
+        mPresenter.getServiceDetailByDevice(mSn,ServiceConstants.CLOUD_STORAGE_CATEGORY);
     }
 }

@@ -69,7 +69,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @Extra
     ArrayList<String> snList;
     private boolean hasSendDeviceInfo = false;
-    private boolean beginLoading = false;
     private CountDownTimer countDownTimer;
 
     /**
@@ -261,13 +260,24 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         });
     }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        webView.reload();
+        startTimer();
+        super.onNewIntent(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     @Click(resName = "btn_refresh")
     void refreshClick() {
         networkError.setVisibility(View.GONE);
         titleBar.setVisibility(View.GONE);
         webView.setVisibility(View.VISIBLE);
-        initWebView();
-        webView.loadUrl(mUrl + Utils.getWebViewStatusBarHeight(context));
+        webView.reload();
         startTimer();
     }
 
@@ -277,6 +287,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         webView.setVisibility(View.GONE);
         networkError.setVisibility(View.VISIBLE);
         titleBar.setVisibility(View.VISIBLE);
+        hasSendDeviceInfo = false;
         hideLoadingDialog();
     }
 
