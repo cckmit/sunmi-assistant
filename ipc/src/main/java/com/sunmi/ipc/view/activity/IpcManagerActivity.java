@@ -145,6 +145,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private int qualityType = 0;//0-超清，1-高清
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
+    private boolean isPlayFailShown;
 
     private Handler handler = new Handler();
     private VolumeHelper volumeHelper = null;
@@ -158,7 +159,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private IpcManageBean cloudStorageItem;
     private IpcManageBean cashVideoItem;
     private boolean cashVideoSubscribed = false;
-    ArrayList<CashVideoServiceBean> serviceBeans = new ArrayList<>();
+    private ArrayList<CashVideoServiceBean> serviceBeans = new ArrayList<>();
 
     P2pService p2pService;
     boolean isBind;
@@ -408,7 +409,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //点击屏幕
     @Click(resName = "rl_video")
     void screenClick() {
-        if (llPlayFail != null && llPlayFail.isShown()) {
+        if (isPlayFailShown) {
             return;
         }
         if (isControlPanelShow) {
@@ -545,7 +546,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (p2pService == null) {
             return;
         }
-        if (llPlayFail != null && llPlayFail.isShown()) {
+        if (isPlayFailShown) {
             hideVideoLoading();
             return;
         }
@@ -574,6 +575,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @UiThread
     public void showPlayFail(int type) {
+        isPlayFailShown = true;
         if (PLAY_FAIL_OFFLINE == type) {
             btnRetry.setVisibility(View.GONE);
             tvPlayFail.setText(R.string.tip_ipc_offline);
@@ -582,11 +584,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             tvPlayFail.setText(R.string.tip_network_fail_retry);
         }
         llPlayFail.setVisibility(View.VISIBLE);
-        setTvLivingVisibility(View.VISIBLE);
+        setTvLivingVisibility(View.GONE);
     }
 
     @UiThread
     public void hidePlayFail() {
+        isPlayFailShown = false;
         llPlayFail.setVisibility(View.GONE);
     }
 
@@ -696,6 +699,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void setPanelVisible(int visible) {
+        if (isPlayFailShown) {
+            return;
+        }
         if (rlTopBar != null && rlBottomBar != null) {
             rlTopBar.setVisibility(isPortrait() ? View.GONE : visible);
             rlBottomBar.setVisibility(visible);
