@@ -51,9 +51,7 @@
         app:contentText="@string/str_default_nickname"
         app:showDivider="top"
         app:title="@string/str_nickname"
-        app:type="arrow"
-
-        />
+        app:type="arrow" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_phone"
@@ -61,8 +59,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:showDivider="top"
-        app:title="@string/str_phone"
-        app:type="arrow" />
+        app:title="@string/str_phone" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_email"
@@ -70,7 +67,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:showDivider="top"
-        app:title="@string/str_email_address"
-        app:type="arrow" />
+        app:title="@string/str_email_address" />
 
 </LinearLayout>

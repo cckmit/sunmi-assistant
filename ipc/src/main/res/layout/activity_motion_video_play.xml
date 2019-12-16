@@ -87,7 +87,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_20"
             android:scaleType="center"
-            android:src="@mipmap/ic_volume"
+            android:src="@mipmap/ic_unmute_enable"
             app:layout_constraintBottom_toBottomOf="@+id/icd_bottom_progress"
             app:layout_constraintEnd_toStartOf="@+id/iv_full_screen"
             app:layout_constraintTop_toTopOf="@+id/icd_bottom_progress" />
@@ -98,7 +98,7 @@
             android:layout_height="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_20"
             android:scaleType="center"
-            android:src="@mipmap/ic_full_screen_enabled"
+            android:src="@mipmap/ic_full_screen_enable"
             app:layout_constraintBottom_toBottomOf="@+id/icd_bottom_progress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/icd_bottom_progress" />

@@ -98,6 +98,13 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     private static final int CASH_TAG_EXCEPTION = 2;
     private static final int CASH_TAG_MAX_LENGTH = 36;
     /**
+     * -1点击下拉选择  0 没有手势滑动  1 左滑  2 右滑
+     */
+    private static final int PLAY_TYPE_DROP_SELECT = -1;
+    private static final int PLAY_TYPE_NORMAL = 0;
+    private static final int PLAY_TYPE_LEFT_FLING = 1;
+    private static final int PLAY_TYPE_RIGHT_FLING = 2;
+    /**
      * 读写权限
      */
     private static String[] PERMISSIONS_STORAGE = {
@@ -188,13 +195,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     private boolean isPlayLoop;
     /**
-     * 是否手势操作 1滑动上下一个 , 2点击视频下拉列表播放
+     * 播放视频的index
      */
-    private boolean isGestureOperatePlay;
-    /**
-     * 播放视频的index ,当前播放的position
-     */
-    private int playIndex, currentPlayPosition;
+    private int playIndex;
     /**
      * 点击item页码
      */
@@ -222,6 +225,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             }
         }
     };
+
+    private int playCashVideoStatus;
 
     @AfterViews
     void init() {
@@ -321,7 +326,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_big_gray), null);
-        popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, currentPlayPosition,
+        popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, playIndex,
                 videoList, titleBar.getAppTitle());
     }
 
@@ -541,7 +546,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "iv_volume")
     void volumeClick() {
-        ivVolume.setImageResource(isOpenVolume ? R.mipmap.ic_volume : R.mipmap.ic_muse);
+        ivVolume.setImageResource(isOpenVolume ? R.mipmap.ic_unmute_enable : R.mipmap.ic_mute_enable);
         isOpenVolume = !isOpenVolume;
         if (isOpenVolume) {
             volumeHelper.mute();
@@ -554,11 +559,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (currentVolume100 == 0) {
             isOpenVolume = true;
             volumeHelper.mute();
-            ivVolume.setImageResource(R.mipmap.ic_muse);
+            ivVolume.setImageResource(R.mipmap.ic_mute_enable);
         } else {
             isOpenVolume = false;
             volumeHelper.unMute();
-            ivVolume.setImageResource(R.mipmap.ic_volume);
+            ivVolume.setImageResource(R.mipmap.ic_unmute_enable);
         }
     }
 
@@ -654,13 +659,22 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                 return;
             }
             showLoading();
-            //自动下一段播放
-            if (isPlayLoop && !isGestureOperatePlay) {
+            if (playCashVideoStatus == PLAY_TYPE_NORMAL) {
+                //无手势滑动
+                if (isPlayLoop) {
+                    playIndex++;
+                }
+            } else if (playCashVideoStatus == PLAY_TYPE_LEFT_FLING) {
+                //左滑
+                playIndex--;
+            } else if (playCashVideoStatus == PLAY_TYPE_RIGHT_FLING) {
+                //右滑
                 playIndex++;
             }
-            isGestureOperatePlay = false;
+            //恢复初始化播放状态
+            playCashVideoStatus = PLAY_TYPE_NORMAL;
+
             setViewVideoTag();
-            currentPlayPosition = playIndex;
             ivpCash.release();
             sbBar.setProgress(0);
             new Handler().postDelayed(() -> {
@@ -982,7 +996,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
         if (id == CommonNotifications.cashVideoPlayPosition) {
             playIndex = (int) args[0];
-            isGestureOperatePlay = true;
+            playCashVideoStatus = PLAY_TYPE_DROP_SELECT;
             initCashVideoPlay();
         }
     }
@@ -1034,17 +1048,15 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             }
             if (e1.getX() - e2.getX() > MOVE_SCREEN_POSITION) {
                 if (playIndex > 0) {
-                    isGestureOperatePlay = true;
-                    playIndex--;
+                    playCashVideoStatus = PLAY_TYPE_LEFT_FLING;
                     initCashVideoPlay();
                 } else {
                     shortTip(R.string.cash_left_first_video);
                 }
                 return true;
             } else if (e2.getX() - e1.getX() > MOVE_SCREEN_POSITION) {
+                playCashVideoStatus = PLAY_TYPE_RIGHT_FLING;
                 if (playIndex < videoList.size() - 1) {
-                    isGestureOperatePlay = true;
-                    playIndex++;
                     initCashVideoPlay();
                 } else {
                     loadMoreVideoList();

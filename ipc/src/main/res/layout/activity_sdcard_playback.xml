@@ -183,40 +183,12 @@
             android:layout_marginTop="@dimen/dp_50"
             android:visibility="gone" />
 
-        <LinearLayout
-            android:id="@+id/ll_no_service"
+        <include
+            layout="@layout/include_no_service"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/rl_video"
-            android:layout_alignBottom="@+id/ll_portrait_controller_bar"
-            android:background="@color/black_60"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tv_no_service"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_109"
-                android:drawableTop="@mipmap/ic_video_play_error"
-                android:drawablePadding="@dimen/dp_10"
-                android:text="@string/tip_unopen_cloud_storage_service"
-                android:textColor="@color/text_normal"
-                android:textSize="@dimen/sp_12" />
-
-            <Button
-                android:id="@+id/btn_open_service"
-                style="@style/BtnBigOrange"
-                android:layout_width="@dimen/dp_118"
-                android:layout_height="@dimen/dp_36"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_28"
-                android:text="@string/str_open_cloud_storage"
-                android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_14"
-                android:visibility="gone" />
-        </LinearLayout>
+            android:layout_alignBottom="@+id/ll_portrait_controller_bar" />
     </RelativeLayout>
 
 </LinearLayout>
