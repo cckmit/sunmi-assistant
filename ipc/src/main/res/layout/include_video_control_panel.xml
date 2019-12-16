@@ -122,7 +122,7 @@
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_toStartOf="@+id/tv_quality"
             android:scaleType="center"
-            android:src="@mipmap/ic_volume"
+            android:src="@drawable/ic_unmute"
             app:layout_constraintEnd_toStartOf="@+id/iv_full_screen_live" />
 
         <ImageView
@@ -131,7 +131,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_20"
             android:scaleType="center"
-            android:src="@mipmap/ic_full_screen_enabled"
+            android:src="@mipmap/ic_full_screen_enable"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -163,7 +163,7 @@
             android:layout_width="@dimen/dp_24"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_20"
-            android:src="@mipmap/ic_volume"
+            android:src="@mipmap/ic_unmute_enable"
             app:layout_constraintEnd_toStartOf="@+id/iv_full_screen" />
 
         <ImageView
@@ -172,7 +172,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_20"
             android:scaleType="center"
-            android:src="@mipmap/ic_full_screen_enabled"
+            android:src="@mipmap/ic_full_screen_enable"
             app:layout_constraintEnd_toStartOf="@+id/tv_multi_speed" />
 
         <TextView

@@ -190,6 +190,7 @@
             android:layout_alignTop="@+id/rl_video"
             android:layout_alignBottom="@+id/ll_portrait_controller_bar"
             android:background="@color/black_60"
+            android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -198,7 +199,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_109"
                 android:drawableTop="@mipmap/ic_video_play_error"
                 android:drawablePadding="@dimen/dp_10"
                 android:text="@string/tip_unopen_cloud_storage_service"

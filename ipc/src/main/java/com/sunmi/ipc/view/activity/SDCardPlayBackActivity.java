@@ -105,7 +105,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     @ViewById(resName = "iv_record")
     ImageView ivRecord;//录制
     @ViewById(resName = "iv_mute")
-    ImageView ivVolume;//音量
+    ImageView ivMute;//音量
     @ViewById(resName = "cm_timer")
     Chronometer cmTimer;//录制时间
     @ViewById(resName = "rl_record")
@@ -221,6 +221,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);//保持屏幕常亮
         showDarkLoading();
+        ivMute.setEnabled(false);
+        ivFullScreen.setEnabled(false);
         bindService(new Intent(context, P2pService.class)
                 .putExtra("uid", device.getUid()), conn, BIND_AUTO_CREATE);
         initViews();
@@ -341,7 +343,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         if (isServiceUnopened()) {
             ArrayList<String> snList = new ArrayList<>();
             snList.add(device.getDeviceid());
-            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL+CommonConstants.H5_CLOUD_STORAGE, snList);
+            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
         } else {
             CloudPlaybackActivity_.intent(context).device(device)
                     .cloudStorageServiceStatus(cloudStorageServiceStatus)
@@ -640,9 +642,12 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     public void showPlayFail(int type, @StringRes int tipResId) {
         hideLoading();
         stopPlay();
-        if (PLAY_FAIL_STATUS_OFFLINE == type || PLAY_FAIL_STATUS_NO_SD == type
-                || PLAY_FAIL_STATUS_SD_EXCEPTION == type) {
-            showGotoCloudPlayback(tipResId);
+        if (PLAY_FAIL_STATUS_OFFLINE == type) {
+            showGotoCloudPlayback(isSS1() ? tipResId : R.string.tip_device_offline);
+        } else if (PLAY_FAIL_STATUS_NO_SD == type) {
+            showGotoCloudPlayback(isSS1() ? tipResId : R.string.tip_no_sd_to_cloud_playback_fs);
+        } else if (PLAY_FAIL_STATUS_SD_EXCEPTION == type) {
+            showGotoCloudPlayback(isSS1() ? tipResId : R.string.tip_sd_exception_to_cloud_playback_fs);
         } else {
             btnRetry.setVisibility(PLAY_FAIL_STATUS_NET_EXCEPTION == type ? View.VISIBLE : View.GONE);
             tvPlayFail.setText(tipResId);
@@ -682,6 +687,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     @UiThread
     public void hideLoading() {
+        ivMute.setEnabled(true);
+        ivFullScreen.setEnabled(true);
         hideLoadingDialog();
         hideVideoLoading();
     }
@@ -817,7 +824,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     private void setVolumeViewImage(int currentVolume100) {
-        ivVolume.setImageResource(currentVolume100 == 0 ? R.mipmap.ic_muse : R.mipmap.ic_volume);
+        ivMute.setImageResource(currentVolume100 == 0 ? R.drawable.ic_mute : R.drawable.ic_unmute);
     }
 
     @UiThread

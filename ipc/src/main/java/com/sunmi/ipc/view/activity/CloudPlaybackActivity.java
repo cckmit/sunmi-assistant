@@ -90,7 +90,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @ViewById(resName = "iv_record")
     ImageView ivRecord;//录制
     @ViewById(resName = "iv_mute")
-    ImageView ivVolume;//音量
+    ImageView ivMute;//音量
     @ViewById(resName = "cm_timer")
     Chronometer cmTimer;//录制时间
     @ViewById(resName = "rl_record")
@@ -177,6 +177,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             llNoService.setVisibility(View.VISIBLE);
         } else {
             showDarkLoading();
+            ivMute.setEnabled(false);
+            ivFullScreen.setEnabled(false);
             rlBottomBar.setVisibility(View.VISIBLE);
         }
         ivNextDay.setEnabled(false);
@@ -576,6 +578,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @UiThread
     public void hideLoading() {
+        ivMute.setEnabled(true);
+        ivFullScreen.setEnabled(true);
         hideLoadingDialog();
         hideVideoLoading();
     }
@@ -716,11 +720,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     }
 
     private void setVolumeViewImage(int currentVolume100) {
-        if (currentVolume100 == 0) {
-            ivVolume.setImageResource(R.mipmap.ic_muse);
-        } else {
-            ivVolume.setImageResource(R.mipmap.ic_volume);
-        }
+        ivMute.setImageResource(currentVolume100 == 0 ? R.drawable.ic_mute : R.drawable.ic_unmute);
     }
 
     /**
