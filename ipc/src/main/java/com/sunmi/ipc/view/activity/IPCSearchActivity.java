@@ -89,8 +89,8 @@ public class IPCSearchActivity extends BaseActivity
         if (CommonConstants.TYPE_IPC_FS == deviceType) {
             tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_fs, 0, 0);
         }
-        isApMode = (network == IpcConstants.IPC_WIRELESS_NETWORK);
-        if (network == IpcConstants.IPC_WIRED_NETWORK) {
+        isApMode = (network == IpcConstants.IPC_CONFIG_MODE_AP);
+        if (network == IpcConstants.IPC_CONFIG_MODE_WIRED) {
             tvCheckNetwork.setText(R.string.tip_check_ipc_wired);
         } else {
             tvCheckNetwork.setText(R.string.tip_check_ipc_wireless);
@@ -134,7 +134,6 @@ public class IPCSearchActivity extends BaseActivity
     void refreshClick() {
         ipcList.clear();
         ipcMap.clear();
-        isApMode = false;
         ipcListAdapter.notifyDataSetChanged();
         rlLoading.setVisibility(View.VISIBLE);
         btnRefresh.setVisibility(View.GONE);
@@ -157,9 +156,8 @@ public class IPCSearchActivity extends BaseActivity
             shortTip(R.string.tip_please_select_ipc);
             return;
         }
-        if (isApMode) {
-            showLoadingDialog();
-            getIsWire();
+        if (network == IpcConstants.IPC_CONFIG_MODE_AP) {
+            gotoWifiConfigActivity();
         } else {
             gotoIpcConfigActivity();
         }
