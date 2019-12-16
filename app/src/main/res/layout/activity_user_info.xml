@@ -51,9 +51,7 @@
         app:contentText="@string/str_default_nickname"
         app:showDivider="top"
         app:title="@string/str_nickname"
-        app:type="arrow"
-
-        />
+        app:type="arrow" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_phone"
