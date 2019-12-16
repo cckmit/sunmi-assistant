@@ -6,13 +6,15 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.view.View;
-import android.webkit.DownloadListener;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import com.sunmi.cloudprinter.bean.PrinterJSCall;
+import com.sunmi.cloudprinter.config.PrinterConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -30,7 +32,6 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
-import sunmi.common.view.webview.BaseJSCall;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
 import sunmi.common.view.webview.SsConstants;
@@ -54,16 +55,16 @@ public class PrinterManageActivity extends BaseActivity {
     @Extra
     int channelId;
 
-
     private boolean hasSendInfo = false;
     private CountDownTimer countDownTimer;
-
 
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
-        webView.loadUrl(CommonConfig.SERVICE_H5_URL + "cloudPrinter?topPadding=" + Utils.getWebViewStatusBarHeight(context));
+//        webView.loadUrl(CommonConfig.SERVICE_H5_URL +
+//                "cloudPrinter?topPadding=" + Utils.getWebViewStatusBarHeight(context));
+        webView.loadUrl(PrinterConfig.IOT_H5_URL);
         startTimer();
     }
 
@@ -115,15 +116,12 @@ public class PrinterManageActivity extends BaseActivity {
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
         // 可以运行JavaScript
-        BaseJSCall jsCall = new BaseJSCall(this, webView);
+//        BaseJSCall jsCall = new BaseJSCall(this, webView);
+        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        webView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url, String userAgent, String contentDisposition,
-                                        String mimetype, long contentLength) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-            }
+        webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
         });
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
