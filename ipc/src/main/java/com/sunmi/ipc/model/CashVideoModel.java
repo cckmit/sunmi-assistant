@@ -20,7 +20,8 @@ import sunmi.common.utils.ThreadPool;
  */
 public class CashVideoModel {
 
-    private HashMap<Integer, String> ipcName;
+    @SuppressLint("UseSparseArrays")
+    private HashMap<Integer, String> ipcName = new HashMap<>();
 
     public CashVideoModel() {
         initMap();
@@ -28,11 +29,9 @@ public class CashVideoModel {
 
     private void initMap() {
         ThreadPool.getSingleThreadPool().submit(new Runnable() {
-            @SuppressLint("UseSparseArrays")
             @Override
             public void run() {
                 List<SunmiDevice> devices = DataSupport.where("type=?", "IPC").find(SunmiDevice.class);
-                ipcName = new HashMap<>(devices.size());
                 for (SunmiDevice device : devices) {
                     ipcName.put(device.getId(), device.getName());
                 }
