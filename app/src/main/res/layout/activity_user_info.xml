@@ -61,8 +61,7 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:showDivider="top"
-        app:title="@string/str_phone"
-        app:type="arrow" />
+        app:title="@string/str_phone" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_email"
@@ -70,7 +69,6 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:showDivider="top"
-        app:title="@string/str_email_address"
-        app:type="arrow" />
+        app:title="@string/str_email_address" />
 
 </LinearLayout>
