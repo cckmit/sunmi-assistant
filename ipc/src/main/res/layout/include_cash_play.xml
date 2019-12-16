@@ -30,7 +30,7 @@
         android:layout_marginEnd="@dimen/dp_6"
         android:background="@drawable/bg_round_corner_black_15"
         android:scaleType="center"
-        android:src="@mipmap/ic_volume"
+        android:src="@mipmap/ic_unmute_enable"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/iv_screenshot"
         app:layout_constraintRight_toLeftOf="@id/iv_play_type"

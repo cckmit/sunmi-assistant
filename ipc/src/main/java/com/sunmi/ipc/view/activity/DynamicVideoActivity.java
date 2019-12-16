@@ -333,7 +333,7 @@ public class DynamicVideoActivity extends BaseActivity implements
 
     @Click(resName = "ib_volume")
     void onVolumeClick() {
-        ibVolume.setBackgroundResource(isOpenVolume ? R.mipmap.ic_volume : R.mipmap.ic_muse);
+        ibVolume.setBackgroundResource(isOpenVolume ? R.mipmap.ic_unmute_enable : R.mipmap.ic_mute_enable);
         isOpenVolume = !isOpenVolume;
         if (isOpenVolume) {
             volumeHelper.mute();
@@ -346,11 +346,11 @@ public class DynamicVideoActivity extends BaseActivity implements
         if (currentVolume100 == 0) {
             isOpenVolume = true;
             volumeHelper.mute();
-            ibVolume.setBackgroundResource(R.mipmap.ic_muse);
+            ibVolume.setBackgroundResource(R.mipmap.ic_mute_enable);
         } else {
             isOpenVolume = false;
             volumeHelper.unMute();
-            ibVolume.setBackgroundResource(R.mipmap.ic_volume);
+            ibVolume.setBackgroundResource(R.mipmap.ic_unmute_enable);
         }
     }
 

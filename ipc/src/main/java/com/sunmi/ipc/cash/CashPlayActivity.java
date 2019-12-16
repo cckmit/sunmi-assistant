@@ -541,7 +541,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "iv_volume")
     void volumeClick() {
-        ivVolume.setImageResource(isOpenVolume ? R.mipmap.ic_volume : R.mipmap.ic_muse);
+        ivVolume.setImageResource(isOpenVolume ? R.mipmap.ic_unmute_enable : R.mipmap.ic_mute_enable);
         isOpenVolume = !isOpenVolume;
         if (isOpenVolume) {
             volumeHelper.mute();
@@ -554,11 +554,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (currentVolume100 == 0) {
             isOpenVolume = true;
             volumeHelper.mute();
-            ivVolume.setImageResource(R.mipmap.ic_muse);
+            ivVolume.setImageResource(R.mipmap.ic_mute_enable);
         } else {
             isOpenVolume = false;
             volumeHelper.unMute();
-            ivVolume.setImageResource(R.mipmap.ic_volume);
+            ivVolume.setImageResource(R.mipmap.ic_unmute_enable);
         }
     }
 

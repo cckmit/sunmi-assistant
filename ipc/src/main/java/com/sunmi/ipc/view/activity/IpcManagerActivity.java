@@ -745,7 +745,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void setVolumeViewImage(int currentVolume100) {
-        ivVolume.setImageResource(currentVolume100 == 0 ? R.mipmap.ic_muse : R.mipmap.ic_volume);
+        ivVolume.setImageResource(currentVolume100 == 0 ? R.mipmap.ic_mute_enable : R.mipmap.ic_unmute_enable);
     }
 
     private void removeCallbacks() {
