@@ -30,12 +30,12 @@ public class IpcChooseInternetActivity extends BaseActivity {
 
     @Click(resName = "cv_wired")
     public void wiredClick() {
-        IpcStartConfigNetworkActivity_.intent(context).ipcType(ipcType).network(IpcConstants.IPC_WIRED_NETWORK).source(source).start();
+        IpcStartConfigNetworkActivity_.intent(context).ipcType(ipcType).network(IpcConstants.IPC_CONFIG_MODE_WIRED).source(source).start();
     }
 
     @Click(resName = "cv_wireless")
     public void wirelessClick() {
-        IpcStartConfigNetworkActivity_.intent(context).ipcType(ipcType).network(IpcConstants.IPC_WIRELESS_NETWORK).source(source).start();
+        IpcStartConfigNetworkActivity_.intent(context).ipcType(ipcType).network(IpcConstants.IPC_CONFIG_MODE_AP).source(source).start();
     }
 
 
