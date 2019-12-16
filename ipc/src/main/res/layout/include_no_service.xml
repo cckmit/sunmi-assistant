@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_no_service"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black_60"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_40"
+    android:visibility="gone"
+    tools:showIn="@layout/activity_sdcard_playback">
+
+    <TextView
+        android:id="@+id/tv_no_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:drawableTop="@mipmap/ic_video_play_error"
+        android:drawablePadding="@dimen/dp_10"
+        android:text="@string/tip_unopen_cloud_storage_service"
+        android:textColor="@color/text_normal"
+        android:textSize="@dimen/sp_12" />
+
+    <Button
+        android:id="@+id/btn_open_service"
+        style="@style/BtnSmallOrange"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/str_open_cloud_storage"
+        android:visibility="gone" />
+</LinearLayout>

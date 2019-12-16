@@ -25,6 +25,7 @@
     <string name="str_my_store">我的门店</string>
     <string name="btn_add_store">添加门店</string>
     <string name="str_store_info">门店信息</string>
+    <string name="str_order_management">订单管理</string>
     <string name="str_tab_dashboard">数据</string>
     <string name="str_help_feedback">帮助与反馈</string>
     <string name="str_me">我</string>
