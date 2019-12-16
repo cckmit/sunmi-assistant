@@ -48,7 +48,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginEnd="@dimen/dp_11"
         android:scaleType="center"
-        android:src="@mipmap/ic_full_screen_enabled" />
+        android:src="@mipmap/ic_full_screen_enable" />
 
     <View
         android:layout_width="match_parent"
