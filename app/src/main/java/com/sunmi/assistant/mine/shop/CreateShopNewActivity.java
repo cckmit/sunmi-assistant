@@ -64,7 +64,6 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.FileUtils;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NumberValueFilter;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SoftKeyboardStateHelper;
@@ -321,8 +320,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 Router.withApi(AppApi.class).goToMainClearTask(context);
             } else {
                 setResult(RESULT_OK);
+                finish();
             }
-            finish();
         } else {
             GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
         }

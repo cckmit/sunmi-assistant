@@ -115,7 +115,7 @@
                 android:visibility="gone"
                 app:showDivider="top"
                 app:startImage="@mipmap/ic_my_order"
-                app:title="@string/service_order_info"
+                app:title="@string/str_order_management"
                 app:type="arrow"
                 tools:visibility="visible" />
 

@@ -73,7 +73,7 @@ public class IpcStartLinkedActivity extends BaseActivity {
         if (isFastClick(500)) {
             return;
         }
-        IPCSearchActivity_.intent(context).deviceType(ipcType).network(IpcConstants.IPC_WIRED_NETWORK)
+        IPCSearchActivity_.intent(context).deviceType(ipcType).network(IpcConstants.IPC_CONFIG_MODE_WIRED)
                 .shopId(SpUtils.getShopId() + "").source(source).start();
     }
 

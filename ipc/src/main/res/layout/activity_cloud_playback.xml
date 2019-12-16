@@ -95,7 +95,7 @@
 
         <LinearLayout
             android:id="@+id/ll_calender"
-            android:layout_width="@dimen/dp_228"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_32"
             android:layout_below="@+id/ll_portrait_controller_bar"
             android:layout_centerHorizontal="true"
@@ -117,18 +117,19 @@
 
             <TextView
                 android:id="@+id/tv_calendar"
-                android:layout_width="@dimen/dp_130"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_1"
                 android:layout_marginBottom="@dimen/dp_1"
                 android:background="@drawable/bg_cloud_playback_calendar"
                 android:drawableStart="@drawable/ic_choose_calendar"
-                android:drawablePadding="@dimen/dp_3"
+                android:drawablePadding="@dimen/dp_5"
                 android:gravity="center"
-                android:paddingStart="@dimen/dp_14"
-                android:paddingEnd="@dimen/dp_14"
+                android:paddingStart="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_12"
                 android:textColor="@color/text_common_normal"
-                android:textSize="@dimen/sp_16" />
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
 
             <View
                 android:layout_width="@dimen/dp_1"
@@ -194,41 +195,44 @@
                 android:text="@string/tip_network_fail_retry"
                 android:textColor="@color/text_normal"
                 android:textSize="@dimen/sp_12" />
-
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_no_service"
+        <include
+            layout="@layout/include_no_service"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/rl_video"
-            android:layout_alignBottom="@+id/ll_portrait_controller_bar"
-            android:background="@color/black_60"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_alignBottom="@+id/ll_portrait_controller_bar" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_109"
-                android:drawableTop="@mipmap/ic_video_play_error"
-                android:drawablePadding="@dimen/dp_10"
-                android:text="@string/tip_unopen_cloud_storage_service"
-                android:textColor="@color/text_normal"
-                android:textSize="@dimen/sp_12" />
+        <!--<LinearLayout-->
+        <!--android:id="@+id/ll_no_service"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignTop="@+id/rl_video"-->
+        <!--android:layout_alignBottom="@+id/ll_portrait_controller_bar"-->
+        <!--android:background="@color/black_60"-->
+        <!--android:orientation="vertical"-->
+        <!--android:paddingBottom="@dimen/dp_20"-->
+        <!--android:visibility="gone">-->
 
-            <Button
-                android:id="@+id/btn_open_service"
-                style="@style/BtnBigOrange"
-                android:layout_width="@dimen/dp_118"
-                android:layout_height="@dimen/dp_36"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_28"
-                android:text="@string/str_open_cloud_storage"
-                android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_14" />
-        </LinearLayout>
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginTop="@dimen/dp_109"-->
+        <!--android:drawableTop="@mipmap/ic_video_play_error"-->
+        <!--android:drawablePadding="@dimen/dp_10"-->
+        <!--android:text="@string/tip_unopen_cloud_storage_service"-->
+        <!--android:textColor="@color/text_normal"-->
+        <!--android:textSize="@dimen/sp_12" />-->
 
+        <!--<Button-->
+        <!--android:id="@+id/btn_open_service"-->
+        <!--style="@style/BtnSmallOrange"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginTop="@dimen/dp_16"-->
+        <!--android:text="@string/str_open_cloud_storage" />-->
+        <!--</LinearLayout>-->
     </RelativeLayout>
+
 </LinearLayout>

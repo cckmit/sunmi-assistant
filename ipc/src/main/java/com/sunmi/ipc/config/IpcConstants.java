@@ -13,8 +13,8 @@ public class IpcConstants {
     public static final int ipcRelaunchSuccess = totalEvents++;
 
     public static final int IPC_VERSION_NO_SDCARD_CHECK = 10200;
-    public static final int IPC_WIRED_NETWORK = 1;
-    public static final int IPC_WIRELESS_NETWORK = 2;
+    public static final int IPC_CONFIG_MODE_WIRED = 1;//有线网络配置
+    public static final int IPC_CONFIG_MODE_AP = 2;//ap模式配置
 
     public static final int CASH_VIDEO_ALL = 0;
     public static final int CASH_VIDEO_NORMAL = 1;

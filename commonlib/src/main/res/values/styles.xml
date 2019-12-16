@@ -85,6 +85,19 @@
         <item name="android:textSize">@dimen/sp_16</item>
     </style>
 
+    <!-- 主要按钮样式 橙色小按钮 -->
+    <style name="BtnSmallOrange" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">@dimen/dp_28</item>
+        <item name="android:paddingStart">@dimen/dp_12</item>
+        <item name="android:paddingEnd">@dimen/dp_12</item>
+        <item name="android:minWidth">@dimen/dp_72</item>
+        <item name="android:background">@drawable/btn_common_bg_primary</item>
+        <item name="android:textColor">@color/text_common_white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_12</item>
+    </style>
+
     <!-- 次要按钮样式 白色大按钮 -->
     <style name="BtnBigWhite" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
@@ -121,7 +134,8 @@
 
     <!-- 中等按钮样式 透明按钮 常用于视频播放网络异常刷新 -->
     <style name="BtnMediumVideo" parent="@style/Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">@dimen/dp_72</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:minWidth">@dimen/dp_72</item>
         <item name="android:layout_height">@dimen/dp_28</item>
         <item name="android:background">@drawable/btn_common_bg_video</item>
         <item name="android:textColor">@color/text_common_white</item>

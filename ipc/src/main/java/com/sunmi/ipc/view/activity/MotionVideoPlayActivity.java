@@ -226,7 +226,7 @@ public class MotionVideoPlayActivity extends BaseActivity implements
     }
 
     private void updateVolumeIcon(boolean isMute) {
-        ivVolume.setImageResource(isMute ? R.mipmap.ic_muse : R.mipmap.ic_volume);
+        ivVolume.setImageResource(isMute ? R.mipmap.ic_mute_enable : R.mipmap.ic_unmute_enable);
     }
 
     private void updateSeekBar(int pos) {
