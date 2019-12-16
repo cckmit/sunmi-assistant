@@ -385,6 +385,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public void loadDataFailed() {
         if (mHasInit) {
+            hideLoadingDialog();
             shortTip(R.string.toast_network_error);
         } else {
             showError();
@@ -443,11 +444,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (id == CommonNotifications.netConnected) {
             mPresenter.reload(Constants.FLAG_ALL_MASK);
         } else if (id == CommonNotifications.companySwitch) {
+            mHasInit = false;
             mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
             mPresenter.reload(Constants.FLAG_ALL_MASK);
         } else if (id == CommonNotifications.companyNameChanged) {
             mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
         } else if (id == CommonNotifications.shopSwitched) {
+            mHasInit = false;
             mPresenter.reload(Constants.FLAG_SAAS | Constants.FLAG_FS | Constants.FLAG_CUSTOMER | Constants.FLAG_BUNDLED_LIST);
         } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.importShop
