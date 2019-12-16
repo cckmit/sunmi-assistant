@@ -43,7 +43,7 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        if (network == IpcConstants.IPC_WIRED_NETWORK) {
+        if (network == IpcConstants.IPC_CONFIG_MODE_WIRED) {
             tvContent.setText(R.string.tip_use_wired_network);
             tvConfigTip.setText(R.string.str_config_tip_ipc_2);
             if (ipcType == CommonConstants.TYPE_IPC_FS) {
@@ -67,7 +67,7 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
         if (isFastClick(500)) {
             return;
         }
-        if (network == IpcConstants.IPC_WIRED_NETWORK) {
+        if (network == IpcConstants.IPC_CONFIG_MODE_WIRED) {
             IpcStartLinkedActivity_.intent(context).ipcType(ipcType).source(source).start();
         } else {
             IPCSearchActivity_.intent(context).deviceType(ipcType).network(network).shopId(SpUtils.getShopId() + "").source(source).start();
