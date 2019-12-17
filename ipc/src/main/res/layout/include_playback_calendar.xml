@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_calender"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/dp_32"
+    android:layout_centerHorizontal="true"
+    android:background="@drawable/btn_bg_cloud_playback_date">
+
+    <ImageView
+        android:id="@+id/iv_pre_day"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="match_parent"
+        android:background="@drawable/btn_bg_left_radius"
+        android:scaleType="center"
+        android:src="@drawable/ic_previous_day" />
+
+    <View
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="match_parent"
+        android:background="@color/c_divider" />
+
+    <TextView
+        android:id="@+id/tv_calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_1"
+        android:layout_marginBottom="@dimen/dp_1"
+        android:background="@drawable/bg_cloud_playback_calendar"
+        android:drawableStart="@drawable/ic_choose_calendar"
+        android:drawablePadding="@dimen/dp_5"
+        android:gravity="center"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_12"
+        android:textColor="@color/text_common_normal"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="match_parent"
+        android:background="@color/c_divider" />
+
+    <ImageView
+        android:id="@+id/iv_next_day"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="match_parent"
+        android:background="@drawable/btn_bg_right_radius"
+        android:scaleType="center"
+        android:src="@drawable/ic_next_day" />
+
+</LinearLayout>

@@ -265,15 +265,8 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @Override
     protected void onNewIntent(Intent intent) {
         hasSendDeviceInfo = false;
-        if (!TextUtils.equals(mUrl, intent.getStringExtra("mUrl"))) {
-            mUrl = intent.getStringExtra("mUrl");
-            snList = intent.getStringArrayListExtra("snList");
-            webView.loadUrl(mUrl);
-        } else {
-            webView.reload();
-        }
+        webView.reload();
         startTimer();
-        super.onNewIntent(intent);
     }
 
     @Click(resName = "btn_refresh")

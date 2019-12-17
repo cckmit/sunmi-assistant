@@ -10,6 +10,7 @@ import com.sunmi.assistant.R;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.List;
@@ -45,6 +46,8 @@ public class ImportOrderSelectPlatformActivity extends BaseActivity {
     @ViewById(R.id.btnComplete)
     Button btnComplete;
 
+    @Extra
+    int importOrderType;
     private PlatformInfo.SaasListBean selectPlatformBean;
 
     @AfterViews
@@ -82,6 +85,7 @@ public class ImportOrderSelectPlatformActivity extends BaseActivity {
         }
         ImportOrderPlatformMobileActivity_.intent(this)
                 .selectPlatformBean(selectPlatformBean)
+                .importOrderType(importOrderType)
                 .start();
     }
 
