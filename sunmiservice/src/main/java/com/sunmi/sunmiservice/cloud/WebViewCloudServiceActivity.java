@@ -7,11 +7,11 @@ import android.net.Uri;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
-import android.webkit.DownloadListener;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 
 import com.alipay.sdk.app.H5PayCallback;
@@ -71,6 +71,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     private boolean hasSendDeviceInfo = false;
     private CountDownTimer countDownTimer;
+    private int progress;
 
     /**
      * 路由启动Activity
@@ -146,14 +147,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         // 可以运行JavaScript
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        webView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url, String userAgent, String contentDisposition,
-                                        String mimetype, long contentLength) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-            }
-        });
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null); //启用硬件加速
         webView.setWebChromeClient(new H5FaceWebChromeClient(this, this));
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
@@ -290,6 +284,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     public void onProgressChanged(int progress) {
+        this.progress = progress;
         if (progress < 100) {
             showLoadingDialog();
         } else {
@@ -310,7 +305,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     public void onBackPressed() {
-        if (webView.isShown()) {
+        if (webView.isShown() && progress >= 100) {
             webView.evaluateJavascript("javascript:emitPageBack()", new ValueCallback<String>() {
                 @Override
                 public void onReceiveValue(String value) {
@@ -318,8 +313,13 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
             });
             return;
         }
-        webView.clearCache(true);
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        WebStorage.getInstance().deleteAllData();
     }
 }
 
