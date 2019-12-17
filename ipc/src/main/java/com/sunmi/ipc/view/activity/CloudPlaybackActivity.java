@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -111,6 +112,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     TextView tvPlayFail;
     @ViewById(resName = "ll_no_service")
     LinearLayout llNoService;
+    @ViewById(resName = "btn_open_service")
+    Button btnOpenService;
     @ViewById(resName = "ll_portrait_controller_bar")
     LinearLayout llPortraitBar;
     @ViewById(resName = "iv_pre_day")
@@ -139,7 +142,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @Extra
     long currentTime;//进页面开始播放的时间 in seconds
 
-    long startTimeCurrentDate, endTimeCurrentDate;    //已选日期的开始和结束时间  in seconds
+    long startTimeCurrentDate, endTimeCurrentDate;//已选日期的开始和结束时间  in seconds
     private int screenW; //手机屏幕的宽
     private boolean isPaused;//回放是否暂停
     private boolean isStartRecord;//是否开始录制
@@ -175,6 +178,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             setCalendarEnable(false);
             timeLine.setVisibility(View.GONE);
             llNoService.setVisibility(View.VISIBLE);
+            btnOpenService.setVisibility(View.VISIBLE);
         } else {
             showDarkLoading();
             ivMute.setEnabled(false);
