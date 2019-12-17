@@ -16,6 +16,9 @@ public class CommonConfig extends BaseConfig {
     public static String DES_KEY = "";
     public static boolean SUPPORT_PRINTER = true;//是否支持打印机
 
+    //bugly
+    public static String BUGLY_ID = "";
+
     /**
      * 小米推送appId
      */
@@ -35,6 +38,7 @@ public class CommonConfig extends BaseConfig {
         DES_IV = "12345678";
         DES_KEY = "wywmxxkj";
 
+        BUGLY_ID = "3c7a8a198f";
         MI_PUSH_APP_ID = "2882303761518131246";
         MI_PUSH_APP_KEY = "5601813178246";
 
@@ -48,6 +52,7 @@ public class CommonConfig extends BaseConfig {
         DES_IV = "12345678";
         DES_KEY = "wywmxxkj";
 
+        BUGLY_ID = "a999228f6b";
         MI_PUSH_APP_ID = "2882303761518131246";
         MI_PUSH_APP_KEY = "5601813178246";
 
@@ -61,6 +66,7 @@ public class CommonConfig extends BaseConfig {
         DES_IV = "98765432";
         DES_KEY = "jihexxkj";
 
+        BUGLY_ID = "5329ac0432";
         MI_PUSH_APP_ID = "2882303761518131146";
         MI_PUSH_APP_KEY = "5611813137146";
 
@@ -73,6 +79,8 @@ public class CommonConfig extends BaseConfig {
         CLOUD_TOKEN = "Jihewobox15";
         DES_IV = "98765432";
         DES_KEY = "jihexxkj";
+
+        BUGLY_ID = "5329ac0432";
         MI_PUSH_APP_ID = "2882303761518131146";
         MI_PUSH_APP_KEY = "5611813137146";
 
