@@ -57,6 +57,8 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
     Button btnCheck;
     @Extra
     PlatformInfo.SaasListBean selectPlatformBean;
+    @Extra
+    int importOrderType;
 
     private boolean isTimerFinish;
 
@@ -118,6 +120,7 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
                 .setMessage(getString(R.string.str_dialog_auth_message, selectPlatformBean.getSaas_name()))
                 .setAllowButton((dialog, which) -> ImportOrderSelectShopActivity_.intent(context)
                         .list(target)
+                        .importOrderType(importOrderType)
                         .start())
                 .setCancelButton((dialog, which) -> {
                     stopDownTimer();

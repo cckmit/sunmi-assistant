@@ -180,7 +180,7 @@ public class JSCall extends BaseJSCall {
                     if (TextUtils.equals(url, SsConstants.JS_BIND_SS)) {
                         Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_SS, CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO);
                     } else if (TextUtils.equals(url, SsConstants.JS_BIND_SAAS)) {
-                        Router.withApi(AppApi.class).gotoImportOrderPreview(context);
+                        Router.withApi(AppApi.class).gotoImportOrderPreview(context,CommonConstants.IMPORT_ORDER_FROM_CASH_VIDEO);
                     } else if (TextUtils.equals(url, SsConstants.JS_MALL_ORDER)) {
                         WebViewSunmiMallActivity_.intent(context).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
                                 + "my-order?channel=2&subchannel=4").start();

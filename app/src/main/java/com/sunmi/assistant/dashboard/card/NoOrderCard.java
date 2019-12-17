@@ -13,6 +13,7 @@ import com.sunmi.assistant.importorder.ImportOrderPreviewActivity_;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
@@ -76,7 +77,7 @@ public class NoOrderCard extends BaseRefreshCard<NoOrderCard.Model, Object> {
         this.mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
 
         holder.addOnClickListener(R.id.btn_dashboard_dock, (h, model, position) -> {
-            ImportOrderPreviewActivity_.intent(context).start();
+            ImportOrderPreviewActivity_.intent(context).importOrderType(CommonConstants.IMPORT_ORDER_FROM_COMMON).start();
         });
 
         return holder;

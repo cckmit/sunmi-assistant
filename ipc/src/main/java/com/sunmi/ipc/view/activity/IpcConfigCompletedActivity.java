@@ -146,7 +146,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 finish();
             } else {
                 if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
-                    Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+                    Router.withApi(SunmiServiceApi.class)
+                            .goToWebViewCloudSingle(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
                 } else {
                     Router.withApi(AppApi.class).goToMain(context);
                 }
@@ -157,7 +158,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     @Click(resName = "btn_finish")
     void finishClick() {
         if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
-            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+            Router.withApi(SunmiServiceApi.class)
+                    .goToWebViewCloudSingle(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
         } else {
             Router.withApi(AppApi.class).goToMain(context, this::finish);
         }
