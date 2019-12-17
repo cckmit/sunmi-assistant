@@ -155,23 +155,22 @@ public class PrinterSearchActivity extends BaseActivity
         macSet.clear();
         printerAdapter.notifyDataSetChanged();
         sunmiPrinterClient.startScan();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                stopScan();
-                if (list.size() <= 0) {
-                    tvAddPrinter.setVisibility(View.GONE);
-                    nsvPrinter.setVisibility(View.GONE);
-                    rlNoWifi.setVisibility(View.VISIBLE);
-                } else {
-                    rlLoading.setVisibility(View.GONE);
-                    btnRefresh.setVisibility(View.VISIBLE);
-                }
+        new Handler().postDelayed(() -> {
+            stopScan();
+            if (list.size() <= 0) {
+                tvAddPrinter.setVisibility(View.GONE);
+                nsvPrinter.setVisibility(View.GONE);
+                rlNoWifi.setVisibility(View.VISIBLE);
+            } else {
+                rlLoading.setVisibility(View.GONE);
+                btnRefresh.setVisibility(View.VISIBLE);
             }
         }, DURATION_SCAN);
     }
 
     private void stopScan() {
+        rlLoading.setVisibility(View.GONE);
+        btnRefresh.setVisibility(View.VISIBLE);
         sunmiPrinterClient.stopScan();
     }
 
@@ -190,12 +189,9 @@ public class PrinterSearchActivity extends BaseActivity
 
     @Override
     public void getSnRequestSuccess() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!isSnGot) {
-                    showErrorDialog(R.string.tip_get_printer_info_fail);
-                }
+        new Handler().postDelayed(() -> {
+            if (!isSnGot) {
+                showErrorDialog(R.string.tip_get_printer_info_fail);
             }
         }, 10_000);
     }
