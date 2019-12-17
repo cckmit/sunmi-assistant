@@ -93,7 +93,7 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "ll_cash_video")
     void cashVidoClick() {
-        if (isFastClick(500)) {
+        if (!checkNetwork() || isFastClick(500)) {
             return;
         }
         if (cashVideoServiceBeans.size() > 0) {

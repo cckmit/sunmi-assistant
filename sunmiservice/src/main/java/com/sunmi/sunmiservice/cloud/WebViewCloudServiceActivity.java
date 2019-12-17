@@ -274,12 +274,12 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @UiThread
     protected void loadError() {
-        closeTimer();
         webView.setVisibility(View.GONE);
         networkError.setVisibility(View.VISIBLE);
         titleBar.setVisibility(View.VISIBLE);
         hasSendDeviceInfo = false;
         hideLoadingDialog();
+        closeTimer();
     }
 
     @Override
