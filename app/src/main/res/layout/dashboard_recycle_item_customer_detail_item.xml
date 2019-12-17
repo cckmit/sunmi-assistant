@@ -43,7 +43,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_24"
-        android:background="@drawable/dashboard_bg_card_round_white"
+        android:background="@drawable/bg_solid_white_corner12"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
