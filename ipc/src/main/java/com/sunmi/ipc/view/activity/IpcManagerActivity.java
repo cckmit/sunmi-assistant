@@ -52,7 +52,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
@@ -806,7 +805,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 ArrayList<String> snList = new ArrayList<>();
                                 snList.add(device.getDeviceid());
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
+                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
@@ -817,7 +816,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 shortTip(R.string.cash_video_other_device_already_subscribe_tip);
                             } else {//去开通
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+                                        .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, null);
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_DETECT:

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseFragment;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashVideoServiceBean;
@@ -100,7 +99,7 @@ public class SupportFragment extends BaseFragment
         if (cashVideoServiceBeans.size() > 0) {
             Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false);
         } else {
-            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO).start();
+            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO).start();
         }
     }
 
@@ -109,7 +108,7 @@ public class SupportFragment extends BaseFragment
         if (!checkNetwork() || isFastClick(500)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
     }
 
     @Click(resName = "ll_after_sales")
