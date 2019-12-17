@@ -26,7 +26,7 @@ public interface SunmiServiceApi {
     void goToWebViewCloud(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("snList") ArrayList<String> sn);
 
     @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CLOUD)
-    @FlagAnno({Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP})
+    @FlagAnno({Intent.FLAG_ACTIVITY_SINGLE_TOP, Intent.FLAG_ACTIVITY_CLEAR_TOP})
     void goToWebViewCloudSingle(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("snList") ArrayList<String> sn);
 
     @PathAnno(RouterConfig.SunmiService.SERVICE_DETAIL)

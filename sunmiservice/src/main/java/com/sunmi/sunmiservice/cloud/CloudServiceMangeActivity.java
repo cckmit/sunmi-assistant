@@ -25,7 +25,6 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.rpc.RpcErrorCode;
@@ -124,7 +123,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
 
     @Click(resName = "btn_open")
     void onpenClick() {
-        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
     }
 
     private void initServiceList() {
@@ -142,7 +141,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
                         ArrayList<String> snList = new ArrayList<>();
                         snList.add(bean.getDeviceSn());
                         WebViewCloudServiceActivity_.intent(context).snList(snList)
-                                .mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
+                                .mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
                     }
                 }
             });

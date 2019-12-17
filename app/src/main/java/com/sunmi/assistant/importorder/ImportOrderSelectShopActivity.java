@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AuthStoreInfo;
@@ -90,7 +89,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                             Router.withApi(AppApi.class).goToMain(context);
                         } else {
                             Router.withApi(SunmiServiceApi.class)
-                                    .goToWebViewCloudSingle(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+                                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
                         }
                     }
 

@@ -24,7 +24,6 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
@@ -175,12 +174,12 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         } else {
             ArrayList<String> snList = new ArrayList<>();
             snList.add(mSn);
-            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
+            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
         }
     }
 
     @Click(resName = "btn_refresh")
     void refreshClick() {
-        mPresenter.getServiceDetailByDevice(mSn,ServiceConstants.CLOUD_STORAGE_CATEGORY);
+        mPresenter.getServiceDetailByDevice(mSn, ServiceConstants.CLOUD_STORAGE_CATEGORY);
     }
 }
