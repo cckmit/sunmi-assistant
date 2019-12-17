@@ -18,10 +18,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
@@ -51,6 +54,8 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
     Button btnComplete;
     @Extra
     ArrayList<AuthStoreInfo.SaasUserInfoListBean> list;
+    @Extra
+    int importOrderType;
     private AuthStoreInfo.SaasUserInfoListBean selectBean;
 
     @AfterViews
@@ -81,7 +86,12 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                         hideLoadingDialog();
                         shortTip(R.string.import_order_access_data_success);
                         BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSaasDock);
-                        Router.withApi(AppApi.class).goToMain(context);
+                        if (importOrderType == CommonConstants.IMPORT_ORDER_FROM_COMMON) {
+                            Router.withApi(AppApi.class).goToMain(context);
+                        } else {
+                            Router.withApi(SunmiServiceApi.class)
+                                    .goToWebViewCloudSingle(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+                        }
                     }
 
                     @Override

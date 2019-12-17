@@ -9,13 +9,13 @@ import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
-import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +36,9 @@ import sunmi.common.view.dialog.CommonDialog;
 @SuppressLint("Registered")
 @EActivity(R.layout.import_order_activity_preview)
 public class ImportOrderPreviewActivity extends BaseActivity {
+
+    @Extra
+    int importOrderType;
 
     /**
      * 路由启动Activity
@@ -63,7 +66,7 @@ public class ImportOrderPreviewActivity extends BaseActivity {
 
     @Click(R.id.btn_import_other_mobile)
     void otherMobileClick(View v) {
-        ImportOrderSelectPlatformActivity_.intent(context).start();
+        ImportOrderSelectPlatformActivity_.intent(context).importOrderType(importOrderType).start();
     }
 
     private void getSaasInfo() {
@@ -100,6 +103,7 @@ public class ImportOrderPreviewActivity extends BaseActivity {
                     .setAllowButton((dialog, which) -> {
                         ImportOrderSelectShopActivity_.intent(context)
                                 .list((ArrayList<AuthStoreInfo.SaasUserInfoListBean>) list)
+                                .importOrderType(importOrderType)
                                 .start();
                     })
                     .setCancelButton((dialog, which) -> {
@@ -119,7 +123,7 @@ public class ImportOrderPreviewActivity extends BaseActivity {
                 .setConfirmButton(getString(R.string.import_order_continue_try), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ImportOrderSelectPlatformActivity_.intent(context).start();
+                        ImportOrderSelectPlatformActivity_.intent(context).importOrderType(importOrderType).start();
                     }
                 })
                 .setCancelButton(com.sunmi.ipc.R.string.str_confirm).create();
