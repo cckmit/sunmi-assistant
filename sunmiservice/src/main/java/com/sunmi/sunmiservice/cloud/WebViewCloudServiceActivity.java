@@ -68,6 +68,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     String mUrl;
     @Extra
     ArrayList<String> snList;
+
     private boolean hasSendDeviceInfo = false;
     private CountDownTimer countDownTimer;
 
@@ -264,7 +265,13 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @Override
     protected void onNewIntent(Intent intent) {
         hasSendDeviceInfo = false;
-        webView.reload();
+        if (!TextUtils.equals(mUrl, intent.getStringExtra("mUrl"))) {
+            mUrl = intent.getStringExtra("mUrl");
+            snList = intent.getStringArrayListExtra("snList");
+            webView.loadUrl(mUrl);
+        } else {
+            webView.reload();
+        }
         startTimer();
         super.onNewIntent(intent);
     }
