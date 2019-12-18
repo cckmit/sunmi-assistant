@@ -28,6 +28,7 @@
         android:background="@drawable/bg_cloud_playback_calendar"
         android:drawableStart="@drawable/ic_choose_calendar"
         android:drawablePadding="@dimen/dp_5"
+        android:enabled="false"
         android:gravity="center"
         android:paddingStart="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_12"

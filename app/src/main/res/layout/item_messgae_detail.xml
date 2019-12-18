@@ -6,7 +6,7 @@
     android:layout_marginStart="@dimen/dp_10"
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginEnd="@dimen/dp_10"
-    android:background="@drawable/bg_shape_white">
+    android:background="@drawable/bg_solid_white_corner12">
 
     <sunmi.common.view.tablayout.widget.MsgView
         android:id="@+id/msg_view"
