@@ -11,9 +11,9 @@ pipeline{
         {
           script{
             try{
-              git(branch: 'onl-googleplay', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
+              git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android.git', poll: true)
               dir('apmanager'){
-                git(branch: 'onl-googleplay', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android-ap-manager.git', poll: true)
+                git(branch: 'onl', credentialsId: 'lukai@sunmi.com', url: 'https://code.sunmi.com/wbu-app/sunmi-assistant-android-ap-manager.git', poll: true)
               }
               sh('''
                 export PATH="/usr/local/bin/:$PATH"
