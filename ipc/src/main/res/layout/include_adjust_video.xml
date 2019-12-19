@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_adjust"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_56"
+    android:layout_below="@+id/rl_video"
+    android:background="#979797"
+    android:orientation="horizontal"
+    android:visibility="visible">
+
+    <TextView
+        android:id="@+id/tv_brightness"
+        style="@style/ButtonAdjustVideo"
+        android:drawableTop="@drawable/ic_brightness"
+        android:text="亮度" />
+
+    <TextView
+        android:id="@+id/tv_contrast"
+        style="@style/ButtonAdjustVideo"
+        android:layout_marginStart="@dimen/dp_1"
+        android:drawableTop="@drawable/ic_contrast"
+        android:text="对比度" />
+
+    <TextView
+        android:id="@+id/tv_saturation"
+        style="@style/ButtonAdjustVideo"
+        android:layout_marginStart="@dimen/dp_1"
+        android:drawableTop="@drawable/ic_saturation"
+        android:text="饱和度" />
+
+    <TextView
+        android:id="@+id/tv_focus"
+        style="@style/ButtonAdjustVideo"
+        android:layout_marginStart="@dimen/dp_1"
+        android:drawableTop="@drawable/ic_focus"
+        android:text="对焦微调" />
+
+    <ImageView
+        android:id="@+id/iv_adjust_finish"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_1"
+        android:background="@color/c_black"
+        android:scaleType="center"
+        android:src="@mipmap/ic_adjust_finish" />
+</LinearLayout>

@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -136,6 +137,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     ImageView ivSdcardPlayback;//sd回放
     @ViewById(resName = "rv_manager")
     SmRecyclerView rvManager;
+    @ViewById(resName = "ll_adjust")
+    LinearLayout llAdjust;
+    @ViewById(resName = "cl_adjust")
+    ConstraintLayout clAdjust;
+    @ViewById(resName = "group_adjust_focus")
+    Group groupFocus;
 
     @Extra
     SunmiDevice device;
@@ -312,6 +319,51 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
+    @Click(resName = "iv_adjust")
+    void adjustClick() {
+        rlBottomBar.setVisibility(View.GONE);
+        llPortraitBar.setVisibility(View.GONE);
+        clAdjust.setVisibility(View.VISIBLE);
+        llAdjust.setVisibility(View.VISIBLE);
+        groupFocus.setVisibility(View.VISIBLE);
+    }
+
+    @Click(resName = "iv_increase")
+    void increaseClick() {
+        rlBottomBar.setVisibility(View.VISIBLE);
+        llPortraitBar.setVisibility(View.VISIBLE);
+        clAdjust.setVisibility(View.GONE);
+        llAdjust.setVisibility(View.GONE);
+        groupFocus.setVisibility(View.GONE);
+    }
+
+    @Click(resName = "iv_decrease")
+    void decreaseClick() {
+        rlBottomBar.setVisibility(View.VISIBLE);
+        llPortraitBar.setVisibility(View.VISIBLE);
+        clAdjust.setVisibility(View.GONE);
+        llAdjust.setVisibility(View.GONE);
+        groupFocus.setVisibility(View.GONE);
+    }
+
+    @Click(resName = "tv_reset")
+    void resetClick() {
+        rlBottomBar.setVisibility(View.VISIBLE);
+        llPortraitBar.setVisibility(View.VISIBLE);
+        clAdjust.setVisibility(View.GONE);
+        llAdjust.setVisibility(View.GONE);
+        groupFocus.setVisibility(View.GONE);
+    }
+
+    @Click(resName = "iv_adjust_finish")
+    void adjustFinishClick() {
+        rlBottomBar.setVisibility(View.VISIBLE);
+        llPortraitBar.setVisibility(View.VISIBLE);
+        clAdjust.setVisibility(View.GONE);
+        llAdjust.setVisibility(View.GONE);
+        groupFocus.setVisibility(View.GONE);
+    }
+
     @Click(resName = "iv_full_screen_live")
     void fullScreenClick() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -396,7 +448,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 .cloudStorageServiceStatus(cloudStorageServiceStatus)
                 .startForResult(REQ_SDCARD_PLAYBACK).withAnimation(R.anim.slide_in_right, 0);
     }
-
 
     @OnActivityResult(REQ_SDCARD_PLAYBACK)
     void onCreateResult(int resultCode, Intent data) {

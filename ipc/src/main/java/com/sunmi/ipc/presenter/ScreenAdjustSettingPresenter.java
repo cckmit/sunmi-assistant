@@ -2,7 +2,7 @@ package com.sunmi.ipc.presenter;
 
 import com.google.gson.Gson;
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.contract.RecognitionSettingContract;
+import com.sunmi.ipc.contract.ScreenAdjustSettingContract;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.model.CameraConfig;
@@ -15,10 +15,10 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.log.LogCat;
 
 
-public class RecognitionSettingPresenter extends BasePresenter<RecognitionSettingContract.View>
-        implements RecognitionSettingContract.Presenter, BaseNotification.NotificationCenterDelegate {
+public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSettingContract.View>
+        implements ScreenAdjustSettingContract.Presenter, BaseNotification.NotificationCenterDelegate {
 
-    private static final String TAG = RecognitionSettingPresenter.class.getSimpleName();
+    private static final String TAG = ScreenAdjustSettingPresenter.class.getSimpleName();
 
     private static final int SD_STATUS_NONE = 0;
     private static final int SD_STATUS_UNINITIALIZED = 1;
@@ -162,7 +162,7 @@ public class RecognitionSettingPresenter extends BasePresenter<RecognitionSettin
                 this.mBaseFocus = mConfig.getCurrentFocus();
                 this.mZoomGap = mConfig.getMaxZoom() / 10;
                 if (isViewAttached()) {
-                    mView.updateViewsStepTo(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM);
+                    mView.updateViewsStepTo(ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM);
                 }
                 break;
             case OpcodeConstants.fsAutoFocus:
