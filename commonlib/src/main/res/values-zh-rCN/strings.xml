@@ -153,4 +153,5 @@
     <string name="text_hour">时</string>
     <string name="text_minute">分</string>
     <string name="text_second">秒</string>
+    <string name="str_please_open_camera">请允许打开相机！！</string>
 </resources>
