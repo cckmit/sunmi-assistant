@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import com.datelibrary.bean.DateType;
 import com.datelibrary.view.DatePicker;
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.model.DetectionConfig;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
-import com.sunmi.ipc.model.DetectionConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -200,11 +200,11 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
 
     private void updateDetectionDaysView(int days) {
         if ((days & WEEK_ALL_DAY_MASK) == WEEK_ALL_DAY_MASK) {
-            mSilDaysCount.setContent(getString(R.string.ipc_setting_detection_time_day_all));
+            mSilDaysCount.setMiddleContent(getString(R.string.ipc_setting_detection_time_day_all));
             return;
         }
         if ((days & WEEK_ALL_DAY_MASK) == 0) {
-            mSilDaysCount.setContent(getString(R.string.ipc_setting_detection_time_day_none));
+            mSilDaysCount.setMiddleContent(getString(R.string.ipc_setting_detection_time_day_none));
             return;
         }
         String[] weekName = getResources().getStringArray(R.array.week_name);
@@ -222,13 +222,13 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
             }
             days >>= 1;
         }
-        mSilDaysCount.setContent(sb.toString());
+        mSilDaysCount.setMiddleContent(sb.toString());
     }
 
     private void updateTimeStartView(int time) {
         String hour = String.format(Locale.getDefault(), "%02d", time / 3600);
         String minute = String.format(Locale.getDefault(), "%02d", (time % 3600) / 60);
-        mSilTimeStart.setContent(hour + ":" + minute);
+        mSilTimeStart.setEndContent(hour + ":" + minute);
         updateTimeEndView(mTimeEnd);
     }
 
@@ -240,7 +240,7 @@ public class IpcSettingDetectionTimeActivity extends BaseActivity {
         if (time <= mTimeStart) {
             sb.append(getString(R.string.ipc_setting_detection_time_tomorrow));
         }
-        mSilTimeEnd.setContent(sb.toString());
+        mSilTimeEnd.setEndContent(sb.toString());
     }
 
     private boolean isWeekChecked(int daySelect, int witchDay) {

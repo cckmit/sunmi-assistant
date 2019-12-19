@@ -159,7 +159,7 @@ public class FaceGroupListActivity extends BaseActivity {
         public void onBindViewHolder(@NonNull BaseViewHolder<FaceGroup> holder, FaceGroup model, int position) {
             SettingItemLayout itemView = (SettingItemLayout) holder.itemView;
             itemView.setTitle(Utils.getGroupName(holder.getContext(), model));
-            itemView.setContent(holder.getContext().getString(R.string.ipc_face_group_count, model.getCount()));
+            itemView.setEndContent(holder.getContext().getString(R.string.ipc_face_group_count, model.getCount()));
         }
     }
 }

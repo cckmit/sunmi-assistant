@@ -107,9 +107,9 @@ public class MsgSettingActivity extends BaseMvpActivity<MsgSettingPresenter>
                 public void convert(ViewHolder holder, MsgSettingChildren msgSettingChildren) {
                     SettingItemLayout silDevice = holder.getView(R.id.sil_item);
                     if (msgSettingChildren.getStatus() == 1) {
-                        silDevice.setContent(R.string.sm_enable);
+                        silDevice.setEndContent(R.string.sm_enable);
                     } else {
-                        silDevice.setContent(R.string.str_close);
+                        silDevice.setEndContent(R.string.str_close);
                     }
                     String title = MessageUtils.getInstance().getMsgFirst(msgSettingChildren.getName());
                     silDevice.setTitle(title);
