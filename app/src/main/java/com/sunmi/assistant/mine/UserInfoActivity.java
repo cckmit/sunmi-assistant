@@ -81,17 +81,17 @@ public class UserInfoActivity extends BaseMvpActivity<UserInfoPresenter>
         initAvatar(false);
         String nickname = SpUtils.getUsername();
         if (!TextUtils.isEmpty(nickname)) {
-            silNickname.setContent(nickname);
+            silNickname.setEndContent(nickname);
         }
         String mobile = SpUtils.getMobile();
         if (!TextUtils.isEmpty(mobile)) {
             silPhone.setVisibility(View.VISIBLE);
-            silPhone.setContent(StringHelper.getEncryptPhone(mobile));
+            silPhone.setEndContent(StringHelper.getEncryptPhone(mobile));
         }
         String email = SpUtils.getEmail();
         if (!TextUtils.isEmpty(email) && email.contains("@")) {
             silEmail.setVisibility(View.VISIBLE);
-            silEmail.setContent(StringHelper.getEncryptEmail(email));
+            silEmail.setEndContent(StringHelper.getEncryptEmail(email));
         }
     }
 

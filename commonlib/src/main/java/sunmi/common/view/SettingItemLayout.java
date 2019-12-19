@@ -54,14 +54,12 @@ public class SettingItemLayout extends FrameLayout {
 
     private ConstraintLayout clContainer;
 
-    private TextView tvEndContent;
-    private TextView tvMiddleContent;
-
     private ImageView ivStartImage;
     private ImageView ivEndImage;
     private Switch scEndSwitch;
     private TextView tvTitle;
-    private TextView tvContent;
+    private TextView tvEndContent;
+    private TextView tvMiddleContent;
     private TextView tvSmallStartContent;
     private TextView tvSmallEndContent;
     private TextView tvTag;
@@ -69,7 +67,8 @@ public class SettingItemLayout extends FrameLayout {
     private View vTopDivider;
     private View vBottomDivider;
 
-    private int type = TYPE_NONE;
+    private int mStyle = STYLE_DEFAULT;
+    private int mType = TYPE_NONE;
 
     public SettingItemLayout(@NonNull Context context) {
         this(context, STYLE_DEFAULT);
@@ -137,15 +136,13 @@ public class SettingItemLayout extends FrameLayout {
         if (style == STYLE_DEFAULT) {
             style = a.getInt(R.styleable.SettingItemLayout_styleType, STYLE_SINGLE);
         }
-
+        mStyle = style;
         ViewGroup.LayoutParams containerLp = clContainer.getLayoutParams();
         switch (style) {
             case STYLE_SINGLE:
-                tvContent = tvEndContent;
                 containerLp.height = sDimenSingleHeight;
                 break;
             case STYLE_MULTI:
-                tvContent = tvMiddleContent;
                 containerLp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 break;
             default:
@@ -173,10 +170,10 @@ public class SettingItemLayout extends FrameLayout {
         }
 
         // 设置右边元素
-        type = a.getInteger(R.styleable.SettingItemLayout_type, TYPE_NONE);
+        mType = a.getInteger(R.styleable.SettingItemLayout_type, TYPE_NONE);
         Drawable endImage = a.getDrawable(R.styleable.SettingItemLayout_endImage);
         float endImageSize = a.getDimension(R.styleable.SettingItemLayout_endImageSize, -1);
-        switch (type) {
+        switch (mType) {
             case TYPE_NONE:
                 break;
             case TYPE_ARROW:
@@ -218,9 +215,15 @@ public class SettingItemLayout extends FrameLayout {
             tvTitle.setText(title);
         }
 
-        // 设置内容（如果为单行列表项，则为右边辅助文字；如果为多行列表项，则为标题下方文字）
-        String content = a.getString(R.styleable.SettingItemLayout_contentText);
-        setTextIfExist(tvContent, content);
+        // 设置右侧文字内容
+        String endContent = a.getString(R.styleable.SettingItemLayout_endContentText);
+        setTextIfExist(tvEndContent, endContent);
+
+        // 设置中间文字内容
+        if (mStyle == STYLE_MULTI) {
+            String middleContent = a.getString(R.styleable.SettingItemLayout_middleContentText);
+            setTextIfExist(tvMiddleContent, middleContent);
+        }
 
         // 多行列表项时，设置内容最大行数
         int maxLines = a.getInteger(R.styleable.SettingItemLayout_contentMaxLines, 1);
@@ -312,19 +315,23 @@ public class SettingItemLayout extends FrameLayout {
         return scEndSwitch;
     }
 
-    public TextView getTitle() {
+    public TextView getTitleView() {
         return tvTitle;
     }
 
-    public TextView getContent() {
-        return tvContent;
+    public TextView getEndTextView() {
+        return tvEndContent;
     }
 
-    public TextView getSmallStartContent() {
+    public TextView getMiddleTextView() {
+        return tvMiddleContent;
+    }
+
+    public TextView getSmallStartTextView() {
         return tvSmallStartContent;
     }
 
-    public TextView getSmallEndContent() {
+    public TextView getSmallEndTextView() {
         return tvSmallEndContent;
     }
 
@@ -343,14 +350,15 @@ public class SettingItemLayout extends FrameLayout {
     }
 
     public void setType(int type) {
-        if (this.type == type) {
+        if (this.mType == type) {
             return;
         }
-        this.type = type;
+        this.mType = type;
         ivStartImage.setVisibility(GONE);
         ivEndImage.setVisibility(GONE);
         scEndSwitch.setVisibility(GONE);
-        tvContent.setVisibility(GONE);
+        tvEndContent.setVisibility(GONE);
+        tvMiddleContent.setVisibility(GONE);
         tvSmallStartContent.setVisibility(GONE);
         tvSmallEndContent.setVisibility(GONE);
         tvTag.setVisibility(GONE);
@@ -452,16 +460,28 @@ public class SettingItemLayout extends FrameLayout {
         tvTitle.setText(resId);
     }
 
-    public void setContent(String content) {
-        setTextIfExist(tvContent, content);
+    public void setEndContent(String content) {
+        setTextIfExist(tvEndContent, content);
+    }
+
+    public void setMiddleContent(String content) {
+        if (mStyle == STYLE_MULTI) {
+            setTextIfExist(tvMiddleContent, content);
+        }
     }
 
     public void setContentMaxLines(int lines) {
         tvMiddleContent.setMaxLines(lines);
     }
 
-    public void setContent(@StringRes int resId) {
-        setTextIfExist(tvContent, resId);
+    public void setEndContent(@StringRes int resId) {
+        setTextIfExist(tvEndContent, resId);
+    }
+
+    public void setMiddleContent(@StringRes int resId) {
+        if (mStyle == STYLE_MULTI) {
+            setTextIfExist(tvMiddleContent, resId);
+        }
     }
 
     public void setSmallStartContent(String content) {
@@ -489,16 +509,16 @@ public class SettingItemLayout extends FrameLayout {
     }
 
     public void toggle() {
-        if (type == TYPE_SWITCH) {
+        if (mType == TYPE_SWITCH) {
             scEndSwitch.toggle();
         }
     }
 
     public void setChecked(boolean checked) {
-        if (type == TYPE_CHECKED) {
+        if (mType == TYPE_CHECKED) {
             tvTitle.setSelected(checked);
             ivEndImage.setSelected(checked);
-        } else if (type == TYPE_SWITCH) {
+        } else if (mType == TYPE_SWITCH) {
             scEndSwitch.setChecked(checked);
         }
     }
@@ -519,12 +539,16 @@ public class SettingItemLayout extends FrameLayout {
                 VISIBLE : GONE);
     }
 
-    public CharSequence getTitleText() {
+    public CharSequence getTitle() {
         return tvTitle.getText();
     }
 
-    public CharSequence getContentText() {
-        return tvContent.getText();
+    public CharSequence getEndContent() {
+        return tvEndContent.getText();
+    }
+
+    public CharSequence getMiddleContent() {
+        return tvMiddleContent.getText();
     }
 
     public boolean isChecked() {

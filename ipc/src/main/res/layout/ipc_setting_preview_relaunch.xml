@@ -23,7 +23,7 @@
         android:id="@+id/sil_relaunch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:contentText="@string/ipc_setting_reboot_tip"
+        app:middleContentText="@string/ipc_setting_reboot_tip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar"

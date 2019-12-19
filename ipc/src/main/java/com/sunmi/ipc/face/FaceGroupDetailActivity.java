@@ -105,14 +105,14 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             mTvTip.setText(R.string.ipc_face_group_black_desc);
         }
 
-        mSilName.setContent(Utils.getGroupName(context, mFaceGroup));
-        mSilCapacity.setContent(String.valueOf(mFaceGroup.getCapacity()));
+        mSilName.setEndContent(Utils.getGroupName(context, mFaceGroup));
+        mSilCapacity.setEndContent(String.valueOf(mFaceGroup.getCapacity()));
 
         if (mFaceGroup.getType() == FaceGroup.FACE_GROUP_TYPE_NEW) {
             mSilThreshold.setVisibility(View.VISIBLE);
             times = mFaceGroup.getThreshold();
             days = mFaceGroup.getPeriodDays();
-            mSilThreshold.setContent(getString(R.string.ipc_face_group_threshold_content,
+            mSilThreshold.setEndContent(getString(R.string.ipc_face_group_threshold_content,
                     mFaceGroup.getPeriodDays(), mFaceGroup.getThreshold()));
         } else {
             mSilThreshold.setVisibility(View.GONE);
@@ -126,8 +126,8 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         }
 */
         mSilNotification.setVisibility(View.GONE);
-        mSilMark.setContent(mFaceGroup.getMark());
-        mSilManage.setContent(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
+        mSilMark.setEndContent(mFaceGroup.getMark());
+        mSilManage.setEndContent(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
 
         mPresenter = new FaceGroupDetailPresenter(mShopId, mFaceGroup, mOccupiedCapacity);
         mPresenter.attachView(this);
@@ -192,28 +192,28 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     @Override
     public void updateNameView(String name) {
         mFaceGroup.setGroupName(name);
-        mSilName.setContent(name);
+        mSilName.setEndContent(name);
         setResult(RESULT_OK);
     }
 
     @Override
     public void updateCapacityView(int capacity) {
         mFaceGroup.setCapacity(capacity);
-        mSilCapacity.setContent(String.valueOf(capacity));
+        mSilCapacity.setEndContent(String.valueOf(capacity));
         setResult(RESULT_OK);
     }
 
     @Override
     public void updateThresholdView(int times, int days) {
         mFaceGroup.setThreshold(times, days);
-        mSilThreshold.setContent(getString(R.string.ipc_face_group_threshold_content, days, times));
+        mSilThreshold.setEndContent(getString(R.string.ipc_face_group_threshold_content, days, times));
         setResult(RESULT_OK);
     }
 
     @Override
     public void updateMarkView(String mark) {
         mFaceGroup.setMark(mark);
-        mSilMark.setContent(mark);
+        mSilMark.setEndContent(mark);
         setResult(RESULT_OK);
     }
 
@@ -229,7 +229,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
         if (resultCode == RESULT_OK && data != null) {
             int count = data.getIntExtra(Constants.EXTRA_UPDATE_COUNT, mFaceGroup.getCount());
             mFaceGroup.setCount(count);
-            mSilManage.setContent(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
+            mSilManage.setEndContent(getString(R.string.ipc_face_group_count, mFaceGroup.getCount()));
             setResult(RESULT_OK);
         }
     }
