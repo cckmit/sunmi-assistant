@@ -169,11 +169,6 @@ dependencies {
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.0'
     api 'com.google.guava:guava:24.1-jre@jar'
 
-    //高德map
-    api 'com.amap.api:location:4.7.0'
-    api 'com.amap.api:3dmap:6.9.4'
-    api 'com.amap.api:search:6.9.2'
-
     api "com.github.xiaojinzi123.Component:component-impl:${CVersion}"
     annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
     //美团多渠道打包
