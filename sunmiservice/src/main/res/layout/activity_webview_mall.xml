@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layerType="hardware">
 
     <TextView
         android:id="@+id/tv_status_height"
@@ -12,7 +13,8 @@
         android:id="@+id/main_web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tv_status_height" />
+        android:layout_below="@+id/tv_status_height"
+        android:layerType="software"/>
 
     <ProgressBar
         android:id="@+id/pb_web_view"

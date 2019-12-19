@@ -12,7 +12,6 @@
     <string name="str_sunmi_copyright_sound">©2019 上海商米科技有限公司 版权所有</string>
     <string name="str_open_permission_to_update">需要开启未知来源权限才能进行app更新</string>
     <string name="str_no_sd">设备没有SD卡！</string>
-    <string name="str_please_open_camera">请允许打开相机！！</string>
     <string name="str_please_open_sd">请允许打操作SDCard！！</string>
     <string name="str_password_no_contains_blank">密码不能包含空格</string>
     <string name="str_password_fomat_error">密码格式错误</string>
