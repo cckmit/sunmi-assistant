@@ -48,7 +48,7 @@
         android:id="@+id/sil_nickname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:contentText="@string/str_default_nickname"
+        app:endContentText="@string/str_default_nickname"
         app:showDivider="top"
         app:title="@string/str_nickname"
         app:type="arrow" />

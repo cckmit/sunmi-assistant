@@ -50,7 +50,7 @@ public class ChooseDeviceDialog extends Dialog {
 
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.width = getContext().getResources().getDisplayMetrics().widthPixels;
-        getWindow().setBackgroundDrawableResource(R.drawable.bg_rounded_corner_top_white);
+        getWindow().setBackgroundDrawableResource(R.drawable.bg_solid_white_corner_top);
         getWindow().setAttributes(lp);//设置宽度适应屏幕
         getWindow().setGravity(Gravity.BOTTOM);
     }

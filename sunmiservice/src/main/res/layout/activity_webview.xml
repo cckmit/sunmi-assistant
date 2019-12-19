@@ -58,16 +58,13 @@
 
         <Button
             android:id="@+id/btnTryAgain"
+            style="@style/BtnBigOrange"
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_40"
             android:layout_below="@id/tvNetTip"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/edittext_soild_orange1"
-            android:text="@string/str_btn_try_again"
-            android:textColor="@color/c_white"
-            android:textSize="@dimen/sp_16" />
-
+            android:text="@string/str_btn_try_again" />
     </RelativeLayout>
 
 </RelativeLayout>

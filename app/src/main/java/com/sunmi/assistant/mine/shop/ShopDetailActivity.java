@@ -94,14 +94,14 @@ public class ShopDetailActivity extends BaseActivity {
     }
 
     private void setupItems() {
-        silShopName.setContent(info.getShopName());
-        silShopCategory.setContent(info.getTypeName());
-        silShopRegion.setContent(info.getRegion());
-        silShopAddress.setContent(info.getAddress());
-        silShopContact.setContent(info.getContactPerson());
-        silShopMobile.setContent(info.getContactTel());
+        silShopName.setEndContent(info.getShopName());
+        silShopCategory.setEndContent(info.getTypeName());
+        silShopRegion.setEndContent(info.getRegion());
+        silShopAddress.setEndContent(info.getAddress());
+        silShopContact.setEndContent(info.getContactPerson());
+        silShopMobile.setEndContent(info.getContactTel());
         if (info.getBusinessArea() > 0) {
-            silShopArea.setContent(floatTrans(info.getBusinessArea()) + "㎡");
+            silShopArea.setEndContent(floatTrans(info.getBusinessArea()) + "㎡");
         }
     }
 
@@ -190,7 +190,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setShopName(data.getStringExtra(INTENT_EXTRA_NAME));
-            silShopName.setContent(info.getShopName());
+            silShopName.setEndContent(info.getShopName());
         }
     }
 
@@ -215,7 +215,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setAddress(data.getStringExtra(INTENT_EXTRA_ADDRESS));
-            silShopAddress.setContent(info.getAddress());
+            silShopAddress.setEndContent(info.getAddress());
         }
     }
 
@@ -224,7 +224,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setContactPerson(data.getStringExtra(INTENT_EXTRA_CONTACT));
-            silShopContact.setContent(info.getContactPerson());
+            silShopContact.setEndContent(info.getContactPerson());
         }
     }
 
@@ -233,7 +233,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setContactTel(data.getStringExtra(INTENT_EXTRA_CONTACT_TEL));
-            silShopMobile.setContent(info.getContactTel());
+            silShopMobile.setEndContent(info.getContactTel());
         }
     }
 
@@ -242,7 +242,7 @@ public class ShopDetailActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
             info.setBusinessArea(Float.parseFloat(data.getStringExtra(INTENT_EXTRA_AREA)));
-            silShopArea.setContent(floatTrans(info.getBusinessArea()) + "㎡");
+            silShopArea.setEndContent(floatTrans(info.getBusinessArea()) + "㎡");
         }
     }
 

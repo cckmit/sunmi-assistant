@@ -211,7 +211,13 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     private VolumeHelper volumeHelper = null;
     private FFmpegMediaMetadataRetriever retriever;
     private GestureDetector gestureDetector = null;
-    private View.OnTouchListener cashTouchListener = (v, event) -> gestureDetector.onTouchEvent(event);
+    private View.OnTouchListener cashTouchListener = (v, event) -> {
+        gestureDetector.onTouchEvent(event);
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            ivVideoChange.setVisibility(View.GONE);
+        }
+        return false;
+    };
     private Handler mHandler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
@@ -238,6 +244,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         initScreenWidthHeight();
         initInfo();
         showLoading();
+        playType(true);
         if (isWholeDayVideoPlay) {
             //初始化一天快放
             hasMore = true;
@@ -300,10 +307,25 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         ivpCash.setLongClickable(true);
     }
 
+    /**
+     * 初始化播放方式
+     *
+     * @param isLoop true 轮播 false 单循
+     */
+    private void playType(boolean isLoop) {
+        playCashVideoStatus = PLAY_TYPE_DROP_SELECT;
+        isPlayLoop = isLoop;
+        ivPlayType.setImageResource(isPlayLoop ? R.mipmap.ic_loop : R.mipmap.ic_single);
+    }
+
     private void initVolume() {
         volumeHelper = new VolumeHelper(this);
         volumeHelper.setVolumeChangeListener(this);
         volumeHelper.registerVolumeReceiver();
+        if (volumeHelper.isMute()) {
+            isOpenVolume = true;
+            ivVolume.setImageResource(R.mipmap.ic_mute_enable);
+        }
     }
 
     private void setVideoListener() {
@@ -650,30 +672,32 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             return;
         }
         if (videoList != null) {
-            if (playIndex >= videoList.size() - 1 && isPlayLoop) {
-                if (hasMore) {
-                    loadMoreVideoList();
-                } else {
-                    shortTip(R.string.cash_play_complete);
+            if (playCashVideoStatus != PLAY_TYPE_DROP_SELECT) {
+                if (isPlayLoop && playIndex >= videoList.size() - 1 &&
+                        playCashVideoStatus != PLAY_TYPE_LEFT_FLING) {
+                    if (hasMore) {
+                        loadMoreVideoList();
+                    } else {
+                        shortTip(R.string.cash_play_complete);
+                    }
+                    return;
                 }
-                return;
-            }
-            showLoading();
-            if (playCashVideoStatus == PLAY_TYPE_NORMAL) {
-                //无手势滑动
-                if (isPlayLoop) {
+                showLoading();
+                if (playCashVideoStatus == PLAY_TYPE_NORMAL) {
+                    //无手势滑动
+                    if (isPlayLoop) {
+                        playIndex++;
+                    }
+                } else if (playCashVideoStatus == PLAY_TYPE_LEFT_FLING) {
+                    //左滑
+                    playIndex--;
+                } else if (playCashVideoStatus == PLAY_TYPE_RIGHT_FLING) {
+                    //右滑
                     playIndex++;
                 }
-            } else if (playCashVideoStatus == PLAY_TYPE_LEFT_FLING) {
-                //左滑
-                playIndex--;
-            } else if (playCashVideoStatus == PLAY_TYPE_RIGHT_FLING) {
-                //右滑
-                playIndex++;
             }
             //恢复初始化播放状态
             playCashVideoStatus = PLAY_TYPE_NORMAL;
-
             setViewVideoTag();
             ivpCash.release();
             sbBar.setProgress(0);
@@ -1013,7 +1037,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
         @Override
         public void onShowPress(MotionEvent e) {
-
         }
 
         @Override
@@ -1037,7 +1060,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
         @Override
         public void onLongPress(MotionEvent e) {
-
         }
 
         @Override

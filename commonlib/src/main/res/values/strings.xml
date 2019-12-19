@@ -153,4 +153,5 @@
     <string name="text_hour">H</string>
     <string name="text_minute">M</string>
     <string name="text_second">S</string>
+    <string name="str_please_open_camera">Please allow to enable the camera！！</string>
 </resources>

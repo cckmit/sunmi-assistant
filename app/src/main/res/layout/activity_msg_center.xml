@@ -41,7 +41,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_20"
-            android:background="@drawable/bg_shape_notification"
+            android:background="@drawable/bg_solid_white_corner16"
             android:gravity="center"
             android:text="@string/str_go_open"
             android:textColor="@color/common_orange"

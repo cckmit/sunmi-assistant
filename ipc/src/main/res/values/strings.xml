@@ -159,7 +159,6 @@
     <string name="ipc_face_group_capacity_dialog">照片数量上限</string>
     <string name="ipc_face_group_capacity_dialog_content">500~1000之内数字</string>
     <string name="ipc_face_group_capacity_dialog_tip">剩余可分配的照片数量为%d</string>
-    <string name="ipc_face_group_capacity_dialog_error">输入的照片数量超过分组上限</string>
     <string name="ipc_face_group_threshold">移动分组规则</string>
     <string name="ipc_face_group_threshold_content">%d天%d次</string>
     <string name="ipc_face_group_threshold_error">移库分组规则设定错误或超过上限</string>
