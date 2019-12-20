@@ -21,7 +21,10 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
@@ -30,6 +33,8 @@ import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
+import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.service.P2pService;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.sunmi.ipc.utils.IpcUtils;
@@ -59,6 +64,7 @@ import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.SunmiServiceApi;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -78,7 +84,8 @@ import sunmi.common.view.dialog.CommonDialog;
 @EActivity(resName = "activity_ipc_manager")
 public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         implements IpcManagerContract.View, SurfaceHolder.Callback,
-        View.OnClickListener, VolumeHelper.VolumeChangeListener, P2pService.OnPlayStatusChangedListener {
+        View.OnClickListener, VolumeHelper.VolumeChangeListener, P2pService.OnPlayStatusChangedListener,
+        SeekBar.OnSeekBarChangeListener {
 
     private final static int REQ_SDCARD_PLAYBACK = 10;
 
@@ -103,6 +110,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     ImageView ivVolume;//音量
     @ViewById(resName = "tv_quality")
     TextView tvQuality;//画质
+    @ViewById(resName = "iv_adjust")
+    ImageView ivAdjust;//画面参数调整
     @ViewById(resName = "ll_video_quality")
     LinearLayout llVideoQuality;//是否显示画质
     @ViewById(resName = "tv_fhd_quality")
@@ -138,9 +147,17 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @ViewById(resName = "rv_manager")
     SmRecyclerView rvManager;
     @ViewById(resName = "ll_adjust")
-    LinearLayout llAdjust;
+    RadioGroup rgAdjust;
+    @ViewById(resName = "rb_brightness")
+    RadioButton rbBrightness;
     @ViewById(resName = "cl_adjust")
     ConstraintLayout clAdjust;
+    @ViewById(resName = "group_adjust_common")
+    Group groupAdjustCommon;
+    @ViewById(resName = "tv_percent")
+    TextView tvPercent;
+    @ViewById(resName = "sb_adjust")
+    SeekBar sbAdjustCommon;
     @ViewById(resName = "group_adjust_focus")
     Group groupFocus;
 
@@ -169,6 +186,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     P2pService p2pService;
     boolean isBind;
+    private int compensation, saturation, contrast;//视频参数
 
     private ServiceConnection conn = new ServiceConnection() {
         @Override
@@ -196,6 +214,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         titleBar.getLeftLayout().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
         rlBottomBar.setVisibility(View.VISIBLE);
+        initVideoAdjust();
         screenW = CommonHelper.getScreenWidth(context);
 
         llLoading.setOnTouchListener((v, event) -> true);
@@ -213,8 +232,17 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
             mPresenter.getCashVideoService(device.getId());
             ivCloudPlayback.setVisibility(View.VISIBLE);
+        } else {
+            if (IpcUtils.getVersionCode(device.getFirmware()) >= IpcConstants.IPC_VERSION_VIDEO_ADJUST) {
+                ivAdjust.setVisibility(View.VISIBLE);
+            }
         }
         initVolume();
+    }
+
+    private void initVideoAdjust() {
+        sbAdjustCommon.setOnSeekBarChangeListener(this);
+        IPCCall.getInstance().getVideoParams(context, device.getModel(), device.getDeviceid());
     }
 
     @Override
@@ -250,6 +278,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     protected void onPause() {
         super.onPause();
+        hideAdjustPanel();
         pausePlay();
     }
 
@@ -311,6 +340,22 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        tvPercent.setText(String.valueOf(progress));
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        mPresenter.adjustVideo(rgAdjust.indexOfChild(rgAdjust.findViewById(rgAdjust.getCheckedRadioButtonId())),
+                context, device.getModel(), device.getDeviceid(), seekBar.getProgress());
+    }
+
     @Click(resName = "rl_top")
     void backClick() {
         if (llVideoQuality.isShown()) {
@@ -321,47 +366,49 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Click(resName = "iv_adjust")
     void adjustClick() {
-        rlBottomBar.setVisibility(View.GONE);
         llPortraitBar.setVisibility(View.GONE);
-        clAdjust.setVisibility(View.VISIBLE);
-        llAdjust.setVisibility(View.VISIBLE);
-        groupFocus.setVisibility(View.VISIBLE);
+        showAdjustPanel();
     }
 
     @Click(resName = "iv_increase")
     void increaseClick() {
-        rlBottomBar.setVisibility(View.VISIBLE);
-        llPortraitBar.setVisibility(View.VISIBLE);
-        clAdjust.setVisibility(View.GONE);
-        llAdjust.setVisibility(View.GONE);
-        groupFocus.setVisibility(View.GONE);
+        IPCCall.getInstance().fsAdjustFocusAdd(context, device.getModel(), device.getDeviceid());
     }
 
     @Click(resName = "iv_decrease")
     void decreaseClick() {
-        rlBottomBar.setVisibility(View.VISIBLE);
-        llPortraitBar.setVisibility(View.VISIBLE);
-        clAdjust.setVisibility(View.GONE);
-        llAdjust.setVisibility(View.GONE);
-        groupFocus.setVisibility(View.GONE);
+        IPCCall.getInstance().fsAdjustFocusMinus(context, device.getModel(), device.getDeviceid());
     }
 
     @Click(resName = "tv_reset")
     void resetClick() {
-        rlBottomBar.setVisibility(View.VISIBLE);
-        llPortraitBar.setVisibility(View.VISIBLE);
-        clAdjust.setVisibility(View.GONE);
-        llAdjust.setVisibility(View.GONE);
-        groupFocus.setVisibility(View.GONE);
+        IPCCall.getInstance().fsAdjustFocusReset(context, device.getModel(), device.getDeviceid());
+    }
+
+    @Click(resName = "rb_brightness")
+    void brightnessClick() {
+        showCommonAdjustGroup(compensation);
+    }
+
+    @Click(resName = "rb_contrast")
+    void contrastClick() {
+        showCommonAdjustGroup(contrast);
+    }
+
+    @Click(resName = "rb_saturation")
+    void saturationClick() {
+        showCommonAdjustGroup(saturation);
+    }
+
+    @Click(resName = "rb_focus")
+    void focusClick() {
+        showFocusGroup();
     }
 
     @Click(resName = "iv_adjust_finish")
     void adjustFinishClick() {
-        rlBottomBar.setVisibility(View.VISIBLE);
         llPortraitBar.setVisibility(View.VISIBLE);
-        clAdjust.setVisibility(View.GONE);
-        llAdjust.setVisibility(View.GONE);
-        groupFocus.setVisibility(View.GONE);
+        hideAdjustPanel();
     }
 
     @Click(resName = "iv_full_screen_live")
@@ -459,7 +506,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //点击屏幕
     @Click(resName = "rl_video")
     void screenClick() {
-        if (isPlayFailShown) {
+        if (isPlayFailShown || clAdjust.isShown()) {
             return;
         }
         if (isControlPanelShow) {
@@ -552,6 +599,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
+    public void videoParamsObtained(int compensation, int saturation, int contrast) {
+        this.compensation = compensation;
+        this.saturation = saturation;
+        this.contrast = contrast;
+    }
+
+    @Override
     public void onVolumeChanged(int volume) {
         setVolumeViewImage(volume);
     }
@@ -570,8 +624,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange,
-                CommonNotifications.cashVideoSubscribe};
+        return new int[]{IpcConstants.ipcNameChanged, OpcodeConstants.getVideoParams,
+                CommonNotifications.cloudStorageChange, CommonNotifications.cashVideoSubscribe};
     }
 
     @Override
@@ -589,6 +643,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
         } else if (id == CommonNotifications.cashVideoSubscribe) {
             mPresenter.getCashVideoService(device.getId());
+        }
+
+        if (args != null && args[0] instanceof ResponseBean) {
+            mPresenter.handleResponse(id, (ResponseBean) args[0]);
         }
     }
 
@@ -671,6 +729,40 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         ivFullScreen.setVisibility(visibility);
         llPortraitBar.setVisibility(visibility);
         rvManager.setVisibility(visibility);
+    }
+
+    private void showCommonAdjustGroup(int percent) {
+        groupFocus.setVisibility(View.GONE);
+        if (!groupAdjustCommon.isShown()) {
+            groupAdjustCommon.setVisibility(View.VISIBLE);
+        }
+        initSeekBar(percent);
+    }
+
+    private void initSeekBar(int percent) {
+        tvPercent.setText(String.valueOf(percent));
+        sbAdjustCommon.setProgress(percent);
+    }
+
+    private void showFocusGroup() {
+        groupAdjustCommon.setVisibility(View.GONE);
+        groupFocus.setVisibility(View.VISIBLE);
+    }
+
+    private void hideAdjustPanel() {
+        rlBottomBar.setVisibility(View.VISIBLE);
+        clAdjust.setVisibility(View.GONE);
+        rgAdjust.setVisibility(View.GONE);
+        groupFocus.setVisibility(View.GONE);
+    }
+
+    private void showAdjustPanel() {
+        rlBottomBar.setVisibility(View.GONE);
+        clAdjust.setVisibility(View.VISIBLE);
+        rgAdjust.setVisibility(View.VISIBLE);
+        groupAdjustCommon.setVisibility(View.VISIBLE);
+        rbBrightness.setChecked(true);
+        initSeekBar(compensation);
     }
 
     /**

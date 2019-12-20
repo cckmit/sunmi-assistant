@@ -22,6 +22,8 @@ public interface IpcManagerContract {
         void getStorageSuccess(IpcManageBean bean);
 
         void getCashVideoServiceSuccess(ArrayList<CashVideoServiceBean> devices, boolean alreadySubscribe);
+
+        void videoParamsObtained(int compensation, int saturation, int contrast);
     }
 
     interface Presenter {

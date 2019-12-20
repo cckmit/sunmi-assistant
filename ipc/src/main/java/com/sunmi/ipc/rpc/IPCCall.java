@@ -449,6 +449,124 @@ public class IPCCall extends BaseIpcApi {
         }
     }
 
+    /**
+     * 设置图像亮度参数接口
+     */
+    public void fsAdjustBrightness(Context context, String model, String sn, int compensation) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            object.put("compensation", compensation);
+            int opCode = OpcodeConstants.fsAdjustBrightness;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置图像对比度参数接口
+     */
+    public void fsAdjustContrast(Context context, String model, String sn, int contrast) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            object.put("contrast", contrast);
+            int opCode = OpcodeConstants.fsAdjustContrast;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置图像饱和度参数接口
+     */
+    public void fsAdjustSaturation(Context context, String model, String sn, int saturation) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            object.put("saturation", saturation);
+            int opCode = OpcodeConstants.fsAdjustSaturation;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取图像配置当前参数请求
+     */
+    public void getVideoParams(Context context, String model, String sn) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            int opCode = OpcodeConstants.getVideoParams;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置聚焦微调加（+）的接口
+     */
+    public void fsAdjustFocusAdd(Context context, String model, String sn) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            object.put("param", "add");
+            int opCode = OpcodeConstants.fsAdjustFocusAdd;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置聚焦微调加（+）的接口
+     */
+    public void fsAdjustFocusMinus(Context context, String model, String sn) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            object.put("param", "minus");
+            int opCode = OpcodeConstants.fsAdjustFocusMinus;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 设置聚焦微复位
+     */
+    public void fsAdjustFocusReset(Context context, String model, String sn) {
+        try {
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            object.put("param", "reset");
+            int opCode = OpcodeConstants.fsAdjustFocusReset;
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(context, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String json) {
 

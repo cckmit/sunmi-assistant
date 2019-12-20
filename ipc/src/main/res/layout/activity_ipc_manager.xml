@@ -53,8 +53,7 @@
                 layout="@layout/include_adjust_video"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rl_video"
-                android:visibility="gone" />
+                android:layout_below="@+id/rl_video" />
 
             <LinearLayout
                 android:id="@+id/ll_portrait_controller_bar"

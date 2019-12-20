@@ -320,7 +320,7 @@
             android:indeterminateDrawable="@drawable/loading_common_white" />
     </LinearLayout>
 
-    <!--底部控制区-->
+    <!--底部控制区 视频参数调整-->
     <android.support.constraint.ConstraintLayout
         android:id="@+id/cl_adjust"
         android:layout_width="match_parent"
@@ -329,7 +329,7 @@
         android:background="@mipmap/bg_video_controller_bottom_v"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_percent"
@@ -338,21 +338,22 @@
             android:text="0"
             android:textColor="@color/c_white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/sb_bar"
+            app:layout_constraintEnd_toStartOf="@+id/sb_adjust"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <SeekBar
-            android:id="@+id/sb_bar"
+            android:id="@+id/sb_adjust"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/dp_6"
+            android:max="100"
             android:maxHeight="@dimen/dp_3"
             android:minHeight="@dimen/dp_2"
             android:paddingStart="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_8"
             android:progressDrawable="@drawable/seekbar_white_progress_secondary"
-            android:thumb="@drawable/seekbar_oval_point_white"
+            android:thumb="@drawable/seekbar_oval"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_percent"
@@ -363,7 +364,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="tv_percent,sb_bar" />
+            app:constraint_referenced_ids="tv_percent,sb_adjust" />
 
         <ImageView
             android:id="@+id/iv_increase"
@@ -398,7 +399,7 @@
             android:gravity="center"
             android:text="@string/str_reset"
             android:textColor="@color/c_white"
-            android:textSize="@dimen/sp_12"
+            android:textSize="@dimen/sp_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/iv_decrease"
             app:layout_constraintTop_toTopOf="parent" />
