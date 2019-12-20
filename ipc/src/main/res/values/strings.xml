@@ -271,7 +271,7 @@
     <string name="tip_sdcard_unformat">存储卡未格式化</string>
     <string name="msg_sdcard_should_format">检测到的存储卡需格式化后才可使用，请提前保存重要资料</string>
     <string name="str_jump_adjust">暂不调整</string>
-    <string name="str_model_name">产品型号：%s</string>
+    <string name="str_model_name">Product number：%s</string>
     <string name="ipc_setting_downloading">下载中…</string>
     <string name="ipc_setting_upgrading">升级中…</string>
     <string name="ipc_setting_new">NEW</string>
@@ -317,7 +317,6 @@
     <string name="ipc_setting_reboot_tip">重启后摄像机会重新上线，且配置保持不变</string>
     <string name="ipc_setting_reboot_need_min2">重启大约需要2分钟左右，您可以通过 \t\n 摄像机的闪灯情况判断其当前状态：</string>
     <string name="tip_unopen_cloud_storage_service">暂未开通云存储服务</string>
-    <string name="str_open_cloud_storage">开通云存储</string>
     <string name="str_ipc_config_dialog_title">您可以尝试以下操作</string>
     <string name="str_wired_network">有线网络连接</string>
     <string name="tip_wired_network">网络更稳定，视频更流畅</string>
@@ -331,7 +330,7 @@
     <string name="str_device_offline">设备离线</string>
     <string name="msg_device_offline">当前摄像机离线，且手机和摄像机未连相同Wi-Fi，无法管理【设置】</string>
     <string name="tip_ipc_offline">摄像机已离线</string>
-    <string name="str_confirm_connect">确认连接</string>
+    <string name="str_confirm_connect">Confirm connect</string>
     <string name="tip_ipc_wifi_24g">暂只支持2.4GHz</string>
     <string name="hint_input_wifi_psw">请输入WI-FI密码</string>
     <string name="tip_no_video_current_day">当天无云视频，您可尝试切换日期查看</string>
@@ -374,7 +373,6 @@
     <string name="cash_video_other_device_already_subscribe_tip">当前门店已有摄像机开通了该服务</string>
     <string name="cash_video_item_content">校验风险交易</string>
     <string name="str_setting_md">闲时看店设置</string>
-    <string name="str_no_cash_video">暂无视频</string>
     <string name="cash_empty_data">暂无收银信息</string>
     <string name="cash_play_complete">播放完毕</string>
     <string name="cash_no_more_video">无更多视频了</string>

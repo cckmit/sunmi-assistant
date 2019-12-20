@@ -154,4 +154,8 @@
     <string name="text_minute">分</string>
     <string name="text_second">秒</string>
     <string name="str_please_open_camera">请允许打开相机！！</string>
+    <string name="str_no_cash_video">暂无视频</string>
+    <string name="str_open_cloud_storage">开通云存储</string>
+    <string name="tip_after_cloud_cash_video">订阅云存储服务后，即可查看收银视频</string>
+    <string name="tip_cloud_expired">云存储服务已过期，续订后即可查看收银视频</string>
 </resources>
