@@ -207,7 +207,7 @@
     <string name="company_create_time">Creation time</string>
     <string name="company_switch">Switch company</string>
     <string name="company_email">Contact email</string>
-    <string name="company_square">㎡</string>
+    <string name="company_square">| ㎡</string>
     <string name="company_show_now">Current company</string>
     <string name="str_change_company_contact">Change contact person</string>
     <string name="str_change_company_tel">Change contact information</string>

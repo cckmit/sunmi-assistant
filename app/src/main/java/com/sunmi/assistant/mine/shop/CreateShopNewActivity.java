@@ -9,8 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -64,7 +62,6 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.FileUtils;
-import sunmi.common.utils.NumberValueFilter;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SoftKeyboardStateHelper;
 import sunmi.common.utils.SpUtils;
@@ -102,8 +99,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     SettingItemEdittextLayout selShopNamePoi;
     @ViewById(R.id.et_detail_address)
     ClearableEditText etDetailAddress;
-    @ViewById(R.id.et_shop_square)
-    ClearableEditText etShopSquare;
+    @ViewById(R.id.sel_square)
+    SettingItemEdittextLayout selSquare;
     @ViewById(R.id.sel_contact)
     SettingItemEdittextLayout selContact;
     @ViewById(R.id.sel_tel)
@@ -192,9 +189,6 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 shortTip(getString(R.string.editetxt_max_length));
             }
         });
-        //门店面积
-        etShopSquare.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        etShopSquare.setFilters(new InputFilter[]{new NumberValueFilter()});
         //联系人
         selContact.getEditTextText().addTextChangedListener(new TextLengthWatcher(selContact.getEditTextText(), CONTACTS_MAX_LENGTH) {
             @Override
@@ -229,7 +223,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     /**
      * 品类
      */
-    @Click(R.id.rl_category)
+    @Click(R.id.tv_category_text)
     void categoryClick() {
         mPresenter.getCategory();
     }
@@ -259,7 +253,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             mCategoryRightCode = 0;
         }
         String address = etDetailAddress.getText() == null ? "" : etDetailAddress.getText().toString().trim();
-        String square = etShopSquare.getText() == null ? "" : etShopSquare.getText().toString().trim();
+        String square = selSquare.getEditTextText().getText() == null ? "" : selSquare.getEditTextText().getText().toString().trim();
         String contact = selContact.getEditTextText().getText() == null ? "" : selContact.getEditTextText().getText().toString().trim();
         //create
         mPresenter.createShop(companyId, shopName, mProvinceId, mCityId, mAreaId, address,
@@ -304,7 +298,6 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
 
     }
 
-
     /**
      * 门店创建成功
      *
@@ -326,7 +319,6 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             GetUserInfoUtils.userInfo(this, companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
         }
     }
-
 
     /**
      * 门店创建失败
@@ -429,7 +421,6 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         inputManager.hideSoftInputFromWindow(selShopNamePoi.getEditTextText().getWindowToken(), 0);
     }
 
-
     /**
      * 第一个参数表示搜索字符串
      * 第二个参数表示poi搜索类型
@@ -504,7 +495,6 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     /**
      * 经营品类
      */
-
     public void showCategoryDialog(final Context context, List<ShopCategoryResp.ShopTypeListBean> list) {
         Dialog dialog = new Dialog(context, R.style.BottomDialog);
         View inflate = LayoutInflater.from(context).inflate(R.layout.dialog_category, null);
