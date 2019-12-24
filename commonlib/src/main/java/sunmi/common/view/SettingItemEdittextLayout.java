@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -28,6 +29,7 @@ public class SettingItemEdittextLayout extends RelativeLayout {
     public TextView tvRight;
     public ClearableEditText etContent;
     public View divider;
+    private boolean isInterceptTouchEvent;
 
     private Context mContext;
 
@@ -54,6 +56,11 @@ public class SettingItemEdittextLayout extends RelativeLayout {
         this.mContext = context;
         initLayout();
         attributeSet(attrs);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return isInterceptTouchEvent;
     }
 
     private void initLayout() {
@@ -118,13 +125,11 @@ public class SettingItemEdittextLayout extends RelativeLayout {
         if (a.hasValue(R.styleable.SettingItemEdittextLayout_editTextHintColor)) {
             etContent.setHintTextColor(a.getColor(R.styleable.SettingItemEdittextLayout_editTextHintColor, defaultEditTextHintColor));
         }
-//        if (a.hasValue(R.styleable.SettingItemEdittextLayout_editable)) {
-////            etContent.setEnabled(false);
-//            etContent.setFocusable(false);
-//            etContent.setActivated(false);
-//            requestFocus();
-//            tvRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_right_arrow_small, 0);
-//        }
+        if (a.hasValue(R.styleable.SettingItemEdittextLayout_editable)) {
+            isInterceptTouchEvent = true;
+            etContent.setFocusable(false);
+            tvRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_right_arrow_small, 0);
+        }
         if (a.hasValue(R.styleable.SettingItemEdittextLayout_editTextRightPadding)) {
             etContent.setPadding(0, 0, (int) a.getDimension(R.styleable.SettingItemEdittextLayout_editTextRightPadding,
                     CommonHelper.dp2px(mContext, 20)), 0);
@@ -177,8 +182,14 @@ public class SettingItemEdittextLayout extends RelativeLayout {
         tvRight.setTextColor(color);
     }
 
-    public ClearableEditText getEditTextText() {
+    public ClearableEditText getEditText() {
         return etContent;
+    }
+
+    public String getEditTextText() {
+        if (etContent.getText() != null) {
+            return etContent.getText().toString();
+        } else return "";
     }
 
     public void setEditTextText(String text) {

@@ -15,7 +15,6 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -49,7 +48,6 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.base.recycle.BaseArrayAdapter;
@@ -63,7 +61,6 @@ import sunmi.common.router.AppApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.RegexUtils;
-import sunmi.common.utils.SoftKeyboardStateHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
@@ -83,7 +80,7 @@ import static android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
 @SuppressLint("Registered")
 @EActivity(R.layout.company_activity_shop_create_new)
 public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
-        implements ShopCreateContract.View, PoiSearch.OnPoiSearchListener {
+        implements ShopCreateContract.View, PoiSearch.OnPoiSearchListener, View.OnClickListener {
 
     private static final int CREATE_SHOP_ALREADY_EXIST = 5034;
     private static final int SHOP_NAME_MAX_LENGTH = 40;
@@ -105,18 +102,16 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     SettingItemEdittextLayout selContact;
     @ViewById(R.id.sel_tel)
     SettingItemEdittextLayout selTel;
-    @ViewById(R.id.tv_region_text)
-    TextView tvRegionText;
-    @ViewById(R.id.tv_category_text)
-    TextView tvCategoryText;
+    @ViewById(R.id.sel_region)
+    SettingItemEdittextLayout tvRegionText;
+    @ViewById(R.id.sel_category)
+    SettingItemEdittextLayout tvCategoryText;
     @ViewById(R.id.poi_recyclerView)
     RecyclerView recyclerViewPoi;
     @ViewById(R.id.rl_shop_name)
     RelativeLayout rlShopName;
     @ViewById(R.id.rl_detail_address)
     RelativeLayout rlDetailAddress;
-    @ViewById(R.id.tv_name_transparent)
-    TextView tvNameTransparent;
     @ViewById(R.id.tv_address_transparent)
     TextView tvAddressTransparent;
     @ViewById(R.id.btn_complete)
@@ -134,6 +129,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     int saasExist;
     @Extra
     boolean isLoginSuccessSwitchCompany;
+
     //区域
     private Button btnAreaPro, btnAreaCity, btnAreaRegion;
     private RecyclerView recyclerViewRegion;
@@ -157,9 +153,10 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new ShopCreatePresenter();
         mPresenter.attachView(this);
+        titleBar.getLeftLayout().setOnClickListener(this);
         initSet();
         poiSearchShopName();
-        etShopName.getEditTextText().addTextChangedListener(new TextWatcher() {
+        etShopName.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -190,7 +187,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             }
         });
         //联系人
-        selContact.getEditTextText().addTextChangedListener(new TextLengthWatcher(selContact.getEditTextText(), CONTACTS_MAX_LENGTH) {
+        selContact.getEditText().addTextChangedListener(new TextLengthWatcher(selContact.getEditText(), CONTACTS_MAX_LENGTH) {
             @Override
             public void onLengthExceed(EditText view, String content) {
                 shortTip(getString(R.string.editetxt_max_length));
@@ -205,17 +202,26 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     /**
      * 区域
      */
-    @Click(R.id.rl_region)
+    @Click(R.id.sel_region)
     void regionClick() {
-        showRegionDialog(this);
+        showRegionDialog(context);
+    }
+
+    @Click(R.id.tv_name_transparent)
+    void shopNameClick() {
+        if (TextUtils.isEmpty(tvRegionText.getEditTextText())) {
+            shortTip(getString(R.string.shop_input_region_tip));
+        } else {
+            showAllItemGroup(false);
+        }
     }
 
     /**
      * 区域是否已选
      */
-    @Click({R.id.tv_name_transparent, R.id.tv_address_transparent})
+    @Click(R.id.tv_address_transparent)
     void nameClick() {
-        if (TextUtils.isEmpty(tvRegionText.getText().toString())) {
+        if (TextUtils.isEmpty(tvRegionText.getEditTextText())) {
             shortTip(getString(R.string.shop_input_region_tip));
         }
     }
@@ -223,7 +229,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     /**
      * 品类
      */
-    @Click(R.id.tv_category_text)
+    @Click(R.id.sel_category)
     void categoryClick() {
         mPresenter.getCategory();
     }
@@ -233,17 +239,17 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
      */
     @Click(R.id.btn_complete)
     void completeClick() {
-        String shopRegion = tvRegionText.getText() == null ? null : tvRegionText.getText().toString().trim();
+        String shopRegion = tvRegionText.getEditTextText().trim();
         if (TextUtils.isEmpty(shopRegion) || mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
             shortTip(R.string.shop_input_region_tip);
             return;
         }
-        String shopName = etShopName.getEditTextText().getText() == null ? null : etShopName.getEditTextText().getText().toString().trim();
+        String shopName = etShopName.getEditTextText().trim();
         if (TextUtils.isEmpty(shopName)) {
             shortTip(R.string.company_shop_create_hint);
             return;
         }
-        String tel = selTel.getEditTextText().getText() == null ? "" : selTel.getEditTextText().getText().toString().trim();
+        String tel = selTel.getEditTextText().trim();
         if (!TextUtils.isEmpty(tel) && !RegexUtils.isCorrectAccount(tel)) {
             shortTip(R.string.str_invalid_phone);
             return;
@@ -253,8 +259,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             mCategoryRightCode = 0;
         }
         String address = etDetailAddress.getText() == null ? "" : etDetailAddress.getText().toString().trim();
-        String square = selSquare.getEditTextText().getText() == null ? "" : selSquare.getEditTextText().getText().toString().trim();
-        String contact = selContact.getEditTextText().getText() == null ? "" : selContact.getEditTextText().getText().toString().trim();
+        String square = selSquare.getEditTextText().trim();
+        String contact = selContact.getEditTextText().trim();
         //create
         mPresenter.createShop(companyId, shopName, mProvinceId, mCityId, mAreaId, address,
                 mCategoryLeftCode, mCategoryRightCode,
@@ -271,13 +277,26 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     @FocusChange(R.id.et_content)
     void poiSearchFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            showAllItemGroup(false);
-            selShopNamePoi.getEditTextText().requestFocus();
-            InputMethodManager inputManager = (InputMethodManager) selShopNamePoi.getEditTextText()
+            selShopNamePoi.getEditText().requestFocus();
+            InputMethodManager inputManager = (InputMethodManager) selShopNamePoi.getEditText()
                     .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             assert inputManager != null;
-            inputManager.showSoftInput(selShopNamePoi.getEditTextText(), 0);
+            inputManager.showSoftInput(selShopNamePoi.getEditText(), 0);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (groupPoi.isShown()) {
+            showAllItemGroup(true);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        onBackPressed();
     }
 
     /**
@@ -337,11 +356,11 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
 
     private void updateCompleteBtn() {
         boolean completeEnable = true;
-        String shopRegion = tvRegionText.getText() == null ? null : tvRegionText.getText().toString().trim();
+        String shopRegion = tvRegionText.getEditTextText().trim();
         if (TextUtils.isEmpty(shopRegion) || mProvinceId <= 0 || mCityId <= 0 || mAreaId <= 0) {
             completeEnable = false;
         }
-        String shopName = etShopName.getEditTextText().getText() == null ? null : etShopName.getEditTextText().getText().toString().trim();
+        String shopName = etShopName.getEditTextText().trim();
         if (TextUtils.isEmpty(shopName)) {
             completeEnable = false;
         }
@@ -350,15 +369,22 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
 
     private void showAllItemGroup(boolean allItem) {
         if (allItem) {
-            rlShopName.setVisibility(View.VISIBLE);
-            rlDetailAddress.setVisibility(View.VISIBLE);
+            hideSoftInputWindow();
             group.setVisibility(View.VISIBLE);
             groupPoi.setVisibility(View.GONE);
+            rlShopName.setVisibility(View.VISIBLE);
+            rlDetailAddress.setVisibility(View.VISIBLE);
         } else {
             group.setVisibility(View.GONE);
+            groupPoi.setVisibility(View.VISIBLE);
             rlShopName.setVisibility(View.GONE);
             rlDetailAddress.setVisibility(View.GONE);
-            groupPoi.setVisibility(View.VISIBLE);
+            selShopNamePoi.getEditText().setFocusable(true);
+            selShopNamePoi.getEditText().setFocusableInTouchMode(true);
+            selShopNamePoi.getEditText().requestFocus();
+            InputMethodManager inputManager = (InputMethodManager) selShopNamePoi.getEditText()
+                    .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.showSoftInput(selShopNamePoi.getEditText(), 0);
         }
     }
 
@@ -366,26 +392,9 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
      * 门店名称 高德搜索poi搜索
      */
     private void poiSearchShopName() {
-        selShopNamePoi.getEditTextText().setImeOptions(EditorInfo.IME_ACTION_DONE);
-        SoftKeyboardStateHelper softKeyboardStateHelper = new SoftKeyboardStateHelper(findViewById(R.id.const_layout));
-        softKeyboardStateHelper.addSoftKeyboardStateListener(new SoftKeyboardStateHelper.SoftKeyboardStateListener() {
-            @Override
-            public void onSoftKeyboardOpened(int keyboardHeightInPx) {
-                recyclerViewPoi.getLayoutParams().height = CommonHelper.getScreenHeight(context) -
-                        (int) context.getResources().getDimension(R.dimen.dp_48) - keyboardHeightInPx;
-            }
-
-            @Override
-            public void onSoftKeyboardClosed() {
-                if (group.getVisibility() == View.VISIBLE) {
-                    return;
-                }
-                showAllItemGroup(true);
-                etShopName.setEditTextText(Objects.requireNonNull(selShopNamePoi.getEditTextText().getText()).toString());
-            }
-        });
+        selShopNamePoi.getEditText().setImeOptions(EditorInfo.IME_ACTION_DONE);
         //字数统计
-        selShopNamePoi.getEditTextText().addTextChangedListener(new TextLengthWatcher(selShopNamePoi.getEditTextText(), SHOP_NAME_MAX_LENGTH) {
+        selShopNamePoi.getEditText().addTextChangedListener(new TextLengthWatcher(selShopNamePoi.getEditText(), SHOP_NAME_MAX_LENGTH) {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 super.onTextChanged(s, start, before, count);
@@ -395,30 +404,29 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             }
         });
         //监听键盘按钮事件
-        selShopNamePoi.getEditTextText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId,
-                                          KeyEvent event) {
-                LogCat.e(TAG, "111 onEditorAction");
-                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO || actionId == EditorInfo.IME_ACTION_NEXT) {
-                    lat = "";
-                    lng = "";
-                    hideSoftInputWindow();
-                    return true;
-                }
-                return false;
+        selShopNamePoi.getEditText().setOnEditorActionListener((v, actionId, event) -> {
+            LogCat.e(TAG, "111 onEditorAction");
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO
+                    || actionId == EditorInfo.IME_ACTION_NEXT) {
+                lat = "";
+                lng = "";
+                setShopName();
+                return true;
             }
+            return false;
         });
     }
 
-    private void hideSoftInputWindow() {
+    private void setShopName() {
         showAllItemGroup(true);
-        etShopName.setEditTextText(Objects.requireNonNull(selShopNamePoi.getEditTextText().getText()).toString());
+        etShopName.setEditTextText(selShopNamePoi.getEditTextText());
+    }
 
-        InputMethodManager inputManager = (InputMethodManager) selShopNamePoi.getEditTextText()
+    private void hideSoftInputWindow() {
+        InputMethodManager inputManager = (InputMethodManager) selShopNamePoi.getEditText()
                 .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         assert inputManager != null;
-        inputManager.hideSoftInputFromWindow(selShopNamePoi.getEditTextText().getWindowToken(), 0);
+        inputManager.hideSoftInputFromWindow(selShopNamePoi.getEditText().getWindowToken(), 0);
     }
 
     /**
@@ -463,13 +471,13 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 holder.itemView.setOnClickListener(v -> {
                     index = holder.getAdapterPosition();
                     selShopNamePoi.setEditTextText(poiItem.getTitle());
-                    CommonHelper.setSelectionEnd(selShopNamePoi.getEditTextText());
+                    CommonHelper.setSelectionEnd(selShopNamePoi.getEditText());
                     etShopName.setEditTextText(poiItem.getTitle());
                     etDetailAddress.setText(poiItem.getSnippet());
                     lat = String.valueOf(poiItem.getLatLonPoint().getLatitude());
                     lng = String.valueOf(poiItem.getLatLonPoint().getLongitude());
                     notifyDataSetChanged();
-                    hideSoftInputWindow();
+                    setShopName();
                 });
                 if (index == holder.getAdapterPosition()) {
                     holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.black_15));
@@ -487,7 +495,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         SpannableStringBuilder builder = new SpannableStringBuilder(string);
         int indexOf = string.indexOf(keyWord);
         if (indexOf != -1) {
-            builder.setSpan(new ForegroundColorSpan(color), indexOf, indexOf + keyWord.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new ForegroundColorSpan(color), indexOf,
+                    indexOf + keyWord.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         return builder;
     }
@@ -530,7 +539,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                         shortTip(getString(R.string.company_shop_select_category));
                         return;
                     }
-                    tvCategoryText.setText(String.format("%s %s", mCategoryLeftName, mCategoryRightName));
+                    tvCategoryText.setEditTextText(String.format("%s %s", mCategoryLeftName, mCategoryRightName));
                     dialog.dismiss();
                     break;
                 default:
@@ -623,10 +632,9 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                         return;
                     }
                     dialog.dismiss();
-                    tvRegionText.setText(String.format("%s %s %s", btnAreaPro.getText().toString(),
+                    tvRegionText.setEditTextText(String.format("%s %s %s", btnAreaPro.getText().toString(),
                             btnAreaCity.getText().toString(), btnAreaRegion.getText().toString()));
                     updateCompleteBtn();
-                    tvNameTransparent.setVisibility(View.GONE);
                     tvAddressTransparent.setVisibility(View.GONE);
                     break;
                 default:

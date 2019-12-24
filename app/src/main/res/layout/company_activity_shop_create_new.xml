@@ -36,75 +36,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
-    <RelativeLayout
-        android:id="@+id/rl_region"
+    <sunmi.common.view.SettingItemEdittextLayout
+        android:id="@+id/sel_region"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_48"
-        android:background="@color/c_white"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        app:dividerShow="true"
+        app:editTextHint="@string/company_shop_region_hint"
+        app:editTextInputType="phone"
+        app:editable="false"
+        app:imageLeft="@mipmap/ic_required"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title_tip">
-
-        <ImageView
-            android:id="@+id/iv_region_mark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_10"
-            android:background="@mipmap/ic_required" />
-
-        <TextView
-            android:id="@+id/tv_region"
-            android:layout_width="@dimen/dp_68"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_20"
-            android:text="@string/str_area"
-            android:textColor="@color/text_normal"
-            android:textSize="@dimen/sp_16" />
-
-        <TextView
-            android:id="@+id/tv_region_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_108"
-            android:layout_marginEnd="@dimen/dp_36"
-            android:ellipsize="end"
-            android:hint="@string/company_shop_region_hint"
-            android:maxLines="1"
-            android:textColor="@color/text_main"
-            android:textColorHint="@color/text_disable"
-            android:textSize="@dimen/sp_16" />
-
-        <ImageView
-            android:id="@+id/iv_region_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:background="@drawable/ic_right_arrow_small" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0_5"
-            android:layout_alignParentBottom="true"
-            android:background="@color/c_divider" />
-    </RelativeLayout>
-
-    <!--<sunmi.common.view.SettingItemEdittextLayout-->
-    <!--android:id="@+id/sel_region"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--app:dividerShow="true"-->
-    <!--app:editTextHint="@string/company_shop_region_hint"-->
-    <!--app:editTextInputType="phone"-->
-    <!--app:imageLeft="@mipmap/ic_required"-->
-    <!--app:layout_constraintEnd_toEndOf="parent"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toBottomOf="@id/rl_region"-->
-    <!--app:leftText="@string/str_area" />-->
+        app:layout_constraintTop_toBottomOf="@id/tv_title_tip"
+        app:leftText="@string/str_area" />
 
     <RelativeLayout
         android:id="@+id/rl_shop_name"
@@ -115,7 +60,7 @@
         android:focusableInTouchMode="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_region">
+        app:layout_constraintTop_toBottomOf="@id/sel_region">
 
         <sunmi.common.view.SettingItemEdittextLayout
             android:id="@+id/sel_shop_name"
@@ -131,9 +76,7 @@
             android:id="@+id/tv_name_transparent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_108"
-            android:background="@color/transparent"
-            android:visibility="visible" />
+            android:background="@color/transparent" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -172,9 +115,7 @@
             android:id="@+id/tv_address_transparent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_108"
-            android:background="@color/transparent"
-            android:visibility="visible" />
+            android:background="@color/transparent" />
 
         <View
             android:layout_width="match_parent"
@@ -183,66 +124,18 @@
             android:background="@color/c_divider" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/rl_category"
+    <sunmi.common.view.SettingItemEdittextLayout
+        android:id="@+id/sel_category"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:background="@color/c_white"
+        app:dividerShow="true"
+        app:editTextHint="@string/company_shop_select_category"
+        app:editable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_detail_address">
-
-        <TextView
-            android:id="@+id/tv_category"
-            android:layout_width="@dimen/dp_68"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_20"
-            android:text="@string/str_business_category"
-            android:textColor="@color/text_normal"
-            android:textSize="@dimen/sp_16" />
-
-        <TextView
-            android:id="@+id/tv_category_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_108"
-            android:layout_marginEnd="@dimen/dp_36"
-            android:ellipsize="end"
-            android:hint="@string/company_shop_select_category"
-            android:maxLines="1"
-            android:textColor="@color/text_main"
-            android:textColorHint="@color/text_disable"
-            android:textSize="@dimen/sp_16" />
-
-        <ImageView
-            android:id="@+id/iv_category_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:background="@drawable/ic_right_arrow_small" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0_5"
-            android:layout_alignParentBottom="true"
-            android:background="@color/c_divider" />
-    </RelativeLayout>
-
-    <!--<sunmi.common.view.SettingItemEdittextLayout-->
-    <!--android:id="@+id/sel_category1"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--app:dividerShow="true"-->
-    <!--app:editTextHint="@string/company_shop_select_category"-->
-    <!--app:layout_constraintEnd_toEndOf="parent"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toBottomOf="@id/rl_detail_address"-->
-    <!--app:leftText="@string/str_business_category" />-->
+        app:layout_constraintTop_toBottomOf="@id/rl_detail_address"
+        app:leftText="@string/str_business_category" />
 
     <sunmi.common.view.SettingItemEdittextLayout
         android:id="@+id/sel_square"
@@ -253,7 +146,7 @@
         app:editTextInputType="number|numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rl_category"
+        app:layout_constraintTop_toBottomOf="@id/sel_category"
         app:leftText="@string/company_shop_area"
         app:rightText="@string/company_square"
         app:rightTextColor="@color/text_main"
@@ -298,7 +191,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:constraint_referenced_ids="btn_complete,sel_tel,sel_contact,sel_square,rl_category,rl_region,tv_title_tip" />
+        app:constraint_referenced_ids="btn_complete,sel_tel,sel_contact,sel_square,sel_category,sel_region,tv_title_tip" />
 
     <sunmi.common.view.SettingItemEdittextLayout
         android:id="@+id/sel_shop_name_poi"
@@ -308,7 +201,6 @@
         android:background="@color/c_white"
         app:editTextHint="@string/company_shop_create_hint"
         app:editTextInputType="text"
-        app:editTextRightPadding="@dimen/dp_50"
         app:editTextSize="@dimen/sp_16"
         app:imageLeft="@mipmap/ic_required"
         app:layout_constraintEnd_toEndOf="parent"

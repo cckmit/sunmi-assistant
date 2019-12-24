@@ -106,6 +106,7 @@
         <attr name="editTextSize" format="dimension" />
         <attr name="editTextColor" format="color" />
         <attr name="editTextHintColor" format="color" />
+        <attr name="editable" format="boolean" />
         <attr name="editTextRightPadding" format="dimension" />
         <attr name="rightText" />
         <attr name="rightTextSize" />
