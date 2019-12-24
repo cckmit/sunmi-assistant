@@ -83,8 +83,8 @@ import sunmi.common.view.dialog.CommonDialog;
  */
 @EActivity(resName = "activity_ipc_manager")
 public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
-        implements IpcManagerContract.View, SurfaceHolder.Callback,
-        View.OnClickListener, VolumeHelper.VolumeChangeListener, P2pService.OnPlayStatusChangedListener,
+        implements IpcManagerContract.View, SurfaceHolder.Callback, View.OnClickListener,
+        VolumeHelper.VolumeChangeListener, P2pService.OnPlayStatusChangedListener,
         SeekBar.OnSeekBarChangeListener {
 
     private final static int REQ_SDCARD_PLAYBACK = 10;
@@ -352,8 +352,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        mPresenter.adjustVideo(rgAdjust.indexOfChild(rgAdjust.findViewById(rgAdjust.getCheckedRadioButtonId())),
-                context, device.getModel(), device.getDeviceid(), seekBar.getProgress());
+        adjustVideo(rgAdjust.indexOfChild(rgAdjust.findViewById(rgAdjust.getCheckedRadioButtonId())),
+                device.getModel(), device.getDeviceid(), seekBar.getProgress());
     }
 
     @Click(resName = "rl_top")
@@ -913,6 +913,19 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                     .create();
         }
         qualityPop.show();
+    }
+
+    public void adjustVideo(int type, String model, String sn, int value) {
+        if (type == 0) {
+            compensation = value;
+            IPCCall.getInstance().fsAdjustBrightness(context, model, sn, value);
+        } else if (type == 1) {
+            contrast = value;
+            IPCCall.getInstance().fsAdjustContrast(context, model, sn, value);
+        } else if (type == 2) {
+            saturation = value;
+            IPCCall.getInstance().fsAdjustSaturation(context, model, sn, value);
+        }
     }
 
     private void initManageList() {

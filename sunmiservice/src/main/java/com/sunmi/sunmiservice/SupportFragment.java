@@ -1,6 +1,7 @@
 package com.sunmi.sunmiservice;
 
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,9 +43,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
-public class SupportFragment extends BaseFragment
-        implements View.OnClickListener {
-
+public class SupportFragment extends BaseFragment implements View.OnClickListener {
 
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
@@ -117,7 +116,7 @@ public class SupportFragment extends BaseFragment
         if (isFastClick(500)) {
             return;
         }
-        launchMiniProgram(SunmiServiceConfig.WECHART_USER_NAME, SunmiServiceConfig.WECHAT_PATH,
+        launchMiniProgram(SunmiServiceConfig.WECHAT_USER_NAME, SunmiServiceConfig.WECHAT_PATH,
                 SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
@@ -144,7 +143,9 @@ public class SupportFragment extends BaseFragment
         if (!checkNetwork() || isFastClick(500)) {
             return;
         }
-
+        launchMiniProgram(SunmiServiceConfig.WECHAT_USER_NAME_QINGTUAN,
+                SunmiServiceConfig.WECHAT_PATH_QINGTUAN + getParams(),
+                SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
     private boolean checkNetwork() {
@@ -205,27 +206,6 @@ public class SupportFragment extends BaseFragment
         }
     }
 
-    private void launchMiniProgram(String userName, String path, int miniProgramType) {
-        if (api == null) return;
-        if (!api.isWXAppInstalled()) {
-            shortTip(R.string.tip_wechat_not_installed);
-            return;
-        }
-
-        int miniProgramTypeInt = WXMiniProgramObject.MINIPTOGRAM_TYPE_RELEASE;
-        try {
-            miniProgramTypeInt = miniProgramType;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        WXLaunchMiniProgram.Req miniProgramReq = new WXLaunchMiniProgram.Req();
-        miniProgramReq.userName = userName;// 小程序原始id
-        miniProgramReq.path = path; //拉起小程序页面的可带参路径，不填默认拉起小程序首页
-        miniProgramReq.miniprogramType = miniProgramTypeInt;// 可选打开 开发版，体验版和正式版
-        api.sendReq(miniProgramReq);
-    }
-
     private void regToWx() {
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
         api = WXAPIFactory.createWXAPI(mActivity, SunmiServiceConfig.WECHAT_APP_ID, true);
@@ -279,5 +259,32 @@ public class SupportFragment extends BaseFragment
         //调用api接口，发送数据到微信
         api.sendResp(resp);
     }
+
+    private void launchMiniProgram(String userName, String path, int miniProgramType) {
+        if (api == null) return;
+        if (!api.isWXAppInstalled()) {
+            shortTip(R.string.tip_wechat_not_installed);
+            return;
+        }
+
+        int miniProgramTypeInt = WXMiniProgramObject.MINIPTOGRAM_TYPE_RELEASE;
+        try {
+            miniProgramTypeInt = miniProgramType;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        WXLaunchMiniProgram.Req miniProgramReq = new WXLaunchMiniProgram.Req();
+        miniProgramReq.userName = userName;// 小程序原始id
+        miniProgramReq.path = path; //拉起小程序页面的可带参路径，不填默认拉起小程序首页
+        miniProgramReq.miniprogramType = miniProgramTypeInt;// 可选打开 开发版，体验版和正式版
+        api.sendReq(miniProgramReq);
+    }
+
+    private String getParams() {
+        String param = "{\"param\":{\"name\":\"" + SpUtils.getUsername() + "\",\"mobile\":\"" + SpUtils.getMobile() + "\"}}";
+        return new String(Base64.encode(param.getBytes(), Base64.NO_WRAP));
+    }
+
 
 }
