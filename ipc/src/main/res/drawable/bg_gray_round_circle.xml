@@ -11,7 +11,7 @@
 
     <item>
         <shape android:shape="oval">
-            <stroke android:width="@dimen/dp_1" android:color="@color/white_60a" />
+            <stroke android:width="@dimen/dp_0_5" android:color="@color/white_60a" />
             <solid android:color="@color/transparent" />
             <corners android:radius="@dimen/dp_16" />
             <size android:width="@dimen/dp_16" android:height="@dimen/dp_16" />
