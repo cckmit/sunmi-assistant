@@ -193,14 +193,4 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         }
     }
 
-    public void adjustVideo(int type, Context context, String model, String sn, int value) {
-        if (type == 0) {
-            IPCCall.getInstance().fsAdjustBrightness(context, model, sn, value);
-        } else if (type == 1) {
-            IPCCall.getInstance().fsAdjustContrast(context, model, sn, value);
-        } else if (type == 2) {
-            IPCCall.getInstance().fsAdjustSaturation(context, model, sn, value);
-        }
-    }
-
 }

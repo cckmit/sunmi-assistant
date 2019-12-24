@@ -28,8 +28,8 @@
         android:background="@color/c_white"
         android:imeOptions="actionSearch"
         android:maxLength="40"
-        android:paddingEnd="@dimen/dp_25"
         android:paddingStart="@dimen/dp_25"
+        android:paddingEnd="@dimen/dp_25"
         android:singleLine="true"
         android:textColor="@color/text_main"
         android:textColorHint="@color/text_caption"
@@ -59,33 +59,23 @@
             android:background="@color/c_white"
             android:imeOptions="actionSearch"
             android:maxLength="40"
-            android:paddingEnd="@dimen/dp_80"
             android:paddingStart="@dimen/dp_25"
+            android:paddingEnd="@dimen/dp_80"
             android:singleLine="true"
             android:textColor="@color/text_main"
             android:textColorHint="@color/text_caption"
             android:textSize="@dimen/sp_18" />
 
-        <View
-            android:id="@+id/vw_line"
-            android:layout_width="@dimen/dp_1"
-            android:layout_height="@dimen/dp_20"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dp_50"
-            android:background="@color/text_caption" />
-
         <TextView
             android:id="@+id/tv_square"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/dp_20"
             android:gravity="center_vertical"
             android:text="@string/company_square"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_20" />
     </RelativeLayout>
-
 
 </android.support.constraint.ConstraintLayout>

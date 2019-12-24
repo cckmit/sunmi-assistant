@@ -396,4 +396,8 @@
     <string name="str_abnormal_behavior">异常行为</string>
     <string name="btn_protect_immediately">立刻防护</string>
     <string name="tip_cash_loss_prevent">AI技术更好识别</string>
+    <string name="str_brightness">亮度</string>
+    <string name="str_contrast">对比度</string>
+    <string name="str_saturation">饱和度</string>
+    <string name="str_focus_adjust">对焦微调</string>
 </resources>
