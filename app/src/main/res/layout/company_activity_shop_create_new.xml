@@ -36,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
-    <sunmi.common.view.SettingItemEdittextLayout
+    <sunmi.common.view.SettingItemEditTextLayout
         android:id="@+id/sel_region"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sel_region">
 
-        <sunmi.common.view.SettingItemEdittextLayout
+        <sunmi.common.view.SettingItemEditTextLayout
             android:id="@+id/sel_shop_name"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
@@ -124,7 +124,7 @@
             android:background="@color/c_divider" />
     </RelativeLayout>
 
-    <sunmi.common.view.SettingItemEdittextLayout
+    <sunmi.common.view.SettingItemEditTextLayout
         android:id="@+id/sel_category"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -137,7 +137,7 @@
         app:layout_constraintTop_toBottomOf="@id/rl_detail_address"
         app:leftText="@string/str_business_category" />
 
-    <sunmi.common.view.SettingItemEdittextLayout
+    <sunmi.common.view.SettingItemEditTextLayout
         android:id="@+id/sel_square"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
         app:rightTextColor="@color/text_main"
         app:rightTextSize="@dimen/sp_20" />
 
-    <sunmi.common.view.SettingItemEdittextLayout
+    <sunmi.common.view.SettingItemEditTextLayout
         android:id="@+id/sel_contact"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
         app:layout_constraintTop_toBottomOf="@id/sel_square"
         app:leftText="@string/company_shop_contact" />
 
-    <sunmi.common.view.SettingItemEdittextLayout
+    <sunmi.common.view.SettingItemEditTextLayout
         android:id="@+id/sel_tel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
         android:visibility="visible"
         app:constraint_referenced_ids="btn_complete,sel_tel,sel_contact,sel_square,sel_category,sel_region,tv_title_tip" />
 
-    <sunmi.common.view.SettingItemEdittextLayout
+    <sunmi.common.view.SettingItemEditTextLayout
         android:id="@+id/sel_shop_name_poi"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_48"

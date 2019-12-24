@@ -21,7 +21,7 @@ import sunmi.common.utils.CommonHelper;
  * @author yangShiJie
  * @date 2019-10-11
  */
-public class SettingItemEdittextLayout extends RelativeLayout {
+public class SettingItemEditTextLayout extends RelativeLayout {
 
     public RelativeLayout parentLayout;
     public ImageView ivMark;
@@ -39,19 +39,19 @@ public class SettingItemEdittextLayout extends RelativeLayout {
     private int defaultEditTextHintColor = 0xFFA1A7B3;
     private int defaultDividerColor = 0x1A333C4F;
 
-    public SettingItemEdittextLayout(Context context) {
+    public SettingItemEditTextLayout(Context context) {
         super(context);
         this.mContext = context;
     }
 
-    public SettingItemEdittextLayout(Context context, AttributeSet attrs) {
+    public SettingItemEditTextLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.mContext = context;
         initLayout();
         attributeSet(attrs);
     }
 
-    public SettingItemEdittextLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SettingItemEditTextLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.mContext = context;
         initLayout();
@@ -74,76 +74,76 @@ public class SettingItemEdittextLayout extends RelativeLayout {
     }
 
     private void attributeSet(AttributeSet attrs) {
-        TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.SettingItemEdittextLayout);
-        float height = a.getDimension(R.styleable.SettingItemEdittextLayout_parentHeight, CommonHelper.dp2px(mContext, 48));
+        TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.SettingItemEditTextLayout);
+        float height = a.getDimension(R.styleable.SettingItemEditTextLayout_parentHeight, CommonHelper.dp2px(mContext, 48));
 
         if (parentLayout != null) {
             parentLayout.getLayoutParams().height = (int) height;
         }
 
-        Drawable leftMark = a.getDrawable(R.styleable.SettingItemEdittextLayout_imageLeft);
+        Drawable leftMark = a.getDrawable(R.styleable.SettingItemEditTextLayout_imageLeft);
         ivMark.setImageDrawable(leftMark);
 
-        float leftImageSize = a.getDimension(R.styleable.SettingItemEdittextLayout_imageLeftSize, CommonHelper.dp2px(mContext, 0));
+        float leftImageSize = a.getDimension(R.styleable.SettingItemEditTextLayout_imageLeftSize, CommonHelper.dp2px(mContext, 0));
         if (leftImageSize > 0) {
             ivMark.getLayoutParams().width = (int) leftImageSize;
             ivMark.getLayoutParams().height = (int) leftImageSize;
         }
 
         //左侧textView
-        tvLeft.setText(a.getString(R.styleable.SettingItemEdittextLayout_leftText));
-        if (a.hasValue(R.styleable.SettingItemEdittextLayout_leftTextSize)) {
+        tvLeft.setText(a.getString(R.styleable.SettingItemEditTextLayout_leftText));
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_leftTextSize)) {
             tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    a.getDimensionPixelSize(R.styleable.SettingItemEdittextLayout_leftTextSize, CommonHelper.dp2px(mContext, 16)));
+                    a.getDimensionPixelSize(R.styleable.SettingItemEditTextLayout_leftTextSize, CommonHelper.dp2px(mContext, 16)));
         }
 
-        if (a.hasValue(R.styleable.SettingItemEdittextLayout_leftTextColor)) {
-            tvLeft.setTextColor(a.getColor(R.styleable.SettingItemEdittextLayout_leftTextColor, defaultLeftTextColor));
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_leftTextColor)) {
+            tvLeft.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_leftTextColor, defaultLeftTextColor));
         }
 
         //右侧textView
-        tvRight.setText(a.getString(R.styleable.SettingItemEdittextLayout_rightText));
-        if (a.hasValue(R.styleable.SettingItemEdittextLayout_rightTextSize)) {
+        tvRight.setText(a.getString(R.styleable.SettingItemEditTextLayout_rightText));
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_rightTextSize)) {
             tvRight.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    a.getDimensionPixelSize(R.styleable.SettingItemEdittextLayout_rightTextSize, CommonHelper.dp2px(mContext, 16)));
+                    a.getDimensionPixelSize(R.styleable.SettingItemEditTextLayout_rightTextSize, CommonHelper.dp2px(mContext, 16)));
         }
-        if (a.hasValue(R.styleable.SettingItemEdittextLayout_rightTextColor)) {
-            tvRight.setTextColor(a.getColor(R.styleable.SettingItemEdittextLayout_rightTextColor, defaultRightTextColor));
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_rightTextColor)) {
+            tvRight.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_rightTextColor, defaultRightTextColor));
         }
 
         //editText
-        etContent.setText(a.getString(R.styleable.SettingItemEdittextLayout_editTextContent));
-        etContent.setHint(a.getString(R.styleable.SettingItemEdittextLayout_editTextHint));
-        etContent.setInputType(a.getInt(R.styleable.SettingItemEdittextLayout_editTextInputType, EditorInfo.TYPE_NULL));
-        if (a.hasValue(R.styleable.SettingItemEdittextLayout_editTextSize)) {
+        etContent.setText(a.getString(R.styleable.SettingItemEditTextLayout_editTextContent));
+        etContent.setHint(a.getString(R.styleable.SettingItemEditTextLayout_editTextHint));
+        etContent.setInputType(a.getInt(R.styleable.SettingItemEditTextLayout_editTextInputType, EditorInfo.TYPE_NULL));
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_editTextSize)) {
             etContent.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    a.getDimension(R.styleable.SettingItemEdittextLayout_editTextSize, CommonHelper.dp2px(mContext, 16)));
+                    a.getDimension(R.styleable.SettingItemEditTextLayout_editTextSize, CommonHelper.dp2px(mContext, 16)));
         }
-        if (a.hasValue(R.styleable.SettingItemEdittextLayout_editTextColor)) {
-            etContent.setTextColor(a.getColor(R.styleable.SettingItemEdittextLayout_editTextColor, defaultEditTextColor));
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_editTextColor)) {
+            etContent.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_editTextColor, defaultEditTextColor));
         }
-        if (a.hasValue(R.styleable.SettingItemEdittextLayout_editTextHintColor)) {
-            etContent.setHintTextColor(a.getColor(R.styleable.SettingItemEdittextLayout_editTextHintColor, defaultEditTextHintColor));
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_editTextHintColor)) {
+            etContent.setHintTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_editTextHintColor, defaultEditTextHintColor));
         }
-        if (a.hasValue(R.styleable.SettingItemEdittextLayout_editable)) {
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_editable)) {
             isInterceptTouchEvent = true;
             etContent.setFocusable(false);
             tvRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_right_arrow_small, 0);
         }
-        if (a.hasValue(R.styleable.SettingItemEdittextLayout_editTextRightPadding)) {
-            etContent.setPadding(0, 0, (int) a.getDimension(R.styleable.SettingItemEdittextLayout_editTextRightPadding,
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_editTextRightPadding)) {
+            etContent.setPadding(0, 0, (int) a.getDimension(R.styleable.SettingItemEditTextLayout_editTextRightPadding,
                     CommonHelper.dp2px(mContext, 20)), 0);
         }
 
-        boolean dividerShow = a.getBoolean(R.styleable.SettingItemEdittextLayout_dividerShow, false);
+        boolean dividerShow = a.getBoolean(R.styleable.SettingItemEditTextLayout_dividerShow, false);
         //分割线
         if (dividerShow) {
             divider.setVisibility(VISIBLE);
-            if (a.hasValue(R.styleable.SettingItemEdittextLayout_dividerColor)) {
-                divider.setBackgroundColor(a.getColor(R.styleable.SettingItemEdittextLayout_dividerColor, defaultDividerColor));
+            if (a.hasValue(R.styleable.SettingItemEditTextLayout_dividerColor)) {
+                divider.setBackgroundColor(a.getColor(R.styleable.SettingItemEditTextLayout_dividerColor, defaultDividerColor));
             }
-            if (a.hasValue(R.styleable.SettingItemEdittextLayout_dividerHeight)) {
-                float dividerHeight = a.getDimension(R.styleable.SettingItemEdittextLayout_dividerHeight, mContext.getResources().getDimension(R.dimen.dp_0_5));
+            if (a.hasValue(R.styleable.SettingItemEditTextLayout_dividerHeight)) {
+                float dividerHeight = a.getDimension(R.styleable.SettingItemEditTextLayout_dividerHeight, mContext.getResources().getDimension(R.dimen.dp_0_5));
                 ViewGroup.LayoutParams lp = divider.getLayoutParams();
                 lp.height = (int) dividerHeight;
                 divider.setLayoutParams(lp);
