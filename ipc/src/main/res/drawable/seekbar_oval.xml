@@ -2,14 +2,13 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
 
-    <size
-        android:width="19dp"
-        android:height="19dp" />
-    <solid android:color="@color/c_white" />
     <stroke
-        android:width="0.4dp"
-        android:color="#CBCBCB" />
-
-    <corners android:radius="5dp" />
+        android:width="@dimen/dp_1"
+        android:color="@color/c_divider" />
+    <solid android:color="@color/c_white" />
+    <corners android:radius="@dimen/dp_8" />
+    <size
+        android:width="@dimen/dp_16"
+        android:height="@dimen/dp_16" />
 
 </shape>

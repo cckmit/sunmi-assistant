@@ -31,4 +31,12 @@ public class OpcodeConstants {
     public static final int sdcardFormat = 0x3058;
     public static final int ipcRelaunch = 0x3170;
 
+    public static final int fsAdjustFocusReset = 0x3167;//设置聚焦微复位
+    public static final int fsAdjustFocusAdd = 0x3168;//设置聚焦微调加（+）的接口
+    public static final int fsAdjustFocusMinus = 0x3169;//设置聚焦微调加（-）的接口
+    public static final int fsAdjustBrightness = 0x316a;//设置图像亮度参数接口
+    public static final int fsAdjustContrast = 0x316b;//设置图像对比度参数接口
+    public static final int fsAdjustSaturation = 0x316c;//设置图像饱和度参数接口
+    public static final int getVideoParams = 0x316d;//获取图像配置当前参数请求
+
 }

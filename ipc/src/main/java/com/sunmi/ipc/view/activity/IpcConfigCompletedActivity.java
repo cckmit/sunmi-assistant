@@ -15,7 +15,7 @@ import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.setting.IpcSettingSdcardActivity_;
-import com.sunmi.ipc.view.activity.setting.RecognitionSettingActivity_;
+import com.sunmi.ipc.view.activity.setting.ScreenAdjustSettingActivity_;
 import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
@@ -417,7 +417,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
-        RecognitionSettingActivity_.intent(this)
+        ScreenAdjustSettingActivity_.intent(this)
                 .mDevice(device)
                 .mVideoRatio(16f / 9f)
                 .start();

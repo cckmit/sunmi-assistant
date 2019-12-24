@@ -49,6 +49,12 @@
 
             </RelativeLayout>
 
+            <include
+                layout="@layout/include_adjust_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_video" />
+
             <LinearLayout
                 android:id="@+id/ll_portrait_controller_bar"
                 android:layout_width="match_parent"
@@ -131,7 +137,8 @@
                 android:id="@+id/rv_manager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ll_portrait_controller_bar"
+                android:layout_below="@+id/rl_video"
+                android:layout_marginTop="@dimen/dp_56"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:fadingEdge="none"
                 android:focusable="false"
