@@ -161,10 +161,9 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
         WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
     }
 
-
     @Click(resName = "tv_recruit")
     void recruitClick() {
-        if (!netWorkError() || isFastClick(500)) {
+        if (netWorkError() || isFastClick(500)) {
             return;
         }
         launchMiniProgram(SunmiServiceConfig.WECHAT_USER_NAME_QINGTUAN,
