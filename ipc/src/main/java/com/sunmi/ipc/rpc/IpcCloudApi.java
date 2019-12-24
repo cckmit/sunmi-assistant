@@ -628,6 +628,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * shop_id	是	int64	店铺id
      * device_id	否	int64	设备id 不传为查询所有设
      */
+    @Override
     public void getStorageList(List<String> snList, RetrofitCallback<ServiceListResp> callback) {
         try {
             JSONArray array = new JSONArray(snList);

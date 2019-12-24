@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.ValueCallback;
@@ -20,7 +19,6 @@ import com.alipay.sdk.util.H5PayResultModel;
 import com.sunmi.sunmiservice.H5FaceWebChromeClient;
 import com.sunmi.sunmiservice.JSCall;
 import com.sunmi.sunmiservice.R;
-import com.sunmi.sunmiservice.WBH5FaceVerifySDK;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.RouterRequest;
 
@@ -39,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -193,7 +192,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    view.goBack();
+                                    view.loadUrl(CommonConstants.H5_ORDER_MANAGE);
                                 }
                             });
                         }
@@ -248,7 +247,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                loadError();
+//                loadError();
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
@@ -310,6 +309,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
             return;
         }
         webView.clearCache(true);
+        webView.clearHistory();
         super.onBackPressed();
     }
 }

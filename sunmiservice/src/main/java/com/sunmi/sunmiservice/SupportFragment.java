@@ -59,6 +59,26 @@ public class SupportFragment extends BaseFragment
     private IWXAPI api;// 第三方app和微信通信的openApi接口
     private ArrayList<CashVideoServiceBean> cashVideoServiceBeans = new ArrayList<>();
     private IpcCloudApiAnno ipcCloudApi;
+    private int cloudStatus;
+    private boolean loadFail = false;
+    private ArrayList<String> snList = new ArrayList<>();
+
+    private RetrofitCallback<ServiceListResp> callback = new RetrofitCallback<ServiceListResp>() {
+        @Override
+        public void onSuccess(int code, String msg, ServiceListResp data) {
+            cloudStatus = data.getDeviceList().get(0).getStatus();
+            if (cloudStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
+                Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false);
+            } else {
+                CashVideoNonCloudActivity_.intent(mActivity).snList(snList).start();
+            }
+        }
+
+        @Override
+        public void onFail(int code, String msg, ServiceListResp data) {
+            shortTip(R.string.toast_network_Exception);
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,19 +113,22 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "ll_cash_video")
     void cashVidoClick() {
-        if (!checkNetwork() || isFastClick(500)) {
+        if (netWorkError() || isLoadFail() || isFastClick(500)) {
             return;
         }
-        if (cashVideoServiceBeans.size() > 0) {
-            Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false);
-        } else {
+        int size = cashVideoServiceBeans.size();
+        if (size == 0) {
             WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO).start();
+        } else {
+            if (ipcCloudApi != null) {
+                ipcCloudApi.getStorageList(snList, callback);
+            }
         }
     }
 
     @Click(resName = "ll_cloud_storage")
     void cloudStorageClick() {
-        if (!checkNetwork() || isFastClick(500)) {
+        if (netWorkError() || isFastClick(500)) {
             return;
         }
         WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
@@ -121,7 +144,7 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "ll_sunmi_store")
     void sunmiStoreClick() {
-        if (!checkNetwork() || isFastClick(500)) {
+        if (netWorkError() || isFastClick(500)) {
             return;
         }
         WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST + "?channel=2&subchannel=4")
@@ -130,19 +153,27 @@ public class SupportFragment extends BaseFragment
 
     @Click(resName = "tv_weBank")
     void weBankClick() {
-        if (!checkNetwork() || isFastClick(500)) {
+        if (netWorkError() || isFastClick(500)) {
             return;
         }
         WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
     }
 
-    private boolean checkNetwork() {
+    private boolean netWorkError() {
         if (!NetworkUtils.isNetworkAvailable(mActivity)) {
             shortTip(R.string.toast_network_error);
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
+
+    private boolean isLoadFail() {
+        if (loadFail) {
+            shortTip(R.string.toast_network_Exception);
+        }
+        return loadFail;
+    }
+
 
     private void changeCashVideoCard() {
         cashVideoServiceBeans.clear();
@@ -150,6 +181,7 @@ public class SupportFragment extends BaseFragment
             ipcCloudApi.getAuditVideoServiceList(null, new RetrofitCallback<ServiceListResp>() {
                 @Override
                 public void onSuccess(int code, String msg, ServiceListResp data) {
+                    loadFail = false;
                     List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
                     if (beans.size() > 0) {
                         for (ServiceListResp.DeviceListBean bean : beans) {
@@ -157,6 +189,7 @@ public class SupportFragment extends BaseFragment
                                 CashVideoServiceBean info = new CashVideoServiceBean();
                                 info.setDeviceId(bean.getDeviceId());
                                 info.setDeviceSn(bean.getDeviceSn());
+                                snList.add(bean.getDeviceSn());
                                 info.setDeviceName(bean.getDeviceName());
                                 info.setImgUrl(bean.getImgUrl());
                                 cashVideoServiceBeans.add(info);
@@ -172,6 +205,7 @@ public class SupportFragment extends BaseFragment
 
                 @Override
                 public void onFail(int code, String msg, ServiceListResp data) {
+                    loadFail = true;
                     changeCashVideoCard();
                 }
             });
@@ -232,7 +266,8 @@ public class SupportFragment extends BaseFragment
     @Override
     public int[] getStickNotificationId() {
         return new int[]{
-                CommonNotifications.activeCloudChange, CommonNotifications.cashVideoSubscribe, CommonNotifications.shopSwitched
+                CommonNotifications.activeCloudChange, CommonNotifications.cashVideoSubscribe,
+                CommonNotifications.shopSwitched, CommonNotifications.cloudStorageChange
         };
     }
 
@@ -242,6 +277,8 @@ public class SupportFragment extends BaseFragment
             changeCloudCard();
         } else if (id == CommonNotifications.cashVideoSubscribe || id == CommonNotifications.shopSwitched) {
             changeCashVideoCard();
+        } else if (id == CommonNotifications.cloudStorageChange) {
+            cloudStatus = CommonConstants.SERVICE_ALREADY_OPENED;
         }
     }
 

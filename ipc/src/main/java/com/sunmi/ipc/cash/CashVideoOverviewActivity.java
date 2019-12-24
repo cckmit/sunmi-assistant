@@ -14,6 +14,7 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.calendar.Config;
 import com.sunmi.ipc.calendar.VerticalCalendar;
 import com.sunmi.ipc.cash.adapter.CashCalendarAdapter;
+import com.sunmi.ipc.cash.adapter.CashVideoOverViewAdapter;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashOverviewContract;
 import com.sunmi.ipc.model.CashVideoListBean;
@@ -44,7 +45,6 @@ import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.view.CircleImage;
@@ -57,7 +57,8 @@ import sunmi.common.view.widget.CenterLayoutManager;
  * @author linyuanpeng on 2019-12-02.
  */
 @EActivity(resName = "activity_cash_video_overview")
-public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPresenter> implements CashOverviewContract.View {
+public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPresenter>
+        implements CashOverviewContract.View, CashVideoOverViewAdapter.OnItemClickListener {
 
     @ViewById(resName = "rv_calendar")
     RecyclerView rvCalender;
@@ -69,18 +70,12 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     TextView tvTotalCountAbnormal;
     @ViewById(resName = "civ_ipc")
     CircleImage civIpc;
-    @ViewById(resName = "tv_ipc_name")
-    TextView tvIpcName;
-    @ViewById(resName = "tv_ipc_sn")
-    TextView tvIpcSn;
-    @ViewById(resName = "tv_count_cash")
-    TextView tvCountCash;
-    @ViewById(resName = "tv_count_abnormal")
-    TextView tvCountAbnormal;
     @ViewById(resName = "cl_shop_cash")
     ConstraintLayout clShopCash;
     @ViewById(resName = "cl_device")
     ConstraintLayout clDevice;
+    @ViewById(resName = "rv_cash_overview")
+    RecyclerView rvCashOverview;
     @ViewById(resName = "layout_network_error")
     View networkError;
 
@@ -108,6 +103,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     private List<Calendar> points = new ArrayList<>();
     private ArrayList<FilterItem> items = new ArrayList<>();
     private int shopCashCount, deviceCashCount;
+    private CashVideoOverViewAdapter cashVideoOverViewAdapter;
 
     @RouterAnno(
             path = RouterConfig.Ipc.CASH_VIDEO_OVERVIEW
@@ -125,6 +121,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         llManager = new CenterLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL, false);
         rvCalender.setLayoutManager(llManager);
+        rvCashOverview.setLayoutManager(new LinearLayoutManager(context));
         selectedCalendar = Calendar.getInstance();
         items.add(new FilterItem(-1, getString(R.string.str_all_device), false));
         threeMonth.add(Calendar.MONTH, -3);
@@ -159,7 +156,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
             c = (Calendar) threeMonth.clone();
         } else {
             selectPos = 7;
-            c = selectedCalendar;
+            c = (Calendar) selectedCalendar.clone();
             c.add(Calendar.DATE, -7);
         }
         for (int i = 0; i < 15; i++) {
@@ -266,22 +263,23 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
                 .total(shopCashCount).startForResult(REQUEST);
     }
 
-    @Click(resName = "cv_cash")
-    public void deviceCashClick() {
+    @Override
+    public void onOrderClick(CashVideoServiceBean item, int position) {
         clearItems();
-        items.get(1).setChecked(true);
+        items.get(position+1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .deviceId(idList.get(0)).items(items).isSingleDevice(isSingleDevice)
-                .total(deviceCashCount).startForResult(REQUEST);
+                .deviceId(item.getDeviceId()).items(items).isSingleDevice(isSingleDevice)
+                .total(item.getTotalCount()).startForResult(REQUEST);
     }
 
-    @Click(resName = "cv_abnormal")
-    public void deviceAbnormalClick() {
+    @Override
+    public void onAbnormalOrderClick(CashVideoServiceBean item, int position) {
         clearItems();
-        items.get(1).setChecked(true);
+        items.get(position+1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
-                .deviceId(idList.get(0)).videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items)
-                .isSingleDevice(isSingleDevice).total(deviceCashCount).startForResult(REQUEST);
+                .deviceId(item.getDeviceId()).videoType(IpcConstants.CASH_VIDEO_ABNORMAL)
+                .items(items).isSingleDevice(isSingleDevice).total(item.getTotalCount())
+                .startForResult(REQUEST);
     }
 
     private void clearItems() {
@@ -325,16 +323,19 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
             networkError.setVisibility(View.GONE);
         }
         hideLoadingDialog();
-        if (beans.isEmpty()) {
-            return;
+        serviceBeans.clear();
+        serviceBeans.addAll(beans);
+        initCashVideoOverViewAdapter();
+    }
+
+    private void initCashVideoOverViewAdapter() {
+        if (cashVideoOverViewAdapter == null) {
+            cashVideoOverViewAdapter = new CashVideoOverViewAdapter(serviceBeans, context);
+            cashVideoOverViewAdapter.setOnItemClickListener(this );
+            rvCashOverview.setAdapter(cashVideoOverViewAdapter);
+        } else {
+            cashVideoOverViewAdapter.notifyDataSetChanged();
         }
-        CashVideoServiceBean bean = beans.get(0);
-        ImageUtils.loadImage(context, bean.getImgUrl(), civIpc, false, -1);
-        tvIpcName.setText(bean.getDeviceName());
-        tvIpcSn.setText(getString(R.string.str_dev_sn, bean.getDeviceSn()));
-        deviceCashCount = bean.getTotalCount();
-        tvCountCash.setText(String.valueOf(deviceCashCount));
-        tvCountAbnormal.setText(String.valueOf(bean.getAbnormalVideoCount()));
     }
 
     @Override

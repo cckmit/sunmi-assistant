@@ -158,4 +158,5 @@
     <string name="str_open_cloud_storage">开通云存储</string>
     <string name="tip_after_cloud_cash_video">订阅云存储服务后，即可查看收银视频</string>
     <string name="tip_cloud_expired">云存储服务已过期，续订后即可查看收银视频</string>
+    <string name="str_cash_loss_prevent">收银防损</string>
 </resources>
