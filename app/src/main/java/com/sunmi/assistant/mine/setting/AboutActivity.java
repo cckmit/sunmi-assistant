@@ -2,7 +2,6 @@ package com.sunmi.assistant.mine.setting;
 
 import android.app.Activity;
 import android.view.View;
-import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
@@ -23,12 +22,15 @@ import okhttp3.Response;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.SettingItemLayout;
+import sunmi.common.view.activity.ProtocolActivity_;
 import sunmi.common.view.dialog.CommonDialog;
+
+import static sunmi.common.view.activity.ProtocolActivity.USER_AGREEMENT;
 
 /**
  * 关于
+ *
  * @author yangshijie
  */
 @EActivity(R.layout.activity_setting_about)
@@ -36,17 +38,14 @@ public class AboutActivity extends BaseActivity {
 
     @ViewById(R.id.tvVersion)
     TextView tvVersion;
-    @ViewById(R.id.ctv_privacy)
-    CheckedTextView ctvPrivacy;
     @ViewById(R.id.sil_version)
     SettingItemLayout silVersion;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.common_orange, false);
         tvVersion.setText(getString(R.string.str_version, CommonHelper.getAppVersionName(this)));
-        if (!CommonHelper.isGooglePlay()){
+        if (!CommonHelper.isGooglePlay()) {
             silVersion.setVisibility(View.VISIBLE);
         }
     }
@@ -54,6 +53,12 @@ public class AboutActivity extends BaseActivity {
     @Click(R.id.sil_version)
     public void onClick(View v) {
         checkUpdate();
+    }
+
+    @Click(R.id.sil_agreement)
+    public void agreementClick(View v) {
+        ProtocolActivity_.intent(context).protocolType(USER_AGREEMENT).start();
+        overridePendingTransition(R.anim.activity_open_down_up, 0);
     }
 
     private void checkUpdate() {

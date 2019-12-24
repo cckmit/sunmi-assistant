@@ -1,10 +1,12 @@
 package sunmi.common.rpc.cloud;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MediaType;
@@ -893,6 +895,86 @@ public class SunmiStoreApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
                     .getHistoryCustomerDetail(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * company_id	是	number	商户id
+     * shop_id	是	number	店铺id
+     * sn	是	string	路由器的sn号
+     * page_num	否	int	默认是1
+     * page_size	否	int	默认是10
+     */
+    public void getEventList(int companyId, int shopId, String sn, String pageNum,
+                             String pageSize, RetrofitCallback<Object> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("sn", sn)
+                    .put("page_num", pageNum)
+                    .put("page_size", pageSize)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(NetworkInterface.class)
+                    .getEventList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * company_id	是	number	商户id
+     * shop_id	是	number	店铺id
+     * sn	是	string	路由器的sn号
+     * domain_id_list	否	array[int]	唯一saas的域名id
+     */
+    public void getHealthInfo(int companyId, int shopId, String sn, List<Integer> list,
+                              RetrofitCallback<Object> callback) {
+        try {
+
+            JSONArray array = new JSONArray(list);
+            JSONObject object = new JSONObject();
+            object.put("company_id", companyId);
+            object.put("shop_id", shopId);
+            object.put("sn", sn);
+            if (list != null) {
+                object.put("domain_id_list", array);
+            }
+            SunmiStoreRetrofitClient.getInstance().create(NetworkInterface.class)
+                    .getHealthInfo(new BaseRequest(object.toString()))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * company_id	是	number	商户id
+     * shop_id	是	number	店铺id
+     * sn	是	string	路由器的sn号
+     * domain_id_list	是	array[int]	mqtt中返回的唯一saas的域名id
+     * time_range_start	是	int	开始时间 (包括这个时间)
+     * time_range_end	是	int	结束时间 （不包括这个时间）
+     */
+    public void getNetHealthList(int companyId, int shopId, String sn, List<Integer> list,
+                                 String start, String end,
+                                 RetrofitCallback<Object> callback) {
+        try {
+            JSONArray array = new JSONArray(list);
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("sn", sn)
+                    .put("domain_id_list", array)
+                    .put("time_range_start", start)
+                    .put("time_range_end", end)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(NetworkInterface.class)
+                    .getNetHealthList(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
