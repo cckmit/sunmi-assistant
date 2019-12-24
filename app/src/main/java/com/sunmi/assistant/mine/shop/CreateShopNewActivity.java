@@ -66,7 +66,7 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.CommonListAdapter;
-import sunmi.common.view.SettingItemEdittextLayout;
+import sunmi.common.view.SettingItemEditTextLayout;
 import sunmi.common.view.TextLengthWatcher;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
@@ -91,21 +91,21 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.sel_shop_name)
-    SettingItemEdittextLayout etShopName;
+    SettingItemEditTextLayout etShopName;
     @ViewById(R.id.sel_shop_name_poi)
-    SettingItemEdittextLayout selShopNamePoi;
+    SettingItemEditTextLayout selShopNamePoi;
     @ViewById(R.id.et_detail_address)
     ClearableEditText etDetailAddress;
     @ViewById(R.id.sel_square)
-    SettingItemEdittextLayout selSquare;
+    SettingItemEditTextLayout selSquare;
     @ViewById(R.id.sel_contact)
-    SettingItemEdittextLayout selContact;
+    SettingItemEditTextLayout selContact;
     @ViewById(R.id.sel_tel)
-    SettingItemEdittextLayout selTel;
+    SettingItemEditTextLayout selTel;
     @ViewById(R.id.sel_region)
-    SettingItemEdittextLayout tvRegionText;
+    SettingItemEditTextLayout tvRegionText;
     @ViewById(R.id.sel_category)
-    SettingItemEdittextLayout tvCategoryText;
+    SettingItemEditTextLayout tvCategoryText;
     @ViewById(R.id.poi_recyclerView)
     RecyclerView recyclerViewPoi;
     @ViewById(R.id.rl_shop_name)

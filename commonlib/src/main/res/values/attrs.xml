@@ -93,7 +93,7 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="SettingItemEdittextLayout">
+    <declare-styleable name="SettingItemEditTextLayout">
         <attr name="parentWidth" />
         <attr name="parentHeight" />
         <attr name="imageLeft" />
