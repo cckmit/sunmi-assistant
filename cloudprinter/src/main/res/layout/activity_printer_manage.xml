@@ -12,13 +12,15 @@
         android:visibility="visible"
         app:dividerShow="true"
         app:leftDefaultClickEnable="true"
-        app:leftIcon="@drawable/ic_back_dark" />
+        app:leftIcon="@drawable/ic_back_dark"
+        app:titleText="@string/str_printer_manage" />
 
     <sunmi.common.view.webview.SMWebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layerType="software"/>
+        android:layout_below="@id/title_bar"
+        android:layerType="software" />
 
     <include
         android:id="@+id/layout_network_error"
