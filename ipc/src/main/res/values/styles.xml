@@ -15,6 +15,7 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginTop">@dimen/dp_0_5</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
         <item name="android:background">@color/c_black</item>
         <item name="android:drawablePadding">@dimen/dp_4</item>
         <item name="android:gravity">center</item>
@@ -22,7 +23,6 @@
         <item name="android:paddingBottom">@dimen/dp_8</item>
         <item name="android:textColor">@color/color_adjust_video</item>
         <item name="android:textSize">@dimen/sp_12</item>
-        <item name="android:button">@null</item>
     </style>
 
 </resources>

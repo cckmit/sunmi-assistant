@@ -49,12 +49,6 @@
 
             </RelativeLayout>
 
-            <include
-                layout="@layout/include_adjust_video"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rl_video" />
-
             <LinearLayout
                 android:id="@+id/ll_portrait_controller_bar"
                 android:layout_width="match_parent"
@@ -65,8 +59,7 @@
                 android:paddingStart="@dimen/dp_8"
                 android:paddingTop="@dimen/dp_14"
                 android:paddingEnd="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_10"
-                android:visibility="visible">
+                android:paddingBottom="@dimen/dp_10">
 
                 <ImageView
                     android:id="@+id/iv_cloud_playback_portrait"
@@ -132,6 +125,12 @@
                     android:scaleType="center"
                     android:src="@mipmap/ic_record_disable" />
             </LinearLayout>
+
+            <include
+                layout="@layout/include_adjust_video"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_video"/>
 
             <sunmi.common.view.SmRecyclerView
                 android:id="@+id/rv_manager"

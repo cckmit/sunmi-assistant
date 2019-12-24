@@ -146,7 +146,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     ImageView ivSdcardPlayback;//sd回放
     @ViewById(resName = "rv_manager")
     SmRecyclerView rvManager;
-    @ViewById(resName = "ll_adjust")
+    @ViewById(resName = "rg_adjust")
     RadioGroup rgAdjust;
     @ViewById(resName = "rb_brightness")
     RadioButton rbBrightness;
@@ -366,22 +366,24 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Click(resName = "iv_adjust")
     void adjustClick() {
-        llPortraitBar.setVisibility(View.GONE);
         showAdjustPanel();
     }
 
     @Click(resName = "iv_increase")
     void increaseClick() {
+        showAdjustLoading();
         IPCCall.getInstance().fsAdjustFocusAdd(context, device.getModel(), device.getDeviceid());
     }
 
     @Click(resName = "iv_decrease")
     void decreaseClick() {
+        showAdjustLoading();
         IPCCall.getInstance().fsAdjustFocusMinus(context, device.getModel(), device.getDeviceid());
     }
 
     @Click(resName = "tv_reset")
     void resetClick() {
+        showAdjustLoading();
         IPCCall.getInstance().fsAdjustFocusReset(context, device.getModel(), device.getDeviceid());
     }
 
@@ -407,7 +409,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Click(resName = "iv_adjust_finish")
     void adjustFinishClick() {
-        llPortraitBar.setVisibility(View.VISIBLE);
         hideAdjustPanel();
     }
 
@@ -671,6 +672,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
     }
 
+    private void showAdjustLoading() {
+        showDarkLoading(getStringById(R.string.ipc_recognition_loading));
+        handler.postDelayed(this::hideLoadingDialog, 3000);
+    }
+
     @UiThread
     public void showVideoLoading() {
         llLoading.setVisibility(View.VISIBLE);
@@ -750,6 +756,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void hideAdjustPanel() {
+        llPortraitBar.setVisibility(View.VISIBLE);
         rlBottomBar.setVisibility(View.VISIBLE);
         clAdjust.setVisibility(View.GONE);
         rgAdjust.setVisibility(View.GONE);
@@ -757,9 +764,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     private void showAdjustPanel() {
+        rgAdjust.setVisibility(View.VISIBLE);
+        llPortraitBar.setVisibility(View.GONE);
         rlBottomBar.setVisibility(View.GONE);
         clAdjust.setVisibility(View.VISIBLE);
-        rgAdjust.setVisibility(View.VISIBLE);
+//        brightnessClick();
         groupAdjustCommon.setVisibility(View.VISIBLE);
         rbBrightness.setChecked(true);
         initSeekBar(compensation);
