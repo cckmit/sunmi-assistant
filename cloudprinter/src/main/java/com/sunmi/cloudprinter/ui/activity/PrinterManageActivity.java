@@ -35,13 +35,11 @@ import org.json.JSONObject;
 import java.io.File;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.SecurityUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
@@ -202,7 +200,7 @@ public class PrinterManageActivity extends BaseActivity {
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-//                loadError();
+                loadError();
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
@@ -260,8 +258,7 @@ public class PrinterManageActivity extends BaseActivity {
         networkError.setVisibility(View.GONE);
         titleBar.setVisibility(View.GONE);
         webView.setVisibility(View.VISIBLE);
-        initWebView();
-        webView.loadUrl(CommonConfig.SERVICE_H5_URL + "cloudPrinter?topPadding=" + Utils.getWebViewStatusBarHeight(context));
+        webView.reload();
         startTimer();
     }
 
@@ -306,6 +303,7 @@ public class PrinterManageActivity extends BaseActivity {
                     break;
                 default:
                     uris = new Uri[]{};
+                    break;
             }
         } else {
             uris = new Uri[]{};
