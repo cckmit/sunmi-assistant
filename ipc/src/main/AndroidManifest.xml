@@ -56,7 +56,7 @@
             android:name=".view.activity.setting.MDSettingActivity_"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.setting.RecognitionSettingActivity_"
+            android:name=".view.activity.setting.ScreenAdjustSettingActivity_"
             android:hardwareAccelerated="false"
             android:largeHeap="true"
             android:screenOrientation="landscape" />

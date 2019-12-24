@@ -271,7 +271,7 @@
     <string name="tip_sdcard_unformat">存储卡未格式化</string>
     <string name="msg_sdcard_should_format">检测到的存储卡需格式化后才可使用，请提前保存重要资料</string>
     <string name="str_jump_adjust">暂不调整</string>
-    <string name="str_model_name">产品型号：%s</string>
+    <string name="str_model_name">Model：%s</string>
     <string name="ipc_setting_downloading">下载中…</string>
     <string name="ipc_setting_upgrading">升级中…</string>
     <string name="ipc_setting_new">NEW</string>
@@ -331,7 +331,7 @@
     <string name="str_device_offline">设备离线</string>
     <string name="msg_device_offline">当前摄像机离线，且手机和摄像机未连相同Wi-Fi，无法管理【设置】</string>
     <string name="tip_ipc_offline">摄像机已离线</string>
-    <string name="str_confirm_connect">确认连接</string>
+    <string name="str_confirm_connect">Confirm</string>
     <string name="tip_ipc_wifi_24g">暂只支持2.4GHz</string>
     <string name="hint_input_wifi_psw">请输入WI-FI密码</string>
     <string name="tip_no_video_current_day">当天无云视频，您可尝试切换日期查看</string>
@@ -393,6 +393,11 @@
     <string name="cash_auth_paly_loop">自动连播</string>
     <string name="cash_paly_single">单个循环</string>
     <string name="ipc_cash_tag_length_tip">不得超过36个字符</string>
+    <string name="str_reset">复位</string>
+    <string name="str_brightness">亮度</string>
+    <string name="str_contrast">对比度</string>
+    <string name="str_saturation">饱和度</string>
+    <string name="str_focus_adjust">对焦微调</string>
 </resources>
 
 

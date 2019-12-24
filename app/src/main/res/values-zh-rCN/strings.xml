@@ -216,7 +216,7 @@
     <string name="company_create_time">创建时间</string>
     <string name="company_switch">切换商户</string>
     <string name="company_email">联系邮箱</string>
-    <string name="company_square">㎡</string>
+    <string name="company_square">| ㎡</string>
     <string name="company_show_now">当前商户</string>
     <string name="str_change_company_contact">更改联系人</string>
     <string name="str_change_company_tel">更改联系方式</string>
@@ -329,4 +329,5 @@
     <string name="pos_desktop_product">台式收银设备</string>
     <string name="pos_text_empty">--</string>
     <string name="pos_wire">有线网络</string>
+    <string name="str_agreement_manager">协议管理</string>
 </resources>

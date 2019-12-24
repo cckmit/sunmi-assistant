@@ -8,7 +8,7 @@ import sunmi.common.model.SunmiDevice;
 /**
  * @author jacob
  */
-public interface RecognitionSettingContract {
+public interface ScreenAdjustSettingContract {
 
     int STEP_1_POSITION = 0;
     int STEP_2_RECOGNITION_ZOOM = 1;

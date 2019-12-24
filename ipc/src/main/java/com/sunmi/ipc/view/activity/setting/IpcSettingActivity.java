@@ -524,7 +524,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
-        RecognitionSettingActivity_.intent(this)
+        ScreenAdjustSettingActivity_.intent(this)
                 .mDevice(device)
                 .mVideoRatio(16f / 9f)
                 .start();

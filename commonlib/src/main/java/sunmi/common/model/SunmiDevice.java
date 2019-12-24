@@ -27,7 +27,7 @@ public class SunmiDevice extends DataSupport implements Serializable {
     private int serverId;
     private String ip;//设备的ip
     private String mac;
-    private String firmware;
+    private String firmware;//设备版本号
     private String name;
     private String model;
     private String type;

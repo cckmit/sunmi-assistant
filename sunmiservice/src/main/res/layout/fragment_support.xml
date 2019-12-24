@@ -38,9 +38,9 @@
                 android:id="@+id/ll_cash_video"
                 android:layout_width="@dimen/dp_345"
                 android:layout_height="@dimen/dp_156"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@mipmap/ic_cash_video"
-                android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/dp_25">
 
@@ -64,12 +64,12 @@
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_20"
+                    android:background="@mipmap/ic_cash_button"
                     android:clickable="false"
                     android:gravity="center"
-                    android:textSize="@dimen/sp_14"
+                    android:text="@string/str_setting_detail"
                     android:textColor="@color/c_white"
-                    android:background="@mipmap/ic_cash_button"
-                    android:text="@string/str_setting_detail" />
+                    android:textSize="@dimen/sp_14" />
             </LinearLayout>
 
             <TextView
@@ -87,9 +87,9 @@
                 android:id="@+id/ll_cloud_storage"
                 android:layout_width="@dimen/dp_345"
                 android:layout_height="@dimen/dp_156"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@mipmap/ic_cloud_storage"
-                android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/dp_25"
                 android:visibility="visible">
@@ -137,6 +137,25 @@
                 android:layout_marginStart="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_15"
+                android:text="@string/str_qingtuan_recruit"
+                android:textColor="@color/text_caption"
+                android:textSize="@dimen/sp_16"
+                android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_recruit"
+                android:layout_width="@dimen/dp_345"
+                android:layout_height="@dimen/dp_156"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@mipmap/ic_qingtuan_recruit" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_15"
                 android:text="@string/str_after_sales"
                 android:textColor="@color/text_caption"
                 android:textSize="@dimen/sp_16" />
@@ -145,9 +164,9 @@
                 android:id="@+id/ll_after_sales"
                 android:layout_width="@dimen/dp_345"
                 android:layout_height="@dimen/dp_156"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@mipmap/ic_after_sales"
-                android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/dp_25">
 
@@ -188,9 +207,9 @@
                 android:id="@+id/ll_sunmi_store"
                 android:layout_width="@dimen/dp_345"
                 android:layout_height="@dimen/dp_156"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@mipmap/ic_sunmi_store"
-                android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/dp_25">
 
@@ -231,9 +250,9 @@
                 android:id="@+id/tv_weBank"
                 android:layout_width="@dimen/dp_345"
                 android:layout_height="@dimen/dp_156"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_20"
-                android:layout_gravity="center_horizontal"
                 android:background="@mipmap/ic_we_bank" />
 
         </LinearLayout>

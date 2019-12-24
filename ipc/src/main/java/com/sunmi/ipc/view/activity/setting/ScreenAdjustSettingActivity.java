@@ -16,8 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.contract.RecognitionSettingContract;
-import com.sunmi.ipc.presenter.RecognitionSettingPresenter;
+import com.sunmi.ipc.contract.ScreenAdjustSettingContract;
+import com.sunmi.ipc.presenter.ScreenAdjustSettingPresenter;
 import com.sunmi.ipc.view.DoorLineView;
 import com.sunmi.ipc.view.IpcVideoView;
 
@@ -37,9 +37,9 @@ import sunmi.common.view.dialog.CommonDialog;
  * @author yinhui
  * @date 2019-07-25
  */
-@EActivity(resName = "ipc_setting_recognition_activity")
-public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSettingPresenter>
-        implements RecognitionSettingContract.View {
+@EActivity(resName = "ipc_setting_screen_adjust_activity")
+public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSettingPresenter>
+        implements ScreenAdjustSettingContract.View {
 
     private static final int STANDARD_VIDEO_WIDTH = 1920;
     private static final int STANDARD_VIDEO_HEIGHT = 1080;
@@ -92,11 +92,11 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        mPresenter = new RecognitionSettingPresenter();
+        mPresenter = new ScreenAdjustSettingPresenter();
         mPresenter.attachView(this);
         mPresenter.init(mDevice);
         initViews();
-        updateViewsStepTo(RecognitionSettingContract.STEP_1_POSITION);
+        updateViewsStepTo(ScreenAdjustSettingContract.STEP_1_POSITION);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -107,19 +107,19 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mVideoView.init(mDevice.getUid(), mVideoRatio);
         mFaceCase.setOnTouchListener(new FaceCaseTouch());
         mLineView.setStateChangeListener(new DoorLineStateChangeListener());
-        mResTitle.put(RecognitionSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
-        mResTitle.put(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM, getString(R.string.ipc_recognition_tip_zoom));
-        mResTitle.put(RecognitionSettingContract.STEP_3_FOCUS, getString(R.string.ipc_recognition_tip_focus));
-        mResTitle.put(RecognitionSettingContract.STEP_4_LINE, getString(R.string.ipc_recognition_line_start));
+        mResTitle.put(ScreenAdjustSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
+        mResTitle.put(ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM, getString(R.string.ipc_recognition_tip_zoom));
+        mResTitle.put(ScreenAdjustSettingContract.STEP_3_FOCUS, getString(R.string.ipc_recognition_tip_focus));
+        mResTitle.put(ScreenAdjustSettingContract.STEP_4_LINE, getString(R.string.ipc_recognition_line_start));
         String next = getString(R.string.str_next);
-        mResNext.put(RecognitionSettingContract.STEP_1_POSITION, next);
-        mResNext.put(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM, next);
-        mResNext.put(RecognitionSettingContract.STEP_3_FOCUS, next);
-        mResNext.put(RecognitionSettingContract.STEP_4_LINE, getString(R.string.str_complete));
-        mResTip.put(RecognitionSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
-        mResTip.put(RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM, getString(R.string.ipc_recognition_tip_zoom));
-        mResTip.put(RecognitionSettingContract.STEP_3_FOCUS, getString(R.string.ipc_recognition_tip_focus));
-        mResTip.put(RecognitionSettingContract.STEP_4_LINE, getString(R.string.ipc_recognition_tip_line));
+        mResNext.put(ScreenAdjustSettingContract.STEP_1_POSITION, next);
+        mResNext.put(ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM, next);
+        mResNext.put(ScreenAdjustSettingContract.STEP_3_FOCUS, next);
+        mResNext.put(ScreenAdjustSettingContract.STEP_4_LINE, getString(R.string.str_complete));
+        mResTip.put(ScreenAdjustSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
+        mResTip.put(ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM, getString(R.string.ipc_recognition_tip_zoom));
+        mResTip.put(ScreenAdjustSettingContract.STEP_3_FOCUS, getString(R.string.ipc_recognition_tip_focus));
+        mResTip.put(ScreenAdjustSettingContract.STEP_4_LINE, getString(R.string.ipc_recognition_tip_line));
         mResLineTitle.put(DoorLineView.STATE_INIT, getString(R.string.ipc_recognition_line_start));
         mResLineTitle.put(DoorLineView.STATE_START, getString(R.string.ipc_recognition_line_end));
         mResLineTitle.put(DoorLineView.STATE_END, getString(R.string.ipc_recognition_line_end));
@@ -146,15 +146,15 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mFaceCase.setVisibility(View.INVISIBLE);
         mLineView.setVisibility(View.INVISIBLE);
         switch (step) {
-            case RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM:
+            case ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM:
                 updateControlBtn(mResZoomIn, mResZoomOut);
                 mPresenter.updateControlBtnEnable(true);
                 break;
-            case RecognitionSettingContract.STEP_3_FOCUS:
+            case ScreenAdjustSettingContract.STEP_3_FOCUS:
                 updateControlBtn(mResFocusPlus, mResFocusMinus);
                 mPresenter.updateControlBtnEnable(false);
                 break;
-            case RecognitionSettingContract.STEP_4_LINE:
+            case ScreenAdjustSettingContract.STEP_4_LINE:
                 updateTipShow(false);
                 Rect boundary = new Rect(0, Math.max(0, mTvTitle.getBottom() - mVideoView.getTop()),
                         mVideoView.getWidth(), mVideoView.getHeight());
@@ -172,7 +172,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Click(resName = "iv_setting_back")
     void onBack() {
-        if (mStepIndex == RecognitionSettingContract.STEP_1_POSITION) {
+        if (mStepIndex == ScreenAdjustSettingContract.STEP_1_POSITION) {
             finish();
         } else {
             updateViewsStepTo(--mStepIndex);
@@ -181,10 +181,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Click(resName = "tv_setting_next")
     void onNext() {
-        if (mStepIndex == RecognitionSettingContract.STEP_1_POSITION) {
+        if (mStepIndex == ScreenAdjustSettingContract.STEP_1_POSITION) {
             showLoadingDialog();
             mPresenter.updateState();
-        } else if (mStepIndex == RecognitionSettingContract.STEP_4_LINE) {
+        } else if (mStepIndex == ScreenAdjustSettingContract.STEP_4_LINE) {
             showLoadingDialog();
             Pair<DoorLineView.Point, DoorLineView.Point> points = mLineView.getPoints();
             DoorLineView.Point start = points.first.getX() < points.second.getX() ?
@@ -205,10 +205,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Click(resName = "btn_setting_btn_plus")
     void onPlusClick() {
-        if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
+        if (mStepIndex == ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM) {
             showDarkLoading(mResLoading);
             mPresenter.zoom(true);
-        } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
+        } else if (mStepIndex == ScreenAdjustSettingContract.STEP_3_FOCUS) {
             showDarkLoading(mResLoading);
             mPresenter.focus(true);
         } else {
@@ -218,10 +218,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Click(resName = "btn_setting_btn_minus")
     void onMinusClick() {
-        if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
+        if (mStepIndex == ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM) {
             showDarkLoading(mResLoading);
             mPresenter.zoom(false);
-        } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
+        } else if (mStepIndex == ScreenAdjustSettingContract.STEP_3_FOCUS) {
             showDarkLoading(mResLoading);
             mPresenter.focus(false);
         } else {
@@ -231,10 +231,10 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
     @Click(resName = "btn_setting_btn_reset")
     void onResetClick() {
-        if (mStepIndex == RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
+        if (mStepIndex == ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM) {
             showDarkLoading(mResLoading);
             mPresenter.zoomReset();
-        } else if (mStepIndex == RecognitionSettingContract.STEP_3_FOCUS) {
+        } else if (mStepIndex == ScreenAdjustSettingContract.STEP_3_FOCUS) {
             showDarkLoading(mResLoading);
             mPresenter.focusReset();
         } else {
@@ -248,13 +248,13 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         mFaceCase.setVisibility(View.INVISIBLE);
         mLineView.setVisibility(View.INVISIBLE);
         switch (step) {
-            case RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM:
-            case RecognitionSettingContract.STEP_3_FOCUS:
+            case ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM:
+            case ScreenAdjustSettingContract.STEP_3_FOCUS:
                 updateFaceCaseSize();
                 mFaceCase.setVisibility(View.VISIBLE);
                 updateControlBtnShow(true);
                 break;
-            case RecognitionSettingContract.STEP_4_LINE:
+            case ScreenAdjustSettingContract.STEP_4_LINE:
                 mLineView.setVisibility(View.VISIBLE);
                 if (mLineView.getState() != DoorLineView.DRAG_STATE_END) {
                     mTvNext.setEnabled(false);
@@ -387,7 +387,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            if (mStepIndex != RecognitionSettingContract.STEP_2_RECOGNITION_ZOOM) {
+            if (mStepIndex != ScreenAdjustSettingContract.STEP_2_RECOGNITION_ZOOM) {
                 return false;
             }
             switch (event.getAction()) {
@@ -448,7 +448,7 @@ public class RecognitionSettingActivity extends BaseMvpActivity<RecognitionSetti
 
         @Override
         public void onStateChanged(int state) {
-            updateTitle(mResLineTitle.get(state), mResNext.get(RecognitionSettingContract.STEP_4_LINE));
+            updateTitle(mResLineTitle.get(state), mResNext.get(ScreenAdjustSettingContract.STEP_4_LINE));
             switch (state) {
                 case DoorLineView.STATE_INIT:
                     updateTipShow(true);

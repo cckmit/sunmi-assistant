@@ -394,4 +394,9 @@
     <string name="cash_auth_paly_loop">自动连播</string>
     <string name="cash_paly_single">单个循环</string>
     <string name="ipc_cash_tag_length_tip">不得超过36个字符</string>
+    <string name="str_reset">复位</string>
+    <string name="str_brightness">亮度</string>
+    <string name="str_contrast">对比度</string>
+    <string name="str_saturation">饱和度</string>
+    <string name="str_focus_adjust">对焦微调</string>
 </resources>

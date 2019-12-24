@@ -56,8 +56,7 @@ public class SMMqttCallback implements MqttCallbackExtended {
                 MqttManager.getInstance().removeMessage(res.getMsgId());
             } else {
                 BaseNotification.newInstance().postNotificationName(
-                        Integer.parseInt(res.getOpcode().substring(2
-                        ), 16), res, topic);
+                        Integer.parseInt(res.getOpcode().substring(2), 16), res, topic);
             }
         }
     }
