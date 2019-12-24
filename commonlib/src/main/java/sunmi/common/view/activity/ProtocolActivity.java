@@ -9,6 +9,7 @@ import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.RelativeLayout;
 
 import com.commonlibrary.R;
 
@@ -38,6 +39,8 @@ public class ProtocolActivity extends BaseActivity {
     public final static String PROTOCOL_PRIVATE = "https://wifi.cdn.sunmi.com/Privacy/private_sunmi.html";
     //隐私协议英文
     public final static String PROTOCOL_PRIVATE_ENGLISH = "https://wifi.cdn.sunmi.com/Privacy/private_sunmi_english.html";
+    //协议管理
+    public final static String PROTOCOL_ARGEEMENT = "";
 
     //本地用户协议
     public final static String LOCAL_PROTOCOL_USER = "file:///android_asset/user_sunmi.html";
@@ -58,9 +61,12 @@ public class ProtocolActivity extends BaseActivity {
     public static final int USER_AP_PRIVATE = 3;
     public static final int USER_WX_HELP = 4;
     public static final int USER_AUTH_PLATFORM = 5;
+    public static final int USER_AGREEMENT = 6;
 
     @ViewById(resName = "wv_protocol")
     SMWebView webView;
+    @ViewById(resName = "rl_exception")
+    RelativeLayout rlException;
     @Extra
     int protocolType;
 
@@ -96,6 +102,8 @@ public class ProtocolActivity extends BaseActivity {
             loadWebView(WX_AUTH_HELP);
         } else if (protocolType == USER_AUTH_PLATFORM) {//获取平台授权协议
             loadWebView(AUTH_PLATFORM);
+        } else if (protocolType == USER_AGREEMENT) {//协议管理
+            loadWebView(PROTOCOL_ARGEEMENT);
         }
     }
 
@@ -118,11 +126,27 @@ public class ProtocolActivity extends BaseActivity {
         }
     }
 
+    private void setView(boolean isShow) {
+        if (isShow) {
+            webView.setVisibility(View.VISIBLE);
+            rlException.setVisibility(View.GONE);
+        } else {
+            webView.setVisibility(View.GONE);
+            rlException.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Click(resName = "btnImage")
     public void onClick(View v) {
         closeTimer();
         finish();
         this.overridePendingTransition(0, R.anim.activity_close_up_down);
+    }
+
+    @Click(resName = "btn_try")
+    public void tryClick(View v) {
+        setView(true);
+        initNormal();
     }
 
     private void startTimer() {
@@ -192,6 +216,12 @@ public class ProtocolActivity extends BaseActivity {
                     loadFail = true;
                     hideLoadingDialog();
                     localHtml();
+                }
+                if (request.isForMainFrame()) {
+                    if (protocolType == USER_AGREEMENT) {//协议管理
+                        view.loadUrl("about:blank");// 避免出现默认的错误界面
+                        setView(false);
+                    }
                 }
             }
         });

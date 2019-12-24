@@ -329,4 +329,5 @@
     <string name="pos_desktop_product">台式收银设备</string>
     <string name="pos_text_empty">--</string>
     <string name="pos_wire">有线网络</string>
+    <string name="str_agreement_manager">协议管理</string>
 </resources>
