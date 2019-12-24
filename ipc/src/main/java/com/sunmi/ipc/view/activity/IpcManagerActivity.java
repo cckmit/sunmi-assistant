@@ -233,7 +233,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             mPresenter.getCashVideoService(device.getId());
             ivCloudPlayback.setVisibility(View.VISIBLE);
         } else {
-            if (IpcUtils.getVersionCode(device.getFirmware()) >= IpcConstants.IPC_VERSION_VIDEO_ADJUST) {
+            if (IpcUtils.isNewVersion(device.getFirmware(), IpcConstants.IPC_VERSION_VIDEO_ADJUST)) {
                 ivAdjust.setVisibility(View.VISIBLE);
             }
         }
