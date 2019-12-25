@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_10"
+        android:visibility="gone"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -20,7 +21,8 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_20"
         android:textColor="@color/text_normal"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/sp_16"
+        android:visibility="gone" />
 
     <sunmi.common.view.ClearableEditText
         android:id="@+id/et_content"
@@ -48,13 +50,15 @@
         android:layout_centerVertical="true"
         android:paddingEnd="@dimen/dp_20"
         android:textColor="@color/text_disable"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
         android:layout_alignParentBottom="true"
-        android:background="@color/c_divider" />
+        android:background="@color/c_divider"
+        android:visibility="gone" />
 
 </RelativeLayout>
