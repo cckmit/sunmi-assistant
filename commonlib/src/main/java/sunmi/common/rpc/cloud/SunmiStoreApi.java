@@ -23,6 +23,8 @@ import sunmi.common.model.CustomerHistoryDetailResp;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.CustomerRateResp;
+import sunmi.common.model.HealthInfoBean;
+import sunmi.common.model.NetEventListBean;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
@@ -908,15 +910,16 @@ public class SunmiStoreApi {
      * page_num	否	int	默认是1
      * page_size	否	int	默认是10
      */
-    public void getEventList(int companyId, int shopId, String sn, String pageNum,
-                             String pageSize, RetrofitCallback<Object> callback) {
+    public void getEventList(String sn, int pageNum, int pageSize, RetrofitCallback<NetEventListBean> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .put("shop_id", shopId)
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
                     .put("sn", sn)
                     .put("page_num", pageNum)
                     .put("page_size", pageSize)
+                    .put("time_range_start", DateTimeUtils.startTime0())
+                    .put("time_range_end", DateTimeUtils.endTime24())
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(NetworkInterface.class)
                     .getEventList(new BaseRequest(params))
@@ -932,14 +935,14 @@ public class SunmiStoreApi {
      * sn	是	string	路由器的sn号
      * domain_id_list	否	array[int]	唯一saas的域名id
      */
-    public void getHealthInfo(int companyId, int shopId, String sn, List<Integer> list,
-                              RetrofitCallback<Object> callback) {
+    public void getHealthInfo(String sn, List<Integer> list,
+                              RetrofitCallback<HealthInfoBean> callback) {
         try {
 
             JSONArray array = new JSONArray(list);
             JSONObject object = new JSONObject();
-            object.put("company_id", companyId);
-            object.put("shop_id", shopId);
+            object.put("company_id", SpUtils.getCompanyId());
+            object.put("shop_id", SpUtils.getShopId());
             object.put("sn", sn);
             if (list != null) {
                 object.put("domain_id_list", array);
@@ -960,14 +963,14 @@ public class SunmiStoreApi {
      * time_range_start	是	int	开始时间 (包括这个时间)
      * time_range_end	是	int	结束时间 （不包括这个时间）
      */
-    public void getNetHealthList(int companyId, int shopId, String sn, List<Integer> list,
+    public void getNetHealthList(String sn, List<Integer> list,
                                  String start, String end,
                                  RetrofitCallback<Object> callback) {
         try {
             JSONArray array = new JSONArray(list);
             String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .put("shop_id", shopId)
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
                     .put("sn", sn)
                     .put("domain_id_list", array)
                     .put("time_range_start", start)
