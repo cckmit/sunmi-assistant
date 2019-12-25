@@ -273,7 +273,7 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
     private void inputPasswordDialog() {
         new InputDialog.Builder(context)
                 .setTitle(R.string.hint_input_password)
-                .setHint(R.string.str_tip_password64)
+                .setHint(R.string.str_tip_password_8_64)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
                     if (TextUtils.isEmpty(input)) {
