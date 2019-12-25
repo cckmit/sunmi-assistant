@@ -507,7 +507,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      */
     private void fsAdjust(SunmiDevice device) {
         String versionName = device.getFirmware();
-        if (IpcUtils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
+        if (IpcUtils.isNewVersion(versionName, IpcConstants.IPC_VERSION_NO_SDCARD_CHECK)) {
             getSdCardStatus(device);
         } else {
             startFsAdjust(device);

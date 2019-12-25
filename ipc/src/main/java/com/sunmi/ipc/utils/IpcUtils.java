@@ -17,7 +17,7 @@ public class IpcUtils {
     private static final Pattern IPC_VERSION_NAME = Pattern.compile("^\\d{1,2}\\.\\d{1,2}\\.\\d{1,2}$");
 
     public static boolean isNewVersion(String currVersion, String lastVersion) {
-        return getVersionCode(currVersion) > getVersionCode(lastVersion);
+        return getVersionCode(currVersion) >= getVersionCode(lastVersion);
     }
 
     public static int getVersionCode(String version) {
