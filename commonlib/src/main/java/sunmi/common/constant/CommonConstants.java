@@ -66,5 +66,6 @@ public class CommonConstants {
     public static final String H5_CLOUD_STORAGE = CommonConfig.SERVICE_H5_URL + "cloudStorage?topPadding=";
     public static final String H5_CASH_VIDEO = CommonConfig.SERVICE_H5_URL + "cashvideo/welcome?topPadding=";
     public static final String H5_ORDER_MANAGE = CommonConfig.SERVICE_H5_URL + "orderManagement/orderList?topPadding=";
-
+    public static final String H5_CLOUD_RENEW = CommonConfig.SERVICE_H5_URL + "cloudStorage/subscribeService?topPadding=";
+    public static final String H5_AGREEMENT = CommonConfig.SERVICE_H5_URL + "privacyManagement?topPadding=";
 }

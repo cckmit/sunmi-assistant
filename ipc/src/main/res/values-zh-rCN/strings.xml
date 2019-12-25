@@ -391,6 +391,7 @@
     <string name="str_contrast">对比度</string>
     <string name="str_saturation">饱和度</string>
     <string name="str_focus_adjust">对焦微调</string>
+    <string name="str_ipc_protocol">《商米智能摄像机隐私政策》</string>
     <string name="dialog_title_input_ipc_name">请输入摄像机名称</string>
     <string name="tip_input_len_36">请输入1-36位字符</string>
 </resources>

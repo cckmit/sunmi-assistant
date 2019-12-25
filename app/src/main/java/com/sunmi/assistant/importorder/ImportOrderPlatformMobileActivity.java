@@ -114,9 +114,6 @@ public class ImportOrderPlatformMobileActivity extends BaseMvpActivity<PlatformM
 
     private void showSelectShopDialog(ArrayList<AuthStoreInfo.SaasUserInfoListBean> target) {
         new AuthDialog.Builder(this)
-                .setTextAuthTip(Html.fromHtml(context.getString(R.string.import_order_agree_auth_shop)
-                        + "<font color= '#2896FE'>" + context.getString(R.string.str_auth_protocol_text)
-                        + "</font> "))
                 .setMessage(getString(R.string.str_dialog_auth_message, selectPlatformBean.getSaas_name()))
                 .setAllowButton((dialog, which) -> ImportOrderSelectShopActivity_.intent(context)
                         .list(target)
