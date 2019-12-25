@@ -28,7 +28,6 @@
     <string name="str_help_feedback">帮助与反馈</string>
     <string name="str_me">我</string>
     <string name="str_edit_store_name">编辑店铺</string>
-    <string name="tip_input_name">请输入名称</string>
     <string name="str_choose_please">请选择</string>
     <string name="str_selected">请选择</string>
     <string name="tip_addr_empty">请输入详细地址</string>

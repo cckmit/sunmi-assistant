@@ -102,8 +102,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom")
     ConstraintLayout rlBottomBar;
-    @ViewById(resName = "iv_record")
-    ImageView ivRecord;//录制
     @ViewById(resName = "tv_living")
     TextView tvLiving;
     @ViewById(resName = "iv_volume")
@@ -122,8 +120,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     Chronometer cmTimer;//录制时间
     @ViewById(resName = "rl_record")
     RelativeLayout rlRecord;
-    @ViewById(resName = "iv_screenshot")
-    ImageView ivScreenshot;//截图
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
     @ViewById(resName = "tv_play_fail")
@@ -417,21 +413,21 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
-    //视频录制
-    @Click(resName = "iv_record")
-    void recordClick() {
-        if (isStartRecord) {
-            ivRecord.setBackgroundResource(R.mipmap.ic_recording_normal);
-            rlRecord.setVisibility(View.GONE);
-            isStartRecord = false;
-            cmTimer.stop();//关闭录制
-        } else {
-            ivRecord.setBackgroundResource(R.mipmap.ic_recording);
-            rlRecord.setVisibility(View.VISIBLE);
-            isStartRecord = true;
-            startRecord();//开始录制
-        }
-    }
+//    //视频录制
+//    @Click(resName = "iv_record")
+//    void recordClick() {
+//        if (isStartRecord) {
+//            ivRecord.setBackgroundResource(R.mipmap.ic_recording_normal);
+//            rlRecord.setVisibility(View.GONE);
+//            isStartRecord = false;
+//            cmTimer.stop();//关闭录制
+//        } else {
+//            ivRecord.setBackgroundResource(R.mipmap.ic_recording);
+//            rlRecord.setVisibility(View.VISIBLE);
+//            isStartRecord = true;
+//            startRecord();//开始录制
+//        }
+//    }
 
     //静音
     @Click(resName = "iv_volume")

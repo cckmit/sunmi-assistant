@@ -237,7 +237,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     private void modifyGroupName() {
         new InputDialog.Builder(context)
                 .setTitle(R.string.ipc_face_group_name)
-                .setHint(getString(R.string.ipc_face_input_name_tip))
+                .setHint(getString(R.string.tip_input_name))
                 .setInitInputContent(mFaceGroup.getGroupName())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
@@ -263,7 +263,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                         return;
                     }
                     if (input.trim().length() == 0) {
-                        shortTip(getString(R.string.ipc_face_input_name_tip));
+                        shortTip(R.string.tip_input_name);
                         return;
                     }
                     dialog.dismiss();

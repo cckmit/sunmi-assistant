@@ -221,7 +221,6 @@
     <string name="ipc_face_register_time">注册日期</string>
     <string name="ipc_face_new_enter_shop_time">最新到店时间</string>
     <string name="ipc_face_every_enter_time">每次到店时间</string>
-    <string name="ipc_face_input_name_tip">请输入名称</string>
     <string name="ipc_face_name_length_tip">不得超过32个字符</string>
     <string name="ipc_face_selected_age_range">请选择该用户的年龄段</string>
     <string name="ipc_face_selected_gender">请选择该用户的年性别</string>

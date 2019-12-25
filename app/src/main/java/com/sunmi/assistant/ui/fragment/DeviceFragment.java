@@ -530,8 +530,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         password = "";
         dialogPassword = new InputDialog.Builder(mActivity)
                 .setTitle(TextUtils.equals(type, "0") ?
-                        R.string.curr_router_manager_password : R.string.curr_router_error_password)
-                .setHint(R.string.hint_input_manger_password)
+                        R.string.hint_input_manger_password : R.string.curr_router_error_password)
+                .setHint(R.string.str_tip_password_6_32)
                 .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel, (dialog, which) -> dialogPassword = null)
                 .setConfirmButton(com.sunmi.apmanager.R.string.str_confirm, (dialog, input) -> {
                     if (isFastClick(1500)) return;

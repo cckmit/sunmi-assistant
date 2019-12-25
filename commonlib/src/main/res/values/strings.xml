@@ -165,8 +165,10 @@
     <string name="hint_input_password">Please enter the password</string>
     <string name="str_tip_input32">Please enter 1–32 characters</string>
     <string name="str_tip_input64">Please enter 1–64 characters</string>
-    <string name="str_tip_password64">请输入8–64位字符</string>
+    <string name="str_tip_password_8_64">Please input a password with a length between 8–64 characters.</string>
+    <string name="str_tip_password_6_32">Please input a password with a length between 6–32 characters.</string>
     <string name="tip_input_remark">请输入备注</string>
     <string name="str_sn">Serial number</string>
+    <string name="tip_input_name">Please enter the name</string>
 
 </resources>
