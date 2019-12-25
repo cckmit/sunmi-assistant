@@ -67,8 +67,8 @@
         android:layout_height="@dimen/dp_40"
         android:layout_below="@id/rl_wifi"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/dp_25"
         android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginEnd="@dimen/dp_25"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:singleLine="true"
@@ -81,6 +81,5 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_status"
         android:background="@color/c_white" />
-
 
 </RelativeLayout>

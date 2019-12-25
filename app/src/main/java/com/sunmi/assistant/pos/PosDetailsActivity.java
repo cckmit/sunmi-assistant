@@ -82,7 +82,7 @@ public class PosDetailsActivity extends BaseActivity {
             } else if (use3g == 1) {
                 netConnectStatus = getString(R.string.pos_3g);
             } else {
-                netConnectStatus = getString(R.string.pos_unknown);
+                netConnectStatus = getString(R.string.str_unknown);
             }
             silWifi.setEndContent(posInfo(netConnectStatus));
             silAdds.setEndContent(posInfo(posResp.getDeviceInfo().getLocation()));

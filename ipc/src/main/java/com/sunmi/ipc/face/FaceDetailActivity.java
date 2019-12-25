@@ -159,7 +159,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             if (mDeleteDialog == null) {
                 mDeleteDialog = new CommonDialog.Builder(FaceDetailActivity.this)
                         .setTitle(R.string.ipc_face_tip_delete)
-                        .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                        .setConfirmButton(R.string.str_delete, R.color.common_orange,
                                 (dialog, which) -> mPresenter.delete())
                         .setCancelButton(R.string.sm_cancel)
                         .create();

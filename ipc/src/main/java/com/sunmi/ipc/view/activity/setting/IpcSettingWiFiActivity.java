@@ -271,24 +271,22 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
      * 输入wifi密码
      */
     private void inputPasswordDialog() {
-        new InputDialog.Builder(this)
-                .setTitle(R.string.ipc_setting_dialog_wifi_input_pwd)
+        new InputDialog.Builder(context)
+                .setTitle(R.string.hint_input_password)
+                .setHint(R.string.str_tip_password64)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
-                    @Override
-                    public void onConfirmClick(InputDialog dialog, String input) {
-                        if (TextUtils.isEmpty(input)) {
-                            shortTip(R.string.str_text_password_no_null);
-                            return;
-                        }
-                        if (input.length() < 8 || input.length() > 64) {
-                            shortTip(R.string.tip_wifi_psw_length_inconformity);
-                            return;
-                        }
-                        mPassword = input;
-                        dialog.dismiss();
-                        connectWifi(mSsid, mMgmt, mPassword);
+                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
+                    if (TextUtils.isEmpty(input)) {
+                        shortTip(R.string.str_text_password_no_null);
+                        return;
                     }
+                    if (input.length() < 8 || input.length() > 64) {
+                        shortTip(R.string.tip_wifi_psw_length_inconformity);
+                        return;
+                    }
+                    mPassword = input;
+                    dialog.dismiss();
+                    connectWifi(mSsid, mMgmt, mPassword);
                 }).create().show();
     }
 

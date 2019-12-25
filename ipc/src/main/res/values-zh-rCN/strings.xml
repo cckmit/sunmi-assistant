@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="str_ipc">IPC</string>
-    <string name="str_input_psw">输入密码</string>
     <string name="tip_wifi_psw_error">摄像机配网失败</string>
     <string name="str_adjust_screen">调整画面</string>
     <string name="msg_in_same_wifi">请保持手机与摄像机在同一网络内</string>
@@ -42,8 +41,6 @@
     <string name="str_setting_ipc_camera">摄像机设置</string>
     <string name="ipc_setting_success">更新成功</string>
     <string name="ipc_setting_fail">更新失败</string>
-    <string name="ipc_setting_save">保存</string>
-    <string name="ipc_setting_delete">删除</string>
     <string name="ipc_setting_open">开</string>
     <string name="ipc_setting_close">关</string>
     <string name="ipc_setting_name">摄像机名称</string>
@@ -76,7 +73,6 @@
     <string name="ipc_setting_wifi">WiFi网络</string>
     <string name="ipc_setting_tip_wifi_discovery">正在搜索无线信号，请稍后…</string>
     <string name="ipc_setting_tip_wifi_choose">选取网络…</string>
-    <string name="ipc_setting_dialog_wifi_input_pwd">输入密码</string>
     <string name="ipc_setting_dialog_wifi_progress">正在连接(%d)</string>
     <string name="ipc_setting_dialog_wifi_success">网络连接成功</string>
     <string name="ipc_setting_dialog_wifi_pwd_error">密码错误</string>
@@ -91,7 +87,6 @@
     <string name="ipc_setting_version_no_new">您的设备已经是最新版本</string>
     <string name="ipc_setting_tip_network_detection">正在检测网络环境，请稍后…</string>
     <string name="ipc_setting_tip_network_dismatch">当前设备与手机不在同一路由器下</string>
-    <string name="ipc_setting_dialog_upgrade">版本更新</string>
     <string name="ipc_setting_dialog_upgrade_ok">现在更新</string>
     <string name="str_in_later">以后再说</string>
     <string name="ipc_setting_dialog_upgrade_progress">下载中…%s%%</string>
@@ -111,7 +106,6 @@
     <string name="ipc_setting_degree270">270度</string>
     <string name="ipc_setting_degree">%s度</string>
     <string name="ipc_setting_wire_net">有线网络</string>
-    <string name="ipc_setting_unknown">未知</string>
 
     <string name="ipc_recognition_tip_ok">知道了</string>
     <string name="ipc_recognition_loading">画面调整中…</string>
@@ -163,7 +157,6 @@
     <string name="ipc_face_group_threshold_content">%d天%d次</string>
     <string name="ipc_face_group_threshold_error">移库分组规则设定错误或超过上限</string>
     <string name="ipc_face_group_mark">备注</string>
-    <string name="ipc_face_group_mark_hint">请输入备注</string>
     <string name="ipc_face_group_mark_error">备注不得超过100个字符</string>
     <string name="ipc_face_group_manage">管理照片</string>
     <string name="ipc_face_group_count">已存%d</string>
@@ -238,7 +231,6 @@
     <string name="ipc_face_photo_num_remainder">剩余可分配的照片数量为%d</string>
     <string name="ipc_face_photo_num_max_more">输入的照片数量超过分组上限</string>
     <string name="ipc_face_input_photo_num_tip">请输入数量</string>
-    <string name="ipc_face_input_marks_tip">请输入备注</string>
     <string name="ipc_face_day">天</string>
     <string name="ipc_face_order">次</string>
     <string name="tip_device_bound_by_other_shop">操作失败，该摄像机已被其他门店绑定</string>
@@ -400,4 +392,6 @@
     <string name="str_contrast">对比度</string>
     <string name="str_saturation">饱和度</string>
     <string name="str_focus_adjust">对焦微调</string>
+    <string name="dialog_title_input_ipc_name">请输入摄像机名称</string>
+    <string name="tip_input_len_36">请输入1-36位字符</string>
 </resources>

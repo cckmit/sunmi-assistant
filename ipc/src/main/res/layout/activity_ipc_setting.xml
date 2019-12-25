@@ -111,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                app:endContentText="@string/ipc_setting_unknown"
+                app:endContentText="@string/str_unknown"
                 app:showDivider="both"
                 app:title="@string/ipc_setting_wifi"
                 app:type="arrow" />
