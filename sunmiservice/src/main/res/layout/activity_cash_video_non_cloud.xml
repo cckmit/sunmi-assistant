@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <sunmi.common.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dividerShow="true"
+        app:leftDefaultClickEnable="true"
+        app:leftIcon="@drawable/ic_back_dark"
+        app:titleText="@string/cash_video"
+        app:titleTextColor="@color/text_main" />
+
+    <TextView
+        android:id="@+id/tv_no_cash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_176"
+        android:drawableTop="@mipmap/ic_no_cash_video"
+        android:drawablePadding="@dimen/dp_8"
+        android:gravity="center"
+        android:text="@string/str_no_cash_video"
+        android:textColor="@color/text_main"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_4"
+        android:text="@string/tip_after_cloud_cash_video"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12" />
+
+    <Button
+        android:id="@+id/btn_open"
+        android:layout_width="@dimen/dp_106"
+        android:layout_height="@dimen/dp_36"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/str_open_cloud_storage"
+        android:textSize="@dimen/sp_14"
+        style="@style/BtnBigOrange" />
+
+</LinearLayout>

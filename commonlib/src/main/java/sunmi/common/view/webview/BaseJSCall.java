@@ -1,5 +1,6 @@
 package sunmi.common.view.webview;
 
+import android.app.Activity;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
@@ -33,6 +34,7 @@ public class BaseJSCall {
             int result = jsonObject.getInt("subscribeResult");
             if (result == 1) {
                 BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
+                context.setResult(Activity.RESULT_OK);
             }
         } catch (JSONException e) {
             e.printStackTrace();

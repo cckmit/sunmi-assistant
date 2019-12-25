@@ -233,7 +233,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             mPresenter.getCashVideoService(device.getId());
             ivCloudPlayback.setVisibility(View.VISIBLE);
         } else {
-            if (IpcUtils.getVersionCode(device.getFirmware()) >= IpcConstants.IPC_VERSION_VIDEO_ADJUST) {
+            if (IpcUtils.isNewVersion(device.getFirmware(), IpcConstants.IPC_VERSION_VIDEO_ADJUST)) {
                 ivAdjust.setVisibility(View.VISIBLE);
             }
         }
@@ -974,14 +974,20 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
-                            if (!serviceBeans.isEmpty()) {// 跳转收银视频页面
-                                CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
-                                        .serviceBeans(serviceBeans).start();
-                            } else if (cashVideoSubscribed) {// 已经有其他摄像机开通了收银视频服务
+                            if (cashVideoSubscribed) {  //已有其他门店开启收银视频
                                 shortTip(R.string.cash_video_other_device_already_subscribe_tip);
-                            } else {//去开通
-                                Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, null);
+                            } else {
+                                if (serviceBeans.isEmpty()) {   //去开启收银视频
+                                    Router.withApi(SunmiServiceApi.class)
+                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, null);
+                                } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
+                                    CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
+                                            .serviceBeans(serviceBeans).start();
+                                } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
+                                    shortTip(R.string.tip_after_cloud_cash_video);
+                                } else {
+                                    shortTip(R.string.tip_cloud_expired);
+                                }
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_DETECT:
