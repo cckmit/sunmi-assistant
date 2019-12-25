@@ -92,6 +92,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private final static int PLAY_FAIL_OFFLINE = 1;
     private final static int PLAY_FAIL_NET_ERROR = 2;
 
+    private final static int TIMEOUT_ADJUST_LOADING = 5_000;
+
     @ViewById(resName = "rl_screen")
     LinearLayout rlScreen;
     @ViewById(resName = "title_bar")
@@ -622,6 +624,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     public int[] getStickNotificationId() {
         return new int[]{IpcConstants.ipcNameChanged, OpcodeConstants.getVideoParams,
+                OpcodeConstants.fsAdjustFocusAdd, OpcodeConstants.fsAdjustFocusMinus,
+                OpcodeConstants.fsAdjustFocusReset,
                 CommonNotifications.cloudStorageChange, CommonNotifications.cashVideoSubscribe};
     }
 
@@ -640,6 +644,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
         } else if (id == CommonNotifications.cashVideoSubscribe) {
             mPresenter.getCashVideoService(device.getId());
+        } else if (id == OpcodeConstants.fsAdjustFocusAdd || id == OpcodeConstants.fsAdjustFocusMinus
+                || id == OpcodeConstants.fsAdjustFocusReset) {
+            hideLoadingDialog();
         }
 
         if (args != null && args[0] instanceof ResponseBean) {
@@ -670,7 +677,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private void showAdjustLoading() {
         showDarkLoading(getStringById(R.string.ipc_recognition_loading));
-        handler.postDelayed(this::hideLoadingDialog, 3000);
+        handler.postDelayed(this::hideLoadingDialog, TIMEOUT_ADJUST_LOADING);
     }
 
     @UiThread
