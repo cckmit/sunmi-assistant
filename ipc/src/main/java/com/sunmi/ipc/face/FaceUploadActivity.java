@@ -169,7 +169,7 @@ public class FaceUploadActivity extends BaseMvpActivity<FaceUploadPresenter>
     }
 
     private void uploadComplete() {
-        mTitleBar.setRightTextViewText(R.string.ipc_setting_save);
+        mTitleBar.setRightTextViewText(R.string.str_delete);
         if (mValidImages.isEmpty()) {
             boolean networkFailed = false;
             for (UploadImage image : mInvalidImages) {

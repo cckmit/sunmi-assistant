@@ -50,7 +50,7 @@ public class IpcSettingDetailActivity extends BaseActivity {
     private void deleteDevice(final SunmiDevice device) {
         new CommonDialog.Builder(context).setTitle(R.string.tip_delete_ipc)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_delete, R.color.caution_primary, (dialog, which) -> {
+                .setConfirmButton(R.string.str_delete, R.color.caution_primary, (dialog, which) -> {
                     dialog.dismiss();
                     if (!NetworkUtils.isNetworkAvailable(context)) {
                         unBindNetDisConnected();

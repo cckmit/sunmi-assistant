@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:rightText="@string/ipc_setting_delete"
+        app:rightText="@string/str_delete"
         app:titleText="@string/str_details"
         app:titleTextColor="@color/text_main" />
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="str_ipc">IPC</string>
-    <string name="str_input_psw">Input the password</string>
     <string name="tip_wifi_psw_error">Wi-Fi password error</string>
     <string name="str_adjust_screen">Adjust the screen image</string>
     <string name="msg_in_same_wifi">Please keep the mobile phone and camera staying on the same network</string>
@@ -42,8 +41,6 @@
     <string name="str_setting_ipc_camera">IPC Setting</string>
     <string name="ipc_setting_success">Update completed</string>
     <string name="ipc_setting_fail">Update failed</string>
-    <string name="ipc_setting_save">Save</string>
-    <string name="ipc_setting_delete">Delete</string>
     <string name="ipc_setting_open">Open</string>
     <string name="ipc_setting_close">Close</string>
     <string name="ipc_setting_name">IPC name</string>
@@ -76,7 +73,6 @@
     <string name="ipc_setting_wifi">Wi-Fi</string>
     <string name="ipc_setting_tip_wifi_discovery">Searching, please wait……</string>
     <string name="ipc_setting_tip_wifi_choose">Selecting the network…</string>
-    <string name="ipc_setting_dialog_wifi_input_pwd">Please enter the password</string>
     <string name="ipc_setting_dialog_wifi_progress">Connecting(%d)</string>
     <string name="ipc_setting_dialog_wifi_success">Connecting successfully</string>
     <string name="ipc_setting_dialog_wifi_pwd_error">Password incorrect</string>
@@ -91,7 +87,6 @@
     <string name="ipc_setting_version_no_new">The version is the latest</string>
     <string name="ipc_setting_tip_network_detection">Checking the Internet，please wait…</string>
     <string name="ipc_setting_tip_network_dismatch">The current device and the mobile phone are not under the same router.</string>
-    <string name="ipc_setting_dialog_upgrade">Update</string>
     <string name="ipc_setting_dialog_upgrade_ok">Update now</string>
     <string name="str_in_later">Update later</string>
     <string name="ipc_setting_dialog_upgrade_progress">Downloading…%s%%</string>
@@ -111,7 +106,6 @@
     <string name="ipc_setting_degree270">270degree</string>
     <string name="ipc_setting_degree">%sdegree</string>
     <string name="ipc_setting_wire_net">Wireless network</string>
-    <string name="ipc_setting_unknown">Unknown</string>
 
     <string name="ipc_recognition_tip_ok">OK</string>
     <string name="ipc_recognition_loading">Picture adjustment…</string>
@@ -163,7 +157,6 @@
     <string name="ipc_face_group_threshold_content">%d天%d次</string>
     <string name="ipc_face_group_threshold_error">移库分组规则设定错误或超过上限</string>
     <string name="ipc_face_group_mark">备注</string>
-    <string name="ipc_face_group_mark_hint">请输入备注</string>
     <string name="ipc_face_group_mark_error">备注不得超过100个字符</string>
     <string name="ipc_face_group_manage">管理照片</string>
     <string name="ipc_face_group_count">已存%d</string>
@@ -238,7 +231,6 @@
     <string name="ipc_face_photo_num_remainder">剩余可分配的照片数量为%d</string>
     <string name="ipc_face_photo_num_max_more">输入的照片数量超过分组上限</string>
     <string name="ipc_face_input_photo_num_tip">请输入数量</string>
-    <string name="ipc_face_input_marks_tip">请输入备注</string>
     <string name="ipc_face_day">天</string>
     <string name="ipc_face_order">次</string>
     <string name="tip_device_bound_by_other_shop">Sorry, the camera has been bound by another store !</string>
@@ -399,6 +391,8 @@
     <string name="str_contrast">对比度</string>
     <string name="str_saturation">饱和度</string>
     <string name="str_focus_adjust">对焦微调</string>
+    <string name="dialog_title_input_ipc_name">请输入摄像机名称</string>
+    <string name="tip_input_len_36">请输入1-36位字符</string>
 </resources>
 
 

@@ -2,7 +2,9 @@
     <string name="app_name">CommonLibrary</string>
     <string name="str_confirm">Confirm</string>
     <string name="sm_cancel">Cancel</string>
+    <string name="str_delete">Delete</string>
     <string name="str_update">Update</string>
+    <string name="str_version_update">Version Update</string>
     <string name="str_ignore">Ignore</string>
     <string name="str_refresh">Refresh</string>
     <string name="str_complete">Complete</string>
@@ -12,6 +14,7 @@
     <string name="str_next">Next</string>
     <string name="str_close">Disable</string>
     <string name="str_setting">Settings</string>
+    <string name="str_unknown">Unknown</string>
     <string name="str_gender_male">男</string>
     <string name="str_gender_female">女</string>
     <string name="str_common_age">年龄</string>
@@ -159,4 +162,11 @@
     <string name="tip_after_cloud_cash_video">订阅云存储服务后，即可查看收银视频</string>
     <string name="tip_cloud_expired">云存储服务已过期，续订后即可查看收银视频</string>
     <string name="str_cash_loss_prevent">收银防损</string>
+    <string name="hint_input_password">Please enter the password</string>
+    <string name="str_tip_input32">Please enter 1–32 characters</string>
+    <string name="str_tip_input64">Please enter 1–64 characters</string>
+    <string name="str_tip_password64">请输入8–64位字符</string>
+    <string name="tip_input_remark">请输入备注</string>
+    <string name="str_sn">Serial number</string>
+
 </resources>
