@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="str_ipc">IPC</string>
     <string name="tip_wifi_psw_error">摄像机配网失败</string>
     <string name="str_adjust_screen">调整画面</string>
-    <string name="msg_in_same_wifi">请保持手机与摄像机在同一网络内</string>
     <string name="tip_no_wifi_for_ipc">没有摄像机可连接的Wi-Fi</string>
     <string name="tip_check_network">请检查网络后重试</string>
-    <string name="tip_skip_config_wifi"><![CDATA[已连接无线/有线网络，<font color= \'#3D76F6\'>点此跳过</font>]]></string>
     <string name="tip_keep_same_network">设置时间约2分钟，请耐心等待</string>
     <string name="tip_setting_ipc">正在设置您的摄像机</string>
     <string name="tip_choose_wifi_to_connect">选择摄像机连接的Wi-Fi</string>
