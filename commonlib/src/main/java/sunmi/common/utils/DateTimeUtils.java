@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.utils.log.LogCat;
@@ -921,6 +922,29 @@ public class DateTimeUtils {
         return today.get(Calendar.YEAR) == c.get(Calendar.YEAR)
                 && today.get(Calendar.MONTH) == c.get(Calendar.MONTH)
                 && today.get(Calendar.DATE) == c.get(Calendar.DATE);
+    }
+
+    /**
+     * 当天0：0：0
+     * 时间戳秒
+     *
+     * @return
+     */
+    public static long startTime0() {
+        long time = System.currentTimeMillis();  //当前时间的时间戳
+        return (time / (1000 * 3600 * 24) * (1000 * 3600 * 24) - TimeZone.getDefault().getRawOffset()) / 1000;
+    }
+
+    /**
+     * 当天23：59：59
+     *
+     * @return
+     */
+    public static long endTime24() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
+        return calendar.getTime().getTime() / 1000;
     }
 
     public enum DateTimePattern {

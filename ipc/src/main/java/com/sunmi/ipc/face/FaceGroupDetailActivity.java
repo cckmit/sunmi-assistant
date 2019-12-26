@@ -90,7 +90,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
             mSilName.setEndImageDrawable(null);
         } else {
             mTitleBar.setRightTextViewEnable(true);
-            mTitleBar.setRightTextViewText(R.string.ipc_setting_delete);
+            mTitleBar.setRightTextViewText(R.string.str_delete);
             mTitleBar.getRightText().setOnClickListener(v -> clickDelete());
         }
 
@@ -180,7 +180,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                 mDeleteDialog = new CommonDialog.Builder(context)
                         .setTitle(getString(R.string.ipc_face_group_delete_title,
                                 Utils.getGroupName(this, mFaceGroup)))
-                        .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                        .setConfirmButton(R.string.str_delete, R.color.common_orange,
                                 (dialog, which) -> mPresenter.delete())
                         .setCancelButton(R.string.sm_cancel)
                         .create();
@@ -237,7 +237,7 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
     private void modifyGroupName() {
         new InputDialog.Builder(context)
                 .setTitle(R.string.ipc_face_group_name)
-                .setHint(getString(R.string.ipc_face_input_name_tip))
+                .setHint(getString(R.string.tip_input_name))
                 .setInitInputContent(mFaceGroup.getGroupName())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
@@ -257,13 +257,13 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                         }
                     }
                 }).setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_save, (dialog, input) -> {
+                .setConfirmButton(R.string.str_delete, (dialog, input) -> {
                     if (input.length() > IPC_NAME_MAX_LENGTH) {
                         shortTip(getString(R.string.ipc_face_name_length_tip));
                         return;
                     }
                     if (input.trim().length() == 0) {
-                        shortTip(getString(R.string.ipc_face_input_name_tip));
+                        shortTip(R.string.tip_input_name);
                         return;
                     }
                     dialog.dismiss();
@@ -273,8 +273,8 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
 
     private void modifyMarks() {
         new InputDialog.Builder(context)
-                .setTitle(R.string.ipc_face_group_mark)
-                .setHint(getString(R.string.ipc_face_input_marks_tip))
+                .setTitle(R.string.tip_input_remark)
+                .setHint(getString(R.string.tip_input_remark))
                 .setInitInputContent(mFaceGroup.getMark())
                 .setEditTextHeight(CommonHelper.dp2px(context, 130))
                 .setInputWatcher(new InputDialog.TextChangeListener() {
@@ -296,9 +296,9 @@ public class FaceGroupDetailActivity extends BaseMvpActivity<FaceGroupDetailPres
                     }
                 })
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_save, (dialog, input) -> {
+                .setConfirmButton(R.string.str_delete, (dialog, input) -> {
                     if (input.trim().length() == 0) {
-                        shortTip(getString(R.string.ipc_face_input_marks_tip));
+                        shortTip(getString(R.string.tip_input_remark));
                         return;
                     }
                     if (input.trim().length() > IPC_MARK_MAX_LENGTH) {

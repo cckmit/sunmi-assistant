@@ -95,7 +95,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/sil_adds"
                 app:showDivider="bottom"
-                app:title="@string/pos_details_sn" />
+                app:title="@string/str_sn" />
 
             <sunmi.common.view.SettingItemLayout
                 android:id="@+id/sil_resolution"

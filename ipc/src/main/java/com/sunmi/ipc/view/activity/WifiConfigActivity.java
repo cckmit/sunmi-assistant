@@ -290,8 +290,8 @@ public class WifiConfigActivity extends BaseActivity
 
     private void createDialog(final String ssid, final String mgmt) {
         new InputDialog.Builder(context)
-                .setTitle(R.string.str_input_psw)
-                .setHint(R.string.hint_input_wifi_psw)
+                .setTitle(R.string.hint_input_password)
+                .setHint(R.string.str_tip_password_8_64)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_save, (dialog, input) -> {
                     if (TextUtils.isEmpty(input)) {

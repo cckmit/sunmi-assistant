@@ -33,13 +33,15 @@ public class BaseJSCall {
             JSONObject jsonObject = new JSONObject(arg);
             int result = jsonObject.getInt("subscribeResult");
             if (result == 1) {
-                BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
                 context.setResult(Activity.RESULT_OK);
+                context.finish();
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.cloudStorageChange);
+            } else {
+                context.finish();
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        context.finish();
     }
 
     @JavascriptInterface

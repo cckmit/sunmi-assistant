@@ -3,7 +3,13 @@ package com.sunmi.ipc.view.activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
+import android.support.annotation.NonNull;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,10 +34,12 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
+import sunmi.common.view.activity.ProtocolActivity_;
 import sunmi.common.view.dialog.ListDialog;
+
+import static sunmi.common.view.activity.ProtocolActivity.USER_IPC_PROTOCOL;
 
 /**
  * Description:
@@ -88,12 +96,36 @@ public class IpcStartConfigActivity extends BaseActivity {
         ctvPrivacy.setVisibility(View.VISIBLE);
         tvIndicator.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         tvIndicator.getPaint().setAntiAlias(true);
-        ViewUtils.setPrivacy(this, ctvPrivacy, com.commonlibrary.R.color.white_40a, false);
+        initProtocol();
         btnStart.setEnabled(ctvPrivacy.isChecked());
         ctvPrivacy.setOnClickListener(v -> {
             ctvPrivacy.toggle();
             btnStart.setEnabled(ctvPrivacy.isChecked());
         });
+    }
+
+
+    private void initProtocol() {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        String protocol = getString(R.string.str_ipc_protocol);
+        builder.append(ctvPrivacy.getText());
+        int len = builder.length();
+        builder.append(protocol);
+        TextPaint tp = new TextPaint();
+        tp.linkColor = R.color.white_40a;
+        ClickableSpan span = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                ProtocolActivity_.intent(context)
+                        .protocolType(USER_IPC_PROTOCOL).start();
+                overridePendingTransition(com.commonlibrary.R.anim.activity_open_down_up, 0);
+            }
+        };
+        span.updateDrawState(tp);
+        builder.setSpan(span, len, len + protocol.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ctvPrivacy.setText(builder);
+        ctvPrivacy.setMovementMethod(LinkMovementMethod.getInstance());
+        ctvPrivacy.setText(builder);
     }
 
     @Click(resName = "btn_start")

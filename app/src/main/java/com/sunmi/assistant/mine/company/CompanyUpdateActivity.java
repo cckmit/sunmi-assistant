@@ -27,8 +27,9 @@ import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
-import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.SettingItemEditTextLayout;
 import sunmi.common.view.TextLengthWatcher;
 import sunmi.common.view.TitleBarView;
 
@@ -49,7 +50,7 @@ public class CompanyUpdateActivity extends BaseActivity
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.cet_username)
-    ClearableEditText cetUserInfo;
+    SettingItemEditTextLayout cetUserInfo;
 
     @Extra
     CompanyInfoResp mInfo;
@@ -59,52 +60,43 @@ public class CompanyUpdateActivity extends BaseActivity
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.setRightTextViewText(R.string.str_save);
         titleBar.setRightTextViewColor(R.color.text_main);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         titleBar.getRightTextView().setOnClickListener(this);
         if (type == CompanyDetailActivity.TYPE_EMAIL) {
-            cetUserInfo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(EMAIL_MAX_LENGTH)});
+            cetUserInfo.getEditText().setFilters(new InputFilter[]{new InputFilter.LengthFilter(EMAIL_MAX_LENGTH)});
         } else {
-            cetUserInfo.addTextChangedListener(new TextLengthWatcher(cetUserInfo, COMPANY_NAME_MAX_LENGTH) {
+            cetUserInfo.getEditText().addTextChangedListener(new TextLengthWatcher(cetUserInfo.getEditText(),
+                    COMPANY_NAME_MAX_LENGTH) {
                 @Override
                 public void onLengthExceed(EditText view, String content) {
                     shortTip(getString(R.string.editetxt_max_length));
                 }
             });
         }
-        cetUserInfo.addTextChangedListener(this);
+        cetUserInfo.getEditText().addTextChangedListener(this);
         cetUserInfo.requestFocus();
         if (type == CompanyDetailActivity.TYPE_NAME) {
-            titleBar.setAppTitle(R.string.str_change_company_name);
-            cetUserInfo.setHint(R.string.tip_input_company_name);
-            if (!TextUtils.isEmpty(mInfo.getCompany_name())) {
-                cetUserInfo.setText(mInfo.getCompany_name());
-                cetUserInfo.setSelection(mInfo.getCompany_name().length());
-            }
+            initData(R.string.str_change_company_name, R.string.tip_input_company_name, mInfo.getCompany_name());
         } else if (type == CompanyDetailActivity.TYPE_CONTACT) {
-            titleBar.setAppTitle(getString(R.string.str_change_company_contact));
-            cetUserInfo.setHint(R.string.tip_input_company_contact);
-            if (!TextUtils.isEmpty(mInfo.getContact_person())) {
-                cetUserInfo.setText(mInfo.getContact_person());
-                cetUserInfo.setSelection(mInfo.getContact_person().length());
-            }
+            initData(R.string.str_change_company_contact, R.string.tip_input_company_contact, mInfo.getContact_person());
         } else if (type == CompanyDetailActivity.TYPE_CONTACT_TEL) {
-            titleBar.setAppTitle(getString(R.string.str_change_company_tel));
-            cetUserInfo.setInputType(InputType.TYPE_CLASS_PHONE);
-            cetUserInfo.setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
-            cetUserInfo.setHint(R.string.tip_input_company_tel);
-            if (!TextUtils.isEmpty(mInfo.getContact_tel())) {
-                cetUserInfo.setText(mInfo.getContact_tel());
-                cetUserInfo.setSelection(mInfo.getContact_tel().length());
-            }
+            cetUserInfo.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+            cetUserInfo.getEditText().setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
+            initData(R.string.str_change_company_tel, R.string.tip_input_company_tel, mInfo.getContact_tel());
         } else if (type == CompanyDetailActivity.TYPE_EMAIL) {
-            titleBar.setAppTitle(getString(R.string.str_change_company_email));
-            cetUserInfo.setHint(R.string.tip_input_company_email);
-            if (!TextUtils.isEmpty(mInfo.getContact_email())) {
-                cetUserInfo.setText(mInfo.getContact_email());
-                cetUserInfo.setSelection(mInfo.getContact_email().length());
-            }
+            initData(R.string.str_change_company_email, R.string.tip_input_company_email, mInfo.getContact_email());
+        }
+    }
+
+    private void initData(int str_change_company_email, int tip_input_company_email, String contact_email) {
+        titleBar.setAppTitle(getString(str_change_company_email));
+        cetUserInfo.getEditText().setHint(tip_input_company_email);
+        if (!TextUtils.isEmpty(contact_email)) {
+            cetUserInfo.setEditTextText(contact_email);
+            cetUserInfo.getEditText().setSelection(contact_email.length());
         }
     }
 
@@ -151,7 +143,7 @@ public class CompanyUpdateActivity extends BaseActivity
     }
 
     private boolean isUpdateMessage() {
-        companyInfo = cetUserInfo.getText() == null ? null : cetUserInfo.getText().toString().trim();
+        companyInfo = cetUserInfo.getEditTextText().trim();
         if (type == CompanyDetailActivity.TYPE_NAME) {
             if (TextUtils.isEmpty(companyInfo)) {
                 shortTip(R.string.tip_input_company_name);
@@ -235,7 +227,7 @@ public class CompanyUpdateActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        String companyInfo = cetUserInfo.getText() == null ? null : cetUserInfo.getText().toString().trim();
+        String companyInfo = cetUserInfo.getEditTextText().trim();
         if (type == CompanyDetailActivity.TYPE_NAME &&
                 TextUtils.equals(mInfo.getCompany_name(), companyInfo)
                 || type == CompanyDetailActivity.TYPE_CONTACT &&
@@ -249,4 +241,5 @@ public class CompanyUpdateActivity extends BaseActivity
         }
         DialogUtils.isCancelSetting(this);
     }
+
 }

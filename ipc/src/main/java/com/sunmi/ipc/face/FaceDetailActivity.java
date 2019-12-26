@@ -159,7 +159,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             if (mDeleteDialog == null) {
                 mDeleteDialog = new CommonDialog.Builder(FaceDetailActivity.this)
                         .setTitle(R.string.ipc_face_tip_delete)
-                        .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                        .setConfirmButton(R.string.str_delete, R.color.common_orange,
                                 (dialog, which) -> mPresenter.delete())
                         .setCancelButton(R.string.sm_cancel)
                         .create();
@@ -220,7 +220,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     void nameClick() {
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_face_name)
-                .setHint(getString(R.string.ipc_face_input_name_tip))
+                .setHint(R.string.tip_input_name)
                 .setInitInputContent(silFaceName.getEndContent().toString().trim())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
@@ -247,7 +247,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                         return;
                     }
                     if (input.trim().length() == 0) {
-                        shortTip(getString(R.string.ipc_face_input_name_tip));
+                        shortTip(R.string.tip_input_name);
                         return;
                     }
                     dialog.dismiss();

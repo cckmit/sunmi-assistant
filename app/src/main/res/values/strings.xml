@@ -8,7 +8,6 @@
     <string name="str_text_lead_search_dev">Search Sunmi Devices</string>
     <string name="str_text_lead_set_connected">One-Key to connect the Sunmi devices to the internet, fast and safe</string>
     <string name="tip_old_and_new_psw_same">The old and new password cannot be the same</string>
-    <string name="str_version_update">Version Update</string>
     <string name="str_sunmi_copyright_sound">©2019 Shanghai Sunmi Technology Co., Ltd. All Rights Reserved.</string>
     <string name="str_open_permission_to_update">Enable the permission to unknown source, so as to update the APP</string>
     <string name="str_no_sd">No SD card found in this device！</string>
@@ -30,8 +29,6 @@
     <string name="str_help_feedback">Help and feedback</string>
     <string name="str_me">me</string>
     <string name="str_edit_store_name">Edit store name</string>
-    <string name="tip_input_name">Please enter the name</string>
-    <string name="tip_save_fail">Save failed</string>
     <string name="str_choose_please">Please choose</string>
     <string name="str_selected">Please select</string>
     <string name="tip_addr_empty">Please enter the detailed address</string>
@@ -302,14 +299,12 @@
     <string name="pos_expire">已过保</string>
     <string name="pos_wifi">WIFI</string>
     <string name="pos_3g">3G</string>
-    <string name="pos_unknown">未知</string>
     <string name="pos_guarantee_details">保修详情</string>
     <string name="pos_guarantee_status">保修状态</string>
     <string name="pos_activited_time">激活日期</string>
     <string name="pos_expire_time">过保日期</string>
     <string name="pos_details_net_connect">网络连接</string>
     <string name="pos_details_adds">当前地址</string>
-    <string name="pos_details_sn">SN号</string>
     <string name="pos_details_resolution">分辨率</string>
     <string name="pos_details_battery_temper">电池温度</string>
     <string name="pos_details_system_version">系统版本</string>

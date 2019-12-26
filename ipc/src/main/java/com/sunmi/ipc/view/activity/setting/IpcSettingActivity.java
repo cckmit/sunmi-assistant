@@ -238,8 +238,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (noNetCannotClick(true)) {
             return;
         }
-        new InputDialog.Builder(this)
-                .setTitle(R.string.ipc_setting_name)
+        new InputDialog.Builder(context)
+                .setTitle(R.string.dialog_title_input_ipc_name)
+                .setHint(R.string.tip_input_len_36)
                 .setInitInputContent(mDevice.getName())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
@@ -261,7 +262,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                     }
                 })
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_save, (dialog, input) -> {
+                .setConfirmButton(R.string.str_delete, (dialog, input) -> {
                     if (input.trim().getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH) {
                         shortTip(R.string.ipc_setting_tip_name_length);
                         return;
@@ -415,7 +416,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             wifiIsWire = data.getIntExtra("isWire", WIFI_WIRE_DEFAULT);
             mWifiName.setEndContent(wifiSsid);
             if (wifiIsWire == 0) {
-                mWifiName.setEndContent(getString(R.string.ipc_setting_unknown));
+                mWifiName.setEndContent(getString(R.string.str_unknown));
                 mWifiName.setEnabled(false);
             }
         }
@@ -507,7 +508,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      */
     private void fsAdjust(SunmiDevice device) {
         String versionName = device.getFirmware();
-        if (IpcUtils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
+        if (IpcUtils.isNewVersion(versionName, IpcConstants.IPC_VERSION_NO_SDCARD_CHECK)) {
             getSdCardStatus(device);
         } else {
             startFsAdjust(device);
@@ -693,7 +694,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @UiThread
     void setWifiUnknown() {
-        mWifiName.setEndContent(getString(R.string.ipc_setting_unknown));
+        mWifiName.setEndContent(getString(R.string.str_unknown));
         mWifiName.setEnabled(false);
         mAdjustScreen.setEnabled(false);
     }
@@ -882,7 +883,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      */
     private void newVersionDialog() {
         CommonDialog commonDialog = new CommonDialog.Builder(this)
-                .setTitle(R.string.ipc_setting_dialog_upgrade)
+                .setTitle(R.string.str_version_update)
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
                         getString(DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ?
                                 R.string.ipc_setting_dialog_upgrade_download_time_ss :

@@ -117,7 +117,7 @@ public class WelcomeActivity extends BaseMvpActivity<WelcomePresenter>
         if (!TextUtils.equals(SpUtils.getLead(), "TRUE")) {
             LeadPagesActivity_.intent(context).start();
             finish();
-        }else {
+        } else {
             handleLaunch();
         }
     }

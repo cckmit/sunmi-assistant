@@ -15,7 +15,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.utils.SpUtils;
-import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.SettingItemEditTextLayout;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -31,7 +31,7 @@ public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresen
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
     @ViewById(R.id.cet_username)
-    ClearableEditText cetUserName;
+    SettingItemEditTextLayout cetUserName;
 
     String userName;
 
@@ -43,19 +43,14 @@ public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresen
         titleBar.setRightTextViewText(R.string.str_complete);
         titleBar.setRightTextViewColor(R.color.text_main);
         titleBar.getRightTextView().setOnClickListener(this);
-        cetUserName.addTextChangedListener(this);
+        cetUserName.getEditText().addTextChangedListener(this);
         cetUserName.requestFocus();
-        String username = SpUtils.getUsername();
-        if (!TextUtils.isEmpty(username)) {
-            cetUserName.setText(username);
-            cetUserName.setSelection(username.length());
-        }
+        updateUsernameView(SpUtils.getUsername());
     }
 
     @Override
     public void onClick(View v) {
-        Editable text = cetUserName.getText();
-        if (text == null || TextUtils.isEmpty(userName = text.toString().trim())) {
+        if (TextUtils.isEmpty(userName = cetUserName.getEditTextText().trim())) {
             shortTip(R.string.tip_input_username);
             return;
         }
@@ -65,8 +60,8 @@ public class ChangeUsernameActivity extends BaseMvpActivity<ChangeUsernamePresen
     @Override
     public void updateUsernameView(String name) {
         if (!TextUtils.isEmpty(name)) {
-            cetUserName.setText(name);
-            cetUserName.setSelection(name.length());
+            cetUserName.setEditTextText(name);
+            cetUserName.getEditText().setSelection(name.length());
         }
     }
 

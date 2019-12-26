@@ -91,26 +91,31 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         }
 
         //左侧textView
-        tvLeft.setText(a.getString(R.styleable.SettingItemEditTextLayout_leftText));
-        if (a.hasValue(R.styleable.SettingItemEditTextLayout_leftTextSize)) {
-            tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    a.getDimensionPixelSize(R.styleable.SettingItemEditTextLayout_leftTextSize, CommonHelper.dp2px(mContext, 16)));
-        }
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_leftText)) {
+            tvLeft.setVisibility(VISIBLE);
+            tvLeft.setText(a.getString(R.styleable.SettingItemEditTextLayout_leftText));
+            if (a.hasValue(R.styleable.SettingItemEditTextLayout_leftTextSize)) {
+                tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        a.getDimensionPixelSize(R.styleable.SettingItemEditTextLayout_leftTextSize, CommonHelper.dp2px(mContext, 16)));
+            }
 
-        if (a.hasValue(R.styleable.SettingItemEditTextLayout_leftTextColor)) {
-            tvLeft.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_leftTextColor, defaultLeftTextColor));
+            if (a.hasValue(R.styleable.SettingItemEditTextLayout_leftTextColor)) {
+                tvLeft.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_leftTextColor, defaultLeftTextColor));
+            }
         }
 
         //右侧textView
-        tvRight.setText(a.getString(R.styleable.SettingItemEditTextLayout_rightText));
-        if (a.hasValue(R.styleable.SettingItemEditTextLayout_rightTextSize)) {
-            tvRight.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    a.getDimensionPixelSize(R.styleable.SettingItemEditTextLayout_rightTextSize, CommonHelper.dp2px(mContext, 16)));
+        if (a.hasValue(R.styleable.SettingItemEditTextLayout_rightText)) {
+            tvRight.setVisibility(VISIBLE);
+            tvRight.setText(a.getString(R.styleable.SettingItemEditTextLayout_rightText));
+            if (a.hasValue(R.styleable.SettingItemEditTextLayout_rightTextSize)) {
+                tvRight.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                        a.getDimensionPixelSize(R.styleable.SettingItemEditTextLayout_rightTextSize, CommonHelper.dp2px(mContext, 16)));
+            }
+            if (a.hasValue(R.styleable.SettingItemEditTextLayout_rightTextColor)) {
+                tvRight.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_rightTextColor, defaultRightTextColor));
+            }
         }
-        if (a.hasValue(R.styleable.SettingItemEditTextLayout_rightTextColor)) {
-            tvRight.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_rightTextColor, defaultRightTextColor));
-        }
-
         //editText
         etContent.setText(a.getString(R.styleable.SettingItemEditTextLayout_editTextContent));
         etContent.setHint(a.getString(R.styleable.SettingItemEditTextLayout_editTextHint));
@@ -128,6 +133,7 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         if (a.hasValue(R.styleable.SettingItemEditTextLayout_editable)) {
             isInterceptTouchEvent = true;
             etContent.setFocusable(false);
+            tvRight.setVisibility(VISIBLE);
             tvRight.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_right_arrow_small, 0);
         }
         if (a.hasValue(R.styleable.SettingItemEditTextLayout_editTextRightPadding)) {
@@ -148,8 +154,6 @@ public class SettingItemEditTextLayout extends RelativeLayout {
                 lp.height = (int) dividerHeight;
                 divider.setLayoutParams(lp);
             }
-        } else {
-            divider.setVisibility(GONE);
         }
         a.recycle();
     }
