@@ -20,6 +20,7 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.router.IpcApi;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
@@ -168,7 +169,6 @@ public class JSCall extends BaseJSCall {
         return "";
     }
 
-
     @JavascriptInterface
     public void jumpPage(String arg) {
         try {
@@ -182,8 +182,8 @@ public class JSCall extends BaseJSCall {
                     } else if (TextUtils.equals(url, SsConstants.JS_BIND_SAAS)) {
                         Router.withApi(AppApi.class).gotoImportOrderPreview(context, CommonConstants.IMPORT_ORDER_FROM_CASH_VIDEO);
                     } else if (TextUtils.equals(url, SsConstants.JS_MALL_ORDER)) {
-                        WebViewSunmiMallActivity_.intent(context).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
-                                + "my-order?channel=2&subchannel=4").start();
+                        Router.withApi(SunmiServiceApi.class).goToServiceMail(context, SunmiServiceConfig.SUNMI_MALL_HOST
+                                + "my-order?channel=2&subchannel=4");
                     }
                 }
             });
