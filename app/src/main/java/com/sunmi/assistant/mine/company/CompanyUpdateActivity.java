@@ -61,8 +61,6 @@ public class CompanyUpdateActivity extends BaseActivity
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        titleBar.setRightTextViewText(R.string.str_save);
-        titleBar.setRightTextViewColor(R.color.text_main);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         titleBar.getRightTextView().setOnClickListener(this);
         if (type == CompanyDetailActivity.TYPE_EMAIL) {
