@@ -8,7 +8,6 @@ import sunmi.common.base.BasePresenter;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yangShiJie
@@ -26,11 +25,13 @@ public class ShopContactAreaPresenter extends BasePresenter<ShopContactAreaContr
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    if (type == ShopDetailActivity.TYPE_CONTACT) {
+                    if (type == ShopDetailActivity.SHOP_CHANGE_NAME) {
+                        mView.shopNameChanged();
+                    } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT) {
                         mView.contactView();
-                    } else if (type == ShopDetailActivity.TYPE_CONTACT_TEL) {
+                    } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL) {
                         mView.contactTelView();
-                    } else if (type == ShopDetailActivity.TYPE_AREA) {
+                    } else if (type == ShopDetailActivity.SHOP_CHANGE_AREA) {
                         mView.areaView();
                     }
                 }
@@ -38,7 +39,6 @@ public class ShopContactAreaPresenter extends BasePresenter<ShopContactAreaContr
 
             @Override
             public void onFail(int code, String msg, Object data) {
-                LogCat.e(TAG, "Update shop name Failed. " + msg);
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
                     mView.shortTip(R.string.tip_save_fail);
@@ -46,4 +46,5 @@ public class ShopContactAreaPresenter extends BasePresenter<ShopContactAreaContr
             }
         });
     }
+
 }

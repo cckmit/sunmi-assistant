@@ -51,7 +51,7 @@ public class MyApplication extends BaseApplication {
         // 装载各个业务组件
         ModuleManager.getInstance().registerArr(
                 RouterConfig.App.NAME, RouterConfig.Ipc.NAME, RouterConfig.SunmiService.NAME,
-                RouterConfig.ApManager.NAME,RouterConfig.CloudPrinter.NAME
+                RouterConfig.ApManager.NAME, RouterConfig.CloudPrinter.NAME
         );
         if (BuildConfig.DEBUG) {
             ModuleManager.getInstance().check();
@@ -59,6 +59,11 @@ public class MyApplication extends BaseApplication {
         BootLoader bootLoader = new BootLoader(this);
         bootLoader.init();
         StatService.registerActivityLifecycleCallbacks(this);
+        com.baidu.mobstat.StatService.autoTrace(this);
+        // 获取测试设备ID
+        String testDeviceId = com.baidu.mobstat.StatService.getTestDeviceId(this);
+        // 日志输出
+        android.util.Log.d("BaiduMobStat", "Test DeviceId : " + testDeviceId);
     }
 
     class HhActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {

@@ -13,6 +13,7 @@
         android:background="@color/c_white"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
+        app:rightText="@string/str_save"
         app:titleText="@string/str_set_username"
         app:titleTextColor="@color/text_main" />
 
@@ -20,7 +21,6 @@
         android:id="@+id/cet_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:dividerShow="true"
         app:editTextHint="@string/tip_input_username"
         app:editTextInputType="text" />
 

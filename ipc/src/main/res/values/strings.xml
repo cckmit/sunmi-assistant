@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="str_ipc">IPC</string>
     <string name="tip_wifi_psw_error">Wi-Fi password error</string>
     <string name="str_adjust_screen">Adjust the screen image</string>
-    <string name="msg_in_same_wifi">Please keep the mobile phone and camera staying on the same network</string>
     <string name="tip_no_wifi_for_ipc">No Wi-Fi available for camera</string>
     <string name="tip_check_network">Please check the network and retry</string>
-    <string name="tip_skip_config_wifi"><![CDATA[wireless/wired network connected，<font color= \'#3D76F6\'>Click here to skip</font>]]></string>
     <string name="tip_keep_same_network"><![CDATA[Please keep the mobile phone and camera staying on the same network, please wait<br> After the internet connection，indicator is<font color= \'#FF6000\'>「solid green」</font>]]></string>
     <string name="tip_setting_ipc">Now setup your IP camera</string>
     <string name="tip_choose_wifi_to_connect">Choose the Wi-Fi for camera</string>
