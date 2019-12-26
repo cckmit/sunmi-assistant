@@ -187,4 +187,7 @@ dependencies {
 
     annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
 
+    //百度统计
+    implementation 'com.baidu.mobstat:mtj-sdk-circle:latest.integration'
+
 }
