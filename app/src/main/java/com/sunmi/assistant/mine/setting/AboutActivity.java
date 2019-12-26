@@ -8,6 +8,7 @@ import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.apmanager.update.AppUpdate;
 import com.sunmi.apmanager.utils.NetConnectUtils;
 import com.sunmi.assistant.R;
+import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.androidannotations.annotations.AfterViews;
@@ -20,13 +21,12 @@ import org.json.JSONObject;
 import okhttp3.Call;
 import okhttp3.Response;
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConfig;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.SettingItemLayout;
-import sunmi.common.view.activity.ProtocolActivity_;
 import sunmi.common.view.dialog.CommonDialog;
-
-import static sunmi.common.view.activity.ProtocolActivity.USER_AGREEMENT;
 
 /**
  * 关于
@@ -57,8 +57,7 @@ public class AboutActivity extends BaseActivity {
 
     @Click(R.id.sil_agreement)
     public void agreementClick(View v) {
-        ProtocolActivity_.intent(context).protocolType(USER_AGREEMENT).start();
-        overridePendingTransition(R.anim.activity_open_down_up, 0);
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_AGREEMENT).start();
     }
 
     private void checkUpdate() {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.ValueCallback;
@@ -68,6 +69,8 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     String mUrl;
     @Extra
     ArrayList<String> snList;
+    @Extra
+    String productNo;
 
     private boolean hasSendDeviceInfo = false;
     private CountDownTimer countDownTimer;
@@ -82,7 +85,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @RouterAnno(
             path = RouterConfig.SunmiService.WEB_VIEW_CLOUD
     )
-    public static Intent start(RouterRequest request) {
+    public static Intent start(@NonNull RouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), WebViewCloudServiceActivity_.class);
         return intent;
     }
@@ -224,7 +227,8 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                                 .put("company_id", SpUtils.getCompanyId())
                                 .put("shop_id", SpUtils.getShopId());
                         JSONObject cloudStorage = new JSONObject()
-                                .put("sn_list", array);
+                                .put("sn_list", array)
+                                .put("productNo", productNo);
                         JSONObject cashVideo = new JSONObject()
                                 .put("shop_name", SpUtils.getShopName());
                         String params = new JSONObject()

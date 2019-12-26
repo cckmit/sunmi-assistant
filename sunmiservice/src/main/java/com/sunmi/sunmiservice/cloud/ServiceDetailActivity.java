@@ -76,6 +76,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     String deviceName;
 
     private int status, errorCode;
+    private ServiceDetailBean bean;
 
     /**
      * 路由启动Activity
@@ -105,8 +106,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     public void getServiceDetail(ServiceDetailBean bean) {
         if (bean != null) {
             initNetworkNormal();
-            status = bean.getRenewStatus();
-            errorCode = bean.getRenewErrorCode();
+            this.bean = bean;
             String sn = bean.getDeviceSn();
             tvServiceName.setText(bean.getServiceName());
             if (isBind) {
@@ -149,22 +149,22 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     private void initNetworkError() {
         rlService.setVisibility(View.GONE);
         rlOrder.setVisibility(View.GONE);
-        //btnRenewal.setVisibility(View.GONE);
+        btnRenewal.setVisibility(View.GONE);
         networkError.setVisibility(View.VISIBLE);
     }
 
     private void initNetworkNormal() {
         rlService.setVisibility(View.VISIBLE);
         rlOrder.setVisibility(View.VISIBLE);
-        //btnRenewal.setVisibility(View.VISIBLE);
+        btnRenewal.setVisibility(View.VISIBLE);
         networkError.setVisibility(View.GONE);
     }
 
 
     @Click(resName = "btn_renewal")
     void renewalClick() {
-        if (status == CommonConstants.CLOUD_STORAGE_NOT_RENEWABLE) {
-            switch (errorCode) {
+        if (bean.getRenewStatus() == CommonConstants.CLOUD_STORAGE_NOT_RENEWABLE) {
+            switch (bean.getRenewErrorCode()) {
                 case RpcErrorCode.ERR_SERVICE_SUBSCRIBE_ERROR:
                     shortTip(R.string.tip_renewal_less_three_days);
                     break;
@@ -174,7 +174,8 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         } else {
             ArrayList<String> snList = new ArrayList<>();
             snList.add(mSn);
-            WebViewCloudServiceActivity_.intent(context).snList(snList).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
+            WebViewCloudServiceActivity_.intent(context).snList(snList)
+                    .productNo(bean.getProductNo()).mUrl(CommonConstants.H5_CLOUD_RENEW).start();
         }
     }
 

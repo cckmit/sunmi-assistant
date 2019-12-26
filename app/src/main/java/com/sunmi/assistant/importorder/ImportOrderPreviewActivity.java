@@ -95,9 +95,6 @@ public class ImportOrderPreviewActivity extends BaseActivity {
                 }
             }
             AuthDialog authDialog = new AuthDialog.Builder((Activity) context)
-                    .setTextAuthTip(Html.fromHtml(context.getString(R.string.import_order_agree_auth_shop)
-                            + "<font color= '#2896FE'>" + context.getString(R.string.str_auth_protocol_text)
-                            + "</font> "))
                     .setMessage(context.getString(R.string.str_dialog_auth_message,
                             saasName.replace(saasName.length() - 1, saasName.length(), "")))
                     .setAllowButton((dialog, which) -> {
