@@ -33,6 +33,9 @@ import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
 
+import static sunmi.common.view.activity.ProtocolActivity.USER_PRIVATE;
+import static sunmi.common.view.activity.ProtocolActivity.USER_PROTOCOL;
+
 /**
  * Description:
  * Created by bruce on 2019/7/18.
@@ -96,7 +99,7 @@ public class StartConfigPrinterActivity extends BaseActivity {
         tvTip3.setText(R.string.str_config_tip_printer_3);
 //        tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_2)));
 //        tvTip4.setVisibility(View.VISIBLE);
-        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, USER_PROTOCOL, USER_PRIVATE);
         BluetoothClient mClient = new BluetoothClient(context);
         btnStart.setEnabled(ctvPrivacy.isChecked());
         ctvPrivacy.setOnClickListener(v -> {
