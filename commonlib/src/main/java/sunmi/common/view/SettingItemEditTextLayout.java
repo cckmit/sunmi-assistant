@@ -3,12 +3,14 @@ package sunmi.common.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -174,15 +176,23 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         return tvRight;
     }
 
+    public void setRightText(int resId) {
+        tvRight.setVisibility(VISIBLE);
+        tvRight.setText(resId);
+    }
+
     public void setRightText(String text) {
+        tvRight.setVisibility(VISIBLE);
         tvRight.setText(text);
     }
 
-    public void setRightTextSize(float size) {
-        tvRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+    public void setRightTextSize(int size) {
+        tvRight.setVisibility(VISIBLE);
+        tvRight.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelOffset(size));
     }
 
     public void setRightTextColor(int color) {
+        tvRight.setVisibility(VISIBLE);
         tvRight.setTextColor(color);
     }
 
@@ -200,6 +210,10 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         etContent.setText(text);
     }
 
+    public void setSelection(int selection) {
+        etContent.setSelection(selection);
+    }
+
     public void setEditTextSize(float size) {
         etContent.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
@@ -208,8 +222,25 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         etContent.setTextColor(color);
     }
 
+    public void setEditTextHint(int resId) {
+        etContent.setHint(resId);
+    }
+
     public void setEditTextHintColor(int color) {
         etContent.setHintTextColor(color);
+    }
+
+    public void showSoftKeyBoard() {
+        etContent.setFocusable(true);
+        etContent.setFocusableInTouchMode(true);
+        etContent.requestFocus();
+        InputMethodManager inputManager = (InputMethodManager) etContent
+                .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.showSoftInput(etContent, 0);
+    }
+
+    public void addTextChangedListener(TextWatcher watcher) {
+        etContent.addTextChangedListener(watcher);
     }
 
 }

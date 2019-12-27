@@ -11,6 +11,7 @@
     <string name="str_skip">跳过</string>
     <string name="str_continue">继续</string>
     <string name="str_exit">退出</string>
+    <string name="str_return">返回</string>
     <string name="str_next">下一步</string>
     <string name="str_close">关闭</string>
     <string name="str_setting">设置</string>
@@ -171,4 +172,5 @@
     <string name="str_sn">SN号</string>
     <string name="tip_input_name">请输入名称</string>
     <string name="str_ipc_protocol">《商米智能摄像机隐私政策》</string>
+    <string name="str_device_offline">设备离线</string>
 </resources>

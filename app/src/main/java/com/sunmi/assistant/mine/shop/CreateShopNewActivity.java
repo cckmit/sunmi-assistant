@@ -179,7 +179,6 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
 
     private void initSet() {
         recyclerViewPoi.setLayoutManager(new LinearLayoutManager(this));
-        selShopNamePoi.setRightTextSize(12f);
         etDetailAddress.addTextChangedListener(new TextLengthWatcher(etDetailAddress, ADDRESS_MAX_LENGTH) {
             @Override
             public void onLengthExceed(EditText view, String content) {
@@ -379,12 +378,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
             groupPoi.setVisibility(View.VISIBLE);
             rlShopName.setVisibility(View.GONE);
             rlDetailAddress.setVisibility(View.GONE);
-            selShopNamePoi.getEditText().setFocusable(true);
-            selShopNamePoi.getEditText().setFocusableInTouchMode(true);
-            selShopNamePoi.getEditText().requestFocus();
-            InputMethodManager inputManager = (InputMethodManager) selShopNamePoi.getEditText()
-                    .getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.showSoftInput(selShopNamePoi.getEditText(), 0);
+            selShopNamePoi.showSoftKeyBoard();
         }
     }
 
