@@ -35,12 +35,6 @@ public class SettingItemEditTextLayout extends RelativeLayout {
 
     private Context mContext;
 
-    private int defaultLeftTextColor = 0xFF525866;
-    private int defaultRightTextColor = 0xFFA1A7B3;
-    private int defaultEditTextColor = 0xFF303540;
-    private int defaultEditTextHintColor = 0xFFA1A7B3;
-    private int defaultDividerColor = 0x1A333C4F;
-
     public SettingItemEditTextLayout(Context context) {
         super(context);
         this.mContext = context;
@@ -102,6 +96,7 @@ public class SettingItemEditTextLayout extends RelativeLayout {
             }
 
             if (a.hasValue(R.styleable.SettingItemEditTextLayout_leftTextColor)) {
+                int defaultLeftTextColor = 0xFF525866;
                 tvLeft.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_leftTextColor, defaultLeftTextColor));
             }
         }
@@ -115,6 +110,7 @@ public class SettingItemEditTextLayout extends RelativeLayout {
                         a.getDimensionPixelSize(R.styleable.SettingItemEditTextLayout_rightTextSize, CommonHelper.dp2px(mContext, 16)));
             }
             if (a.hasValue(R.styleable.SettingItemEditTextLayout_rightTextColor)) {
+                int defaultRightTextColor = 0xFFA1A7B3;
                 tvRight.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_rightTextColor, defaultRightTextColor));
             }
         }
@@ -127,9 +123,11 @@ public class SettingItemEditTextLayout extends RelativeLayout {
                     a.getDimension(R.styleable.SettingItemEditTextLayout_editTextSize, CommonHelper.dp2px(mContext, 16)));
         }
         if (a.hasValue(R.styleable.SettingItemEditTextLayout_editTextColor)) {
+            int defaultEditTextColor = 0xFF303540;
             etContent.setTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_editTextColor, defaultEditTextColor));
         }
         if (a.hasValue(R.styleable.SettingItemEditTextLayout_editTextHintColor)) {
+            int defaultEditTextHintColor = 0xFFA1A7B3;
             etContent.setHintTextColor(a.getColor(R.styleable.SettingItemEditTextLayout_editTextHintColor, defaultEditTextHintColor));
         }
         if (a.hasValue(R.styleable.SettingItemEditTextLayout_editable)) {
@@ -148,6 +146,7 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         if (dividerShow) {
             divider.setVisibility(VISIBLE);
             if (a.hasValue(R.styleable.SettingItemEditTextLayout_dividerColor)) {
+                int defaultDividerColor = 0x1A333C4F;
                 divider.setBackgroundColor(a.getColor(R.styleable.SettingItemEditTextLayout_dividerColor, defaultDividerColor));
             }
             if (a.hasValue(R.styleable.SettingItemEditTextLayout_dividerHeight)) {
@@ -160,37 +159,68 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         a.recycle();
     }
 
+    /**
+     * 设置左边文字
+     *
+     * @param text 内容
+     */
     public void setLeftText(String text) {
         tvLeft.setText(text);
     }
 
+    /**
+     * 设置左边文字大小
+     *
+     * @param size 文字大小
+     */
     public void setLeftTextSize(float size) {
         tvLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
     }
 
+    /**
+     * 设置左边文字颜色
+     *
+     * @param color 颜色
+     */
     public void setLeftTextColor(int color) {
         tvLeft.setTextColor(color);
     }
 
-    public TextView getRightText() {
-        return tvRight;
-    }
-
+    /**
+     * 设置右边文字
+     *
+     * @param resId 字符串资源id
+     */
     public void setRightText(int resId) {
         tvRight.setVisibility(VISIBLE);
         tvRight.setText(resId);
     }
 
+    /**
+     * 设置右边文字
+     *
+     * @param text 内容
+     */
     public void setRightText(String text) {
         tvRight.setVisibility(VISIBLE);
         tvRight.setText(text);
     }
 
+    /**
+     * 设置右边文字大小
+     *
+     * @param size 文字大小
+     */
     public void setRightTextSize(int size) {
         tvRight.setVisibility(VISIBLE);
         tvRight.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimensionPixelOffset(size));
     }
 
+    /**
+     * 设置右边文字颜色
+     *
+     * @param color 颜色
+     */
     public void setRightTextColor(int color) {
         tvRight.setVisibility(VISIBLE);
         tvRight.setTextColor(color);
@@ -200,36 +230,45 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         return etContent;
     }
 
+    /**
+     * 获取输入框内的内容
+     */
     public String getEditTextText() {
         if (etContent.getText() != null) {
             return etContent.getText().toString();
         } else return "";
     }
 
+    /**
+     * 设置输入框的文字
+     *
+     * @param text 内容
+     */
     public void setEditTextText(String text) {
         etContent.setText(text);
     }
 
+    /**
+     * 设置输入框的光标位置
+     *
+     * @param selection 光标位置
+     */
     public void setSelection(int selection) {
         etContent.setSelection(selection);
     }
 
-    public void setEditTextSize(float size) {
-        etContent.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
-    }
-
-    public void setEditTextColor(int color) {
-        etContent.setTextColor(color);
-    }
-
+    /**
+     * 设置输入框的提示文字
+     *
+     * @param resId 提示文案的字符串资源id
+     */
     public void setEditTextHint(int resId) {
         etContent.setHint(resId);
     }
 
-    public void setEditTextHintColor(int color) {
-        etContent.setHintTextColor(color);
-    }
-
+    /**
+     * 获取焦点弹出键盘
+     */
     public void showSoftKeyBoard() {
         etContent.setFocusable(true);
         etContent.setFocusableInTouchMode(true);
@@ -239,6 +278,9 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         inputManager.showSoftInput(etContent, 0);
     }
 
+    /**
+     * 设置 输入监听
+     */
     public void addTextChangedListener(TextWatcher watcher) {
         etContent.addTextChangedListener(watcher);
     }
