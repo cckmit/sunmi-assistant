@@ -316,4 +316,5 @@
     <string name="pos_text_empty">--</string>
     <string name="pos_wire">有线网络</string>
     <string name="str_agreement_manager">协议管理</string>
+    <string name="tip_device_unbound_already">当前设备已解绑</string>
 </resources>

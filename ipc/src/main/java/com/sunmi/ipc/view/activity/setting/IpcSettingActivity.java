@@ -262,7 +262,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                     }
                 })
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_delete, (dialog, input) -> {
+                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
                     if (input.trim().getBytes(Charset.defaultCharset()).length > IPC_NAME_MAX_LENGTH) {
                         shortTip(R.string.ipc_setting_tip_name_length);
                         return;

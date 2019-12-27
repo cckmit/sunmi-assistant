@@ -23,6 +23,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.ToastUtils;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.tablayout.utils.UnreadMsgUtils;
 import sunmi.common.view.tablayout.widget.MsgView;
@@ -174,6 +175,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
                                 }
                             }
                         }
+                        ToastUtils.toastForShort(context, R.string.tip_device_unbound_already);
                     }
 
                     @Override
