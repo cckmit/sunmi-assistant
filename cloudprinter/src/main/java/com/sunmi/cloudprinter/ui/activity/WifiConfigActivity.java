@@ -243,17 +243,14 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
 
     @Override
     public void wifiConfigSuccess() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideLoadingDialog();
-                if (passwordDialog != null) {
-                    passwordDialog.dismiss();
-                }
-                ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
-                BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
-                Router.withApi(AppApi.class).goToMain(context);
+        new Handler().postDelayed(() -> {
+            hideLoadingDialog();
+            if (passwordDialog != null) {
+                passwordDialog.dismiss();
             }
+            ToastUtils.toastCenter(context, getString(R.string.tip_config_success), R.mipmap.ic_toast_success);
+            BaseNotification.newInstance().postNotificationName(Constants.NOTIFICATION_PRINTER_ADDED);
+            Router.withApi(AppApi.class).goToMain(context);
         }, 1500);
     }
 
@@ -285,30 +282,24 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
             new CommonDialog.Builder(context)
                     .setTitle(getString(R.string.title_confirm_connect_to_wifi, printRouter.getName()))
                     .setCancelButton(R.string.sm_cancel)
-                    .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            showLoadingDialog();
-                            if (printerClient != null) {
-                                printerClient.setPrinterWifi(bleAddress, printRouter.getEssid(), "");
-                            }
+                    .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
+                        showLoadingDialog();
+                        if (printerClient != null) {
+                            printerClient.setPrinterWifi(bleAddress, printRouter.getEssid(), "");
                         }
                     }).create().show();
         } else {
             new InputDialog.Builder(context)
                     .setTitle(getString(R.string.dialog_msg_input_password, printRouter.getName()))
                     .setCancelButton(R.string.sm_cancel)
-                    .setConfirmButton(R.string.str_confirm, new InputDialog.ConfirmClickListener() {
-                        @Override
-                        public void onConfirmClick(InputDialog dialog, String input) {
-                            if (TextUtils.isEmpty(input)) {
-                                shortTip(R.string.hint_input_router_pwd);
-                                return;
-                            }
-                            showLoadingDialog();
-                            if (printerClient != null) {
-                                printerClient.setPrinterWifi(bleAddress, printRouter.getEssid(), input);
-                            }
+                    .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
+                        if (TextUtils.isEmpty(input)) {
+                            shortTip(R.string.hint_input_router_pwd);
+                            return;
+                        }
+                        showLoadingDialog();
+                        if (printerClient != null) {
+                            printerClient.setPrinterWifi(bleAddress, printRouter.getEssid(), input);
                         }
                     }).create().show();
         }
@@ -327,20 +318,14 @@ public class WifiConfigActivity extends BaseActivity implements SunmiPrinterClie
         getWifiConfigTimeoutDialog = new CommonDialog.Builder(context)
                 .setTitle(R.string.sm_title_hint)
                 .setMessage(R.string.tip_get_wifi_config_timeout)
-                .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (wifiConfigTimer != null) {
-                            wifiConfigTimer.cancel();
-                        }
-                        Router.withApi(AppApi.class).goToMain(context);
+                .setCancelButton(R.string.sm_cancel, (dialog, which) -> {
+                    if (wifiConfigTimer != null) {
+                        wifiConfigTimer.cancel();
                     }
-                }).setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (wifiConfigTimer != null) {
-                            wifiConfigTimer.cancel();
-                        }
+                    Router.withApi(AppApi.class).goToMain(context);
+                }).setConfirmButton(R.string.str_confirm, (dialog, which) -> {
+                    if (wifiConfigTimer != null) {
+                        wifiConfigTimer.cancel();
                     }
                 }).create();
         getWifiConfigTimeoutDialog.show();
