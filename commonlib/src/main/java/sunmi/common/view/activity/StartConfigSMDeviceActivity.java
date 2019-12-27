@@ -30,6 +30,9 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.TitleBarView;
 
+import static sunmi.common.view.activity.ProtocolActivity.USER_PRIVATE;
+import static sunmi.common.view.activity.ProtocolActivity.USER_PROTOCOL;
+
 /**
  * Created by YangShiJie on 2019/3/29.
  * 主路由器开始配置
@@ -108,7 +111,7 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
             tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_2)));
         }
         setViewDividerVisible();
-        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, USER_PROTOCOL, USER_PRIVATE);
         btnStart.setEnabled(ctvPrivacy.isChecked());
         ctvPrivacy.setOnClickListener(v -> {
             ctvPrivacy.toggle();

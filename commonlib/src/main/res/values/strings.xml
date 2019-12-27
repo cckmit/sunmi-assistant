@@ -171,6 +171,6 @@
     <string name="tip_input_remark">请输入备注</string>
     <string name="str_sn">Serial number</string>
     <string name="tip_input_name">Please enter the name</string>
+    <string name="str_ipc_protocol">《商米智能摄像机隐私政策》</string>
     <string name="str_device_offline">设备离线</string>
-
 </resources>

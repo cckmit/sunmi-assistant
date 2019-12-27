@@ -33,6 +33,9 @@ import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
+import static sunmi.common.view.activity.ProtocolActivity.USER_PRIVATE;
+import static sunmi.common.view.activity.ProtocolActivity.USER_PROTOCOL;
+
 /**
  * register
  */
@@ -52,7 +55,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
     @RouterAnno(
             path = RouterConfig.App.REGISTER
     )
-    public static Intent start(RouterRequest request){
+    public static Intent start(RouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), RegisterActivity_.class);
         return intent;
     }
@@ -65,7 +68,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
         etMobile.setClearIcon(R.mipmap.ic_edit_delete_white);
         new SomeMonitorEditText().setMonitorEditText(btnNext, etMobile);
         //初始化
-        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, USER_PROTOCOL, USER_PRIVATE);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String mobile = bundle.getString("mobile");

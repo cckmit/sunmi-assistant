@@ -194,8 +194,8 @@ public class JSCall extends BaseJSCall {
 
     @JavascriptInterface
     public void cashVideoSubscribe() {
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.cashVideoSubscribe);
         context.finish();
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.cashVideoSubscribe);
     }
 
     @JavascriptInterface

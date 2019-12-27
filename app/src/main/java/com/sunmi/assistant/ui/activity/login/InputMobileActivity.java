@@ -34,6 +34,9 @@ import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
 
+import static sunmi.common.view.activity.ProtocolActivity.USER_PRIVATE;
+import static sunmi.common.view.activity.ProtocolActivity.USER_PROTOCOL;
+
 @EActivity(R.layout.activity_register)
 public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
         implements InputMobileContract.View {
@@ -71,7 +74,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
         if (CommonHelper.isGooglePlay()) {
             tv.setText(R.string.tip_input_email_address);
             etMobile.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        }else {
+        } else {
             tv86.setVisibility(View.VISIBLE);
             tvLine.setVisibility(View.VISIBLE);
             etMobile.setMaxLines(11);
@@ -131,7 +134,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
     private void initRegister() {
         titleBar.setAppTitle(R.string.str_register);
         ctvPrivacy.setVisibility(View.VISIBLE);
-        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, USER_PROTOCOL, USER_PRIVATE);
         CommonUtils.trackDurationEventBegin(context, "registerUsernameDuration",
                 "注册流程_输入联系方式_耗时", Constants.EVENT_DURATION_REGISTER_NAME);
     }
@@ -172,7 +175,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
     @UiThread
     void mobileRegistered() {
         new CommonDialog.Builder(context)
-                .setTitle((CommonHelper.isGooglePlay()?R.string.tip_register_already_email:R.string.tip_register_already))
+                .setTitle((CommonHelper.isGooglePlay() ? R.string.tip_register_already_email : R.string.tip_register_already))
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_goto_register, new DialogInterface.OnClickListener() {
                     @Override
