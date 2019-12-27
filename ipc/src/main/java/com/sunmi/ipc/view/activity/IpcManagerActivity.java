@@ -164,7 +164,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private int screenW; //手机屏幕的宽
     private int qualityType = 0;//0-超清，1-高清
-    private boolean isStartRecord;//是否开始录制
+    private boolean isShowAdjust;//是否显示视频参数调整入口
     private boolean isControlPanelShow = true;//是否点击屏幕
     private boolean isPlayFailShown;
 
@@ -232,6 +232,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             ivCloudPlayback.setVisibility(View.VISIBLE);
         } else {
             if (IpcUtils.isNewVersion(device.getFirmware(), IpcConstants.IPC_VERSION_VIDEO_ADJUST)) {
+                isShowAdjust = true;
                 ivAdjust.setVisibility(View.VISIBLE);
             }
         }
@@ -733,6 +734,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void setPortraitViewVisible(int visibility) {
         if (rvManager == null) {
             return;
+        }
+        if (isShowAdjust) {
+            ivAdjust.setVisibility(visibility);
         }
         titleBar.setVisibility(visibility);
         ivFullScreen.setVisibility(visibility);
