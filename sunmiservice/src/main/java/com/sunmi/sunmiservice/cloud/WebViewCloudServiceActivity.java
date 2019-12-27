@@ -57,6 +57,8 @@ import sunmi.common.view.webview.SsConstants;
 @EActivity(resName = "activity_webview_cloud")
 public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceWebChromeClient.Callback {
 
+    private static final String URL_PARAM_JOINER = "?";
+
     private final int timeout = 15_000;
     @ViewById(resName = "webView")
     SMWebView webView;
@@ -90,12 +92,18 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         return intent;
     }
 
-
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
-        webView.loadUrl(mUrl + Utils.getWebViewStatusBarHeight(context));
+        StringBuilder sb = new StringBuilder(mUrl);
+        if (mUrl.contains(URL_PARAM_JOINER)) {
+            sb.append("&topPadding=");
+        } else {
+            sb.append("?topPadding=");
+        }
+        sb.append(Utils.getWebViewStatusBarHeight(context));
+        webView.loadUrl(sb.toString());
         startTimer();
     }
 
