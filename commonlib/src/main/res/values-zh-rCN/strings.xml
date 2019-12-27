@@ -173,4 +173,9 @@
     <string name="tip_input_name">请输入名称</string>
     <string name="str_ipc_protocol">《商米智能摄像机隐私政策》</string>
     <string name="str_device_offline">设备离线</string>
+    <string name="str_device_offline_desc">离线帮助</string>
+    <string name="tip_device_offline_check">当您的设备离线时，请依次检查：</string>
+    <string name="tip_device_offline_check_content">1、设备是否开机\n2、设备是否休眠\n3、设备连接的网络是否保持通畅</string>
+    <string name="tip_device_offline_management">当您的设备离线时，离线管理操作：</string>
+    <string name="tip_device_offline_management_content">1、若手机与设备处于同一局域网（即手机连接设备Wi-Fi）手机可通过局域网，管理离线设备绝大部分功能\n2、若手机与设备处于不同网络环境（即手机未连接设备Wi-Fi），只能管理离线设备部分功能</string>
 </resources>
