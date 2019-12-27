@@ -66,9 +66,8 @@ public class MsgDetailActivity extends BaseMvpActivity<MessageDetailPresenter>
     @RouterAnno(
             path = RouterConfig.App.MSGDETAIL
     )
-    public static Intent start(RouterRequest request){
-        Intent intent = new Intent(request.getRawContext(),MsgDetailActivity_.class);
-        return intent;
+    public static Intent start(RouterRequest request) {
+        return new Intent(request.getRawContext(), MsgDetailActivity_.class);
     }
 
     @AfterViews

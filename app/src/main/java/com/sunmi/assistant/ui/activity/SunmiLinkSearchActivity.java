@@ -48,6 +48,7 @@ import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DeviceTypeUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.TitleBarView;
 
 /**
@@ -100,13 +101,14 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     @RouterAnno(
             path = RouterConfig.App.SUNMILINK
     )
-    public static Intent start(RouterRequest request){
-        Intent intent = new Intent(request.getRawContext(),SunmiLinkSearchActivity_.class);
+    public static Intent start(RouterRequest request) {
+        Intent intent = new Intent(request.getRawContext(), SunmiLinkSearchActivity_.class);
         return intent;
     }
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new IpcConfiguringPresenter();
         mPresenter.attachView(this);
         titleBar.setAppTitle(R.string.str_sunmi_link);
