@@ -20,6 +20,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.view.webview.BaseJSCall;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
@@ -32,21 +33,19 @@ import sunmi.common.view.webview.SsConstants;
 public class ProtocolActivity extends BaseActivity {
 
     //用户协议 https://wifi.cdn.sunmi.com/Privacy/user_sunmi.html
-    public final static String PROTOCOL_USER = CommonConfig.SERVICE_H5_URL + "privacy/:zh-cn/user";
+    public final static String PROTOCOL_USER = CommonConfig.SERVICE_H5_URL + "privacy/:zh-cn/user?topPadding=";
     //用户协议英文
     public final static String PROTOCOL_USER_ENGLISH = "https://wifi.cdn.sunmi.com/Privacy/user_sunmi_english.html";
     //隐私协议
-    public final static String PROTOCOL_PRIVATE = CommonConfig.SERVICE_H5_URL + "privacy/:zh-cn/private";
+    public final static String PROTOCOL_PRIVATE = CommonConfig.SERVICE_H5_URL + "privacy/:zh-cn/private?topPadding=";
     //隐私协议英文
     public final static String PROTOCOL_PRIVATE_ENGLISH = "https://wifi.cdn.sunmi.com/Privacy/private_sunmi_english.html";
     //商米智能摄像机隐私政策
-    public final static String PROTOCOL_IPC = CommonConfig.SERVICE_H5_URL + "privacy/:zh-cn/ipcPrivacy";
+    public final static String PROTOCOL_IPC = CommonConfig.SERVICE_H5_URL + "privacy/:zh-cn/ipcPrivacy?topPadding=";
 
     public static final int USER_PROTOCOL = 0;
     public static final int USER_PRIVATE = 1;
-    public static final int USER_AP_PROTOCOL = 2;
-    public static final int USER_AP_PRIVATE = 3;
-    public static final int USER_IPC_PROTOCOL = 4;
+    public static final int USER_IPC_PROTOCOL = 2;
 
     @ViewById(resName = "wv_protocol")
     SMWebView webView;
@@ -56,7 +55,7 @@ public class ProtocolActivity extends BaseActivity {
     int protocolType;
 
     private CountDownTimer countDownTimer;
-    private long timeout = 5000;//超时时间
+    private long timeout = 10000;//超时时间
 
     @AfterViews
     protected void init() {
@@ -85,16 +84,19 @@ public class ProtocolActivity extends BaseActivity {
     }
 
     private void initNormal() {
-        if (protocolType == USER_PROTOCOL) { //app注册协议
-            loadWebView(CommonHelper.isChinese() ? PROTOCOL_USER : PROTOCOL_USER_ENGLISH);
-        } else if (protocolType == USER_PRIVATE) {
-            loadWebView(CommonHelper.isChinese() ? PROTOCOL_PRIVATE : PROTOCOL_PRIVATE_ENGLISH);
-        } else if (protocolType == USER_AP_PROTOCOL) { //快速配置路由器协议
-            loadWebView(CommonHelper.isChinese() ? PROTOCOL_USER : PROTOCOL_USER_ENGLISH);
-        } else if (protocolType == USER_AP_PRIVATE) {
-            loadWebView(CommonHelper.isChinese() ? PROTOCOL_PRIVATE : PROTOCOL_PRIVATE_ENGLISH);
-        } else if (protocolType == USER_IPC_PROTOCOL) {
-            loadWebView(PROTOCOL_IPC);
+        switch (protocolType) {
+            case USER_PROTOCOL:
+                loadWebView(CommonHelper.isChinese() ? (PROTOCOL_USER + Utils.getWebViewStatusBarHeight(context)) : PROTOCOL_USER_ENGLISH);
+                break;
+            case USER_PRIVATE:
+                loadWebView(CommonHelper.isChinese() ? PROTOCOL_PRIVATE + Utils.getWebViewStatusBarHeight(context) : PROTOCOL_PRIVATE_ENGLISH);
+                break;
+            case USER_IPC_PROTOCOL:
+                loadWebView(PROTOCOL_IPC + Utils.getWebViewStatusBarHeight(context));
+                break;
+            default:
+                break;
+
         }
     }
 

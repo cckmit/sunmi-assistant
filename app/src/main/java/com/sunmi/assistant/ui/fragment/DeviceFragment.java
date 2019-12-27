@@ -32,9 +32,9 @@ import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.assistant.utils.ShopTitlePopupWindow;
 import com.sunmi.cloudprinter.ui.activity.PrinterManageActivity_;
 import com.sunmi.ipc.config.IpcConstants;
-import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.IpcManagerActivity_;
+import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -315,15 +315,15 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 }
                 break;
             case "ROUTER":
-                if (!cannotManagerRouter(device)) {
-                    clickedDevice = device;
-                    showLoadingDialog();
-                    //校验ap是已初始化配置
-                    if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
-                        APCall.getInstance().apIsConfig(mActivity, device.getDeviceid());
-                    } else {
-                        isComeRouterManager(device.getDeviceid(), device.getStatus());
-                    }
+                clickedDevice = device;
+                showLoadingDialog();
+                //校验ap是已初始化配置
+                if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
+                    APCall.getInstance().apIsConfig(mActivity, device.getDeviceid());
+                } else if (device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
+                    isComeRouterManager(device.getDeviceid(), device.getStatus());
+                } else {
+                    gotoRouterManager(device.getDeviceid(), device.getStatus());
                 }
                 break;
             case "IPC":
@@ -342,6 +342,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                     shortTip(getString(R.string.str_cannot_manager_device));
                 }
                 break;
+            default:
         }
     }
 
@@ -461,6 +462,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                         intent.setAction(AppConfig.BROADCAST_ACTION);
                         intent.putExtra("type", AppConfig.BROADCAST_STATUS);
                         mActivity.sendBroadcast(intent);
+                        BaseNotification.newInstance().postNotificationName(NotificationConstant.apOffline, sn);
                     } else if (NotificationConstant.apStatusList == event) {
                         JSONObject object1 = jsonObject.getJSONObject("param");
                         JSONArray jsonArrayList = object1.getJSONArray("device_list");//所有设备列表
@@ -508,15 +510,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             SunmiDevice bean = (SunmiDevice) args[0];
             SMDeviceDiscoverUtils.saveInfo(bean);
         }
-    }
-
-    private boolean cannotManagerRouter(SunmiDevice device) {
-        if (device.getStatus() == DeviceStatus.UNKNOWN.ordinal()
-                || device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
-            shortTip(getString(R.string.str_cannot_manager_device));
-            return true;
-        }
-        return false;
     }
 
     @UiThread
@@ -720,14 +713,14 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     //检查ap版本
     private void checkApVersion(String sn, int status) {
         ApCompatibleUtils.getInstance().checkVersion(mActivity, sn, (isCompatible, currSn) ->
-                gotoRouterManager(sn, DeviceStatus.valueOf(status).getValue()));
+                gotoRouterManager(sn, status));
     }
 
-    private void gotoRouterManager(String sn, String status) {
+    private void gotoRouterManager(String sn, int status) {
         Bundle bundle = new Bundle();
         bundle.putString("shopId", SpUtils.getShopId() + "");
         bundle.putString("sn", sn);
-        bundle.putString("status", status);
+        bundle.putInt("status", status);
         openActivity(mActivity, RouterManagerActivity.class, bundle);
     }
 
