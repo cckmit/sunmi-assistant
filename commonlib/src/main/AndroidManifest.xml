@@ -55,6 +55,7 @@
             android:launchMode="singleTask" />
 
         <activity android:name="sunmi.common.mediapicker.picker.PickerActivity" />
+        <activity android:name="sunmi.common.view.activity.DeviceOfflineDescActivity_" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

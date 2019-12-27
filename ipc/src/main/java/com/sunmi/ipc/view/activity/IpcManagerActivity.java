@@ -73,6 +73,7 @@ import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
+import sunmi.common.view.activity.DeviceOfflineDescActivity_;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
 import sunmi.common.view.dialog.CommonDialog;
@@ -331,10 +332,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
                 IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
             } else {
-                new CommonDialog.Builder(context)
+                new CommonDialog.Builder(this)
                         .setTitle(R.string.str_device_offline)
                         .setMessage(R.string.msg_device_offline)
-                        .setConfirmButton(R.string.str_confirm).create().show();
+                        .setCancelButton(R.string.str_return)
+                        .setConfirmButton(R.string.str_setting_detail, (dialog, which) ->
+                                DeviceOfflineDescActivity_.intent(context).start())
+                        .create().show();
             }
         }
     }
