@@ -905,6 +905,63 @@ public class IpcCloudApi implements IpcCloudApiAnno {
         }
     }
 
+    /**
+     * 指定设备是收银防损开通状态
+     *
+     * @param snList
+     * @param callback
+     */
+    @Override
+    public void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceListResp> callback) {
+        try {
+            JSONObject jsonObject = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            if (snList != null) {
+                JSONArray array = new JSONArray(snList);
+                jsonObject.put("device_sn_list", array);
+            }
+            String params = jsonObject.toString();
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
+                    .getAuditSecurityPolicyList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取行为异常视频列表
+     * @param deviceId  否
+     * @param startTime  是
+     * @param endTime   是
+     * @param pageNum  否
+     * @param pageSize  否
+     * @param callback
+     */
+    public void getAbnormalBehaviorVideoList(int deviceId,long startTime, long endTime, int pageNum, int pageSize,
+                                             RetrofitCallback<CashVideoResp> callback) {
+        try {
+            JSONObject jsonObject = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            if (deviceId != -1) {
+                jsonObject.put("device_id", deviceId);
+            }
+
+            jsonObject.put("time_range_start", startTime);
+            jsonObject.put("time_range_end", endTime);
+            jsonObject.put("page_num", pageNum);
+            jsonObject.put("page_size", pageSize);
+            String params = jsonObject.toString();
+            SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
+                    .getAbnormalBehaviorVideoList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static final class Single {
         private static final IpcCloudApi INSTANCE = new IpcCloudApi();
     }

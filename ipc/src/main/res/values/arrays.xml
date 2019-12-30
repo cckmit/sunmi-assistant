@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string-array name="video_tag">
+        <item>2</item>
+        <item>3</item>
+
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+    </string-array>
+
+    <string-array name="video_description">
+        <item>@string/tag_flying_order</item>
+        <item>@string/tag_box_not_open</item>
+
+        <item>@string/tag_steal_money</item>
+        <item>@string/tag_missing_scan</item>
+        <item>@string/tag_steal_bar_code</item>
+        <item>@string/tag_transaction_not_match</item>
+    </string-array>
+
+    <string-array name="video_tip">
+        <item>@string/tip_flying_order</item>
+        <item>@string/tip_box_not_open</item>
+    </string-array>
+
+</resources>

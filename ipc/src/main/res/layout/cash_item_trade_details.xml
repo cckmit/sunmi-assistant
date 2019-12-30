@@ -69,101 +69,137 @@
         app:layout_constraintStart_toEndOf="@id/tv_time"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_96"
         android:layout_marginStart="@dimen/dp_28"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginBottom="@dimen/dp_10"
         android:background="@drawable/bg_round_corner_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tv_left_bottom_line"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_time"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tv_time">
 
         <TextView
-            android:id="@+id/tv_amount_text"
-            android:layout_width="@dimen/dp_64"
+            android:id="@+id/tv_pos_text"
+            android:layout_width="@dimen/dp_60"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
-            android:text="@string/cash_trade_amount"
+            android:text="@string/cash_pos_device"
             android:textColor="@color/text_caption"
-            android:textSize="@dimen/sp_12" />
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_amount"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_pos"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_16"
-            android:layout_toEndOf="@id/tv_amount_text"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/iv_preview_img"
+            app:layout_constraintStart_toEndOf="@id/tv_pos_text"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RelativeOverlap" />
 
         <TextView
             android:id="@+id/tv_order_num_text"
             android:layout_width="@dimen/dp_64"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_amount"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
             android:text="@string/cash_order_num"
             android:textColor="@color/text_caption"
-            android:textSize="@dimen/sp_12" />
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pos_text" />
 
         <TextView
             android:id="@+id/tv_order_num"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_amount"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
-            android:layout_toStartOf="@id/iv_preview_img"
-            android:layout_toEndOf="@id/tv_order_num_text"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_12"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/iv_preview_img"
+            app:layout_constraintStart_toEndOf="@id/tv_order_num_text"
+            app:layout_constraintTop_toBottomOf="@id/tv_pos_text" />
 
         <TextView
-            android:id="@+id/tv_pos_text"
+            android:id="@+id/tv_amount_text"
             android:layout_width="@dimen/dp_64"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_order_num"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:text="@string/cash_pos_device"
+            android:text="@string/cash_trade_amount"
             android:textColor="@color/text_caption"
-            android:textSize="@dimen/sp_12" />
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_order_num_text" />
 
         <TextView
-            android:id="@+id/tv_pos"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_amount"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_order_num"
+            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
-            android:layout_toStartOf="@id/iv_preview_img"
-            android:layout_toEndOf="@id/tv_pos_text"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_12"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/iv_preview_img"
+            app:layout_constraintStart_toEndOf="@id/tv_amount_text"
+            app:layout_constraintTop_toBottomOf="@id/tv_order_num"
+            tools:ignore="RelativeOverlap" />
+
+        <TextView
+            android:id="@+id/tv_suggest"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:textSize="@dimen/sp_12"
+            android:textColor="@color/common_orange"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pos"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/iv_preview_img"
+            />
+
+        <android.support.constraint.Group
+            android:id="@+id/group_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="tv_order_num,tv_order_num_text,tv_amount,tv_amount_text"/>
 
         <ImageView
             android:id="@+id/iv_preview_img"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"
-            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dp_16"
             android:background="@mipmap/ipc_cash_snapshot_placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

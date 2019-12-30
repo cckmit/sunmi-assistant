@@ -1,6 +1,8 @@
 package com.sunmi.ipc.cash.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
+import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -23,10 +25,12 @@ public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashVideoServiceB
 
     private Context context;
     private OnItemClickListener onItemClickListener;
+    private int behaviorPos;
 
     public CashVideoOverViewAdapter(List<CashVideoServiceBean> data, Context context) {
         super(R.layout.item_cash_video_overview, data);
         this.context = context;
+        this.behaviorPos = 0;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -41,9 +45,18 @@ public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashVideoServiceB
         helper.setText(R.id.tv_ipc_sn, context.getString(R.string.str_dev_sn, item.getDeviceSn()));
         helper.setText(R.id.tv_count_cash, String.valueOf(item.getTotalCount()));
         helper.setText(R.id.tv_count_abnormal, String.valueOf(item.getAbnormalVideoCount()));
+        CardView cardView = helper.getView(R.id.cv_abnormal_behavior);
+        if (item.isHasCashLossPrevent()) {
+            behaviorPos++;
+            cardView.setVisibility(View.VISIBLE);
+            helper.setText(R.id.tv_count_abnormal_behavior, String.valueOf(item.getAbnormalBehaviorCount()));
+        } else {
+            cardView.setVisibility(View.GONE);
+        }
         if (onItemClickListener != null) {
             helper.getView(R.id.cv_order).setOnClickListener(v -> onItemClickListener.onOrderClick(item, helper.getAdapterPosition()));
             helper.getView(R.id.cv_abnormal_order).setOnClickListener(v -> onItemClickListener.onAbnormalOrderClick(item, helper.getAdapterPosition()));
+            cardView.setOnClickListener(v -> onItemClickListener.onAbnormalBehaviorClick(item, behaviorPos));
         }
     }
 
@@ -51,5 +64,7 @@ public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashVideoServiceB
         void onOrderClick(CashVideoServiceBean item, int position);
 
         void onAbnormalOrderClick(CashVideoServiceBean item, int position);
+
+        void onAbnormalBehaviorClick(CashVideoServiceBean item, int position);
     }
 }

@@ -39,7 +39,7 @@ public class CashVideoModel {
         });
     }
 
-    public void load(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize, CallBack callBack) {
+    public void loadCashVideo(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize, CallBack callBack) {
         IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
@@ -59,6 +59,28 @@ public class CashVideoModel {
                         callBack.getCashVideoFail(code, msg);
                     }
                 });
+    }
+
+    public void AbnormalBehaviorVideo(int deviceId, long startTime, long endTime, int pageNum, int pageSize, CallBack callBack) {
+        IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(deviceId, startTime, endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
+            @Override
+            public void onSuccess(int code, String msg, CashVideoResp data) {
+                List<CashVideoResp.AuditVideoListBean> beans = data.getAuditVideoList();
+                int n = beans.size();
+                if (n > 0) {
+                    for (int i = 0; i < beans.size(); i++) {
+                        beans.get(i).setDeviceName(ipcName.get(beans.get(i).getDeviceId()));
+                    }
+                }
+                callBack.getCashVideoSuccess(beans, data.getTotalCount());
+            }
+
+            @Override
+            public void onFail(int code, String msg, CashVideoResp data) {
+                callBack.getCashVideoFail(code, msg);
+            }
+        });
+
     }
 
 
