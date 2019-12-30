@@ -5,10 +5,12 @@ import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.contract.CashVideoListConstract;
 import com.sunmi.ipc.model.CashVideoModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.CashVideoServiceBean;
 
 /**
  * Description:
@@ -21,9 +23,11 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
     private CashVideoModel videoModel;
     private int deviceId, videoType;
     private long startTime, endTime;
+    private boolean hasCashLossPrevent;
 
-    public CashVideoListPresenter() {
-        videoModel = new CashVideoModel();
+    public CashVideoListPresenter(boolean hasCashLossPrevent, ArrayList<CashVideoServiceBean> beans) {
+        videoModel = new CashVideoModel(beans);
+        this.hasCashLossPrevent = hasCashLossPrevent;
     }
 
     @Override
@@ -32,12 +36,20 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         this.videoType = videoType;
         this.startTime = startTime;
         this.endTime = endTime;
-        videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        if (hasCashLossPrevent) {
+            videoModel.loadAbnormalBehaviorVideo(deviceId, startTime, endTime, pageNum, pageSize, this);
+        } else {
+            videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        }
     }
 
     @Override
     public void loadMore(int pageNum, int pageSize) {
-        videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        if (hasCashLossPrevent) {
+            videoModel.loadAbnormalBehaviorVideo(deviceId, startTime, endTime, pageNum, pageSize, this);
+        } else {
+            videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        }
     }
 
     @Override
@@ -59,7 +71,7 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         }
     }
 
-    public HashMap<Integer, String> getIpcName() {
+    public HashMap<Integer, CashVideoServiceBean> getIpcName() {
         return videoModel.getIpcNameMap();
     }
 

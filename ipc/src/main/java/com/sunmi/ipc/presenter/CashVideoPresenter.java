@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.ServiceListResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
@@ -85,7 +86,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
      * 获取视频列表
      */
     @Override
-    public void getCashVideoList(Map<Integer, String> ipcName, int deviceId, int videoType,
+    public void getCashVideoList(Map<Integer, CashVideoServiceBean> ipcName, int deviceId, int videoType,
                                  long startTime, long endTime, int pageNum, int pageSize) {
         IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
@@ -95,7 +96,10 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                         int mSize = videoList.size();
                         if (mSize > 0) {
                             for (int i = 0; i < mSize; i++) {
-                                videoList.get(i).setDeviceName(ipcName.get(videoList.get(i).getDeviceId()));
+                                CashVideoServiceBean bean = ipcName.get(videoList.get(i).getDeviceId());
+                                if (bean != null) {
+                                    videoList.get(i).setDeviceName(bean.getDeviceName());
+                                }
                             }
                         }
                         if (isViewAttached()) {

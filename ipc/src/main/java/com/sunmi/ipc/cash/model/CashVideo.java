@@ -60,6 +60,7 @@ public class CashVideo implements Parcelable {
     private List<Integer> videoTag;
 
     private String deviceName;
+    private boolean hasCashLossPrevent;
 
     public long getVideoId() {
         return videoId;
@@ -121,6 +122,10 @@ public class CashVideo implements Parcelable {
         return deviceName;
     }
 
+    public boolean isHasCashLossPrevent() {
+        return hasCashLossPrevent;
+    }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -135,6 +140,10 @@ public class CashVideo implements Parcelable {
 
     public void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
+    }
+
+    public void setHasCashLossPrevent(boolean hasCashLossPrevent) {
+        this.hasCashLossPrevent = hasCashLossPrevent;
     }
 
     protected CashVideo(Parcel in) {
@@ -152,6 +161,7 @@ public class CashVideo implements Parcelable {
         startTime = in.readLong();
         endTime = in.readLong();
         deviceName = in.readString();
+        hasCashLossPrevent = in.readByte() != 0;
     }
 
     @Override
@@ -170,6 +180,7 @@ public class CashVideo implements Parcelable {
         dest.writeLong(startTime);
         dest.writeLong(endTime);
         dest.writeString(deviceName);
+        dest.writeByte((byte) (hasCashLossPrevent ? 1 : 0));
     }
 
     @Override

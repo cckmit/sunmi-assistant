@@ -596,6 +596,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         serviceBeans = devices;
         if (!devices.isEmpty()) {
             cashVideoItem.setRightText(context.getString(R.string.str_setting_detail));
+            if (devices.get(0).isHasCashLossPrevent()) {
+                cashVideoItem.setLeftImageResId(R.mipmap.ipc_manage_cash_loss_prevent);
+                cashVideoItem.setTitle(getString(R.string.str_cash_loss_prevent));
+            }
             adapter.notifyDataSetChanged();
         } else if (alreadySubscribe) {// 已经有其他摄像机开通了收银视频服务
             cashVideoSubscribed = true;
@@ -993,7 +997,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                             .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, null);
                                 } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
                                     CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
-                                            .serviceBeans(serviceBeans).start();
+                                            .serviceBeans(serviceBeans)
+                                            .hasCashLossPrevent(serviceBeans.get(0).isHasCashLossPrevent()).start();
                                 } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
                                     shortTip(R.string.tip_after_cloud_cash_video);
                                 } else {
