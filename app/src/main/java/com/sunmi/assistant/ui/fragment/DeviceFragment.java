@@ -321,7 +321,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
                     APCall.getInstance().apIsConfig(mActivity, device.getDeviceid());
                 } else if (device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
-                    isComeRouterManager(device.getDeviceid(), device.getStatus());
+                    checkApVersion(device.getDeviceid(), device.getStatus());
                 } else {
                     gotoRouterManager(device.getDeviceid(), device.getStatus());
                 }
@@ -577,7 +577,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 JSONObject object1 = object.getJSONObject("system");
                 String factory = object1.getString("factory");
                 if (TextUtils.equals("0", factory)) {//0已初始配置 1未初始化设置
-                    isComeRouterManager(clickedDevice.getDeviceid(), clickedDevice.getStatus());
+                    //校验密码 管理密码是否正确
+                    mPassword = RouterDBHelper.queryApPassword(clickedDevice.getDeviceid());
+                    APCall.getInstance().checkLogin(mActivity, mPassword);
                 } else {
                     openActivity(mActivity, PrimaryRouteStartActivity.class);
                 }
@@ -697,17 +699,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
         deviceListRefresh();
         endRefresh();
-    }
-
-    private void isComeRouterManager(String sn, int status) {
-        //1通过sn号判断是否当前路由器WiFi
-        if (TextUtils.equals(sn, MyNetworkCallback.CURRENT_ROUTER)) {
-            //2通过查询数据库管理密码check登录（管理密码是否正确）
-            mPassword = RouterDBHelper.queryApPassword(sn);//查询数据库保存的路由器密码
-            APCall.getInstance().checkLogin(mActivity, mPassword);
-        } else {
-            checkApVersion(sn, status);
-        }
     }
 
     //检查ap版本
