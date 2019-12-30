@@ -258,7 +258,6 @@
     <string name="msg_duration_sd_format">请耐心等候，大约需要15s</string>
     <string name="tip_sdcard_unformat">存储卡未格式化</string>
     <string name="msg_sdcard_should_format">检测到的存储卡需格式化后才可使用，请提前保存重要资料</string>
-    <string name="str_jump_adjust">暂不调整</string>
     <string name="str_model_name">产品型号：%s</string>
     <string name="ipc_setting_downloading">下载中…</string>
     <string name="ipc_setting_upgrading">升级中…</string>
