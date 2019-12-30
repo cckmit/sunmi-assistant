@@ -180,7 +180,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             LogCat.d(TAG, "Data is loading, skip.");
             return;
         }
-        LogCat.d(TAG, "Start to loadCashVideo data.");
+        LogCat.d(TAG, "Start to load data.");
         mState = STATE_LOADING;
         if (showLoading) {
             updateViews();
@@ -306,7 +306,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
         @MainThread
         public void onSuccess() {
-            LogCat.d(TAG, "Dashboard card loadCashVideo data pass. ");
+            LogCat.d(TAG, "Dashboard card load data pass. ");
             mState = STATE_SUCCESS;
             mModel.valid = true;
             mModel.source = this.source;
@@ -318,7 +318,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         @MainThread
         @Override
         public void onSuccess(int code, String msg, Resp data) {
-            LogCat.d(TAG, "Dashboard card loadCashVideo Success. " + msg);
+            LogCat.d(TAG, "Dashboard card load Success. " + msg);
             mState = STATE_SUCCESS;
             mModel.valid = true;
             mModel.source = this.source;
@@ -330,7 +330,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         @MainThread
         @Override
         public void onFail(int code, String msg, Resp data) {
-            LogCat.e(TAG, "Dashboard card loadCashVideo Failed. " + msg);
+            LogCat.e(TAG, "Dashboard card load Failed. " + msg);
             mState = STATE_FAILED;
             mModel.source = this.source;
             mModel.period = this.period;
