@@ -11,7 +11,8 @@ public class CashVideoListBean {
     /**
      * device_id : 36
      * total_count : 105
-     * abnormal_video_count : 3
+     * abnormal_video_count : 10
+     * abnormal_behavior_video_count : 5
      */
 
     @SerializedName("device_id")
@@ -20,6 +21,8 @@ public class CashVideoListBean {
     private int totalCount;
     @SerializedName("abnormal_video_count")
     private int abnormalVideoCount;
+    @SerializedName("abnormal_behavior_video_count")
+    private int abnormalBehaviorVideoCount;
 
     public int getDeviceId() {
         return deviceId;
@@ -43,5 +46,13 @@ public class CashVideoListBean {
 
     public void setAbnormalVideoCount(int abnormalVideoCount) {
         this.abnormalVideoCount = abnormalVideoCount;
+    }
+
+    public int getAbnormalBehaviorVideoCount() {
+        return abnormalBehaviorVideoCount;
+    }
+
+    public void setAbnormalBehaviorVideoCount(int abnormalBehaviorVideoCount) {
+        this.abnormalBehaviorVideoCount = abnormalBehaviorVideoCount;
     }
 }

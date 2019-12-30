@@ -18,4 +18,6 @@ public interface IpcCloudApiAnno {
     void getAuditVideoServiceList(List<String> snList, RetrofitCallback<ServiceListResp> callback);
 
     void getStorageList(List<String> snList, RetrofitCallback<ServiceListResp> callback);
+
+    void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceListResp> callback);
 }
