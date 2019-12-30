@@ -2,6 +2,7 @@ package com.sunmi.ipc.model;
 
 import android.annotation.SuppressLint;
 
+import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import org.litepal.crud.DataSupport;
@@ -44,7 +45,7 @@ public class CashVideoModel {
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
-                        List<CashVideoResp.AuditVideoListBean> beans = data.getAuditVideoList();
+                        List<CashVideo> beans = data.getAuditVideoList();
                         int n = beans.size();
                         if (n > 0) {
                             for (int i = 0; i < beans.size(); i++) {
@@ -65,7 +66,7 @@ public class CashVideoModel {
         IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(deviceId, startTime, endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
             @Override
             public void onSuccess(int code, String msg, CashVideoResp data) {
-                List<CashVideoResp.AuditVideoListBean> beans = data.getAuditVideoList();
+                List<CashVideo> beans = data.getAuditVideoList();
                 int n = beans.size();
                 if (n > 0) {
                     for (int i = 0; i < beans.size(); i++) {
@@ -89,7 +90,7 @@ public class CashVideoModel {
     }
 
     public interface CallBack {
-        void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total);
+        void getCashVideoSuccess(List<CashVideo> beans, int total);
 
         void getCashVideoFail(int code, String msg);
 

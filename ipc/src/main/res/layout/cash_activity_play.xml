@@ -136,9 +136,21 @@
         <!--底部控制区-->
         <include
             android:id="@+id/icd_bottom_progress"
-            layout="@layout/include_ipc_bottom_progress" />
+            layout="@layout/include_ipc_bottom_progress"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
+
+    <com.sunmi.ipc.cash.view.CashBoxView
+        android:id="@+id/cash_box_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rl_cash"
+        app:layout_constraintEnd_toEndOf="@+id/rl_cash"
+        app:layout_constraintStart_toStartOf="@+id/rl_cash"
+        app:layout_constraintTop_toTopOf="@+id/rl_cash" />
 
     <include layout="@layout/include_cash_play" />
 

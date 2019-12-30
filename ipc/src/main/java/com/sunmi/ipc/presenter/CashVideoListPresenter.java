@@ -1,9 +1,9 @@
 package com.sunmi.ipc.presenter;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.contract.CashVideoListConstract;
 import com.sunmi.ipc.model.CashVideoModel;
-import com.sunmi.ipc.model.CashVideoResp;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +41,7 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
     }
 
     @Override
-    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
+    public void getCashVideoSuccess(List<CashVideo> beans, int total) {
         if (isViewAttached()) {
             mView.getCashVideoSuccess(beans, total);
             mView.hideLoadingDialog();

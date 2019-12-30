@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.cash.adapter.CashDropdownTimeAdapter;
 import com.sunmi.ipc.cash.adapter.CashVideoAdapter;
+import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashVideoListConstract;
-import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.model.DropdownTime;
 import com.sunmi.ipc.presenter.CashVideoListPresenter;
 
@@ -98,7 +98,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     private final int REQUEST = 0x101;
 
-    private ArrayList<CashVideoResp.AuditVideoListBean> dataList = new ArrayList<>();
+    private ArrayList<CashVideo> dataList = new ArrayList<>();
     private boolean hasMore;
     private CashVideoAdapter adapter;
 
@@ -302,7 +302,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     @Override
-    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
+    public void getCashVideoSuccess(List<CashVideo> beans, int total) {
         networkError.setVisibility(View.GONE);
         if (total <= 0) {
             tvNoCash.setVisibility(View.VISIBLE);
@@ -350,7 +350,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     @UiThread
-    protected void addData(List<CashVideoResp.AuditVideoListBean> beans, boolean isRefresh) {
+    protected void addData(List<CashVideo> beans, boolean isRefresh) {
         initAdapter();
         if (isRefresh) {
             dataList.clear();
@@ -370,19 +370,16 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         if (adapter == null) {
             adapter = new CashVideoAdapter(dataList, context);
             rvCashVideo.setLayoutManager(new LinearLayoutManager(context));
-            adapter.setOnItemClickListener(new CashVideoAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(ArrayList<CashVideoResp.AuditVideoListBean> data, int pos) {
-                    if (!NetworkUtils.isNetworkAvailable(context)) {
-                        shortTip(R.string.network_error);
-                        return;
-                    }
-                    CashPlayActivity_.intent(context).deviceId(deviceId)
-                            .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
-                            .ipcName(mPresenter.getIpcName()).videoList(data)
-                            .hasMore(hasMore).pageNum(pageNum).videoListPosition(pos)
-                            .videoType(videoType).startForResult(REQUEST);
+            adapter.setOnItemClickListener((data, pos) -> {
+                if (!NetworkUtils.isNetworkAvailable(context)) {
+                    shortTip(R.string.network_error);
+                    return;
                 }
+                CashPlayActivity_.intent(context).deviceId(deviceId)
+                        .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
+                        .ipcName(mPresenter.getIpcName()).videoList(data)
+                        .hasMore(hasMore).pageNum(pageNum).videoListPosition(pos)
+                        .videoType(videoType).startForResult(REQUEST);
             });
             rvCashVideo.setAdapter(adapter);
         }
@@ -416,7 +413,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             if (bundle != null) {
-                ArrayList<CashVideoResp.AuditVideoListBean> list = (ArrayList<CashVideoResp.AuditVideoListBean>) bundle.getSerializable("videoList");
+                ArrayList<CashVideo> list = bundle.getParcelableArrayList("videoList");
                 if (list != null) {
                     dataList.clear();
                     dataList.addAll(list);

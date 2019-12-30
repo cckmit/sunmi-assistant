@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.model.CashVideoResp;
+import com.sunmi.ipc.cash.model.CashVideo;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -28,13 +28,13 @@ import sunmi.common.utils.GlideRoundTransform;
  */
 public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.ViewHolder> {
 
-    private ArrayList<CashVideoResp.AuditVideoListBean> data;
+    private ArrayList<CashVideo> data;
     private Context context;
     private OnItemClickListener listener;
     private int selectPosition = -1;
     private NumberFormat numberFormat;
 
-    public CashVideoAdapter(ArrayList<CashVideoResp.AuditVideoListBean> data, Context context) {
+    public CashVideoAdapter(ArrayList<CashVideo> data, Context context) {
         this.data = data;
         this.context = context;
         numberFormat = NumberFormat.getNumberInstance();
@@ -63,7 +63,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         if (selectPosition != -1) {
             viewHolder.itemView.setSelected(selectPosition == i);
         }
-        CashVideoResp.AuditVideoListBean bean = data.get(i);
+        CashVideo bean = data.get(i);
         viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getPurchaseTime(), "HH:mm:ss"));
         if (!TextUtils.isEmpty(bean.getDescription())) {
             viewHolder.tvDescription.setVisibility(View.VISIBLE);
@@ -98,7 +98,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
     }
 
     public interface OnItemClickListener {
-        void onItemClick(ArrayList<CashVideoResp.AuditVideoListBean> data, int pos);
+        void onItemClick(ArrayList<CashVideo> data, int pos);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

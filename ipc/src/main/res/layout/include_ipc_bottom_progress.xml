@@ -1,56 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_48"
-    android:layout_alignParentBottom="true"
-    android:animateLayoutChanges="true"
-    android:gravity="center_vertical">
+    android:layout_height="@dimen/dp_48">
 
     <ImageButton
         android:id="@+id/ib_play"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
-        android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_20"
         android:background="@mipmap/pause_normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/sb_bar"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_count_play_time"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
+
+    <com.sunmi.ipc.cash.view.CashProgressMark
+        android:id="@+id/sb_bar_mark"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_3"
+        android:layout_marginBottom="@dimen/dp_0_5"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_current_play_time"
+        app:layout_constraintStart_toEndOf="@+id/ib_play"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <SeekBar
         android:id="@+id/sb_bar"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/dp_6"
-        android:layout_toStartOf="@id/tv_current_play_time"
-        android:layout_toEndOf="@id/ib_play"
         android:maxHeight="@dimen/dp_3"
-        android:minHeight="@dimen/dp_2"
         android:paddingStart="@dimen/dp_12"
-        android:paddingEnd="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_12"
         android:progressDrawable="@drawable/seekbar_white_progress_secondary"
-        android:thumb="@drawable/seekbar_oval_point_white" />
+        android:splitTrack="false"
+        android:thumb="@drawable/seekbar_oval_point_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_current_play_time"
+        app:layout_constraintStart_toEndOf="@+id/ib_play"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_current_play_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_2"
-        android:layout_toStartOf="@id/tv_count_play_time"
         android:text="0:00"
         android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_10" />
+        android:textSize="@dimen/sp_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_count_play_time"
+        app:layout_constraintStart_toEndOf="@+id/sb_bar"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_count_play_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_8"
         android:text="/0:00"
         android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_10" />
+        android:textSize="@dimen/sp_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_current_play_time"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

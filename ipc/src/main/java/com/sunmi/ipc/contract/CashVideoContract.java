@@ -1,7 +1,9 @@
 package com.sunmi.ipc.contract;
 
+import com.sunmi.ipc.cash.model.CashBox;
+import com.sunmi.ipc.cash.model.CashTagFilter;
+import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.model.CashOrderResp;
-import com.sunmi.ipc.model.CashVideoResp;
 
 import java.util.List;
 import java.util.Map;
@@ -16,23 +18,28 @@ import sunmi.common.model.ServiceListResp;
 public interface CashVideoContract {
     interface View extends BaseView {
 
-        void updateTagSuccess(int videoType, String description);
+        void updateTagSuccess(CashTagFilter tag);
 
-        void updateTagFail(int code, String msg, int videoType);
+        void updateTagFail(int code, String msg, CashTagFilter tag);
 
         void getOrderInfoSuccess(CashOrderResp data);
 
         void getOrderInfoFail(int code, String msg);
 
-        void cashVideoListSuccess(List<CashVideoResp.AuditVideoListBean> videoList);
+        void cashVideoListSuccess(List<CashVideo> videoList);
 
         void cashVideoListFail(int code, String msg);
 
         void getStorageSuccess(ServiceListResp.DeviceListBean data);
+
+        void getAbnormalEventSuccess(int eventType, double riskScore, List<CashBox> boxes);
+
+        void getAbnormalEventFail(int code, String msg);
     }
 
     interface Presenter {
-        void updateTag(int auditVideoId, String description, int videoType);
+
+        void updateTag(long videoId, CashTagFilter selected);
 
         void getOrderInfo(String orderNo);
 
@@ -40,5 +47,7 @@ public interface CashVideoContract {
                               long startTime, long endTime, int pageNum, int pageSize);
 
         void getStorageList(String deviceSn);
+
+        void getAbnormalEvent(long eventId, long beginTime);
     }
 }
