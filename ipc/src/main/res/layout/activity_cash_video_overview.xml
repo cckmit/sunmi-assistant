@@ -119,7 +119,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            app:layout_constraintEnd_toStartOf="@+id/ll_irregularities"
+            app:layout_constraintEnd_toStartOf="@+id/ll_abnormal_behavior"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/ll_cash_video"
             app:layout_goneMarginEnd="@dimen/dp_16">
@@ -152,7 +152,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_irregularities"
+            android:id="@+id/ll_abnormal_behavior"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_16"
@@ -179,7 +179,7 @@
                 android:textSize="@dimen/sp_12" />
 
             <TextView
-                android:id="@+id/tv_total_count_irregularities"
+                android:id="@+id/tv_total_count_abnormal_behavior"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -219,7 +219,6 @@
         android:layout_height="wrap_content"
         android:background="@color/transparent"
         android:orientation="vertical"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
