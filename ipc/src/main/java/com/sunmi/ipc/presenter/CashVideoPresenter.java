@@ -93,13 +93,11 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
-                        int mSize = videoList.size();
-                        if (mSize > 0) {
-                            for (int i = 0; i < mSize; i++) {
-                                CashVideoServiceBean bean = ipcName.get(videoList.get(i).getDeviceId());
-                                if (bean != null) {
-                                    videoList.get(i).setDeviceName(bean.getDeviceName());
-                                }
+                        for (CashVideo video : videoList) {
+                            CashVideoServiceBean bean = ipcName.get(video.getDeviceId());
+                            if (bean != null) {
+                                video.setDeviceName(bean.getDeviceName());
+                                video.setHasCashLossPrevent(bean.isHasCashLossPrevent());
                             }
                         }
                         if (isViewAttached()) {
@@ -110,6 +108,36 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                     @Override
                     public void onFail(int code, String msg, CashVideoResp data) {
                         LogCat.e(TAG, "getCashVideoList code=" + code + ", msg=" + msg);
+                        if (isViewAttached()) {
+                            mView.cashVideoListFail(code, msg);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void getAbnormalBehaviorList(Map<Integer, CashVideoServiceBean> ipcName, int deviceId, int videoType,
+                                        long startTime, long endTime, int pageNum, int pageSize) {
+        IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(deviceId, startTime,
+                endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, CashVideoResp data) {
+                        List<CashVideo> videoList = data.getAuditVideoList();
+                        for (CashVideo video : videoList) {
+                            CashVideoServiceBean bean = ipcName.get(video.getDeviceId());
+                            if (bean != null) {
+                                video.setDeviceName(bean.getDeviceName());
+                                video.setHasCashLossPrevent(bean.isHasCashLossPrevent());
+                            }
+                        }
+                        if (isViewAttached()) {
+                            mView.cashVideoListSuccess(videoList);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, CashVideoResp data) {
+                        LogCat.e(TAG, "getAbnormalBehaviorList code=" + code + ", msg=" + msg);
                         if (isViewAttached()) {
                             mView.cashVideoListFail(code, msg);
                         }
@@ -147,6 +175,12 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
         IpcCloudApi.getInstance().getCashVideoAbnormalEvent(eventId, new RetrofitCallback<CashVideoAbnormalEventResp>() {
             @Override
             public void onSuccess(int code, String msg, CashVideoAbnormalEventResp data) {
+                if (data == null) {
+                    if (isViewAttached()) {
+                        mView.getAbnormalEventSuccess(CashTagFilter.TAG_ID_CUSTOM, 0, null);
+                    }
+                    return;
+                }
                 List<CashBox> result = new ArrayList<>();
                 List<CashVideoAbnormalEventResp.Box> boxes = data.getKeyObjects();
                 for (CashVideoAbnormalEventResp.Box box : boxes) {

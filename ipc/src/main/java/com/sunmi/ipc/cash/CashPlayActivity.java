@@ -38,10 +38,12 @@ import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.cash.view.CashBoxView;
 import com.sunmi.ipc.cash.view.CashProgressMark;
 import com.sunmi.ipc.cash.view.CashVideoPopupWindow;
+import com.sunmi.ipc.cash.view.OpenLossPreventServiceDialog;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.presenter.CashVideoPresenter;
+import com.sunmi.ipc.utils.CashAbnormalTagUtils;
 import com.sunmi.ipc.view.activity.CloudPlaybackActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -171,6 +173,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     ImageView ivVideoChange;
     @ViewById(resName = "tv_empty")
     TextView tvEmpty;
+
+    @ViewById(resName = "tv_abnormal_tip")
+    TextView tvAbnormalTip;
+
     /**
      * ipc名称 ，视频列表 ，是否一天快放,设备id, 一天快放的开始结束时间 ,是否有更多列表数据（一天快放或点击item进入）
      */
@@ -182,8 +188,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     boolean isWholeDayVideoPlay;
     @Extra
     int deviceId;
-    @Extra
-    String deviceSn;
     @Extra
     long startTime, endTime;
     @Extra
@@ -220,6 +224,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     private CashAdapter adapter;
     private CashTagAdapter mTagAdapter;
     private Dialog mTagDialog;
+    private Dialog mLossPreventDialog;
     private CashTagFilter mSelectedTag;
     /**
      * 视频订单详情
@@ -411,30 +416,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             mHandler.removeCallbacksAndMessages(null);
         }
     }
-//
-//    private String videoUrl() {
-//        return videoList.get(playIndex).getVideoUrl();
-//    }
-//
-//    private int videoType() {
-//        return videoList.get(playIndex).getVideoType();
-//    }
-//
-//    private List<Integer> videoTags() {
-//        return videoList.get(playIndex).getVideoTag();
-//    }
-//
-//    private int videoEventId() {
-//        return videoList.get(playIndex).getEventId();
-//    }
-//
-//    private String orderNo() {
-//        return videoList.get(playIndex).getOrderNo();
-//    }
-//
-//    private int auditVideoId() {
-//        return videoList.get(playIndex).getVideoId();
-//    }
 
     /**
      * 手势滑动到最后一个,或自动播放最后一个
@@ -448,6 +429,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             if (isWholeDayVideoPlay) {
                 //一天快放
                 mPresenter.getCashVideoList(ipcName, deviceId, -1, startTime, endTime, ++mWholeDayPlayPageNum, 10);
+            } else if (isAbnormalBehavior) {
+                // 行为异常视频拉取更多
+                mPresenter.getAbnormalBehaviorList(ipcName, deviceId, videoType, startTime, endTime, ++pageNum, 10);
             } else {
                 //item点击进入是否有更多
                 mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, ++pageNum, 10);
@@ -639,14 +623,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                     .setTitle(R.string.cash_tag_dialog_title)
                     .setContent(root, lp)
                     .setCancelButton(R.string.sm_cancel)
-                    .setOkButton(R.string.str_confirm, (dialog, which) -> {
-                        CashTagFilter selected = mTagAdapter.getSelected();
-                        if (mSelectedTag != null && mSelectedTag.equals(selected)) {
-                            return;
-                        }
-                        showLoadingDialog();
-                        mPresenter.updateTag(current.getVideoId(), mSelectedTag);
-                    })
+                    .setOkButton(R.string.str_confirm, (dialog, which) -> updateVideoTag())
                     .create();
         }
         if (mSelectedTag != null) {
@@ -656,6 +633,15 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                     CashTagFilter.TAG_ID_NORMAL : current.getVideoTag().get(0));
         }
         mTagDialog.show();
+    }
+
+    private void updateVideoTag() {
+        CashTagFilter selected = mTagAdapter.getSelected();
+        if (mSelectedTag != null && mSelectedTag.equals(selected)) {
+            return;
+        }
+        showLoadingDialog();
+        mPresenter.updateTag(current.getVideoId(), mSelectedTag);
     }
 
     /**
@@ -699,6 +685,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         boolean isAbnormal = current.getVideoType() != IpcConstants.CASH_VIDEO_NORMAL;
         if (isAbnormal) {
             mPresenter.getAbnormalEvent(current.getEventId(), current.getStartTime());
+        } else {
+            tvAbnormalTip.setVisibility(View.GONE);
         }
         ivTag.setSelected(isAbnormal);
         sbBar.setProgress(0);
@@ -916,6 +904,17 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             info.setVideoType(IpcConstants.CASH_VIDEO_NORMAL);
             shortTip(R.string.cash_tag_cancel_success);
         }
+        // 如果没有开通收银防损，那么弹窗推广
+        if (!current.isHasCashLossPrevent()) {
+            if (mLossPreventDialog == null) {
+                mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
+                        .setListener((dialog, which) -> {
+                            // TODO: 跳转开通页面
+                        })
+                        .create();
+            }
+            mLossPreventDialog.show();
+        }
     }
 
     @Override
@@ -985,14 +984,24 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @Override
     public void getAbnormalEventSuccess(int eventType, double riskScore, List<CashBox> boxes) {
+        if (eventType == CashTagFilter.TAG_ID_CUSTOM) {
+            return;
+        }
         cashBoxOverlay.setData(boxes);
         sbMark.setData(boxes);
+        String tip = getString(R.string.cash_abnormal_tip,
+                CashAbnormalTagUtils.getInstance().getCashTag(eventType).getDescription(),
+                (int) (riskScore * 100));
+        tvAbnormalTip.setText(tip);
         sbMark.setVisibility(View.VISIBLE);
+        tvAbnormalTip.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void getAbnormalEventFail(int code, String msg) {
         shortTip(R.string.toast_network_error);
+        sbMark.setVisibility(View.GONE);
+        tvAbnormalTip.setVisibility(View.GONE);
     }
 
     //进入云回放
