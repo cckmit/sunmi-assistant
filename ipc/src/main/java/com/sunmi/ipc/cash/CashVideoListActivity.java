@@ -133,6 +133,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             dmDevice.setVisibility(View.GONE);
         }
         if (isAbnormalBehavior) {
+            titleBar.setAppTitle(R.string.str_abnormal_behavior_list);
             tvFastPlay.setVisibility(View.GONE);
             tvSuggestion.setText(R.string.tip_other_anomalies);
             tvAbnormal.setVisibility(View.GONE);
