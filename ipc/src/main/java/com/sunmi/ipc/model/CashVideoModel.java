@@ -46,18 +46,18 @@ public class CashVideoModel {
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
-                        List<CashVideo> beans = data.getAuditVideoList();
-                        int n = beans.size();
+                        List<CashVideo> videoList = data.getAuditVideoList();
+                        int n = videoList.size();
                         if (n > 0) {
-                            for (int i = 0; i < beans.size(); i++) {
-                                CashVideoServiceBean serviceBean = map.get(beans.get(i).getDeviceId());
+                            for (int i = 0; i < videoList.size(); i++) {
+                                CashVideoServiceBean serviceBean = map.get(videoList.get(i).getDeviceId());
                                 if (serviceBean!=null){
-                                    beans.get(i).setDeviceName(serviceBean.getDeviceName());
-                                    beans.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevent());
+                                    videoList.get(i).setDeviceName(serviceBean.getDeviceName());
+                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevent());
                                 }
                             }
                         }
-                        callBack.getCashVideoSuccess(beans, data.getTotalCount());
+                        callBack.getCashVideoSuccess(videoList, data.getTotalCount());
                     }
 
                     @Override
@@ -72,18 +72,18 @@ public class CashVideoModel {
                 pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
-                        List<CashVideo> beans = data.getAuditVideoList();
-                        int n = beans.size();
+                        List<CashVideo> videoList = data.getAuditVideoList();
+                        int n = videoList.size();
                         if (n > 0) {
-                            for (int i = 0; i < beans.size(); i++) {
-                                CashVideoServiceBean serviceBean = map.get(beans.get(i).getDeviceId());
+                            for (int i = 0; i < videoList.size(); i++) {
+                                CashVideoServiceBean serviceBean = map.get(videoList.get(i).getDeviceId());
                                 if (serviceBean!=null){
-                                    beans.get(i).setDeviceName(serviceBean.getDeviceName());
-                                    beans.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevent());
+                                    videoList.get(i).setDeviceName(serviceBean.getDeviceName());
+                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevent());
                                 }
                             }
                         }
-                        callBack.getCashVideoSuccess(beans, data.getTotalCount());
+                        callBack.getCashVideoSuccess(videoList, data.getTotalCount());
                     }
 
                     @Override

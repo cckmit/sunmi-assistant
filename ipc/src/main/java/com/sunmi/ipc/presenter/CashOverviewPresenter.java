@@ -85,6 +85,7 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
                             if (info != null) {
                                 info.setTotalCount(bean.getTotalCount());
                                 info.setAbnormalVideoCount(bean.getAbnormalVideoCount());
+                                info.setAbnormalBehaviorCount(bean.getAbnormalBehaviorVideoCount());
                             }
                         }
                     }
