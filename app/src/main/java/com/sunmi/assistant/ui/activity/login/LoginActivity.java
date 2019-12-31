@@ -12,10 +12,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.apmanager.ui.view.MergeDialog;
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
@@ -80,7 +78,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     @RouterAnno(
             path = RouterConfig.App.LOGIN
     )
-    public static Intent start(RouterRequest request){
+    public static Intent start(RouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), LoginActivity_.class);
         return intent;
     }
@@ -182,9 +180,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 if (isFastClick(1500)) {
                     return;
                 }
-                CommonUtils.trackCommonEvent(context, "register", "注册按钮", Constants.EVENT_LOGIN);
-                CommonUtils.trackDurationEventBegin(context, "registerDuration",
-                        "注册流程开始和结束时调用", Constants.EVENT_DURATION_REGISTER);
                 InputMobileActivity_.intent(context).mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_REGISTER).start();
                 break;
@@ -206,9 +201,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 if (isFastClick(1500)) {
                     return;
                 }
-                CommonUtils.trackCommonEvent(context, "forgetPassword", "忘记密码按钮", Constants.EVENT_LOGIN);
-                CommonUtils.trackDurationEventBegin(context, "retrievePasswordDuration",
-                        "找回密码流程开始和结束", Constants.EVENT_DURATION_FORGET_PSW);
                 InputMobileActivity_.intent(context).mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_RETRIEVE_PWD).start();
                 break;
@@ -216,9 +208,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 if (isFastClick(1500)) {
                     return;
                 }
-                CommonUtils.trackCommonEvent(context, "loginBySms", "短信验证码登录", Constants.EVENT_LOGIN);
-                CommonUtils.trackDurationEventBegin(context, "quickLoginDuration",
-                        "登录流程开始到结束", Constants.EVENT_DURATION_LOGIN_BY_SMS);
                 InputMobileActivity_.intent(context).mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                         .checkSource(InputMobileActivity.SOURCE_SMS_LOGIN).start();
                 break;
@@ -229,7 +218,6 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
 
     //账号合并
     private void userMerge(final String password) {
-        CommonUtils.trackCommonEvent(context, "login", "登录", Constants.EVENT_LOGIN);
         showDarkLoading();
         mPresenter.userMerge(mobile, mobile, password);
     }
@@ -248,9 +236,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
                 .setTitle(R.string.tip_unregister)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_register_now, (dialog, which) -> {
-                    CommonUtils.trackCommonEvent(context, "loginUnRegisterDialogRegister",
-                            "登录_未注册弹框-立即注册", Constants.EVENT_LOGIN);
-                    InputMobileActivity_.intent(context).mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
+                    InputMobileActivity_.intent(context)
+                            .mobile(RegexUtils.isCorrectAccount(mobile) ? mobile : "")
                             .checkSource(InputMobileActivity.SOURCE_REGISTER).start();
                 }).create().show();
     }
