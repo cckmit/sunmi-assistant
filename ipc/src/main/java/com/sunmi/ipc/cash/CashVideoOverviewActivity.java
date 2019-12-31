@@ -270,7 +270,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         clearItems(items);
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).items(items)
-                .isSingleDevice(isSingleDevice).total(shopCashCount).startForResult(REQUEST);
+                .isSingleDevice(isSingleDevice).total(shopCashCount)
+                .serviceBeans(serviceBeans).startForResult(REQUEST);
     }
 
     @Click(resName = "ll_abnormal_video")
@@ -279,7 +280,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).isSingleDevice(isSingleDevice)
-                .total(shopCashCount).startForResult(REQUEST);
+                .total(shopCashCount).serviceBeans(serviceBeans).startForResult(REQUEST);
     }
 
     @Click(resName = "ll_abnormal_behavior")
@@ -288,7 +289,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         behaviorItems.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .items(behaviorItems).isSingleDevice(isSingleDevice)
-                .isAbnormalBehavior(true).startForResult(REQUEST);
+                .isAbnormalBehavior(true).serviceBeans(serviceBeans).startForResult(REQUEST);
     }
 
     @Click(resName = "iv_close")
@@ -309,7 +310,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         items.get(position + 1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(item.getDeviceId()).items(items).isSingleDevice(isSingleDevice)
-                .total(item.getTotalCount()).startForResult(REQUEST);
+                .total(item.getTotalCount()).serviceBeans(serviceBeans).startForResult(REQUEST);
     }
 
     @Override
@@ -319,7 +320,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(item.getDeviceId()).videoType(IpcConstants.CASH_VIDEO_ABNORMAL)
                 .items(items).isSingleDevice(isSingleDevice).total(item.getTotalCount())
-                .startForResult(REQUEST);
+                .serviceBeans(serviceBeans).startForResult(REQUEST);
     }
 
     @Override
@@ -328,7 +329,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         behaviorItems.get(1 + position).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .items(behaviorItems).isSingleDevice(isSingleDevice)
-                .isAbnormalBehavior(true).startForResult(REQUEST);
+                .isAbnormalBehavior(true).serviceBeans(serviceBeans).startForResult(REQUEST);
     }
 
     private void clearItems(ArrayList<FilterItem> filterItems) {
