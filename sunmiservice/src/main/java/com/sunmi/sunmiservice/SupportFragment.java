@@ -105,8 +105,8 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter>
         if (size == 0) {
             WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO).start();
         } else {
-//            mPresenter.getStorageList();
-            Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false, hasCashLossPrevent);
+            mPresenter.getStorageList();
+//            Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false, hasCashLossPrevent);
         }
     }
 
