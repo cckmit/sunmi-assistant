@@ -14,7 +14,7 @@ public interface InputMobileContract {
 
         void isUserExistFail(int code, String msg);
 
-        void checkSuccess(int code, String data);
+        void checkSuccess(int needMerge, String url);
     }
 
     interface Presenter {

@@ -1,6 +1,5 @@
 package com.sunmi.assistant.ui.activity.login;
 
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,6 +21,7 @@ import com.sunmi.assistant.presenter.InputCaptchaPresenter;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -45,11 +45,12 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
     @ViewById(R.id.btn_confirm)
     Button btnConfirm;
 
-    private String source;//从哪个activity跳转过来，决定后续操作
+    @Extra
+    String source; //从哪个activity跳转过来，决定后续操作
+    @Extra
+    String mobile = "";
 
-    private String mobile = "";
     private String smsKey = "";//图形验证码返回的key
-
     ImageCaptchaDialog imageCaptchaDialog;//图形验证码dialog
 
     //倒计时对象,总共的时间,每隔多少秒更新一次时间
@@ -60,20 +61,16 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
         HelpUtils.setStatusBarFullTransparent(this);//透明标题栏
         mPresenter = new InputCaptchaPresenter();
         mPresenter.attachView(this);
+
         etSmsCode.setClearIcon(R.mipmap.ic_edit_delete_white);
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            mobile = bundle.getString("mobile");
-            tvMobile.setText(String.format(getString(R.string.str_captcha_sent), mobile));
-            source = bundle.getString("source");
-            if (TextUtils.equals("register", source)) {
-                titleBar.setAppTitle(R.string.str_register);
-            } else if (TextUtils.equals("login", source)) {
-                titleBar.setAppTitle(R.string.str_sms_login);
-                btnConfirm.setText(R.string.str_login);
-            } else if (TextUtils.equals("password", source)) {
-                titleBar.setAppTitle(R.string.str_retrieve_password);
-            }
+        tvMobile.setText(String.format(getString(R.string.str_captcha_sent), mobile));
+        if (TextUtils.equals("register", source)) {
+            titleBar.setAppTitle(R.string.str_register);
+        } else if (TextUtils.equals("login", source)) {
+            titleBar.setAppTitle(R.string.str_sms_login);
+            btnConfirm.setText(R.string.str_login);
+        } else if (TextUtils.equals("password", source)) {
+            titleBar.setAppTitle(R.string.str_retrieve_password);
         }
 
         new SomeMonitorEditText().setMonitorEditText(btnConfirm, etSmsCode);
@@ -88,15 +85,13 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
             case R.id.btn_resend:
                 if (isFastClick(1500)) return;
                 startDownTimer();
-                trackResend();
                 sendSms("", "");
                 break;
             case R.id.btn_confirm:
                 if (isFastClick(1500)) return;
-                trackNext();
-                if (TextUtils.equals("login", source)){
+                if (TextUtils.equals("login", source)) {
                     mPresenter.captchaLogin(mobile, etSmsCode.getText().toString());
-                }else {
+                } else {
                     mPresenter.checkSmsCode(mobile, etSmsCode.getText().toString());
                 }
                 break;
@@ -148,7 +143,6 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
 
     @UiThread
     void showImgCaptchaDialog(String url) {
-        imageVerify();
         if (imageCaptchaDialog == null) {
             imageCaptchaDialog = new ImageCaptchaDialog(context, this);
         }
@@ -213,8 +207,6 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
 
     @Override
     public void captchaLoginSuccess() {
-        CommonUtils.trackDurationEventEnd(context, "quickLoginDuration",
-                "登录流程开始到结束", Constants.EVENT_DURATION_LOGIN_BY_SMS);
         cancelTimer();//登录成功后取消计时
         LoginChooseShopActivity_.intent(context)
                 .action(CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY).start();
@@ -228,8 +220,6 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
     public void captchaCheckSuccess(int code, String msg, String data) {
         cancelTimer();//登录成功后取消计时
         if (TextUtils.equals("register", source)) {
-            CommonUtils.trackDurationEventEnd(context, "registerVerificationDuration",
-                    "注册流程_输入验证码_耗时", Constants.EVENT_DURATION_REGISTER_CODE);
             SetPasswordActivity_.intent(context)
                     .extra("mobile", mobile)
                     .extra(AppConfig.SET_PASSWORD_SMS, etSmsCode.getText().toString().trim())
@@ -255,45 +245,6 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
         if (!TextUtils.isEmpty(imgRefresh.getUrl())) {
             if (imageCaptchaDialog != null)
                 imageCaptchaDialog.refreshImage(imgRefresh.getUrl());
-        }
-    }
-
-    private void trackNext() {
-        if (TextUtils.equals("register", source)) {
-            CommonUtils.trackCommonEvent(context, "registerSendVerificationCodeNext",
-                    "注册_获取验证码_下一步", Constants.EVENT_REGISTER);
-        } else if (TextUtils.equals("login", source)) {
-            CommonUtils.trackCommonEvent(context, "loginBySmsCodeFinish",
-                    "短信验证码登录_获取验证码_登陆", Constants.EVENT_LOGIN_BY_SMS);
-        } else if (TextUtils.equals("password", source)) {
-            CommonUtils.trackCommonEvent(context, "forgetPwdSendVerificationCodeNext",
-                    "找回密码_获取验证码_下一步", Constants.EVENT_FORGET_PSW);
-        }
-    }
-
-    private void trackResend() {
-        if (TextUtils.equals("register", source)) {
-            CommonUtils.trackCommonEvent(context, "registerRetrySendVerificationCode",
-                    "注册_获取验证码_重新发送", Constants.EVENT_REGISTER);
-        } else if (TextUtils.equals("login", source)) {
-            CommonUtils.trackCommonEvent(context, "loginBySmsRetrySendVerificationCode",
-                    "短信验证码登录_获取验证码_重新发送", Constants.EVENT_LOGIN_BY_SMS);
-        } else if (TextUtils.equals("password", source)) {
-            CommonUtils.trackCommonEvent(context, "forgetPwdRetrySendVerificationCode",
-                    "找回密码_获取验证码_重新发送", Constants.EVENT_FORGET_PSW);
-        }
-    }
-
-    private void imageVerify() {
-        if (TextUtils.equals("register", source)) {
-            CommonUtils.trackCommonEvent(context, "registerPngCodeDialog",
-                    "注册_获取验证码_图形码弹窗", Constants.EVENT_REGISTER);
-        } else if (TextUtils.equals("login", source)) {
-            CommonUtils.trackCommonEvent(context, "loginBySmsPngCodeDialog",
-                    "短信验证码登录_获取验证码_图形码弹窗", Constants.EVENT_LOGIN_BY_SMS);
-        } else if (TextUtils.equals("password", source)) {
-            CommonUtils.trackCommonEvent(context, "forgetPwdPngCodeDialog",
-                    "找回密码_获取验证码_图形码弹窗", Constants.EVENT_FORGET_PSW);
         }
     }
 
