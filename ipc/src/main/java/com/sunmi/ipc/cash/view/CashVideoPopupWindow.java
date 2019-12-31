@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.cash.model.CashVideo;
+import com.sunmi.ipc.config.IpcConstants;
+import com.sunmi.ipc.utils.CashAbnormalTagUtils;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -48,16 +50,20 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
     private int currentPlayPosition;
     private double maxLength = 3.5;
     private NumberFormat numberFormat;
+    private CashAbnormalTagUtils tagUtils;
+    private boolean isAbnormalBehavior;
 
     @SuppressLint("ClickableViewAccessibility")
     public CashVideoPopupWindow(Activity activity, View topToPopupWindowView, int currentPlayPosition,
-                                ArrayList<CashVideo> list, TextView mSetViewImg) {
+                                ArrayList<CashVideo> list, TextView mSetViewImg, boolean isAbnormalBehavior) {
         super();
         if (activity != null) {
             this.mContext = activity;
             this.currentPlayPosition = currentPlayPosition;
             this.mSetTitleView = mSetViewImg;
             this.mList = list;
+            this.isAbnormalBehavior = isAbnormalBehavior;
+            tagUtils = CashAbnormalTagUtils.getInstance();
         }
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View viewLayout = inflater.inflate(R.layout.cash_popwindow_video_list, null);
@@ -156,23 +162,38 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         @Override
         public void convert(ViewHolder holder, CashVideo res) {
             holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getPurchaseTime(), "HH:mm:ss"));
-            holder.setText(R.id.tv_amount, String.format("¥%s", numberFormat.format(res.getAmount())));
-            holder.setText(R.id.tv_order_num, res.getOrderNo());
             holder.setText(R.id.tv_pos, res.getDeviceName());
             ImageView imgVideo = holder.getView(R.id.iv_preview_img);
             ImageView ivFlag = holder.getView(R.id.iv_left_flag);
             TextView tvTag = holder.getView(R.id.tv_exception_des);
             TextView tvLineTop = holder.getView(R.id.tv_left_top_line);
             TextView tvLineBottom = holder.getView(R.id.tv_left_bottom_line);
+            TextView tvSuggest = holder.getView(R.id.tv_suggest);
             ivFlag.setSelected(holder.getAdapterPosition() == currentPlayPosition);
             if (isShowing()) {
                 Glide.with(mContext).load(res.getSnapshotUrl()).transform(new GlideRoundTransform(mContext)).into(imgVideo);
             }
-            if (res.getVideoType() == 1) {
+            int tag = 0;
+            if (res.getVideoType() == IpcConstants.CASH_VIDEO_NORMAL) {
                 tvTag.setVisibility(View.GONE);
-            } else if (res.getVideoType() == 2) {
-                tvTag.setText(res.getDescription());
+            } else if (res.getVideoType() == IpcConstants.CASH_VIDEO_ABNORMAL) {
+                tag = res.getVideoTag()[0];
+                if (tag == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
+                    tvTag.setText(res.getDescription());
+                } else {
+                    tvTag.setText(tagUtils.getCashTag(tag).getDescription());
+                }
                 tvTag.setVisibility(View.VISIBLE);
+            }
+            if (isAbnormalBehavior) {
+                tvSuggest.setVisibility(View.VISIBLE);
+                tvSuggest.setText(tagUtils.getCashTag(tag).getTip());
+                holder.getView(R.id.group_content).setVisibility(View.GONE);
+            } else {
+                tvSuggest.setVisibility(View.GONE);
+                holder.getView(R.id.group_content).setVisibility(View.VISIBLE);
+                holder.setText(R.id.tv_amount, String.format("¥%s", numberFormat.format(res.getAmount())));
+                holder.setText(R.id.tv_order_num, res.getOrderNo());
             }
             if (mList.size() > 1) {
                 if (holder.getAdapterPosition() == mList.size() - 1) {

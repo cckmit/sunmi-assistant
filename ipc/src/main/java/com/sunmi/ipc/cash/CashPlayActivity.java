@@ -373,7 +373,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_big_gray), null);
         popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, playIndex,
-                videoList, titleBar.getAppTitle());
+                videoList, titleBar.getAppTitle(),isAbnormalBehavior);
     }
 
     @Override
