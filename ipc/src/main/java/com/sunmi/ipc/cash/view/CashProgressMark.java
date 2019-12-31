@@ -5,9 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.sunmi.ipc.R;
 import com.sunmi.ipc.cash.model.CashBox;
 
 import java.util.ArrayList;
@@ -51,13 +53,13 @@ public class CashProgressMark extends View {
 
     public CashProgressMark(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
         mMarkPaint = new Paint();
         mMarkPaint.setAntiAlias(true);
-        mMarkPaint.setColor(0xffff0000);
+        mMarkPaint.setColor(ContextCompat.getColor(context, R.color.common_orange));
         mMarkPaint.setStyle(Paint.Style.FILL);
     }
 

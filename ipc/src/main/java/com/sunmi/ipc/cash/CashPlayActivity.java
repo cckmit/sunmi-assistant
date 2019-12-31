@@ -630,7 +630,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             mTagAdapter.setSelected(mSelectedTag.getId());
         } else {
             mTagAdapter.setSelected(current.getVideoType() == IpcConstants.CASH_VIDEO_NORMAL ?
-                    CashTagFilter.TAG_ID_NORMAL : current.getVideoTag().get(0));
+                    CashTagFilter.TAG_ID_NORMAL : current.getVideoTag()[0]);
         }
         mTagDialog.show();
     }
@@ -641,7 +641,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             return;
         }
         showLoadingDialog();
-        mPresenter.updateTag(current.getVideoId(), mSelectedTag);
+        mPresenter.updateTag(current.getVideoId(), selected);
     }
 
     /**
@@ -892,10 +892,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         boolean isAbnormal = tag.getId() != CashTagFilter.TAG_ID_NORMAL;
         ivTag.setSelected(isAbnormal);
         if (isAbnormal) {
-            List<Integer> tags = new ArrayList<>(1);
-            tags.add(tag.getId());
             info.setVideoType(IpcConstants.CASH_VIDEO_ABNORMAL);
-            info.setVideoTag(tags);
+            info.setVideoTag(new int[]{tag.getId()});
             if (tag.getId() == CashTagFilter.TAG_ID_CUSTOM) {
                 info.setDescription(tag.getDesc());
             }
@@ -991,7 +989,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         sbMark.setData(boxes);
         String tip = getString(R.string.cash_abnormal_tip,
                 CashAbnormalTagUtils.getInstance().getCashTag(eventType).getDescription(),
-                (int) (riskScore * 100));
+                (int) riskScore);
         tvAbnormalTip.setText(tip);
         sbMark.setVisibility(View.VISIBLE);
         tvAbnormalTip.setVisibility(View.VISIBLE);

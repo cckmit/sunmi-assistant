@@ -72,7 +72,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getPurchaseTime(), "HH:mm:ss"));
         int tag = 0;
         if (bean.getVideoType() == IpcConstants.CASH_VIDEO_ABNORMAL) {
-            tag = bean.getVideoTag().get(0);
+            tag = bean.getVideoTag()[0];
             viewHolder.tvDescription.setVisibility(View.VISIBLE);
             if (tag == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
                 viewHolder.tvDescription.setText(bean.getDescription());

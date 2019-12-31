@@ -6,9 +6,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.sunmi.ipc.R;
 import com.sunmi.ipc.cash.model.CashBox;
 
 import java.util.ArrayList;
@@ -47,13 +49,13 @@ public class CashBoxView extends View {
 
     public CashBoxView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
         mBoxPaint = new Paint();
         mBoxPaint.setAntiAlias(true);
-        mBoxPaint.setColor(0xffff0000);
+        mBoxPaint.setColor(ContextCompat.getColor(context, R.color.common_orange));
         mBoxPaint.setStrokeWidth(4.0f);
         mBoxPaint.setStyle(Paint.Style.STROKE);
     }

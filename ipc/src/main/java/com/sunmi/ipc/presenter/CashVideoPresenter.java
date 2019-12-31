@@ -172,6 +172,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
 
     @Override
     public void getAbnormalEvent(long eventId, long beginTime) {
+        final long begin = beginTime * 1000;
         IpcCloudApi.getInstance().getCashVideoAbnormalEvent(eventId, new RetrofitCallback<CashVideoAbnormalEventResp>() {
             @Override
             public void onSuccess(int code, String msg, CashVideoAbnormalEventResp data) {
@@ -185,8 +186,8 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                 List<CashVideoAbnormalEventResp.Box> boxes = data.getKeyObjects();
                 for (CashVideoAbnormalEventResp.Box box : boxes) {
                     double[] timestamp = box.getTimestamp();
-                    int start = (int) (timestamp[0] * 1000 - beginTime);
-                    int end = (int) (timestamp[1] * 1000 - beginTime);
+                    int start = (int) (timestamp[0] * 1000 - begin);
+                    int end = (int) (timestamp[1] * 1000 - begin);
                     if (end <= 0) {
                         continue;
                     }

@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 /**
  * @author yinhui
  * @date 2019-12-30
@@ -57,7 +55,7 @@ public class CashVideo implements Parcelable {
     @SerializedName("end_time")
     private long endTime;
     @SerializedName("video_tag")
-    private List<Integer> videoTag;
+    private int[] videoTag;
 
     private String deviceName;
     private boolean hasCashLossPrevent;
@@ -114,7 +112,7 @@ public class CashVideo implements Parcelable {
         return endTime;
     }
 
-    public List<Integer> getVideoTag() {
+    public int[] getVideoTag() {
         return videoTag;
     }
 
@@ -134,7 +132,7 @@ public class CashVideo implements Parcelable {
         this.videoType = videoType;
     }
 
-    public void setVideoTag(List<Integer> videoTag) {
+    public void setVideoTag(int[] videoTag) {
         this.videoTag = videoTag;
     }
 
@@ -160,6 +158,7 @@ public class CashVideo implements Parcelable {
         amount = in.readDouble();
         startTime = in.readLong();
         endTime = in.readLong();
+        videoTag = in.createIntArray();
         deviceName = in.readString();
         hasCashLossPrevent = in.readByte() != 0;
     }
@@ -179,6 +178,7 @@ public class CashVideo implements Parcelable {
         dest.writeDouble(amount);
         dest.writeLong(startTime);
         dest.writeLong(endTime);
+        dest.writeIntArray(videoTag);
         dest.writeString(deviceName);
         dest.writeByte((byte) (hasCashLossPrevent ? 1 : 0));
     }
