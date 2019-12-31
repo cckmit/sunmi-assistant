@@ -45,6 +45,14 @@ public class LoginPresenter extends BasePresenter<LoginContract.View>
                     e.printStackTrace();
                 }
             }
+
+            @Override
+            public void onFail(int code, String msg, String data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.shortTip(R.string.toast_network_error);
+                }
+            }
         });
     }
 
