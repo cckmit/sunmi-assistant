@@ -93,13 +93,11 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
-                        int mSize = videoList.size();
-                        if (mSize > 0) {
-                            for (int i = 0; i < mSize; i++) {
-                                CashVideoServiceBean bean = ipcName.get(videoList.get(i).getDeviceId());
-                                if (bean != null) {
-                                    videoList.get(i).setDeviceName(bean.getDeviceName());
-                                }
+                        for (CashVideo video : videoList) {
+                            CashVideoServiceBean bean = ipcName.get(video.getDeviceId());
+                            if (bean != null) {
+                                video.setDeviceName(bean.getDeviceName());
+                                video.setHasCashLossPrevent(bean.isHasCashLossPrevent());
                             }
                         }
                         if (isViewAttached()) {
@@ -118,7 +116,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
     }
 
     @Override
-    public void getAbnormalBehaviorList(Map<Integer, String> ipcName, int deviceId, int videoType,
+    public void getAbnormalBehaviorList(Map<Integer, CashVideoServiceBean> ipcName, int deviceId, int videoType,
                                         long startTime, long endTime, int pageNum, int pageSize) {
         IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(deviceId, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
@@ -126,7 +124,11 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
                         for (CashVideo video : videoList) {
-                            video.setDeviceName(ipcName.get(video.getDeviceId()));
+                            CashVideoServiceBean bean = ipcName.get(video.getDeviceId());
+                            if (bean != null) {
+                                video.setDeviceName(bean.getDeviceName());
+                                video.setHasCashLossPrevent(bean.isHasCashLossPrevent());
+                            }
                         }
                         if (isViewAttached()) {
                             mView.cashVideoListSuccess(videoList);

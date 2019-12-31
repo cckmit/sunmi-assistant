@@ -38,6 +38,7 @@ import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.cash.view.CashBoxView;
 import com.sunmi.ipc.cash.view.CashProgressMark;
 import com.sunmi.ipc.cash.view.CashVideoPopupWindow;
+import com.sunmi.ipc.cash.view.OpenLossPreventServiceDialog;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
@@ -223,6 +224,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     private CashAdapter adapter;
     private CashTagAdapter mTagAdapter;
     private Dialog mTagDialog;
+    private Dialog mLossPreventDialog;
     private CashTagFilter mSelectedTag;
     /**
      * 视频订单详情
@@ -427,6 +429,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             if (isWholeDayVideoPlay) {
                 //一天快放
                 mPresenter.getCashVideoList(ipcName, deviceId, -1, startTime, endTime, ++mWholeDayPlayPageNum, 10);
+            } else if (isAbnormalBehavior) {
+                // 行为异常视频拉取更多
+                mPresenter.getAbnormalBehaviorList(ipcName, deviceId, videoType, startTime, endTime, ++pageNum, 10);
             } else {
                 //item点击进入是否有更多
                 mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, ++pageNum, 10);
@@ -618,14 +623,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                     .setTitle(R.string.cash_tag_dialog_title)
                     .setContent(root, lp)
                     .setCancelButton(R.string.sm_cancel)
-                    .setOkButton(R.string.str_confirm, (dialog, which) -> {
-                        CashTagFilter selected = mTagAdapter.getSelected();
-                        if (mSelectedTag != null && mSelectedTag.equals(selected)) {
-                            return;
-                        }
-                        showLoadingDialog();
-                        mPresenter.updateTag(current.getVideoId(), mSelectedTag);
-                    })
+                    .setOkButton(R.string.str_confirm, (dialog, which) -> updateVideoTag())
                     .create();
         }
         if (mSelectedTag != null) {
@@ -635,6 +633,15 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                     CashTagFilter.TAG_ID_NORMAL : current.getVideoTag().get(0));
         }
         mTagDialog.show();
+    }
+
+    private void updateVideoTag() {
+        CashTagFilter selected = mTagAdapter.getSelected();
+        if (mSelectedTag != null && mSelectedTag.equals(selected)) {
+            return;
+        }
+        showLoadingDialog();
+        mPresenter.updateTag(current.getVideoId(), mSelectedTag);
     }
 
     /**
@@ -896,6 +903,17 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         } else {
             info.setVideoType(IpcConstants.CASH_VIDEO_NORMAL);
             shortTip(R.string.cash_tag_cancel_success);
+        }
+        // 如果没有开通收银防损，那么弹窗推广
+        if (!current.isHasCashLossPrevent()) {
+            if (mLossPreventDialog == null) {
+                mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
+                        .setListener((dialog, which) -> {
+                            // TODO: 跳转开通页面
+                        })
+                        .create();
+            }
+            mLossPreventDialog.show();
         }
     }
 

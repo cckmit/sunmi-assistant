@@ -376,6 +376,7 @@
     <string name="cash_tag_name_custom">自定义类型</string>
     <string name="cash_tag_custom_hint">请输入自定义异常类型</string>
     <string name="cash_abnormal_tip">%s，风险率%d%%</string>
+    <string name="cash_loss_prevention_dialog_tip">AI智能识别异常风险交易</string>
 
     <string name="motion_detection_video_empty">暂无看店视频</string>
     <string name="motion_detection_source_all">全部事件</string>

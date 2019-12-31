@@ -47,7 +47,7 @@ public interface CashVideoContract {
         void getCashVideoList(Map<Integer, CashVideoServiceBean> ipcName, int deviceId, int videoType,
                               long startTime, long endTime, int pageNum, int pageSize);
 
-        void getAbnormalBehaviorList(Map<Integer, String> ipcName, int deviceId, int videoType,
+        void getAbnormalBehaviorList(Map<Integer, CashVideoServiceBean> ipcName, int deviceId, int videoType,
                                      long startTime, long endTime, int pageNum, int pageSize);
 
         void getStorageList(String deviceSn);
