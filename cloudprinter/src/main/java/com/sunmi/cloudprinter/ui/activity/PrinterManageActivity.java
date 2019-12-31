@@ -20,8 +20,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.sunmi.cloudprinter.R;
-import com.sunmi.cloudprinter.bean.PrinterJSCall;
-import com.sunmi.cloudprinter.config.PrinterConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -35,22 +33,30 @@ import org.json.JSONObject;
 import java.io.File;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.PermissionUtils;
-import sunmi.common.utils.SecurityUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
+import sunmi.common.view.webview.BaseJSCall;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
 import sunmi.common.view.webview.SsConstants;
 
 @EActivity(resName = "activity_printer_manage")
 public class PrinterManageActivity extends BaseActivity {
-    private final int timeout = 15_000;
+
+    private static final int timeout = 15_000;
+
+    private static final int REQUEST_GALLERY = 0xa0;
+    private static final int REQUEST_CAMERA = 0xa1;
+
     @ViewById(resName = "webView")
     SMWebView webView;
     @ViewById(resName = "layout_network_error")
@@ -67,9 +73,6 @@ public class PrinterManageActivity extends BaseActivity {
     @Extra
     int channelId;
 
-    private static final int REQUEST_GALLERY = 0xa0;
-    private static final int REQUEST_CAMERA = 0xa1;
-
     private boolean hasSendInfo = false;
     private CountDownTimer countDownTimer;
     private ValueCallback<Uri[]> imgCaBack;
@@ -82,9 +85,9 @@ public class PrinterManageActivity extends BaseActivity {
     protected void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
-//        webView.loadUrl(CommonConfig.SERVICE_H5_URL +
-//                "cloudPrinter?topPadding=" + Utils.getWebViewStatusBarHeight(context));
-        webView.loadUrl(PrinterConfig.IOT_H5_URL);
+        webView.loadUrl(CommonConfig.SERVICE_H5_URL +
+                "cloudPrinter/index?topPadding=" + Utils.getWebViewStatusBarHeight(context));
+//        webView.loadUrl(PrinterConfig.IOT_H5_URL);
         startTimer();
     }
 
@@ -135,8 +138,8 @@ public class PrinterManageActivity extends BaseActivity {
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
         // 可以运行JavaScript
-//        BaseJSCall jsCall = new BaseJSCall(this, webView);
-        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
+        BaseJSCall jsCall = new BaseJSCall(this, webView);
+//        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -185,7 +188,8 @@ public class PrinterManageActivity extends BaseActivity {
                                 .put("userId", userId)
                                 .put("merchantId", shopId)
                                 .put("msn", sn)
-                                .put("token", SecurityUtils.md5(userId));
+                                .put("channelId", channelId)
+                                .put("token", SpUtils.getStoreToken());
                         String params = new JSONObject()
                                 .put("userInfo", userInfo)
                                 .toString();
