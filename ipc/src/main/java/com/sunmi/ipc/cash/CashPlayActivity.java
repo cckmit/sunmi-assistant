@@ -42,6 +42,7 @@ import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.presenter.CashVideoPresenter;
+import com.sunmi.ipc.utils.CashAbnormalTagUtils;
 import com.sunmi.ipc.view.activity.CloudPlaybackActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -170,6 +171,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     ImageView ivVideoChange;
     @ViewById(resName = "tv_empty")
     TextView tvEmpty;
+
+    @ViewById(resName = "tv_abnormal_tip")
+    TextView tvAbnormalTip;
+
     /**
      * ipc名称 ，视频列表 ，是否一天快放,设备id, 一天快放的开始结束时间 ,是否有更多列表数据（一天快放或点击item进入）
      */
@@ -181,8 +186,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     boolean isWholeDayVideoPlay;
     @Extra
     int deviceId;
-    @Extra
-    String deviceSn;
     @Extra
     long startTime, endTime;
     @Extra
@@ -407,30 +410,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             mHandler.removeCallbacksAndMessages(null);
         }
     }
-//
-//    private String videoUrl() {
-//        return videoList.get(playIndex).getVideoUrl();
-//    }
-//
-//    private int videoType() {
-//        return videoList.get(playIndex).getVideoType();
-//    }
-//
-//    private List<Integer> videoTags() {
-//        return videoList.get(playIndex).getVideoTag();
-//    }
-//
-//    private int videoEventId() {
-//        return videoList.get(playIndex).getEventId();
-//    }
-//
-//    private String orderNo() {
-//        return videoList.get(playIndex).getOrderNo();
-//    }
-//
-//    private int auditVideoId() {
-//        return videoList.get(playIndex).getVideoId();
-//    }
 
     /**
      * 手势滑动到最后一个,或自动播放最后一个
@@ -695,6 +674,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         boolean isAbnormal = current.getVideoType() != IpcConstants.CASH_VIDEO_NORMAL;
         if (isAbnormal) {
             mPresenter.getAbnormalEvent(current.getEventId(), current.getStartTime());
+        } else {
+            tvAbnormalTip.setVisibility(View.GONE);
         }
         ivTag.setSelected(isAbnormal);
         sbBar.setProgress(0);
@@ -981,14 +962,24 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @Override
     public void getAbnormalEventSuccess(int eventType, double riskScore, List<CashBox> boxes) {
+        if (eventType == CashTagFilter.TAG_ID_CUSTOM) {
+            return;
+        }
         cashBoxOverlay.setData(boxes);
         sbMark.setData(boxes);
+        String tip = getString(R.string.cash_abnormal_tip,
+                CashAbnormalTagUtils.getInstance().getCashTag(eventType).getDescription(),
+                (int) (riskScore * 100));
+        tvAbnormalTip.setText(tip);
         sbMark.setVisibility(View.VISIBLE);
+        tvAbnormalTip.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void getAbnormalEventFail(int code, String msg) {
         shortTip(R.string.toast_network_error);
+        sbMark.setVisibility(View.GONE);
+        tvAbnormalTip.setVisibility(View.GONE);
     }
 
     //进入云回放
