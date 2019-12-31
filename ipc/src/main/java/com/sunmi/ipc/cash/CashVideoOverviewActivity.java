@@ -286,6 +286,9 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     public void totalAbnormalBehaviorClick() {
         clearItems(behaviorItems);
         behaviorItems.get(0).setChecked(true);
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
+                .items(behaviorItems).isSingleDevice(isSingleDevice)
+                .isAbnormalBehavior(true).startForResult(REQUEST);
     }
 
     @Click(resName = "iv_close")
@@ -323,6 +326,9 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     public void onAbnormalBehaviorClick(CashVideoServiceBean item, int position) {
         clearItems(behaviorItems);
         behaviorItems.get(1 + position).setChecked(true);
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
+                .items(behaviorItems).isSingleDevice(isSingleDevice)
+                .isAbnormalBehavior(true).startForResult(REQUEST);
     }
 
     private void clearItems(ArrayList<FilterItem> filterItems) {

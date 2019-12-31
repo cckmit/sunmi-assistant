@@ -45,6 +45,7 @@
                 android:paddingStart="@dimen/dp_25">
 
                 <TextView
+                    android:id="@+id/tv_cash_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"
@@ -53,6 +54,7 @@
                     android:textSize="@dimen/sp_24" />
 
                 <TextView
+                    android:id="@+id/tv_cash_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tip_cash_video"

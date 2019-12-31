@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.cash.model.CashVideo;
+import com.sunmi.ipc.config.IpcConstants;
+import com.sunmi.ipc.utils.CashAbnormalTagUtils;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -33,12 +34,16 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
     private OnItemClickListener listener;
     private int selectPosition = -1;
     private NumberFormat numberFormat;
+    private boolean isAbnormalBehavior;
+    private CashAbnormalTagUtils tagUtils;
 
-    public CashVideoAdapter(ArrayList<CashVideo> data, Context context) {
+    public CashVideoAdapter(ArrayList<CashVideo> data, Context context, boolean isAbnormalBehavior) {
         this.data = data;
         this.context = context;
+        this.isAbnormalBehavior = isAbnormalBehavior;
         numberFormat = NumberFormat.getNumberInstance();
         numberFormat.setMinimumFractionDigits(2);
+        tagUtils = CashAbnormalTagUtils.getInstance();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -65,16 +70,25 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         }
         CashVideo bean = data.get(i);
         viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getPurchaseTime(), "HH:mm:ss"));
-        if (!TextUtils.isEmpty(bean.getDescription())) {
+        int tag = bean.getVideoTag().get(0);
+        if (bean.getVideoType() == IpcConstants.CASH_VIDEO_ABNORMAL) {
             viewHolder.tvDescription.setVisibility(View.VISIBLE);
-            viewHolder.tvDescription.setText(bean.getDescription());
+            if (tag == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
+                viewHolder.tvDescription.setText(bean.getDescription());
+            } else {
+                viewHolder.tvDescription.setText(tagUtils.getCashTag(tag).getDescription());
+            }
         } else {
             viewHolder.tvDescription.setVisibility(View.GONE);
         }
-        viewHolder.tvAmount.setText(String.format("¥%s", numberFormat.format(bean.getAmount())));
-        viewHolder.tvOrderNum.setText(bean.getOrderNo());
         viewHolder.tvName.setText(bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
+        if (isAbnormalBehavior) {
+            viewHolder.tvSuggest.setText(tagUtils.getCashTag(tag).getTip());
+        } else {
+            viewHolder.tvAmount.setText(String.format("¥%s", numberFormat.format(bean.getAmount())));
+            viewHolder.tvOrderNum.setText(bean.getOrderNo());
+        }
         if (data.size() > 1) {
             if (i == data.size() - 1) {
                 viewHolder.tvLineTop.setVisibility(View.VISIBLE);
@@ -126,6 +140,10 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
             tvLineBottom = itemView.findViewById(R.id.tv_left_bottom_line);
             tvSuggest = itemView.findViewById(R.id.tv_suggest);
             groupContent = itemView.findViewById(R.id.group_content);
+            if (isAbnormalBehavior) {
+                groupContent.setVisibility(View.GONE);
+                tvSuggest.setVisibility(View.VISIBLE);
+            }
             itemView.setOnClickListener(this);
         }
 

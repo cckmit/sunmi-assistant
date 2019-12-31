@@ -59,6 +59,7 @@ import java.util.Objects;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.CommonHelper;
@@ -179,7 +180,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * ipc名称 ，视频列表 ，是否一天快放,设备id, 一天快放的开始结束时间 ,是否有更多列表数据（一天快放或点击item进入）
      */
     @Extra
-    HashMap<Integer, String> ipcName;
+    HashMap<Integer, CashVideoServiceBean> ipcName;
     @Extra
     ArrayList<CashVideo> videoList = new ArrayList<>();
     @Extra
@@ -195,6 +196,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Extra
     int pageNum, videoListPosition, videoType;
+    @Extra
+    boolean isAbnormalBehavior;
+
     /**
      * 是否在拖动进度条中，默认为停止拖动，true为在拖动中，false为停止拖动
      */

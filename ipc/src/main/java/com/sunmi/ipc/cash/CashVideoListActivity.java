@@ -38,6 +38,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.NetworkUtils;
@@ -80,6 +81,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     TextView tvNoCash;
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
+    @ViewById(resName = "tv_fast_play")
+    TextView tvFastPlay;
+    @ViewById(resName = "tv_suggestion")
+    TextView tvSuggestion;
 
     @Extra
     int deviceId = -1;
@@ -95,6 +100,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     boolean isSingleDevice;
     @Extra
     int total;
+    @Extra
+    boolean isAbnormalBehavior;
+    @Extra
+    ArrayList<CashVideoServiceBean> serviceBeans;
 
     private final int REQUEST = 0x101;
 
@@ -116,12 +125,17 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
-        mPresenter = new CashVideoListPresenter();
+        mPresenter = new CashVideoListPresenter(isAbnormalBehavior, serviceBeans);
         mPresenter.attachView(this);
         fastPlayStart = startTime;
         fastPlayEnd = endTime;
         if (isSingleDevice) {
             dmDevice.setVisibility(View.GONE);
+        }
+        if (isAbnormalBehavior) {
+            tvFastPlay.setVisibility(View.GONE);
+            tvSuggestion.setText(R.string.tip_other_anomalies);
+            tvAbnormal.setVisibility(View.GONE);
         }
         tvDate.setText(DateTimeUtils.secondToDate(startTime, "yyyy.MM.dd"));
         refreshLayout.setDelegate(this);
@@ -368,7 +382,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     private void initAdapter() {
         if (adapter == null) {
-            adapter = new CashVideoAdapter(dataList, context);
+            adapter = new CashVideoAdapter(dataList, context, isAbnormalBehavior);
             rvCashVideo.setLayoutManager(new LinearLayoutManager(context));
             adapter.setOnItemClickListener((data, pos) -> {
                 if (!NetworkUtils.isNetworkAvailable(context)) {
@@ -379,7 +393,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                         .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
                         .ipcName(mPresenter.getIpcName()).videoList(data)
                         .hasMore(hasMore).pageNum(pageNum).videoListPosition(pos)
-                        .videoType(videoType).startForResult(REQUEST);
+                        .videoType(videoType).isAbnormalBehavior(isAbnormalBehavior).startForResult(REQUEST);
             });
             rvCashVideo.setAdapter(adapter);
         }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.utils.StatusBarUtils;
 
 /**
  * Description:
@@ -41,6 +42,7 @@ public class CashVideoNonCloudActivity extends BaseActivity {
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         if (status == CommonConstants.SERVICE_EXPIRED) {
             tvTip.setText(R.string.tip_cloud_expired);
             btnOpen.setText(R.string.str_renew_cloud_storage);
