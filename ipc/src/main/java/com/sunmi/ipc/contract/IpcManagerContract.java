@@ -15,7 +15,7 @@ import sunmi.common.base.BaseView;
 public interface IpcManagerContract {
 
     interface View extends BaseView {
-        void startLiveSuccess();
+        void startLiveFail();
 
         void changeQualitySuccess(int quality);
 
@@ -27,7 +27,6 @@ public interface IpcManagerContract {
     }
 
     interface Presenter {
-        void startLive(IOTCClient iotcClient);
 
         void changeQuality(int quality, IOTCClient iotcClient);
 
