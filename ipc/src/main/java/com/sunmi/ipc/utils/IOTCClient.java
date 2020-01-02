@@ -192,7 +192,7 @@ public class IOTCClient implements Serializable {
      * 开始直播
      */
     public void startPlay(P2pCmdCallback callback) {
-        changeValue(0, callback);
+        changeValue(1, callback);
     }
 
     /**
