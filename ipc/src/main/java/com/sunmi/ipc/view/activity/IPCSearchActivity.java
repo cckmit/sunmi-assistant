@@ -88,10 +88,9 @@ public class IPCSearchActivity extends BaseActivity
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (CommonConstants.TYPE_IPC_FS == deviceType) {
             tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_fs, 0, 0);
-        }else if (CommonConstants.TYPE_IPC_SS == deviceType) {
+        } else if (CommonConstants.TYPE_IPC_SS == deviceType) {
             tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_ss, 0, 0);
         }
-        isApMode = (network == IpcConstants.IPC_CONFIG_MODE_AP);
         if (network == IpcConstants.IPC_CONFIG_MODE_WIRED) {
             tvCheckNetwork.setText(R.string.tip_check_ipc_wired);
         } else {
@@ -161,7 +160,11 @@ public class IPCSearchActivity extends BaseActivity
         if (network == IpcConstants.IPC_CONFIG_MODE_AP) {
             gotoWifiConfigActivity();
         } else {
-            gotoIpcConfigActivity();
+            if (isApMode) {
+                shortTip(R.string.str_tip_use_wired_network);
+            } else {
+                gotoIpcConfigActivity();
+            }
         }
     }
 
@@ -263,7 +266,7 @@ public class IPCSearchActivity extends BaseActivity
         if (!ipcMap.containsKey(ipc.getDeviceid())) {
             ipc.setSelected(true);
             ipcMap.put(ipc.getDeviceid(), ipc);
-            // isApMode = TextUtils.equals("AP", ipc.getNetwork());
+            isApMode = TextUtils.equals("AP", ipc.getNetwork());
             getToken(ipc);
         }
     }
