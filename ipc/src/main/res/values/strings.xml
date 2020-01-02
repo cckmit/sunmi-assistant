@@ -314,7 +314,7 @@
     <string name="str_chose_network">选择网络连接方式</string>
     <string name="str_confirm_ipc_linked">确认摄像机已连接</string>
     <string name="tip_config_ipc_dialog4">检查摄像机连接的网络是否正常</string>
-    <string name="msg_device_offline">当前摄像机离线，且手机和摄像机未连相同Wi-Fi，无法管理【设置】</string>
+    <string name="msg_device_offline">当前摄像机离线，且手机和摄像机未连相同网络，无法管理【设置】</string>
     <string name="tip_ipc_offline">摄像机已离线</string>
     <string name="str_confirm_connect">Confirm connect</string>
     <string name="tip_ipc_wifi_24g">暂只支持2.4GHz</string>
