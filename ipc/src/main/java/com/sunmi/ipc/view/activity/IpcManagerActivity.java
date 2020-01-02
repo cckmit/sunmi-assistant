@@ -566,8 +566,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
-    public void startLiveSuccess() {
-        hideVideoLoading();
+    public void startLiveFail() {
+        onPlayFail();
     }
 
     @UiThread
