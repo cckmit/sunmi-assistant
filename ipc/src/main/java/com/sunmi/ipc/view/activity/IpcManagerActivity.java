@@ -164,7 +164,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     SunmiDevice device;
 
     private int screenW; //手机屏幕的宽
-    private int qualityType = 0;//0-超清，1-高清
+    private int qualityType = 1;//0-超清，1-高清
     private boolean isShowAdjust;//是否显示视频参数调整入口
     private boolean isControlPanelShow = true;//是否点击屏幕
     private boolean isPlayFailShown;
@@ -566,8 +566,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
-    public void startLiveSuccess() {
-        hideVideoLoading();
+    public void startLiveFail() {
+        onPlayFail();
     }
 
     @UiThread
@@ -653,8 +653,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
         } else if (id == CommonNotifications.cashVideoSubscribe) {
             mPresenter.getCashVideoService(device.getId());
-        } else if (id == OpcodeConstants.fsAdjustFocusAdd || id == OpcodeConstants.fsAdjustFocusMinus
-                || id == OpcodeConstants.fsAdjustFocusReset) {
+        } else if (id == OpcodeConstants.fsAdjustFocusReset
+                || id == OpcodeConstants.fsAdjustFocusAdd
+                || id == OpcodeConstants.fsAdjustFocusMinus) {
             hideLoadingDialog();
         }
 
@@ -674,7 +675,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         setPanelVisible(View.VISIBLE);
         if (p2pService != null) {
             showVideoLoading();
-            p2pService.startPlay();
+            mPresenter.resumePlay(qualityType, p2pService.getIOTCClient());
         }
     }
 
