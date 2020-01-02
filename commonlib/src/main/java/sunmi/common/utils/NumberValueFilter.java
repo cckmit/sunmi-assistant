@@ -19,13 +19,13 @@ import android.text.method.DigitsKeyListener;
 public class NumberValueFilter extends DigitsKeyListener {
 
     private static final String TAG = "NumberValueFilter";
-    private int intMaxLength = 6;//整数位的限制位数
-
-    public NumberValueFilter() {
-        super(false, true);
-    }
-
+    private int intMaxLength;//整数位的限制位数
     private int digits = 2;
+
+    public NumberValueFilter(int maxLength) {
+        super(false, true);
+        this.intMaxLength = maxLength;
+    }
 
     public NumberValueFilter setDigits(int d) {
         digits = d;
