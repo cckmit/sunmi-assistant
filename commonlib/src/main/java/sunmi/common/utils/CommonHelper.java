@@ -387,7 +387,7 @@ public class CommonHelper {
      * @param num
      * @return
      */
-    public static String floatTrans(double num) {
+    public static String floatTrans(float num) {
         if (Math.round(num) - num == 0) {
             return String.valueOf((int) num);
         }
