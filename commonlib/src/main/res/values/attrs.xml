@@ -72,8 +72,10 @@
 
         <!-- 标题 -->
         <attr name="title" format="string" />
-        <!-- 内容 -->
-        <attr name="contentText" format="string" />
+        <!-- 右侧内容 -->
+        <attr name="endContentText" format="string" />
+        <!-- 多行列表项中间内容，仅当styleType=multi时有效 -->
+        <attr name="middleContentText" format="string" />
         <!-- 内容最大行数 -->
         <attr name="contentMaxLines" format="integer" />
         <!-- 底部单行左边小字内容 -->
@@ -91,27 +93,48 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="SettingItemEdittextLayout">
+    <declare-styleable name="SettingItemEditTextLayout">
+        <!-- 控件宽度 -->
         <attr name="parentWidth" />
+        <!-- 控件高度 -->
         <attr name="parentHeight" />
+        <!-- 左边图片 -->
         <attr name="imageLeft" />
+        <!-- 左边图片大小 -->
         <attr name="imageLeftSize" />
+        <!-- 输入框左边文字 -->
         <attr name="leftText" />
+        <!-- 输入框左边文字大小 -->
         <attr name="leftTextSize" />
+        <!-- 输入框左边文字颜色 -->
         <attr name="leftTextColor" />
+        <!-- 输入框是否可以输入 -->
+        <attr name="editable" format="boolean" />
+        <!-- 输入框文本 -->
         <attr name="editTextContent" format="string" />
+        <!-- 输入框提示文本 -->
         <attr name="editTextHint" format="string" />
+        <!-- 输入框文本大小 -->
         <attr name="editTextSize" format="dimension" />
+        <!-- 输入框文本颜色 -->
         <attr name="editTextColor" format="color" />
+        <!-- 输入框提示文本颜色 -->
         <attr name="editTextHintColor" format="color" />
-        <attr name="editTextBackground" format="reference" />
+        <!-- 输入框右边的padding -->
         <attr name="editTextRightPadding" format="dimension" />
+        <!-- 输入框右边的文字 -->
         <attr name="rightText" />
+        <!-- 输入框右边的文字大小 -->
         <attr name="rightTextSize" />
+        <!-- 输入框右边的文字颜色 -->
         <attr name="rightTextColor" />
+        <!-- 是否显示底部分割线 -->
         <attr name="dividerShow" />
+        <!-- 底部分割线颜色 -->
         <attr name="dividerColor" />
+        <!-- 底部分割线高度 -->
         <attr name="dividerHeight" />
+        <!-- 支持的文本类型 -->
         <attr name="editTextInputType">
             <flag name="none" value="0x00000000" />
             <flag name="text" value="0x00000001" />

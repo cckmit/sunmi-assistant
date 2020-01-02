@@ -3,6 +3,9 @@ package com.sunmi.assistant.ui.activity.presenter;
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.assistant.ui.activity.contract.InputMobileContract;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
@@ -40,10 +43,23 @@ public class InputMobilePresenter extends BasePresenter<InputMobileContract.View
         SSOApi.checkUserName(username, new HttpCallback<String>(mView) {
             @Override
             public void onSuccess(int code, String msg, String data) {
-                if (isViewAttached()){
-                    mView.checkSuccess(code,data);
+                try {
+                    if (code == 1) {
+                        JSONObject object = new JSONObject(data);
+                        if (object.has("needMerge")) {
+                            //needMerge 是否需要合并 0-否 1-是
+                            int needMerge = object.getInt("needMerge");
+                            String url = object.getString("url");
+                            if (isViewAttached()) {
+                                mView.checkSuccess(needMerge, url);
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         });
     }
+
 }

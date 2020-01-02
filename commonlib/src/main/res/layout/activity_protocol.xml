@@ -7,15 +7,11 @@
     <sunmi.common.view.webview.SMWebView
         android:id="@+id/wv_protocol"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_20" />
+        android:layout_height="match_parent" />
 
-    <Button
-        android:id="@+id/btnImage"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_40"
-        android:background="@mipmap/ic_pro_quit"
-        android:visibility="visible" />
+    <include
+        android:id="@+id/layout_network_error"
+        layout="@layout/include_network_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>

@@ -72,7 +72,7 @@ public class BootLoader {
         //bugly
         //trustAllCerts
         handleSSLHandshake();
-        CrashReport.initCrashReport(context, ApConfig.BUGLY_ID, true);
+        CrashReport.initCrashReport(context, CommonConfig.BUGLY_ID, true);
         if (!TextUtils.isEmpty(SpUtils.getUID())) {
             CrashReport.setUserId(SpUtils.getUID());
         }

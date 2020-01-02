@@ -15,6 +15,8 @@ public class CashVideoServiceBean implements Parcelable {
     private String deviceName;
     private int totalCount;
     private int abnormalVideoCount;
+    private boolean hasCashLossPrevent;
+    private int abnormalBehaviorCount;
     private String imgUrl;
 
     public CashVideoServiceBean() {
@@ -27,6 +29,8 @@ public class CashVideoServiceBean implements Parcelable {
         deviceName = in.readString();
         totalCount = in.readInt();
         abnormalVideoCount = in.readInt();
+        hasCashLossPrevent = in.readByte() != 0;
+        abnormalBehaviorCount = in.readInt();
         imgUrl = in.readString();
     }
 
@@ -37,6 +41,8 @@ public class CashVideoServiceBean implements Parcelable {
         dest.writeString(deviceName);
         dest.writeInt(totalCount);
         dest.writeInt(abnormalVideoCount);
+        dest.writeByte((byte) (hasCashLossPrevent ? 1 : 0));
+        dest.writeInt(abnormalBehaviorCount);
         dest.writeString(imgUrl);
     }
 
@@ -95,6 +101,22 @@ public class CashVideoServiceBean implements Parcelable {
 
     public void setAbnormalVideoCount(int abnormalVideoCount) {
         this.abnormalVideoCount = abnormalVideoCount;
+    }
+
+    public boolean isHasCashLossPrevent() {
+        return hasCashLossPrevent;
+    }
+
+    public void setHasCashLossPrevent(boolean hasCashLossPrevent) {
+        this.hasCashLossPrevent = hasCashLossPrevent;
+    }
+
+    public int getAbnormalBehaviorCount() {
+        return abnormalBehaviorCount;
+    }
+
+    public void setAbnormalBehaviorCount(int abnormalBehaviorCount) {
+        this.abnormalBehaviorCount = abnormalBehaviorCount;
     }
 
     public String getImgUrl() {

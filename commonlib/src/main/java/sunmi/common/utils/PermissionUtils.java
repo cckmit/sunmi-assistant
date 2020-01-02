@@ -178,7 +178,7 @@ public class PermissionUtils {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission2 == PackageManager.PERMISSION_GRANTED) return true;
         ActivityCompat.requestPermissions(activity, new String[]{
-                Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_PERMISSIONS_CAMERA_STORAGE);
+                Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_PERMISSIONS_STORAGE);
         return false;
     }
 

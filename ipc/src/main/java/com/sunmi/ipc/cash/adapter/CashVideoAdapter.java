@@ -2,6 +2,7 @@ package com.sunmi.ipc.cash.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -110,6 +111,8 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         TextView tvName;
         TextView tvLineTop;
         TextView tvLineBottom;
+        TextView tvSuggest;
+        Group groupContent;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -121,6 +124,8 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
             ivPreview = itemView.findViewById(R.id.iv_preview_img);
             tvLineTop = itemView.findViewById(R.id.tv_left_top_line);
             tvLineBottom = itemView.findViewById(R.id.tv_left_bottom_line);
+            tvSuggest = itemView.findViewById(R.id.tv_suggest);
+            groupContent = itemView.findViewById(R.id.group_content);
             itemView.setOnClickListener(this);
         }
 

@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar"
-        app:contentText="@string/str_modify"
+        app:endContentText="@string/str_modify"
         app:showDivider="bottom"
         app:title="@string/str_password"
         app:type="arrow" />

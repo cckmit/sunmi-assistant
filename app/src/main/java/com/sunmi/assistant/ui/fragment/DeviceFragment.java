@@ -32,9 +32,9 @@ import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.assistant.utils.ShopTitlePopupWindow;
 import com.sunmi.cloudprinter.ui.activity.PrinterManageActivity_;
 import com.sunmi.ipc.config.IpcConstants;
-import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
 import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.IpcManagerActivity_;
+import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
 import com.sunmi.sunmiservice.WebViewActivity_;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
@@ -315,15 +315,15 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 }
                 break;
             case "ROUTER":
-                if (!cannotManagerRouter(device)) {
-                    clickedDevice = device;
-                    showLoadingDialog();
-                    //校验ap是已初始化配置
-                    if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
-                        APCall.getInstance().apIsConfig(mActivity, device.getDeviceid());
-                    } else {
-                        isComeRouterManager(device.getDeviceid(), device.getStatus());
-                    }
+                clickedDevice = device;
+                showLoadingDialog();
+                //校验ap是已初始化配置
+                if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
+                    APCall.getInstance().apIsConfig(mActivity, device.getDeviceid());
+                } else if (device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
+                    checkApVersion(device.getDeviceid(), device.getStatus());
+                } else {
+                    gotoRouterManager(device.getDeviceid(), device.getStatus());
                 }
                 break;
             case "IPC":
@@ -342,6 +342,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                     shortTip(getString(R.string.str_cannot_manager_device));
                 }
                 break;
+            default:
         }
     }
 
@@ -461,6 +462,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                         intent.setAction(AppConfig.BROADCAST_ACTION);
                         intent.putExtra("type", AppConfig.BROADCAST_STATUS);
                         mActivity.sendBroadcast(intent);
+                        BaseNotification.newInstance().postNotificationName(NotificationConstant.apOffline, sn);
                     } else if (NotificationConstant.apStatusList == event) {
                         JSONObject object1 = jsonObject.getJSONObject("param");
                         JSONArray jsonArrayList = object1.getJSONArray("device_list");//所有设备列表
@@ -510,15 +512,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
-    private boolean cannotManagerRouter(SunmiDevice device) {
-        if (device.getStatus() == DeviceStatus.UNKNOWN.ordinal()
-                || device.getStatus() == DeviceStatus.OFFLINE.ordinal()) {
-            shortTip(getString(R.string.str_cannot_manager_device));
-            return true;
-        }
-        return false;
-    }
-
     @UiThread
     void saveMangerPasswordDialog(String type) {
         hideLoadingDialog();
@@ -530,8 +523,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         password = "";
         dialogPassword = new InputDialog.Builder(mActivity)
                 .setTitle(TextUtils.equals(type, "0") ?
-                        R.string.curr_router_manager_password : R.string.curr_router_error_password)
-                .setHint(R.string.hint_input_manger_password)
+                        R.string.hint_input_manger_password : R.string.curr_router_error_password)
+                .setHint(R.string.str_tip_password_6_32)
                 .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel, (dialog, which) -> dialogPassword = null)
                 .setConfirmButton(com.sunmi.apmanager.R.string.str_confirm, (dialog, input) -> {
                     if (isFastClick(1500)) return;
@@ -584,7 +577,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 JSONObject object1 = object.getJSONObject("system");
                 String factory = object1.getString("factory");
                 if (TextUtils.equals("0", factory)) {//0已初始配置 1未初始化设置
-                    isComeRouterManager(clickedDevice.getDeviceid(), clickedDevice.getStatus());
+                    //校验密码 管理密码是否正确
+                    mPassword = RouterDBHelper.queryApPassword(clickedDevice.getDeviceid());
+                    APCall.getInstance().checkLogin(mActivity, mPassword);
                 } else {
                     openActivity(mActivity, PrimaryRouteStartActivity.class);
                 }
@@ -706,28 +701,17 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         endRefresh();
     }
 
-    private void isComeRouterManager(String sn, int status) {
-        //1通过sn号判断是否当前路由器WiFi
-        if (TextUtils.equals(sn, MyNetworkCallback.CURRENT_ROUTER)) {
-            //2通过查询数据库管理密码check登录（管理密码是否正确）
-            mPassword = RouterDBHelper.queryApPassword(sn);//查询数据库保存的路由器密码
-            APCall.getInstance().checkLogin(mActivity, mPassword);
-        } else {
-            checkApVersion(sn, status);
-        }
-    }
-
     //检查ap版本
     private void checkApVersion(String sn, int status) {
         ApCompatibleUtils.getInstance().checkVersion(mActivity, sn, (isCompatible, currSn) ->
-                gotoRouterManager(sn, DeviceStatus.valueOf(status).getValue()));
+                gotoRouterManager(sn, status));
     }
 
-    private void gotoRouterManager(String sn, String status) {
+    private void gotoRouterManager(String sn, int status) {
         Bundle bundle = new Bundle();
         bundle.putString("shopId", SpUtils.getShopId() + "");
         bundle.putString("sn", sn);
-        bundle.putString("status", status);
+        bundle.putInt("status", status);
         openActivity(mActivity, RouterManagerActivity.class, bundle);
     }
 

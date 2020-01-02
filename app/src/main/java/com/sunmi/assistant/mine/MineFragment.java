@@ -26,7 +26,6 @@ import org.androidannotations.annotations.ViewById;
 
 import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
 import sunmi.common.base.BaseMvpFragment;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.utils.CommonHelper;
@@ -162,7 +161,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
      */
     @Click(R.id.sil_order)
     public void orderClick() {
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_ORDER_MANAGE)
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_ORDER_MANAGE)
                 .start();
     }
 

@@ -82,18 +82,18 @@ public class PosDetailsActivity extends BaseActivity {
             } else if (use3g == 1) {
                 netConnectStatus = getString(R.string.pos_3g);
             } else {
-                netConnectStatus = getString(R.string.pos_unknown);
+                netConnectStatus = getString(R.string.str_unknown);
             }
-            silWifi.setContent(posInfo(netConnectStatus));
-            silAdds.setContent(posInfo(posResp.getDeviceInfo().getLocation()));
-            silSn.setContent(posInfo(device.getDeviceid()));
-            silResolution.setContent(posInfo(posResp.getDeviceInfo().getResolution()));
-            silTemper.setContent(posInfo(posResp.getRunningInfo().getBatteryTemper()));
-            silSysVer.setContent(posInfo("Android " + posResp.getDeviceInfo().getSystemVersion()));
-            silRom.setContent(posInfo(posResp.getDeviceInfo().getRomVersion()));
-            silIp.setContent(posInfo(posResp.getNetInfo().getIp()));
-            silMac.setContent(posInfo(posResp.getNetInfo().getMac().toUpperCase()));
-            silIMEI.setContent(posInfo(posResp.getDeviceInfo().getImei()));
+            silWifi.setEndContent(posInfo(netConnectStatus));
+            silAdds.setEndContent(posInfo(posResp.getDeviceInfo().getLocation()));
+            silSn.setEndContent(posInfo(device.getDeviceid()));
+            silResolution.setEndContent(posInfo(posResp.getDeviceInfo().getResolution()));
+            silTemper.setEndContent(posInfo(posResp.getRunningInfo().getBatteryTemper()));
+            silSysVer.setEndContent(posInfo("Android " + posResp.getDeviceInfo().getSystemVersion()));
+            silRom.setEndContent(posInfo(posResp.getDeviceInfo().getRomVersion()));
+            silIp.setEndContent(posInfo(posResp.getNetInfo().getIp()));
+            silMac.setEndContent(posInfo(posResp.getNetInfo().getMac().toUpperCase()));
+            silIMEI.setEndContent(posInfo(posResp.getDeviceInfo().getImei()));
         }
     }
 

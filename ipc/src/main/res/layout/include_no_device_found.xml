@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:drawableTop="@mipmap/ic_no_ss"
+        android:drawableTop="@mipmap/ic_no_sunmilink_device"
         android:drawablePadding="@dimen/dp_64"
         android:gravity="center"
         android:text="@string/tip_no_ipc_found"

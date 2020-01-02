@@ -33,6 +33,8 @@ import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 import sunmi.common.view.dialog.ListDialog;
 
+import static sunmi.common.view.activity.ProtocolActivity.USER_IPC_PROTOCOL;
+
 /**
  * Description:
  *
@@ -88,7 +90,7 @@ public class IpcStartConfigActivity extends BaseActivity {
         ctvPrivacy.setVisibility(View.VISIBLE);
         tvIndicator.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         tvIndicator.getPaint().setAntiAlias(true);
-        ViewUtils.setPrivacy(this, ctvPrivacy, com.commonlibrary.R.color.white_40a, false);
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, USER_IPC_PROTOCOL, -1);
         btnStart.setEnabled(ctvPrivacy.isChecked());
         ctvPrivacy.setOnClickListener(v -> {
             ctvPrivacy.toggle();

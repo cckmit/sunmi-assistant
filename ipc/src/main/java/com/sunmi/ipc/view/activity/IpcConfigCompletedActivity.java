@@ -15,7 +15,7 @@ import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.setting.IpcSettingSdcardActivity_;
-import com.sunmi.ipc.view.activity.setting.RecognitionSettingActivity_;
+import com.sunmi.ipc.view.activity.setting.ScreenAdjustSettingActivity_;
 import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.ServiceListResp;
@@ -146,7 +145,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 finish();
             } else {
                 if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
-                    Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+                    Router.withApi(SunmiServiceApi.class)
+                            .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
                 } else {
                     Router.withApi(AppApi.class).goToMain(context);
                 }
@@ -157,7 +157,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     @Click(resName = "btn_finish")
     void finishClick() {
         if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
-            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+            Router.withApi(SunmiServiceApi.class)
+                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
         } else {
             Router.withApi(AppApi.class).goToMain(context, this::finish);
         }
@@ -175,7 +176,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
     }
 
     @Override
@@ -394,7 +395,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     private void fsAdjust(SunmiDevice device) {
         deviceChoose = device;
         String versionName = device.getFirmware();
-        if (IpcUtils.getVersionCode(versionName) < IpcConstants.IPC_VERSION_NO_SDCARD_CHECK) {
+        if (IpcUtils.isNewVersion(versionName, IpcConstants.IPC_VERSION_NO_SDCARD_CHECK)) {
             getSdCardStatus(device);
         } else {
             startFsAdjust(device);
@@ -416,7 +417,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
-        RecognitionSettingActivity_.intent(this)
+        ScreenAdjustSettingActivity_.intent(this)
                 .mDevice(device)
                 .mVideoRatio(16f / 9f)
                 .start();

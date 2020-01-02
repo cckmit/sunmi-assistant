@@ -110,12 +110,12 @@ public class CompanyDetailActivity extends BaseActivity {
             public void onSuccess(int code, String msg, CompanyInfoResp mInfo) {
                 hideLoadingDialog();
                 mCompanyInfo = mInfo;
-                silCompanyName.setContent(mInfo.getCompany_name());
-                silCompanyId.setContent(mInfo.getCompany_id() + "");
-                silCompanyCreateTime.setContent(createTime(mInfo.getCreated_time() * 1000));
-                silCompanyContact.setContent(mInfo.getContact_person());
-                silCompanyContactTel.setContent(mInfo.getContact_tel());
-                silCompanyEmail.setContent(mInfo.getContact_email());
+                silCompanyName.setEndContent(mInfo.getCompany_name());
+                silCompanyId.setEndContent(mInfo.getCompany_id() + "");
+                silCompanyCreateTime.setEndContent(createTime(mInfo.getCreated_time() * 1000));
+                silCompanyContact.setEndContent(mInfo.getContact_person());
+                silCompanyContactTel.setEndContent(mInfo.getContact_tel());
+                silCompanyEmail.setEndContent(mInfo.getContact_email());
             }
 
             @Override
@@ -179,7 +179,7 @@ public class CompanyDetailActivity extends BaseActivity {
     void onNameResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             mCompanyInfo.setCompany_name(data.getStringExtra(INTENT_EXTRA_NAME));
-            silCompanyName.setContent(mCompanyInfo.getCompany_name());
+            silCompanyName.setEndContent(mCompanyInfo.getCompany_name());
         }
     }
 
@@ -187,7 +187,7 @@ public class CompanyDetailActivity extends BaseActivity {
     void onContactResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             mCompanyInfo.setContact_person(data.getStringExtra(INTENT_EXTRA_CONTACT));
-            silCompanyContact.setContent(mCompanyInfo.getContact_person());
+            silCompanyContact.setEndContent(mCompanyInfo.getContact_person());
         }
     }
 
@@ -195,7 +195,7 @@ public class CompanyDetailActivity extends BaseActivity {
     void onContactTelResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             mCompanyInfo.setContact_tel(data.getStringExtra(INTENT_EXTRA_CONTACT_TEL));
-            silCompanyContactTel.setContent(mCompanyInfo.getContact_tel());
+            silCompanyContactTel.setEndContent(mCompanyInfo.getContact_tel());
         }
     }
 
@@ -203,7 +203,7 @@ public class CompanyDetailActivity extends BaseActivity {
     void onEmailResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             mCompanyInfo.setContact_email(data.getStringExtra(INTENT_EXTRA_EMAIL));
-            silCompanyEmail.setContent(mCompanyInfo.getContact_email());
+            silCompanyEmail.setEndContent(mCompanyInfo.getContact_email());
         }
     }
 

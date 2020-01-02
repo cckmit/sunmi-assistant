@@ -371,7 +371,7 @@ public class FaceListActivity extends BaseMvpActivity<FaceListPresenter>
         if (mDeleteDialog == null) {
             mDeleteDialog = new CommonDialog.Builder(this)
                     .setTitle(R.string.ipc_face_tip_delete)
-                    .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                    .setConfirmButton(R.string.str_delete, R.color.common_orange,
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

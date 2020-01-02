@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
-import android.webkit.DownloadListener;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -56,6 +57,8 @@ import sunmi.common.view.webview.SsConstants;
 @EActivity(resName = "activity_webview_cloud")
 public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceWebChromeClient.Callback {
 
+    private static final String URL_PARAM_JOINER = "?";
+
     private final int timeout = 15_000;
     @ViewById(resName = "webView")
     SMWebView webView;
@@ -68,9 +71,12 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     String mUrl;
     @Extra
     ArrayList<String> snList;
+    @Extra
+    String productNo;
 
     private boolean hasSendDeviceInfo = false;
     private CountDownTimer countDownTimer;
+    private int progress;
 
     /**
      * 路由启动Activity
@@ -81,17 +87,23 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @RouterAnno(
             path = RouterConfig.SunmiService.WEB_VIEW_CLOUD
     )
-    public static Intent start(RouterRequest request) {
+    public static Intent start(@NonNull RouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), WebViewCloudServiceActivity_.class);
         return intent;
     }
-
 
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
-        webView.loadUrl(mUrl + Utils.getWebViewStatusBarHeight(context));
+        StringBuilder sb = new StringBuilder(mUrl);
+        if (mUrl.contains(URL_PARAM_JOINER)) {
+            sb.append("&topPadding=");
+        } else {
+            sb.append("?topPadding=");
+        }
+        sb.append(Utils.getWebViewStatusBarHeight(context));
+        webView.loadUrl(sb.toString());
         startTimer();
     }
 
@@ -134,7 +146,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         webSettings.setSupportZoom(false);//支持缩放
         webSettings.setBuiltInZoomControls(false);//支持缩放
         webSettings.setSupportMultipleWindows(false);//多窗口
-        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);//关闭webview中缓存
         webSettings.setAllowFileAccess(true);//设置可以访问文件
         webSettings.setNeedInitialFocus(true);//当webview调用requestFocus时为webview设置节点
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);//支持通过JS打开新窗口
@@ -143,17 +154,10 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        webSettings.setAppCacheEnabled(true);
         // 可以运行JavaScript
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        webView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url, String userAgent, String contentDisposition,
-                                        String mimetype, long contentLength) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-            }
-        });
         webView.setWebChromeClient(new H5FaceWebChromeClient(this, this));
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
@@ -199,7 +203,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    view.goBack();
+                                    view.loadUrl(CommonConstants.H5_ORDER_MANAGE);
                                 }
                             });
                         }
@@ -224,7 +228,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                 super.onPageFinished(view, url);
                 hideLoadingDialog();
                 if (!hasSendDeviceInfo) {
-                    closeTimer();
                     try {
                         JSONArray array = new JSONArray(snList);
                         JSONObject userInfo = new JSONObject()
@@ -232,7 +235,8 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                                 .put("company_id", SpUtils.getCompanyId())
                                 .put("shop_id", SpUtils.getShopId());
                         JSONObject cloudStorage = new JSONObject()
-                                .put("sn_list", array);
+                                .put("sn_list", array)
+                                .put("productNo", productNo);
                         JSONObject cashVideo = new JSONObject()
                                 .put("shop_name", SpUtils.getShopName());
                         String params = new JSONObject()
@@ -265,15 +269,8 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     @Override
     protected void onNewIntent(Intent intent) {
         hasSendDeviceInfo = false;
-        if (!TextUtils.equals(mUrl, intent.getStringExtra("mUrl"))) {
-            mUrl = intent.getStringExtra("mUrl");
-            snList = intent.getStringArrayListExtra("snList");
-            webView.loadUrl(mUrl);
-        } else {
-            webView.reload();
-        }
+        webView.reload();
         startTimer();
-        super.onNewIntent(intent);
     }
 
     @Click(resName = "btn_refresh")
@@ -287,16 +284,17 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @UiThread
     protected void loadError() {
-        closeTimer();
         webView.setVisibility(View.GONE);
         networkError.setVisibility(View.VISIBLE);
         titleBar.setVisibility(View.VISIBLE);
         hasSendDeviceInfo = false;
         hideLoadingDialog();
+        closeTimer();
     }
 
     @Override
     public void onProgressChanged(int progress) {
+        this.progress = progress;
         if (progress < 100) {
             showLoadingDialog();
         } else {
@@ -317,15 +315,13 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @Override
     public void onBackPressed() {
-        if (webView.isShown()) {
-            webView.evaluateJavascript("javascript:emitPageBack()", new ValueCallback<String>() {
-                @Override
-                public void onReceiveValue(String value) {
-                }
+        if (webView.isShown() && progress >= 100) {
+            webView.evaluateJavascript("javascript:emitPageBack()", value -> {
             });
             return;
         }
         webView.clearCache(true);
+        webView.clearHistory();
         super.onBackPressed();
     }
 }

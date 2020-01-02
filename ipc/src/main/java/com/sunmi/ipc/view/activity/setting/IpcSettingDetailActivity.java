@@ -15,7 +15,6 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -43,15 +42,15 @@ public class IpcSettingDetailActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mCameraModel.setContent(mDevice.getModel());
-        mCameraSn.setContent(mDevice.getDeviceid());
+        mCameraModel.setEndContent(mDevice.getModel());
+        mCameraSn.setEndContent(mDevice.getDeviceid());
         mTitleBar.getRightText().setOnClickListener(v -> deleteDevice(mDevice));
     }
 
     private void deleteDevice(final SunmiDevice device) {
         new CommonDialog.Builder(context).setTitle(R.string.tip_delete_ipc)
                 .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.ipc_setting_delete, R.color.caution_primary, (dialog, which) -> {
+                .setConfirmButton(R.string.str_delete, R.color.caution_primary, (dialog, which) -> {
                     dialog.dismiss();
                     if (!NetworkUtils.isNetworkAvailable(context)) {
                         unBindNetDisConnected();

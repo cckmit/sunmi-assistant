@@ -1,15 +1,12 @@
 package com.sunmi.assistant.ui.activity.login;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 
-import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.ui.view.MergeDialog;
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;
@@ -33,6 +30,9 @@ import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
 
+import static sunmi.common.view.activity.ProtocolActivity.USER_PRIVATE;
+import static sunmi.common.view.activity.ProtocolActivity.USER_PROTOCOL;
+
 /**
  * register
  */
@@ -52,7 +52,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
     @RouterAnno(
             path = RouterConfig.App.REGISTER
     )
-    public static Intent start(RouterRequest request){
+    public static Intent start(RouterRequest request) {
         Intent intent = new Intent(request.getRawContext(), RegisterActivity_.class);
         return intent;
     }
@@ -65,17 +65,11 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
         etMobile.setClearIcon(R.mipmap.ic_edit_delete_white);
         new SomeMonitorEditText().setMonitorEditText(btnNext, etMobile);
         //初始化
-        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, false);
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            String mobile = bundle.getString("mobile");
-            if (!TextUtils.isEmpty(mobile)) {
-                etMobile.setText(mobile);
-                CommonHelper.setSelectionEnd(etMobile);
-            }
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, USER_PROTOCOL, USER_PRIVATE);
+        if (!TextUtils.isEmpty(mobile)) {
+            etMobile.setText(mobile);
+            CommonHelper.setSelectionEnd(etMobile);
         }
-        CommonUtils.trackDurationEventBegin(context, "registerUsernameDuration",
-                "注册流程_输入联系方式_耗时", Constants.EVENT_DURATION_REGISTER_NAME);
     }
 
     @Click(R.id.btnNext)
@@ -106,11 +100,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
                 .setTitle(R.string.tip_register_already)
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_goto_register, (dialog, which) -> {
-                    CommonUtils.trackCommonEvent(context, "registerDialogLogin",
-                            "注册_账号已注册_弹窗_立即登录", Constants.EVENT_REGISTER);
-                    LoginActivity_.intent(context)
-                            .extra("mobile", mobile)
-                            .start();
+                    LoginActivity_.intent(context).mobile(mobile).start();
                     finish();
                 }).create().show());
     }
@@ -155,14 +145,7 @@ public class RegisterActivity extends BaseMvpActivity<InputMobilePresenter>
     @Override
     public void isUserExistFail(int code, String msg) {
         hideLoadingDialog();
-        CommonUtils.trackDurationEventEnd(context, "registerUsernameDuration",
-                "注册流程_输入联系方式_耗时", Constants.EVENT_DURATION_REGISTER_NAME);
-        CommonUtils.trackCommonEvent(context, "registerSendVerificationCode",
-                "注册_获取验证码", Constants.EVENT_REGISTER);
-        InputCaptchaActivity_.intent(context)
-                .extra("mobile", mobile)
-                .extra("source", "register")
-                .start();
+        InputCaptchaActivity_.intent(context).mobile(mobile).source("register").start();
     }
 
 }

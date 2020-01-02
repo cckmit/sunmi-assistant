@@ -139,11 +139,11 @@ public class MDSettingActivity extends BaseActivity {
         if (mDetectionConfig == null) {
             return;
         }
-        mSoundDetection.setContent(mDetectionConfig.soundDetection != 0 ?
+        mSoundDetection.setEndContent(mDetectionConfig.soundDetection != 0 ?
                 getString(R.string.ipc_setting_open) : getString(R.string.ipc_setting_close));
-        mActiveDetection.setContent(mDetectionConfig.activeDetection != 0 ?
+        mActiveDetection.setEndContent(mDetectionConfig.activeDetection != 0 ?
                 getString(R.string.ipc_setting_open) : getString(R.string.ipc_setting_close));
-        mDetectionTime.setContent(mDetectionConfig.detectionDays == DetectionConfig.DETECTION_ALL_TIME ?
+        mDetectionTime.setEndContent(mDetectionConfig.detectionDays == DetectionConfig.DETECTION_ALL_TIME ?
                 getString(R.string.ipc_setting_detection_time_all_time) : getString(R.string.ipc_setting_detection_time_custom));
     }
 

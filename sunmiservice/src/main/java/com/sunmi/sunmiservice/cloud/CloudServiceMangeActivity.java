@@ -25,7 +25,6 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.rpc.RpcErrorCode;
@@ -124,7 +123,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
 
     @Click(resName = "btn_open")
     void onpenClick() {
-        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
     }
 
     private void initServiceList() {
@@ -132,18 +131,15 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
             LinearLayoutManager layoutManager = new LinearLayoutManager(context);
             rvService.setLayoutManager(layoutManager);
             adapter = new ServiceListAdapter(dataList, context);
-            adapter.setOnServiceClickListener(new ServiceListAdapter.OnServiceClickListener() {
-                @Override
-                public void onRenewalClick(ServiceDetailBean bean) {
-                    if (bean.getRenewStatus() == 2) {
-                        showErrror(bean.getRenewErrorCode());
+            adapter.setOnServiceClickListener(bean -> {
+                if (bean.getRenewStatus() == CommonConstants.CLOUD_STORAGE_NOT_RENEWABLE) {
+                    showErrror(bean.getRenewErrorCode());
 
-                    } else {
-                        ArrayList<String> snList = new ArrayList<>();
-                        snList.add(bean.getDeviceSn());
-                        WebViewCloudServiceActivity_.intent(context).snList(snList)
-                                .mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
-                    }
+                } else {
+                    ArrayList<String> snList = new ArrayList<>();
+                    snList.add(bean.getDeviceSn());
+                    WebViewCloudServiceActivity_.intent(context).snList(snList).productNo(bean.getProductNo())
+                            .mUrl(CommonConstants.H5_CLOUD_RENEW).start();
                 }
             });
             rvService.setAdapter(adapter);

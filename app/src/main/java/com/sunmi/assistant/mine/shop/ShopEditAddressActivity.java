@@ -122,7 +122,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
         lng = info.getLng();
         poiCityName = cityName(mList);
         if (!TextUtils.isEmpty(info.getRegion())) {
-            silAddress.setContent(info.getRegion());
+            silAddress.setEndContent(info.getRegion());
             tvTransparent.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(info.getAddress())) {
@@ -168,8 +168,8 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
             cetDetailsAddress.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         }
-        if (silAddress.getContentText() == null ||
-                TextUtils.isEmpty(silAddress.getContentText())) {
+        if (silAddress.getEndContent() == null ||
+                TextUtils.isEmpty(silAddress.getEndContent())) {
             tvTransparent.setVisibility(View.VISIBLE);
         } else {
             tvTransparent.setVisibility(View.GONE);
@@ -190,7 +190,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
 
     @Click(R.id.tv_transparent)
     void clickAddress() {
-        if (TextUtils.isEmpty(silAddress.getContentText())) {
+        if (TextUtils.isEmpty(silAddress.getEndContent())) {
             shortTip(getString(R.string.shop_input_region_tip));
             tvTransparent.setVisibility(View.VISIBLE);
         } else {
@@ -256,7 +256,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
     }
 
     private void showSoftInputWindow() {
-        if (TextUtils.isEmpty(silAddress.getContentText())) {
+        if (TextUtils.isEmpty(silAddress.getEndContent())) {
             shortTip(getString(R.string.shop_input_region_tip));
             cetDetailsAddress.clearFocus();
             return;
@@ -438,7 +438,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                     }
                     dialog.dismiss();
                     tvTransparent.setVisibility(View.GONE);
-                    silAddress.setContent(btnAreaPro.getText().toString() + "," +
+                    silAddress.setEndContent(btnAreaPro.getText().toString() + "," +
                             btnAreaCity.getText().toString() + "," +
                             btnAreaRegion.getText().toString());
                     break;

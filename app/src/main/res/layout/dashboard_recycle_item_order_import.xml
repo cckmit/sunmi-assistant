@@ -13,7 +13,7 @@
         android:layout_height="@dimen/dp_76"
         android:layout_gravity="center_horizontal|top"
         android:layout_marginTop="@dimen/dp_24"
-        android:background="@drawable/dashboard_bg_card_round_white">
+        android:background="@drawable/bg_solid_white_corner12">
 
         <TextView
             android:id="@+id/tv_dashboard_title"

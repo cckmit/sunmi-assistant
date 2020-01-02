@@ -25,7 +25,10 @@
         <TextView
             android:id="@+id/tv_1"
             style="@style/ConfigTitleText"
-            android:text="@string/tip_select_ipc" />
+            android:text="@string/tip_select_ipc"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:gravity="center"/>
 
         <TextView
             android:id="@+id/tip_select_multi"

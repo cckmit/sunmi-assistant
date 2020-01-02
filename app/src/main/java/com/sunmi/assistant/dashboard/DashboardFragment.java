@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.FilterItem;
@@ -272,7 +271,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Click(R.id.btn_dashboard_tip_add_fs)
     void clickAddFs() {
-        Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), CommonConstants.TYPE_IPC_FS,CommonConstants.CONFIG_IPC_FROM_COMMON);
+        Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), CommonConstants.TYPE_IPC_FS, CommonConstants.CONFIG_IPC_FROM_COMMON);
     }
 
     @Click(R.id.btn_refresh)
@@ -292,7 +291,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (isFastClick(500)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE).start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
     }
 
     @Override

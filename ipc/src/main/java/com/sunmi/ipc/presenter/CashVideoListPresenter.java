@@ -32,12 +32,12 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         this.videoType = videoType;
         this.startTime = startTime;
         this.endTime = endTime;
-        videoModel.load(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
     }
 
     @Override
     public void loadMore(int pageNum, int pageSize) {
-        videoModel.load(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
     }
 
     @Override
