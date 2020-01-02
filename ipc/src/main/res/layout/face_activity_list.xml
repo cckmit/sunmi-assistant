@@ -91,7 +91,7 @@
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/face_ic_delete"
             android:gravity="center"
-            android:text="@string/ipc_setting_delete"
+            android:text="@string/str_delete"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -153,7 +153,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_20"
-            android:background="@drawable/face_bg_search"
+            android:background="@drawable/bg_solid_white_corner12"
             android:imeOptions="actionSearch"
             android:paddingStart="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_12" />

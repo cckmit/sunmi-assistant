@@ -51,5 +51,5 @@ public interface AppApi {
     void goToRegister(Context context);
 
     @PathAnno(RouterConfig.App.IMPORT_ORDER_PREVIEW)
-    void gotoImportOrderPreview(Context context);
+    void gotoImportOrderPreview(Context context, @ParameterAnno("importOrderType") int type);
 }

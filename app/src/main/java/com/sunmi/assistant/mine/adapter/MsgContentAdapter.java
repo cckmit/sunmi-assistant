@@ -1,8 +1,6 @@
 package com.sunmi.assistant.mine.adapter;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -44,7 +42,6 @@ public class MsgContentAdapter extends BaseQuickAdapter<MsgCountChildren, BaseVi
         BGABadgeRelativeLayout rlMsg = helper.getView(R.id.rl_msg);
         if (item.getUnreadCount() > 0) {
             int count = item.getRemindUnreadCount();
-            Log.e(TAG, item.getModelName() + count);
             if (count <= 0) {
                 rlMsg.showCirclePointBadge();
             } else if (count > 99) {

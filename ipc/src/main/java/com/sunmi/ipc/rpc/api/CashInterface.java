@@ -68,4 +68,12 @@ public interface CashInterface {
      */
     @POST(URL+"audit/video/getList")
     Call<BaseResponse<CashVideoResp>> getCashVideoList(@Body BaseRequest request);
+
+    /**
+     * 获取行为异常视频列表
+     * @param request
+     * @return
+     */
+    @POST(URL +"audit/video/behavior/getList")
+    Call<BaseResponse<CashVideoResp>> getAbnormalBehaviorVideoList(@Body BaseRequest request);
 }

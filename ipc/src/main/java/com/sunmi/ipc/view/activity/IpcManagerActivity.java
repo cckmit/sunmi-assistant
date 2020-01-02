@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -20,7 +21,10 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
@@ -29,6 +33,8 @@ import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.presenter.IpcManagerPresenter;
+import com.sunmi.ipc.rpc.IPCCall;
+import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.service.P2pService;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.sunmi.ipc.utils.IpcUtils;
@@ -52,13 +58,13 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.SunmiServiceApi;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -67,6 +73,7 @@ import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.ViewHolder;
+import sunmi.common.view.activity.DeviceOfflineDescActivity_;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
 import sunmi.common.view.dialog.CommonDialog;
@@ -77,13 +84,16 @@ import sunmi.common.view.dialog.CommonDialog;
  */
 @EActivity(resName = "activity_ipc_manager")
 public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
-        implements IpcManagerContract.View, SurfaceHolder.Callback,
-        View.OnClickListener, VolumeHelper.VolumeChangeListener, P2pService.OnPlayStatusChangedListener {
+        implements IpcManagerContract.View, SurfaceHolder.Callback, View.OnClickListener,
+        VolumeHelper.VolumeChangeListener, P2pService.OnPlayStatusChangedListener,
+        SeekBar.OnSeekBarChangeListener {
 
     private final static int REQ_SDCARD_PLAYBACK = 10;
 
     private final static int PLAY_FAIL_OFFLINE = 1;
     private final static int PLAY_FAIL_NET_ERROR = 2;
+
+    private final static int TIMEOUT_ADJUST_LOADING = 5_000;
 
     @ViewById(resName = "rl_screen")
     LinearLayout rlScreen;
@@ -95,14 +105,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom")
     ConstraintLayout rlBottomBar;
-    @ViewById(resName = "iv_record")
-    ImageView ivRecord;//录制
     @ViewById(resName = "tv_living")
     TextView tvLiving;
     @ViewById(resName = "iv_volume")
     ImageView ivVolume;//音量
     @ViewById(resName = "tv_quality")
     TextView tvQuality;//画质
+    @ViewById(resName = "iv_adjust")
+    ImageView ivAdjust;//画面参数调整
     @ViewById(resName = "ll_video_quality")
     LinearLayout llVideoQuality;//是否显示画质
     @ViewById(resName = "tv_fhd_quality")
@@ -113,8 +123,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     Chronometer cmTimer;//录制时间
     @ViewById(resName = "rl_record")
     RelativeLayout rlRecord;
-    @ViewById(resName = "iv_screenshot")
-    ImageView ivScreenshot;//截图
     @ViewById(resName = "ll_play_fail")
     LinearLayout llPlayFail;
     @ViewById(resName = "tv_play_fail")
@@ -137,13 +145,27 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     ImageView ivSdcardPlayback;//sd回放
     @ViewById(resName = "rv_manager")
     SmRecyclerView rvManager;
+    @ViewById(resName = "rg_adjust")
+    RadioGroup rgAdjust;
+    @ViewById(resName = "rb_brightness")
+    RadioButton rbBrightness;
+    @ViewById(resName = "cl_adjust")
+    ConstraintLayout clAdjust;
+    @ViewById(resName = "group_adjust_common")
+    Group groupAdjustCommon;
+    @ViewById(resName = "tv_percent")
+    TextView tvPercent;
+    @ViewById(resName = "sb_adjust")
+    SeekBar sbAdjustCommon;
+    @ViewById(resName = "group_adjust_focus")
+    Group groupFocus;
 
     @Extra
     SunmiDevice device;
 
     private int screenW; //手机屏幕的宽
     private int qualityType = 0;//0-超清，1-高清
-    private boolean isStartRecord;//是否开始录制
+    private boolean isShowAdjust;//是否显示视频参数调整入口
     private boolean isControlPanelShow = true;//是否点击屏幕
     private boolean isPlayFailShown;
 
@@ -163,6 +185,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     P2pService p2pService;
     boolean isBind;
+    private int compensation, saturation, contrast;//视频参数
 
     private ServiceConnection conn = new ServiceConnection() {
         @Override
@@ -190,6 +213,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         titleBar.getLeftLayout().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
         rlBottomBar.setVisibility(View.VISIBLE);
+        initVideoAdjust();
         screenW = CommonHelper.getScreenWidth(context);
 
         llLoading.setOnTouchListener((v, event) -> true);
@@ -207,8 +231,18 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
             mPresenter.getCashVideoService(device.getId());
             ivCloudPlayback.setVisibility(View.VISIBLE);
+        } else {
+            if (IpcUtils.isNewVersion(device.getFirmware(), IpcConstants.IPC_VERSION_VIDEO_ADJUST)) {
+                isShowAdjust = true;
+                ivAdjust.setVisibility(View.VISIBLE);
+            }
         }
         initVolume();
+    }
+
+    private void initVideoAdjust() {
+        sbAdjustCommon.setOnSeekBarChangeListener(this);
+        IPCCall.getInstance().getVideoParams(context, device.getModel(), device.getDeviceid());
     }
 
     @Override
@@ -244,6 +278,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @Override
     protected void onPause() {
         super.onPause();
+        hideAdjustPanel();
         pausePlay();
     }
 
@@ -297,12 +332,31 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
                 IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
             } else {
-                new CommonDialog.Builder(context)
+                new CommonDialog.Builder(this)
                         .setTitle(R.string.str_device_offline)
                         .setMessage(R.string.msg_device_offline)
-                        .setConfirmButton(R.string.str_confirm).create().show();
+                        .setCancelButton(R.string.str_return)
+                        .setConfirmButton(R.string.str_setting_detail, (dialog, which) ->
+                                DeviceOfflineDescActivity_.intent(context).start())
+                        .create().show();
             }
         }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        tvPercent.setText(String.valueOf(progress));
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        adjustVideo(rgAdjust.indexOfChild(rgAdjust.findViewById(rgAdjust.getCheckedRadioButtonId())),
+                device.getModel(), device.getDeviceid(), seekBar.getProgress());
     }
 
     @Click(resName = "rl_top")
@@ -313,26 +367,74 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
+    @Click(resName = "iv_adjust")
+    void adjustClick() {
+        showAdjustPanel();
+    }
+
+    @Click(resName = "iv_increase")
+    void increaseClick() {
+        showAdjustLoading();
+        IPCCall.getInstance().fsAdjustFocusAdd(context, device.getModel(), device.getDeviceid());
+    }
+
+    @Click(resName = "iv_decrease")
+    void decreaseClick() {
+        showAdjustLoading();
+        IPCCall.getInstance().fsAdjustFocusMinus(context, device.getModel(), device.getDeviceid());
+    }
+
+    @Click(resName = "tv_reset")
+    void resetClick() {
+        showAdjustLoading();
+        IPCCall.getInstance().fsAdjustFocusReset(context, device.getModel(), device.getDeviceid());
+    }
+
+    @Click(resName = "rb_brightness")
+    void brightnessClick() {
+        showCommonAdjustGroup(compensation);
+    }
+
+    @Click(resName = "rb_contrast")
+    void contrastClick() {
+        showCommonAdjustGroup(contrast);
+    }
+
+    @Click(resName = "rb_saturation")
+    void saturationClick() {
+        showCommonAdjustGroup(saturation);
+    }
+
+    @Click(resName = "rb_focus")
+    void focusClick() {
+        showFocusGroup();
+    }
+
+    @Click(resName = "iv_adjust_finish")
+    void adjustFinishClick() {
+        hideAdjustPanel();
+    }
+
     @Click(resName = "iv_full_screen_live")
     void fullScreenClick() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
-    //视频录制
-    @Click(resName = "iv_record")
-    void recordClick() {
-        if (isStartRecord) {
-            ivRecord.setBackgroundResource(R.mipmap.ic_recording_normal);
-            rlRecord.setVisibility(View.GONE);
-            isStartRecord = false;
-            cmTimer.stop();//关闭录制
-        } else {
-            ivRecord.setBackgroundResource(R.mipmap.ic_recording);
-            rlRecord.setVisibility(View.VISIBLE);
-            isStartRecord = true;
-            startRecord();//开始录制
-        }
-    }
+//    //视频录制
+//    @Click(resName = "iv_record")
+//    void recordClick() {
+//        if (isStartRecord) {
+//            ivRecord.setBackgroundResource(R.mipmap.ic_recording_normal);
+//            rlRecord.setVisibility(View.GONE);
+//            isStartRecord = false;
+//            cmTimer.stop();//关闭录制
+//        } else {
+//            ivRecord.setBackgroundResource(R.mipmap.ic_recording);
+//            rlRecord.setVisibility(View.VISIBLE);
+//            isStartRecord = true;
+//            startRecord();//开始录制
+//        }
+//    }
 
     //静音
     @Click(resName = "iv_volume")
@@ -398,7 +500,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 .startForResult(REQ_SDCARD_PLAYBACK).withAnimation(R.anim.slide_in_right, 0);
     }
 
-
     @OnActivityResult(REQ_SDCARD_PLAYBACK)
     void onCreateResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -409,7 +510,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //点击屏幕
     @Click(resName = "rl_video")
     void screenClick() {
-        if (isPlayFailShown) {
+        if (isPlayFailShown || clAdjust.isShown()) {
             return;
         }
         if (isControlPanelShow) {
@@ -502,6 +603,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
+    public void videoParamsObtained(int compensation, int saturation, int contrast) {
+        this.compensation = compensation;
+        this.saturation = saturation;
+        this.contrast = contrast;
+    }
+
+    @Override
     public void onVolumeChanged(int volume) {
         setVolumeViewImage(volume);
     }
@@ -520,8 +628,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{IpcConstants.ipcNameChanged, CommonNotifications.cloudStorageChange,
-                CommonNotifications.cashVideoSubscribe};
+        return new int[]{IpcConstants.ipcNameChanged, OpcodeConstants.getVideoParams,
+                OpcodeConstants.fsAdjustFocusAdd, OpcodeConstants.fsAdjustFocusMinus,
+                OpcodeConstants.fsAdjustFocusReset,
+                CommonNotifications.cloudStorageChange, CommonNotifications.cashVideoSubscribe};
     }
 
     @Override
@@ -539,6 +649,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
         } else if (id == CommonNotifications.cashVideoSubscribe) {
             mPresenter.getCashVideoService(device.getId());
+        } else if (id == OpcodeConstants.fsAdjustFocusAdd || id == OpcodeConstants.fsAdjustFocusMinus
+                || id == OpcodeConstants.fsAdjustFocusReset) {
+            hideLoadingDialog();
+        }
+
+        if (args != null && args[0] instanceof ResponseBean) {
+            mPresenter.handleResponse(id, (ResponseBean) args[0]);
         }
     }
 
@@ -561,6 +678,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (p2pService != null) {
             p2pService.stopRunning();
         }
+    }
+
+    private void showAdjustLoading() {
+        showDarkLoading(getStringById(R.string.ipc_recognition_loading));
+        handler.postDelayed(this::hideLoadingDialog, TIMEOUT_ADJUST_LOADING);
     }
 
     @UiThread
@@ -617,10 +739,50 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (rvManager == null) {
             return;
         }
+        if (isShowAdjust) {
+            ivAdjust.setVisibility(visibility);
+        }
         titleBar.setVisibility(visibility);
         ivFullScreen.setVisibility(visibility);
         llPortraitBar.setVisibility(visibility);
         rvManager.setVisibility(visibility);
+    }
+
+    private void showCommonAdjustGroup(int percent) {
+        groupFocus.setVisibility(View.GONE);
+        if (!groupAdjustCommon.isShown()) {
+            groupAdjustCommon.setVisibility(View.VISIBLE);
+        }
+        initSeekBar(percent);
+    }
+
+    private void initSeekBar(int percent) {
+        tvPercent.setText(String.valueOf(percent));
+        sbAdjustCommon.setProgress(percent);
+    }
+
+    private void showFocusGroup() {
+        groupAdjustCommon.setVisibility(View.GONE);
+        groupFocus.setVisibility(View.VISIBLE);
+    }
+
+    private void hideAdjustPanel() {
+        llPortraitBar.setVisibility(View.VISIBLE);
+        rlBottomBar.setVisibility(View.VISIBLE);
+        clAdjust.setVisibility(View.GONE);
+        rgAdjust.setVisibility(View.GONE);
+        groupFocus.setVisibility(View.GONE);
+    }
+
+    private void showAdjustPanel() {
+        rgAdjust.setVisibility(View.VISIBLE);
+        llPortraitBar.setVisibility(View.GONE);
+        rlBottomBar.setVisibility(View.GONE);
+        clAdjust.setVisibility(View.VISIBLE);
+//        brightnessClick();
+        groupAdjustCommon.setVisibility(View.VISIBLE);
+        rbBrightness.setChecked(true);
+        initSeekBar(compensation);
     }
 
     /**
@@ -764,6 +926,19 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         qualityPop.show();
     }
 
+    public void adjustVideo(int type, String model, String sn, int value) {
+        if (type == 0) {
+            compensation = value;
+            IPCCall.getInstance().fsAdjustBrightness(context, model, sn, value);
+        } else if (type == 1) {
+            contrast = value;
+            IPCCall.getInstance().fsAdjustContrast(context, model, sn, value);
+        } else if (type == 2) {
+            saturation = value;
+            IPCCall.getInstance().fsAdjustSaturation(context, model, sn, value);
+        }
+    }
+
     private void initManageList() {
         rvManager.init(0);
         if (isSS1()) {
@@ -806,18 +981,24 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 ArrayList<String> snList = new ArrayList<>();
                                 snList.add(device.getDeviceid());
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
+                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
-                            if (!serviceBeans.isEmpty()) {// 跳转收银视频页面
-                                CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
-                                        .serviceBeans(serviceBeans).start();
-                            } else if (cashVideoSubscribed) {// 已经有其他摄像机开通了收银视频服务
+                            if (cashVideoSubscribed) {  //已有其他门店开启收银视频
                                 shortTip(R.string.cash_video_other_device_already_subscribe_tip);
-                            } else {//去开通
-                                Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CASH_VIDEO, null);
+                            } else {
+                                if (serviceBeans.isEmpty()) {   //去开启收银视频
+                                    Router.withApi(SunmiServiceApi.class)
+                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, null);
+                                } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
+                                    CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
+                                            .serviceBeans(serviceBeans).start();
+                                } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
+                                    shortTip(R.string.tip_after_cloud_cash_video);
+                                } else {
+                                    shortTip(R.string.tip_cloud_expired);
+                                }
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_DETECT:

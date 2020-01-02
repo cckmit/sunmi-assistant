@@ -100,12 +100,7 @@ public class InputDialog extends Dialog {
          */
         public Builder setCancelButton(int text) {
             this.backBtnText = (String) context.getText(text);
-            this.cancelButtonClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            };
+            this.cancelButtonClickListener = (dialog, which) -> dialog.cancel();
             return this;
         }
 
@@ -137,12 +132,7 @@ public class InputDialog extends Dialog {
          */
         public Builder setConfirmButton(String text) {
             this.confirmBtnText = text;
-            this.confirmClickListener = new ConfirmClickListener() {
-                @Override
-                public void onConfirmClick(InputDialog dialog, String input) {
-                    dialog.dismiss();
-                }
-            };
+            this.confirmClickListener = (dialog, input) -> dialog.dismiss();
             return this;
         }
 
@@ -162,12 +152,7 @@ public class InputDialog extends Dialog {
         public Builder setConfirmButton(int text, int textColor) {
             this.confirmBtnText = (String) context.getText(text);
             this.confirmBtnTextColor = textColor;
-            this.confirmClickListener = new ConfirmClickListener() {
-                @Override
-                public void onConfirmClick(InputDialog dialog, String input) {
-                    dialog.dismiss();
-                }
-            };
+            this.confirmClickListener = (dialog, input) -> dialog.dismiss();
             return this;
         }
 
@@ -244,12 +229,9 @@ public class InputDialog extends Dialog {
                 bckButton.setText(backBtnText);
 
                 if (cancelButtonClickListener != null) {
-                    bckButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.cancel();
-                            cancelButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
-                        }
+                    bckButton.setOnClickListener(v -> {
+                        dialog.cancel();
+                        cancelButtonClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
                     });
                 }
             } else {
@@ -265,12 +247,8 @@ public class InputDialog extends Dialog {
                     cfmButton.setTextColor(context.getResources().getColor(confirmBtnTextColor));
                 }
                 if (confirmClickListener != null) {
-                    cfmButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            confirmClickListener.onConfirmClick(dialog, etInput.getText().toString());
-                        }
-                    });
+                    cfmButton.setOnClickListener(v ->
+                            confirmClickListener.onConfirmClick(dialog, etInput.getText().toString()));
                 }
             } else {
                 layout.findViewById(R.id.btn_sure).setVisibility(View.GONE);

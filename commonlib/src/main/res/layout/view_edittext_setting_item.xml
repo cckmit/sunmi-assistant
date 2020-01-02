@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_setting_item"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_48">
+    android:layout_height="@dimen/dp_48"
+    android:background="@color/c_white">
 
     <ImageView
         android:id="@+id/iv_mark"
@@ -10,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_10"
+        android:visibility="gone"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -19,19 +21,23 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/dp_20"
         android:textColor="@color/text_normal"
-        android:textSize="@dimen/sp_16" />
+        android:textSize="@dimen/sp_16"
+        android:visibility="gone" />
 
     <sunmi.common.view.ClearableEditText
         android:id="@+id/et_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/dp_20"
+        android:layout_toStartOf="@+id/tv_right"
         android:layout_toEndOf="@id/tv_left"
         android:background="@null"
         android:ellipsize="end"
         android:gravity="center_vertical"
         android:maxLines="1"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
+        android:singleLine="true"
         android:textColor="@color/text_main"
         android:textColorHint="@color/text_disable"
         android:textSize="@dimen/sp_16" />
@@ -42,15 +48,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
         android:textColor="@color/text_disable"
-        android:textSize="@dimen/sp_12" />
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
         android:layout_alignParentBottom="true"
-        android:background="@color/c_divider" />
+        android:background="@color/c_divider"
+        android:visibility="gone" />
 
 </RelativeLayout>

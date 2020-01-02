@@ -2,7 +2,6 @@ package com.sunmi.ipc.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,8 +10,9 @@ import java.util.List;
  */
 public class CashVideoResp {
 
+
     /**
-     * audit_video_list : [{"order_no":"B12019060414421630291","video_id":124,"video_url":"http://test.cdn.sunmi.com/VIDEO/abcdefgh.flv","snapshot_url":"http://test.cdn.sunmi.com/VIDEO/abcdefgh.flv?*********","purchase_time":1565235765,"amount":30,"device_id":356,"description":"************************","video_type":1}]
+     * audit_video_list : [{"order_no":"B12019060414421630291","video_id":124,"video_url":"http://test.cdn.sunmi.com/VIDEO/abcdefgh.flv","snapshot_url":"http://test.cdn.sunmi.com/VIDEO/abcdefgh.flv?*********","purchase_time":1565235765,"amount":30.12,"device_id":356,"device_sn":"SS101D8BS09178","description":"************************","video_type":1,"video_tag":[1,2],"event_id":123}]
      * total_count : 105
      */
 
@@ -37,17 +37,20 @@ public class CashVideoResp {
         this.auditVideoList = auditVideoList;
     }
 
-    public static class AuditVideoListBean implements Serializable {
+    public static class AuditVideoListBean {
         /**
          * order_no : B12019060414421630291
          * video_id : 124
          * video_url : http://test.cdn.sunmi.com/VIDEO/abcdefgh.flv
          * snapshot_url : http://test.cdn.sunmi.com/VIDEO/abcdefgh.flv?*********
          * purchase_time : 1565235765
-         * amount : 30
+         * amount : 30.12
          * device_id : 356
+         * device_sn : SS101D8BS09178
          * description : ************************
          * video_type : 1
+         * video_tag : [1,2]
+         * event_id : 123
          */
 
         @SerializedName("order_no")
@@ -70,6 +73,10 @@ public class CashVideoResp {
         private String description;
         @SerializedName("video_type")
         private int videoType;
+        @SerializedName("event_id")
+        private int eventId;
+        @SerializedName("video_tag")
+        private List<Integer> videoTag;
 
         private String deviceName;
 
@@ -151,6 +158,22 @@ public class CashVideoResp {
 
         public void setVideoType(int videoType) {
             this.videoType = videoType;
+        }
+
+        public int getEventId() {
+            return eventId;
+        }
+
+        public void setEventId(int eventId) {
+            this.eventId = eventId;
+        }
+
+        public List<Integer> getVideoTag() {
+            return videoTag;
+        }
+
+        public void setVideoTag(List<Integer> videoTag) {
+            this.videoTag = videoTag;
         }
 
         public String getDeviceName() {

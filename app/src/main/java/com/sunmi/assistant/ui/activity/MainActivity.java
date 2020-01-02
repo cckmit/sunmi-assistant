@@ -83,7 +83,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         mPresenter = new MainPresenter();
         mPresenter.attachView(this);
-        if(!CommonHelper.isGooglePlay()) {
+        if (!CommonHelper.isGooglePlay()) {
             mPresenter.getMessageCount();
             ThreadPool.getCachedThreadPool().submit(() -> mPresenter.syncIpcDevice());
         }
@@ -95,7 +95,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
             initIpc();
         }
         if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
-            Router.withApi(AppApi.class).goToLogin(context,"");
+            Router.withApi(AppApi.class).goToLogin(context, "");
         } else {
             initTabs();
             initMessageBadge();

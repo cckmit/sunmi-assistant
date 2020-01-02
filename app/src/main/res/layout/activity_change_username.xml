@@ -11,22 +11,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/c_white"
-        app:dividerShow="true"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
+        app:rightText="@string/str_save"
         app:titleText="@string/str_set_username"
         app:titleTextColor="@color/text_main" />
 
-    <sunmi.common.view.ClearableEditText
+    <sunmi.common.view.SettingItemEditTextLayout
         android:id="@+id/cet_username"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:background="@color/c_white"
-        android:hint="@string/tip_input_username"
-        android:paddingLeft="@dimen/dp_25"
-        android:paddingRight="@dimen/dp_25"
-        android:singleLine="true"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_18" />
+        android:layout_height="wrap_content"
+        app:editTextHint="@string/tip_input_username"
+        app:editTextInputType="text" />
 
 </LinearLayout>

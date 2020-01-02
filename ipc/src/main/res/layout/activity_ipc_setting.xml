@@ -20,7 +20,10 @@
         android:id="@+id/nsv_setting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_bar">
+        android:layout_below="@id/title_bar"
+        android:fadingEdge="none"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -108,7 +111,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
-                app:contentText="@string/ipc_setting_unknown"
+                app:endContentText="@string/str_unknown"
                 app:showDivider="both"
                 app:title="@string/ipc_setting_wifi"
                 app:type="arrow" />

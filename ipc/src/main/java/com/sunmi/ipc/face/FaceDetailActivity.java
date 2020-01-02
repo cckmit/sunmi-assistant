@@ -137,29 +137,29 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                 .apply(requestOptions)
                 .into(ivFaceImage);
         if (mFaceGroup != null) {
-            silFaceId.setContent(Utils.getGroupName(this, mFaceGroup));
+            silFaceId.setEndContent(Utils.getGroupName(this, mFaceGroup));
             targetGroupId = mFaceGroup.getGroupId();
         }
         if (mFace != null) {
             groupId = mFace.getGroupId();
             gender = mFace.getGender();
-            silFaceName.setContent(mFace.getName());
-            silFaceSex.setContent(mFace.getGender() == 1 ? context.getString(R.string.str_gender_male) :
+            silFaceName.setEndContent(mFace.getName());
+            silFaceSex.setEndContent(mFace.getGender() == 1 ? context.getString(R.string.str_gender_male) :
                     context.getString(R.string.str_gender_female));
-            silFaceEnterShopNum.setContent(mFace.getArrivalCount() + "");
+            silFaceEnterShopNum.setEndContent(mFace.getArrivalCount() + "");
             silFaceEnterShopNum.setEndImageDrawable(null);
             if (mFace.getCreateTime() != 0) {
-                silFaceRegisterTime.setContent(secondToDate(mFace.getCreateTime(), DATE_FORMAT_REGISTER));
+                silFaceRegisterTime.setEndContent(secondToDate(mFace.getCreateTime(), DATE_FORMAT_REGISTER));
             }
             if (mFace.getLastArrivalTime() != 0) {
-                silFaceNewEnterShopTime.setContent(secondToDate(mFace.getLastArrivalTime(), DATE_FORMAT_ENTER_SHOP));
+                silFaceNewEnterShopTime.setEndContent(secondToDate(mFace.getLastArrivalTime(), DATE_FORMAT_ENTER_SHOP));
             }
         }
         titleBar.getRightText().setOnClickListener(v -> {
             if (mDeleteDialog == null) {
                 mDeleteDialog = new CommonDialog.Builder(FaceDetailActivity.this)
                         .setTitle(R.string.ipc_face_tip_delete)
-                        .setConfirmButton(R.string.ipc_setting_delete, R.color.common_orange,
+                        .setConfirmButton(R.string.str_delete, R.color.common_orange,
                                 (dialog, which) -> mPresenter.delete())
                         .setCancelButton(R.string.sm_cancel)
                         .create();
@@ -220,8 +220,8 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     void nameClick() {
         new InputDialog.Builder(this)
                 .setTitle(R.string.ipc_face_name)
-                .setHint(getString(R.string.ipc_face_input_name_tip))
-                .setInitInputContent(silFaceName.getContentText().toString().trim())
+                .setHint(R.string.tip_input_name)
+                .setInitInputContent(silFaceName.getEndContent().toString().trim())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
                     public void onTextChange(EditText view, Editable s) {
@@ -247,7 +247,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
                         return;
                     }
                     if (input.trim().length() == 0) {
-                        shortTip(getString(R.string.ipc_face_input_name_tip));
+                        shortTip(R.string.tip_input_name);
                         return;
                     }
                     dialog.dismiss();
@@ -330,13 +330,13 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
     @Override
     public void updateNameSuccessView(String name) {
-        silFaceName.setContent(name);
+        silFaceName.setEndContent(name);
         setResult(RESULT_OK);
     }
 
     @Override
     public void updateIdentitySuccessView(int targetGroupId) {
-        silFaceId.setContent(groupName);
+        silFaceId.setEndContent(groupName);
         groupId = targetGroupId;//设置成功后的targetGroupId转化为groupId
         mPresenter.loadGroup();//刷新分组
         setResult(RESULT_OK);
@@ -344,7 +344,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
 
     @Override
     public void updateGenderSuccessView(int gender) {
-        silFaceSex.setContent(gender == 1 ? context.getString(R.string.str_gender_male) :
+        silFaceSex.setEndContent(gender == 1 ? context.getString(R.string.str_gender_male) :
                 context.getString(R.string.str_gender_female));
         setResult(RESULT_OK);
     }
@@ -353,7 +353,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     public void updateAgeSuccessView(int ageRangeCode) {
         for (FaceAge age : faceAgesList) {
             if (ageRangeCode == age.getCode()) {
-                silFaceAge.setContent(age.getName());
+                silFaceAge.setEndContent(age.getName());
             }
         }
         setResult(RESULT_OK);
@@ -364,7 +364,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         faceAgesList = data.getAgeRangeList();
         for (FaceAge age : faceAgesList) {
             if (mFace.getAgeRangeCode() == age.getCode()) {
-                silFaceAge.setContent(age.getName());
+                silFaceAge.setEndContent(age.getName());
                 ageRangeCode = age.getCode();
             }
         }
@@ -391,15 +391,15 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
         int viewHeight = 0;
         if (updateIndex == UPDATE_INDEX_ID) {
             viewHeight = 600;
-            groupName = TextUtils.isEmpty(silFaceId.getContentText())
-                    ? "" : silFaceId.getContentText().toString();
+            groupName = TextUtils.isEmpty(silFaceId.getEndContent())
+                    ? "" : silFaceId.getEndContent().toString();
         } else if (updateIndex == UPDATE_INDEX_GENDER) {
             viewHeight = 350;
-            gender = TextUtils.equals(context.getString(R.string.str_gender_male), silFaceSex.getContentText().toString()) ? 1 : 2;
+            gender = TextUtils.equals(context.getString(R.string.str_gender_male), silFaceSex.getEndContent().toString()) ? 1 : 2;
         } else if (updateIndex == UPDATE_INDEX_AGE) {
             viewHeight = 600;
-            ageRange = TextUtils.isEmpty(silFaceAge.getContentText())
-                    ? "" : silFaceAge.getContentText().toString();
+            ageRange = TextUtils.isEmpty(silFaceAge.getEndContent())
+                    ? "" : silFaceAge.getEndContent().toString();
         }
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final Dialog dialog = new Dialog(context, com.commonlibrary.R.style.Son_dialog);
@@ -565,7 +565,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             });
             item.setChecked(selectedIndex == holder.getAdapterPosition());
             if (count == 0) {
-                item.getTitle().setTextColor(ContextCompat.getColor(context, R.color.text_disable));
+                item.getTitleView().setTextColor(ContextCompat.getColor(context, R.color.text_disable));
                 item.setEndImageDrawable(null);
             }
         }

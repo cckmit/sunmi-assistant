@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.sunmi.assistant">
 
+    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <application
@@ -144,9 +145,6 @@
             android:name=".mine.shop.ShopDetailActivity_"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".mine.shop.ShopNameActivity_"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".mine.shop.ShopCategoryActivity_"
             android:screenOrientation="portrait" />
         <activity
@@ -166,7 +164,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".mine.shop.ShopContactsAreaActivity_"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".mine.company.CompanyDetailActivity_"
             android:screenOrientation="portrait" />
@@ -216,6 +215,42 @@
         <meta-data
             android:name="DB_VERSION"
             android:value="${DB_VERSION_VALUE}" />
+
+        <!-- 您从百度网站获取的APP KEY，根据实际您的APP申请的APP_KEY进行修改 -->
+        <meta-data
+            android:name="BaiduMobAd_STAT_ID"
+            android:value="d88e0c2263" />
+
+        <!-- 渠道商编号 -->
+        <meta-data
+            android:name="BaiduMobAd_CHANNEL"
+            android:value="myapp" />
+
+        <!-- 是否开启错误日志统计，默认为false -->
+        <meta-data
+            android:name="BaiduMobAd_EXCEPTION_LOG"
+            android:value="true" />
+
+        <!-- 日志仅在wifi网络下发送，默认为false -->
+        <meta-data
+            android:name="BaiduMobAd_ONLY_WIFI"
+            android:value="false" />
+
+        <!-- 是否获取基站位置信息 ,默认为true -->
+        <meta-data
+            android:name="BaiduMobAd_CELL_LOCATION"
+            android:value="true" />
+
+        <!-- 是否获取GPS位置信息，默认为true -->
+        <meta-data
+            android:name="BaiduMobAd_GPS_LOCATION"
+            android:value="true" />
+
+        <!-- 是否获取WIFI位置信息，默认为true -->
+        <meta-data
+            android:name="BaiduMobAd_WIFI_LOCATION"
+            android:value="true" />
+
     </application>
 
 </manifest>

@@ -98,23 +98,27 @@ public class P2pService extends Service
         if (videoDecoder == null) {
             return;
         }
-        videoDecoder.setVideoData(videoBuffer);
-        if (!isPlaying || !videoDecoder.isPlaying()) {
-            isPlaying = videoDecoder.isPlaying();
-            if (isPlaying && statusChangedListener != null) {
-                statusChangedListener.onPlayStarted();
-            }
-        } else {
-            long currentTime = getFrameInfoTime(frameInfo);
-            if (endTime > 0 && currentTime >= endTime - 2) {
-                if (statusChangedListener != null) {
-                    statusChangedListener.onPlayFinished();
+        try {
+            videoDecoder.setVideoData(videoBuffer);
+            if (!isPlaying || !videoDecoder.isPlaying()) {
+                isPlaying = videoDecoder.isPlaying();
+                if (isPlaying && statusChangedListener != null) {
+                    statusChangedListener.onPlayStarted();
                 }
             } else {
-                if (onPlayingListener != null) {
-                    onPlayingListener.onPlaying(currentTime, frameInfo[2]);
+                long currentTime = getFrameInfoTime(frameInfo);
+                if (endTime > 0 && currentTime >= endTime - 2) {
+                    if (statusChangedListener != null) {
+                        statusChangedListener.onPlayFinished();
+                    }
+                } else {
+                    if (onPlayingListener != null) {
+                        onPlayingListener.onPlaying(currentTime, frameInfo[2]);
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

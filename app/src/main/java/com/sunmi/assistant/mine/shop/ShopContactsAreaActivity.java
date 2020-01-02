@@ -2,12 +2,11 @@ package com.sunmi.assistant.mine.shop;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 
 import com.sunmi.apmanager.utils.DialogUtils;
 import com.sunmi.apmanager.utils.HelpUtils;
@@ -21,11 +20,14 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.ShopInfo;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.NumberValueFilter;
 import sunmi.common.utils.RegexUtils;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.view.ClearableEditText;
+import sunmi.common.view.SettingItemEditTextLayout;
 import sunmi.common.view.TextLengthWatcher;
 import sunmi.common.view.TitleBarView;
 
@@ -38,7 +40,7 @@ import static sunmi.common.utils.CommonHelper.floatTrans;
  * @author yangshijie
  */
 @SuppressLint("Registered")
-@EActivity(R.layout.activity_mine_shop_modify_message)
+@EActivity(R.layout.activity_change_username)
 public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPresenter>
         implements ShopContactAreaContract.View {
 
@@ -46,12 +48,8 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
-    @ViewById(R.id.et_shop_message)
-    ClearableEditText etShopMessage;
-    @ViewById(R.id.et_shop_area)
-    ClearableEditText etShopArea;
-    @ViewById(R.id.rl_square)
-    RelativeLayout rlSquare;
+    @ViewById(R.id.cet_username)
+    SettingItemEditTextLayout etShopMessage;
 
     @Extra
     ShopInfo info;
@@ -66,120 +64,123 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         titleBar.getRightText().setOnClickListener(v -> save());
         initShopMessage();
-
     }
 
     private void initShopMessage() {
-        if (type == ShopDetailActivity.TYPE_CONTACT) {
-            etShopMessage.requestFocus();
-            titleBar.setAppTitle(R.string.company_shop_contact);
-            etShopMessage.setHint(R.string.company_shop_contact_tip);
-            if (!TextUtils.isEmpty(info.getContactPerson())) {
-                etShopMessage.setText(info.getContactPerson());
-                etShopMessage.setSelection(info.getContactPerson().length());
-            }
-            etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage, CONTACTS_MAX_LENGTH) {
-                @Override
-                public void onLengthExceed(EditText view, String content) {
-                    shortTip(getString(R.string.editetxt_max_length));
-                }
-            });
-
-        } else if (type == ShopDetailActivity.TYPE_CONTACT_TEL) {
-            etShopMessage.requestFocus();
-            titleBar.setAppTitle(R.string.company_shop_mobile);
-            etShopMessage.setHint(R.string.company_shop_contact_tel_tip);
-            etShopMessage.setInputType(InputType.TYPE_CLASS_PHONE);
-            if (!TextUtils.isEmpty(info.getContactTel())) {
-                etShopMessage.setText(info.getContactTel());
-                etShopMessage.setSelection(info.getContactTel().length());
-            }
-            etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage, CONTACTS_MAX_LENGTH) {
-                @Override
-                public void onLengthExceed(EditText view, String content) {
-                    shortTip(getString(R.string.editetxt_max_length));
-                }
-            });
-        } else if (type == ShopDetailActivity.TYPE_AREA) {
-            etShopArea.requestFocus();
-            titleBar.setAppTitle(R.string.company_shop_area);
-            etShopArea.setHint(R.string.company_shop_area_tip);
-            rlSquare.setVisibility(View.VISIBLE);
-            etShopMessage.setVisibility(View.GONE);
-            etShopArea.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            if (info.getBusinessArea() > 0) {
-                etShopArea.setText(floatTrans(info.getBusinessArea()));
-                etShopArea.setSelection(floatTrans(info.getBusinessArea()).length());
-            }
+        if (type == ShopDetailActivity.SHOP_CHANGE_NAME) {
+            initData(R.string.company_shop_create_name, R.string.company_shop_create_hint, info.getShopName());
+        } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT) {
+            initData(R.string.company_shop_contact, R.string.company_shop_contact_tip, info.getContactPerson());
+        } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL) {
+            etShopMessage.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+            initData(R.string.company_shop_mobile, R.string.company_shop_contact_tel_tip, info.getContactTel());
+        } else if (type == ShopDetailActivity.SHOP_CHANGE_AREA) {
+            etShopMessage.setRightText(R.string.company_square);
+            etShopMessage.setRightTextColor(ContextCompat.getColor(context, R.color.text_main));
+            etShopMessage.setRightTextSize(R.dimen.sp_20);
+            etShopMessage.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             //默认两位小数
-            etShopArea.setFilters(new InputFilter[]{new NumberValueFilter()});
+            etShopMessage.getEditText().setFilters(new InputFilter[]{new NumberValueFilter()});
+            String area;
+            if (info.getBusinessArea() > 0 && info.getBusinessArea() < 999999) {
+                area = floatTrans(info.getBusinessArea());
+            } else if (info.getBusinessArea() > 999999) {
+                area = "999999";
+            } else {
+                area = "";
+            }
+            initData(R.string.company_shop_area, R.string.company_shop_area_tip, area);
         }
     }
 
-    private String shopMessageText(ClearableEditText text) {
-        return text.getText() == null ? null : text.getText().toString().trim();
+    private void initData(int company_shop_contact, int company_shop_contact_tip, String contactPerson) {
+        titleBar.setAppTitle(company_shop_contact);
+        etShopMessage.setEditTextHint(company_shop_contact_tip);
+        if (!TextUtils.isEmpty(contactPerson)) {
+            etShopMessage.setEditTextText(contactPerson);
+            etShopMessage.setSelection(contactPerson.length());
+        }
+        etShopMessage.addTextChangedListener(new TextLengthWatcher(etShopMessage.getEditText(), CONTACTS_MAX_LENGTH) {
+            @Override
+            public void onLengthExceed(EditText view, String content) {
+                shortTip(getString(R.string.editetxt_max_length));
+            }
+        });
     }
 
     private void save() {
         if (isFastClick(1500)) {
             return;
         }
-
-        if (type == ShopDetailActivity.TYPE_CONTACT) {
-            String shopMessage = shopMessageText(etShopMessage);
-            if (TextUtils.isEmpty(shopMessage)) {
-                shortTip(getString(R.string.company_shop_contact_tip));
+        String input = etShopMessage.getEditTextText();
+        if (type == ShopDetailActivity.SHOP_CHANGE_NAME) {
+            if (isEmptyOrNoChanged(input, info.getShopName(), R.string.company_shop_create_hint)) {
                 return;
             }
-            if (HelpUtils.isContainEmoji(shopMessage)) {
-                shortTip(getString(R.string.specital_text_cannot_support));
+            info.setShopName(input);
+        } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT) {
+            if (isEmptyOrNoChanged(input, info.getContactPerson(), R.string.company_shop_contact_tip)) {
                 return;
             }
-            if (TextUtils.equals(shopMessage, info.getContactPerson())) {
-                finish();
+            if (HelpUtils.isContainEmoji(input)) {
+                shortTip(R.string.specital_text_cannot_support);
                 return;
             }
-            info.setContactPerson(shopMessage);
-        } else if (type == ShopDetailActivity.TYPE_CONTACT_TEL) {
-            String shopMessage = shopMessageText(etShopMessage);
-            if (TextUtils.isEmpty(shopMessage)) {
-                shortTip(getString(R.string.company_shop_contact_tel_tip));
+            info.setContactPerson(input);
+        } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL) {
+            if (isEmptyOrNoChanged(input, info.getContactTel(), R.string.company_shop_contact_tel_tip)) {
                 return;
             }
-            if (TextUtils.equals(shopMessage, info.getContactTel())) {
-                finish();
+            if (!RegexUtils.isCorrectAccount(input)) {
+                shortTip(R.string.str_invalid_phone);
                 return;
             }
-            if (!RegexUtils.isCorrectAccount(shopMessage)) {
-                shortTip(getString(R.string.str_invalid_phone));
+            info.setContactTel(input);
+        } else if (type == ShopDetailActivity.SHOP_CHANGE_AREA) {
+            if (isEmptyOrNoChanged(input, String.valueOf(info.getBusinessArea()),
+                    R.string.company_shop_area_tip)) {
                 return;
             }
-            info.setContactTel(shopMessage);
-        } else if (type == ShopDetailActivity.TYPE_AREA) {
-            String shopMessage = shopMessageText(etShopArea);
-            if (TextUtils.isEmpty(shopMessage)) {
+            if (TextUtils.equals(input, "0") ||
+                    TextUtils.equals(input, "0.0") ||
+                    TextUtils.equals(input, "0.00")) {
                 shortTip(getString(R.string.company_shop_area_tip));
                 return;
             }
-            if (TextUtils.equals(shopMessage, "0") ||
-                    TextUtils.equals(shopMessage, "0.0") ||
-                    TextUtils.equals(shopMessage, "0.00")) {
-                shortTip(getString(R.string.company_shop_area_tip));
-                return;
-            }
-            if (TextUtils.equals(shopMessage, String.valueOf(info.getBusinessArea()))) {
-                finish();
-                return;
-            }
-            info.setBusinessArea(Float.parseFloat(shopMessage));
+            info.setBusinessArea(Float.parseFloat(input));
         }
         mPresenter.editShopMessage(type, info);
+    }
+
+    private boolean isEmptyOrNoChanged(String newInfo, String originalInfo, int resIdTip) {
+        if (TextUtils.isEmpty(newInfo)) {
+            shortTip(resIdTip);
+            return true;
+        }
+        if (TextUtils.equals(newInfo, originalInfo)) {
+            finish();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void shopNameChanged() {
+        if (info.getShopId() == SpUtils.getShopId()) {
+            SpUtils.setShopName(etShopMessage.getEditTextText());
+        }
+        BaseNotification.newInstance().postNotificationName(
+                CommonNotifications.shopNameChanged, info.getShopId(), etShopMessage.getEditTextText());
+        Intent intent = getIntent();
+        intent.putExtra(ShopDetailActivity.INTENT_EXTRA_NAME, etShopMessage.getEditTextText());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
     public void contactView() {
         Intent intent = getIntent();
-        intent.putExtra(ShopDetailActivity.INTENT_EXTRA_CONTACT, shopMessageText(etShopMessage));
+        intent.putExtra(ShopDetailActivity.INTENT_EXTRA_CONTACT, etShopMessage.getEditTextText());
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -187,7 +188,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
     @Override
     public void contactTelView() {
         Intent intent = getIntent();
-        intent.putExtra(ShopDetailActivity.INTENT_EXTRA_CONTACT_TEL, shopMessageText(etShopMessage));
+        intent.putExtra(ShopDetailActivity.INTENT_EXTRA_CONTACT_TEL, etShopMessage.getEditTextText());
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -195,25 +196,28 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
     @Override
     public void areaView() {
         Intent intent = getIntent();
-        intent.putExtra(ShopDetailActivity.INTENT_EXTRA_AREA, shopMessageText(etShopArea));
+        intent.putExtra(ShopDetailActivity.INTENT_EXTRA_AREA, etShopMessage.getEditTextText());
         setResult(RESULT_OK, intent);
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        if (type == ShopDetailActivity.TYPE_CONTACT &&
-                TextUtils.equals(info.getContactPerson(), shopMessageText(etShopMessage))
-                || type == ShopDetailActivity.TYPE_CONTACT_TEL &&
-                TextUtils.equals(info.getContactTel(), shopMessageText(etShopMessage))) {
+        if (TextUtils.isEmpty(etShopMessage.getEditTextText())
+                || (type == ShopDetailActivity.SHOP_CHANGE_NAME &&
+                TextUtils.equals(info.getShopName(), etShopMessage.getEditTextText()))
+                || (type == ShopDetailActivity.SHOP_CHANGE_CONTACT &&
+                TextUtils.equals(info.getContactPerson(), etShopMessage.getEditTextText()))
+                || (type == ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL &&
+                TextUtils.equals(info.getContactTel(), etShopMessage.getEditTextText()))) {
             super.onBackPressed();
             return;
         }
-        if (type == ShopDetailActivity.TYPE_AREA) {
-            if (TextUtils.equals(floatTrans(info.getBusinessArea()), shopMessageText(etShopArea))) {
+        if (type == ShopDetailActivity.SHOP_CHANGE_AREA) {
+            if (TextUtils.equals(floatTrans(info.getBusinessArea()), etShopMessage.getEditTextText())) {
                 super.onBackPressed();
                 return;
-            } else if (TextUtils.isEmpty(shopMessageText(etShopArea))) {
+            } else if (TextUtils.isEmpty(etShopMessage.getEditTextText())) {
                 if (TextUtils.equals(floatTrans(info.getBusinessArea()), "0") ||
                         TextUtils.equals(floatTrans(info.getBusinessArea()), "0.0") ||
                         TextUtils.equals(floatTrans(info.getBusinessArea()), "0.00")) {
@@ -224,4 +228,5 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
         }
         DialogUtils.isCancelSetting(this);
     }
+
 }

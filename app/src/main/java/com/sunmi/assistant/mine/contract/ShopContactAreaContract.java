@@ -11,6 +11,11 @@ public interface ShopContactAreaContract {
     interface View extends BaseView {
 
         /**
+         * 门店名
+         */
+        void shopNameChanged();
+
+        /**
          * 联系人
          */
         void contactView();
@@ -28,13 +33,12 @@ public interface ShopContactAreaContract {
     }
 
     interface Presenter {
+
         /**
          * 编辑店铺信息
-         *
-         * @param type
-         * @param shopInfo
          */
         void editShopMessage(int type, ShopInfo shopInfo);
 
     }
+
 }

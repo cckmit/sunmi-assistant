@@ -39,39 +39,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tvVersion"
-        app:showDivider="top"
         android:visibility="gone"
+        app:showDivider="top"
         app:title="@string/str_version_update"
         app:type="arrow" />
 
-    <RelativeLayout
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_agreement"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/sil_version"
-        android:background="@color/bg_common">
+        android:visibility="visible"
+        app:showDivider="both"
+        app:title="@string/str_agreement_manager"
+        app:type="arrow" />
 
-        <CheckedTextView
-            android:id="@+id/ctv_privacy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/dp_50"
-            android:drawableStart="@null"
-            android:drawablePadding="@dimen/dp_3"
-            android:textColor="@color/common_orange"
-            android:textSize="@dimen/sp_10" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_32"
-            android:text="@string/str_sunmi_copyright_sound"
-            android:textColor="@color/text_caption"
-            android:textSize="@dimen/sp_10" />
-    </RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_32"
+        android:text="@string/str_sunmi_copyright_sound"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_10" />
 
 </RelativeLayout>

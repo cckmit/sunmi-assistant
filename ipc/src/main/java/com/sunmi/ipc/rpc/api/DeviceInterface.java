@@ -49,6 +49,7 @@ public interface DeviceInterface {
 
     /**
      * 通过设备sn查询ipc设备捆绑云存储服务信息
+     *
      * @param request
      * @return
      */
@@ -57,10 +58,19 @@ public interface DeviceInterface {
 
     /**
      * 通过设备sn或shopId查询ipc设备收银视频服务信息
+     *
      * @param request
      * @return
      */
     @POST(path + "getAuditVideoServiceList")
     Call<BaseResponse<ServiceListResp>> getAuditVideoServiceList(@Body BaseRequest request);
+
+    /**
+     * 指定设备是收银防损开通状态
+     * @param request
+     * @return
+     */
+    @POST(path + "getAuditSecurityPolicyList")
+    Call<BaseResponse<ServiceListResp>> getAuditSecurityPolicyList(@Body BaseRequest request);
 
 }

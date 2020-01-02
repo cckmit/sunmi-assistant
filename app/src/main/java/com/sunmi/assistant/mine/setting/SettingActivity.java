@@ -42,7 +42,7 @@ public class SettingActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        silAbout.setContent(getString(R.string.str_version_placeholder,
+        silAbout.setEndContent(getString(R.string.str_version_placeholder,
                 CommonHelper.getAppVersionName(context)));
     }
 

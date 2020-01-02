@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.alipay.sdk.app.H5PayCallback;
 import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
+import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -27,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
@@ -54,6 +57,13 @@ public class WebViewSunmiMallActivity extends BaseActivity
 
     @Extra
     String mUrl;
+
+    @RouterAnno(
+            path = RouterConfig.SunmiService.SERVICE_MALL
+    )
+    public static Intent start(RouterRequest request) {
+        return new Intent(request.getRawContext(), WebViewSunmiMallActivity_.class);
+    }
 
     @AfterViews
     protected void init() {
@@ -176,6 +186,7 @@ public class WebViewSunmiMallActivity extends BaseActivity
 
     @Override
     public void onProgressChanged(int progress) {
+        LogCat.e(TAG, " progress = " + progress);
         if (progress < 100)
             showLoadingDialog();
         else

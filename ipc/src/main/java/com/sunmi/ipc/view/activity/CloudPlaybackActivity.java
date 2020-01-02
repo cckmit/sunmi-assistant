@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,7 +49,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.SunmiDevice;
@@ -87,16 +87,12 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom_playback")
     RelativeLayout rlBottomBar;
-    @ViewById(resName = "iv_record")
-    ImageView ivRecord;//录制
     @ViewById(resName = "iv_mute")
     ImageView ivMute;//音量
     @ViewById(resName = "cm_timer")
     Chronometer cmTimer;//录制时间
     @ViewById(resName = "rl_record")
     RelativeLayout rlRecord;
-    @ViewById(resName = "iv_screenshot")
-    ImageView ivScreenshot;//截图
     @ViewById(resName = "iv_pause")
     ImageView ivPlay;//开始播放
     @ViewById(resName = "iv_full_screen")
@@ -111,6 +107,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     TextView tvPlayFail;
     @ViewById(resName = "ll_no_service")
     LinearLayout llNoService;
+    @ViewById(resName = "btn_open_service")
+    Button btnOpenService;
     @ViewById(resName = "ll_portrait_controller_bar")
     LinearLayout llPortraitBar;
     @ViewById(resName = "iv_pre_day")
@@ -139,7 +137,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @Extra
     long currentTime;//进页面开始播放的时间 in seconds
 
-    long startTimeCurrentDate, endTimeCurrentDate;    //已选日期的开始和结束时间  in seconds
+    long startTimeCurrentDate, endTimeCurrentDate;//已选日期的开始和结束时间  in seconds
     private int screenW; //手机屏幕的宽
     private boolean isPaused;//回放是否暂停
     private boolean isStartRecord;//是否开始录制
@@ -175,6 +173,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             setCalendarEnable(false);
             timeLine.setVisibility(View.GONE);
             llNoService.setVisibility(View.VISIBLE);
+            btnOpenService.setVisibility(View.VISIBLE);
         } else {
             showDarkLoading();
             ivMute.setEnabled(false);
@@ -383,7 +382,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     void openServiceClick() {
         ArrayList<String> snList = new ArrayList<>();
         snList.add(device.getDeviceid());
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL + CommonConstants.H5_CLOUD_STORAGE, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
     }
 
     @Click(resName = "rl_top")
@@ -396,21 +395,21 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
-    //视频录制
-    @Click(resName = "iv_record")
-    void recordClick() {
-        if (isStartRecord) {
-            ivRecord.setBackgroundResource(R.mipmap.ic_recording_normal);
-            rlRecord.setVisibility(View.GONE);
-            isStartRecord = false;
-            cmTimer.stop();//关闭录制
-        } else {
-            ivRecord.setBackgroundResource(R.mipmap.ic_recording);
-            rlRecord.setVisibility(View.VISIBLE);
-            isStartRecord = true;
-            startRecord();//开始录制
-        }
-    }
+//    //视频录制
+//    @Click(resName = "iv_record")
+//    void recordClick() {
+//        if (isStartRecord) {
+//            ivRecord.setBackgroundResource(R.mipmap.ic_recording_normal);
+//            rlRecord.setVisibility(View.GONE);
+//            isStartRecord = false;
+//            cmTimer.stop();//关闭录制
+//        } else {
+//            ivRecord.setBackgroundResource(R.mipmap.ic_recording);
+//            rlRecord.setVisibility(View.VISIBLE);
+//            isStartRecord = true;
+//            startRecord();//开始录制
+//        }
+//    }
 
     //音量
     @Click(resName = "iv_mute")

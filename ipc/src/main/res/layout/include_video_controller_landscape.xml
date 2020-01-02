@@ -22,40 +22,6 @@
             android:src="@drawable/ic_back_light_shadow" />
     </RelativeLayout>
 
-    <!--录像-->
-    <ImageView
-        android:id="@+id/iv_record"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_123"
-        android:layout_marginEnd="@dimen/dp_25"
-        android:background="@mipmap/ic_recording_normal"
-        android:visibility="gone" />
-
-    <!--截图-->
-    <ImageView
-        android:id="@+id/iv_screenshot"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_171"
-        android:layout_marginEnd="@dimen/dp_25"
-        android:background="@drawable/ic_screenshot"
-        android:visibility="gone" />
-
-    <!--回直播-->
-    <ImageView
-        android:id="@+id/iv_live"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:background="@mipmap/ic_live"
-        android:visibility="gone" />
-
     <!--改变清晰度-->
     <LinearLayout
         android:id="@+id/ll_video_quality"
