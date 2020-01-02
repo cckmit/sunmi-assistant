@@ -80,16 +80,8 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             etShopMessage.setRightTextSize(R.dimen.sp_20);
             etShopMessage.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             //默认两位小数
-            etShopMessage.getEditText().setFilters(new InputFilter[]{new NumberValueFilter()});
-            String area;
-            if (info.getBusinessArea() > 0 && info.getBusinessArea() < 999999) {
-                area = floatTrans(info.getBusinessArea());
-            } else if (info.getBusinessArea() > 999999) {
-                area = "999999";
-            } else {
-                area = "";
-            }
-            initData(R.string.company_shop_area, R.string.company_shop_area_tip, area);
+            etShopMessage.getEditText().setFilters(new InputFilter[]{new NumberValueFilter(info.getBusinessArea() >= 100000 ? 7 : 6)});
+            initData(R.string.company_shop_area, R.string.company_shop_area_tip, info.getBusinessArea() > 0 ? floatTrans(info.getBusinessArea()) : "");
         }
     }
 
@@ -147,7 +139,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 shortTip(getString(R.string.company_shop_area_tip));
                 return;
             }
-            info.setBusinessArea(Float.parseFloat(input));
+            info.setBusinessArea(Double.parseDouble(input));
         }
         mPresenter.editShopMessage(type, info);
     }
