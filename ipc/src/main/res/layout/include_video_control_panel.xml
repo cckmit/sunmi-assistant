@@ -107,7 +107,7 @@
             android:layout_marginEnd="@dimen/dp_20"
             android:background="@drawable/bg_alpha_rounded_white"
             android:gravity="center"
-            android:text="@string/str_FHD"
+            android:text="@string/str_HD"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"

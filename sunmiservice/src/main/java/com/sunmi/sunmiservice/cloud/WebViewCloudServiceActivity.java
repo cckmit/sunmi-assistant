@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.ValueCallback;
@@ -45,6 +47,7 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
+import sunmi.common.view.webview.AndroidBug5497Workaround;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
 import sunmi.common.view.webview.SsConstants;
@@ -94,6 +97,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @AfterViews
     protected void init() {
+        AndroidBug5497Workaround.assistActivity(this, true);
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
         StringBuilder sb = new StringBuilder(mUrl);
