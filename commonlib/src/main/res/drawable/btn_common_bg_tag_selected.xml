@@ -3,6 +3,6 @@
 
     <corners android:radius="@dimen/dp_100" />
 
-    <solid android:color="@color/c_divider" />
+    <solid android:color="@color/common_orange_10a" />
 
 </shape>

@@ -47,7 +47,7 @@
             android:layout_height="@dimen/dp_36"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_24"
-            android:background="@mipmap/ic_cash_button"
+            android:background="@drawable/btn_common_bg_golden"
             android:text="@string/str_learn_more"
             android:textColor="@color/c_white"
             android:textSize="@dimen/sp_14" />
