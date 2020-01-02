@@ -20,7 +20,6 @@ import java.util.ArrayList;
 
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.GlideRoundTransform;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -75,7 +74,6 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         viewHolder.tvAmount.setText(String.format("¥%s", numberFormat.format(bean.getAmount())));
         viewHolder.tvOrderNum.setText(bean.getOrderNo());
         viewHolder.tvName.setText(bean.getDeviceName());
-        LogCat.e("CashVideoAdapter", bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
         if (data.size() > 1) {
             if (i == data.size() - 1) {
