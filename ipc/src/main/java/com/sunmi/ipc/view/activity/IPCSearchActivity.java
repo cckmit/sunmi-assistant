@@ -88,6 +88,8 @@ public class IPCSearchActivity extends BaseActivity
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (CommonConstants.TYPE_IPC_FS == deviceType) {
             tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_fs, 0, 0);
+        }else if (CommonConstants.TYPE_IPC_SS == deviceType) {
+            tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_ss, 0, 0);
         }
         isApMode = (network == IpcConstants.IPC_CONFIG_MODE_AP);
         if (network == IpcConstants.IPC_CONFIG_MODE_WIRED) {

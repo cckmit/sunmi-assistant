@@ -15,7 +15,7 @@ import sunmi.common.base.BaseView;
 public interface IpcManagerContract {
 
     interface View extends BaseView {
-        void startLiveSuccess();
+        void startLiveFail();
 
         void changeQualitySuccess(int quality);
 
