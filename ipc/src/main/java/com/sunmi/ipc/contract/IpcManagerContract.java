@@ -27,7 +27,6 @@ public interface IpcManagerContract {
     }
 
     interface Presenter {
-        void startLive(IOTCClient iotcClient);
 
         void changeQuality(int quality, IOTCClient iotcClient);
 
