@@ -2,6 +2,7 @@ package com.sunmi.ipc.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class CashVideoResp {
         this.auditVideoList = auditVideoList;
     }
 
-    public static class AuditVideoListBean {
+    public static class AuditVideoListBean implements Serializable{
         /**
          * order_no : B12019060414421630291
          * video_id : 124
