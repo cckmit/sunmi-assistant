@@ -181,17 +181,19 @@ public class P2pService extends Service
     }
 
     public void pausePlayback(boolean isPaused) {
-        iotcClient.pausePlayback(isPaused, new P2pCmdCallback() {
-            @Override
-            public void onResponse(int cmd, IotcCmdResp result) {
+        if (iotcClient != null) {
+            iotcClient.pausePlayback(isPaused, new P2pCmdCallback() {
+                @Override
+                public void onResponse(int cmd, IotcCmdResp result) {
 
-            }
+                }
 
-            @Override
-            public void onError() {
+                @Override
+                public void onError() {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     public void startDecode() {
