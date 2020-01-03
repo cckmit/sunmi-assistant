@@ -78,7 +78,7 @@ public class Utility {
             System.arraycopy(data, 6, bName, 0, bName.length);
             byte bHasPwd = data[6 + bName.length];
             System.arraycopy(data, 7 + bName.length, bRssi, 0, bRssi.length);
-            printRouter.setName(new String(bName, "utf-8"));
+            printRouter.setName(new String(bName, "utf-8").trim());
             if (bHasPwd == 0) {
                 printRouter.setHasPwd(false);
             } else {
