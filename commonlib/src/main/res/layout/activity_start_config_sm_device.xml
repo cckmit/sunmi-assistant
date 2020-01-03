@@ -38,7 +38,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/ctv_privacy"
         android:layout_below="@id/tv_tip_1"
-        android:layout_marginBottom="@dimen/dp_1">
+        android:layout_marginBottom="@dimen/dp_1"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
         <LinearLayout
             android:id="@+id/ll_sv_root"
@@ -97,8 +99,8 @@
         android:layout_above="@+id/btn_start"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginEnd="@dimen/dp_20"
         android:checked="true"
         android:drawableStart="@drawable/selector_privacy"
         android:drawablePadding="@dimen/dp_3"
