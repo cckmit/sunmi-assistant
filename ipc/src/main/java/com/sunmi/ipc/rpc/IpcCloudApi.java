@@ -900,6 +900,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
             JSONObject params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
+                    .put("audit_video_id", videoId)
                     .put("video_type", videoType);
             boolean hasCustomTag = false;
             if (videoTags != null && !videoTags.isEmpty()) {
