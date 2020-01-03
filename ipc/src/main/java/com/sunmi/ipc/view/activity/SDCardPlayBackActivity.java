@@ -481,10 +481,11 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     private boolean isPlayOver(long time) {
-        return lastVideoEndTime == endTimeCurrentDate
-                || time == endTimeCurrentDate //time slots的最后一段视频的结束时间可能比当天的0点大
-                || (timeSlotsInDay != null && timeSlotsInDay.size() > 0
-                && lastVideoEndTime >= timeSlotsInDay.get(timeSlotsInDay.size() - 1).getEndTime());
+        return time >= lastVideoEndTime;
+//        return lastVideoEndTime == endTimeCurrentDate
+//                || time == endTimeCurrentDate //time slots的最后一段视频的结束时间可能比当天的0点大
+//                || (timeSlotsInDay != null && timeSlotsInDay.size() > 0
+//                && lastVideoEndTime >= timeSlotsInDay.get(timeSlotsInDay.size() - 1).getEndTime());
     }
 
     @Override
@@ -496,6 +497,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         } else {
             if (timeSlotsInDay.size() > 0) {
                 refreshScaleTimePanel();
+                lastVideoEndTime = timeSlotsInDay.get(timeSlotsInDay.size() - 1).getEndTime();
                 selectedTimeHasVideo(getDefaultPlayTime());
             } else {
                 showNoVideoTip();
@@ -525,7 +527,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     @Override
     public void didMoveToTime(long timeStamp) {
         hideTimeScroll();
-        lastVideoEndTime = 0;
         if (isPlayOver(timeStamp)) {
             playOver();
         } else if (!NetworkUtils.isNetworkAvailable(context)) {
@@ -604,8 +605,21 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         }
     }
 
+    @Override
+    public void onPlaying(long time, int flag) {
+        if (flag == 10) {
+            switchSuccess = true;
+            moveToTime(time);
+        } else {
+            if (switchSuccess) {
+                if (timeLine.getCurrentInterval() + 60 < time) {
+                    moveToTime(time);
+                }
+            }
+        }
+    }
+
     private IOTCClient getIOTCClient() {
-        p2pService.setEndTime(endTimeCurrentDate);
         return p2pService.getIOTCClient();
     }
 
@@ -882,8 +896,10 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             svPlayback.setVisibility(View.VISIBLE);
         }
         if (timeSlotsInDay.size() > 0) {
-            mPresenter.startPlayback(getIOTCClient(), slotStartTime,
-                    timeSlotsInDay.get(timeSlotsInDay.size() - 1).getEndTime());
+            if (p2pService != null) {
+                p2pService.setEndTime(lastVideoEndTime);
+            }
+            mPresenter.startPlayback(getIOTCClient(), slotStartTime, lastVideoEndTime);
         }
     }
 
@@ -970,20 +986,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
             result.add((Calendar) c.clone());
         }
         return result;
-    }
-
-    @Override
-    public void onPlaying(long time, int flag) {
-        if (flag == 10) {
-            switchSuccess = true;
-            moveToTime(time);
-        } else {
-            if (switchSuccess) {
-                if (timeLine.getCurrentInterval() + 60 < time) {
-                    moveToTime(time);
-                }
-            }
-        }
     }
 
 }
