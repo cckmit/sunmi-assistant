@@ -995,7 +995,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             } else {
                                 if (serviceBeans.isEmpty()) {   //去开启收银视频
                                     Router.withApi(SunmiServiceApi.class)
-                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, null);
+                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, new ArrayList<>());
                                 } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
                                     CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
                                             .serviceBeans(serviceBeans)

@@ -173,13 +173,14 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             if (isShowing()) {
                 Glide.with(mContext).load(res.getSnapshotUrl()).transform(new GlideRoundTransform(mContext)).into(imgVideo);
             }
-            int tag = 0;
+            int tag = res.getVideoTag() != null ? res.getVideoTag()[0] : 0;
             if (res.getVideoType() == IpcConstants.CASH_VIDEO_NORMAL) {
                 tvTag.setVisibility(View.GONE);
             } else if (res.getVideoType() == IpcConstants.CASH_VIDEO_ABNORMAL) {
-                tag = res.getVideoTag()[0];
                 if (tag == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
                     tvTag.setText(res.getDescription());
+                } else if (tag == 0 || tag > 7) {
+                    tvTag.setText(R.string.tag_other_exception);
                 } else {
                     tvTag.setText(tagUtils.getCashTag(tag).getDescription());
                 }
@@ -187,8 +188,13 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             }
             if (isAbnormalBehavior) {
                 tvSuggest.setVisibility(View.VISIBLE);
-                tvSuggest.setText(tagUtils.getCashTag(tag).getTip());
                 holder.getView(R.id.group_content).setVisibility(View.GONE);
+                if (tag >= 2 && tag <= 3) {
+                    tvSuggest.setText(tagUtils.getCashTag(tag).getTip());
+                } else {
+                    tvSuggest.setText(R.string.tip_other_exception);
+                }
+
             } else {
                 tvSuggest.setVisibility(View.GONE);
                 holder.getView(R.id.group_content).setVisibility(View.VISIBLE);
