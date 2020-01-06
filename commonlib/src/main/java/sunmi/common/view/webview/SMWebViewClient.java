@@ -58,7 +58,7 @@ public abstract class SMWebViewClient extends WebViewClient {
                         }
                     }).create();
         }
-        if (!sslDialog.isShowing()) {
+        if (!sslDialog.isShowing() && !mContext.isDestroyed()) {
             sslDialog.show();
         }
     }

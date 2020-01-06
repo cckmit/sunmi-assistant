@@ -81,12 +81,22 @@
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 
-    <Button
-        android:id="@+id/btn_upgrade"
-        style="@style/BtnBigOrange"
+    <LinearLayout
+        android:id="@+id/llBottomBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:text="@string/ipc_setting_version_get_new"
-        android:visibility="gone" />
+        android:background="@drawable/bg_bottom_btn_top_divider"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_20">
+
+        <Button
+            android:id="@+id/btn_upgrade"
+            style="@style/BtnBigOrange"
+            android:text="@string/ipc_setting_version_get_new"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
 </RelativeLayout>
