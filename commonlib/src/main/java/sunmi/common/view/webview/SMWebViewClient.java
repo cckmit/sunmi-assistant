@@ -1,7 +1,6 @@
 package sunmi.common.view.webview;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.net.http.SslError;
 import android.os.Message;
 import android.webkit.SslErrorHandler;
@@ -40,23 +39,15 @@ public abstract class SMWebViewClient extends WebViewClient {
     }
 
     @Override
-    public void onReceivedSslError(WebView view, final SslErrorHandler handler,
-                                   SslError error) {
+    public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
         LogCat.e("smwebviewclient", "onReceivedSslError error = " + error.toString());
+        if (mContext == null || mContext.isDestroyed()) {
+            return;
+        }
         if (sslDialog == null) {
             sslDialog = new CommonDialog.Builder(mContext).setTitle(R.string.str_ssl_error)
-                    .setCancelButton(R.string.sm_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            handler.cancel();
-                        }
-                    })
-                    .setConfirmButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            handler.proceed();
-                        }
-                    }).create();
+                    .setCancelButton(R.string.sm_cancel, (dialog, which) -> handler.cancel())
+                    .setConfirmButton(R.string.str_confirm, (dialog, which) -> handler.proceed()).create();
         }
         if (!sslDialog.isShowing() && !mContext.isDestroyed()) {
             sslDialog.show();

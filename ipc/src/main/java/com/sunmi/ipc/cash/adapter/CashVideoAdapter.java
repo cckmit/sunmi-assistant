@@ -70,12 +70,13 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         }
         CashVideo bean = data.get(i);
         viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getPurchaseTime(), "HH:mm:ss"));
-        int tag = 0;
+        int tag = bean.getVideoTag() != null ? bean.getVideoTag()[0] : 0;
         if (bean.getVideoType() == IpcConstants.CASH_VIDEO_ABNORMAL) {
-            tag = bean.getVideoTag()[0];
             viewHolder.tvDescription.setVisibility(View.VISIBLE);
             if (tag == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
                 viewHolder.tvDescription.setText(bean.getDescription());
+            } else if (tag == 0 || tag > 7) {
+                viewHolder.tvDescription.setText(R.string.tag_other_exception);
             } else {
                 viewHolder.tvDescription.setText(tagUtils.getCashTag(tag).getDescription());
             }
@@ -85,7 +86,11 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         viewHolder.tvName.setText(bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
         if (isAbnormalBehavior) {
-            viewHolder.tvSuggest.setText(tagUtils.getCashTag(tag).getTip());
+            if (tag >= 2 && tag <= 3) {
+                viewHolder.tvSuggest.setText(tagUtils.getCashTag(tag).getTip());
+            } else {
+                viewHolder.tvSuggest.setText(R.string.tip_other_exception);
+            }
         } else {
             viewHolder.tvAmount.setText(String.format("¥%s", numberFormat.format(bean.getAmount())));
             viewHolder.tvOrderNum.setText(bean.getOrderNo());

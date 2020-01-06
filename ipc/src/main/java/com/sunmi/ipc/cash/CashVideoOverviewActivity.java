@@ -21,6 +21,7 @@ import com.sunmi.ipc.contract.CashOverviewContract;
 import com.sunmi.ipc.model.CashVideoListBean;
 import com.sunmi.ipc.presenter.CashOverviewPresenter;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.Router;
 import com.xiaojinzi.component.impl.RouterRequest;
 
 import org.androidannotations.annotations.AfterViews;
@@ -42,9 +43,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.FilterItem;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
@@ -301,7 +304,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Click(resName = "btn_floating")
     public void floatingClick() {
-
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConfig.SERVICE_H5_URL+"cashPreventLoss",serviceBeans.get(0).getDeviceSn());
     }
 
     @Override
