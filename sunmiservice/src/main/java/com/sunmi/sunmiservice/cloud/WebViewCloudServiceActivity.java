@@ -17,7 +17,6 @@ import android.webkit.WebView;
 import com.alipay.sdk.app.H5PayCallback;
 import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
-import com.sunmi.sunmiservice.H5FaceWebChromeClient;
 import com.sunmi.sunmiservice.JSCall;
 import com.sunmi.sunmiservice.R;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -45,6 +44,8 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
+import sunmi.common.view.webview.AndroidBug5497Workaround;
+import sunmi.common.view.webview.SMWebChromeClient;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
 import sunmi.common.view.webview.SsConstants;
@@ -55,7 +56,7 @@ import sunmi.common.view.webview.SsConstants;
  * @author linyuanpeng on 2019-10-25.
  */
 @EActivity(resName = "activity_webview_cloud")
-public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceWebChromeClient.Callback {
+public class WebViewCloudServiceActivity extends BaseActivity implements SMWebChromeClient.Callback {
 
     private static final String URL_PARAM_JOINER = "?";
 
@@ -73,10 +74,15 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
     ArrayList<String> snList;
     @Extra
     String productNo;
+    @Extra
+    String params;
+    @Extra
+    String sn;
 
     private boolean hasSendDeviceInfo = false;
     private CountDownTimer countDownTimer;
     private int progress;
+    private SMWebChromeClient webChrome;
 
     /**
      * 路由启动Activity
@@ -94,6 +100,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
 
     @AfterViews
     protected void init() {
+        AndroidBug5497Workaround.assistActivity(this, true);
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
         StringBuilder sb = new StringBuilder(mUrl);
@@ -158,7 +165,9 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         // 可以运行JavaScript
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        webView.setWebChromeClient(new H5FaceWebChromeClient(this, this));
+        webChrome = new SMWebChromeClient(this);
+        webChrome.setCallback(this);
+        webView.setWebChromeClient(webChrome);
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
@@ -239,10 +248,13 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
                                 .put("productNo", productNo);
                         JSONObject cashVideo = new JSONObject()
                                 .put("shop_name", SpUtils.getShopName());
+                        JSONObject cashPreventLoss = new JSONObject()
+                                .put("sn", sn);
                         String params = new JSONObject()
                                 .put("userInfo", userInfo)
                                 .put("cloudStorage", cloudStorage)
                                 .put("cashVideo", cashVideo)
+                                .put("cashPreventLoss", cashPreventLoss)
                                 .toString();
                         webView.evaluateJavascript("javascript:getDataFromApp('" + params + "')", new ValueCallback<String>() {
                             @Override
@@ -297,6 +309,11 @@ public class WebViewCloudServiceActivity extends BaseActivity implements H5FaceW
         this.progress = progress;
         if (progress < 100) {
             showLoadingDialog();
+            /*if (progress >= 25 && !hasSendDeviceInfo) {
+                webView.evaluateJavascript("javascript:getDataFromApp('" + params + "')", value -> {
+                });
+                hasSendDeviceInfo = true;
+            }*/
         } else {
             hideLoadingDialog();
             closeTimer();

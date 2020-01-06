@@ -16,7 +16,7 @@
         android:drawableTop="@mipmap/ic_video_play_error"
         android:drawablePadding="@dimen/dp_10"
         android:text="@string/tip_network_fail_retry"
-        android:textColor="@color/text_normal"
+        android:textColor="@color/white_60a"
         android:textSize="@dimen/sp_12" />
 
     <Button

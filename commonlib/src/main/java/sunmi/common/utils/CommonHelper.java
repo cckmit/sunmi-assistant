@@ -2,6 +2,7 @@ package sunmi.common.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -468,5 +469,14 @@ public class CommonHelper {
     public static boolean isHuaWeiBrand() {
         String brand = Build.BRAND;
         return brand.contains("HUAWEI") || brand.contains("HONOR");
+    }
+
+    /**
+     * 当前运行的activity
+     */
+    public static String runningActivityName(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        assert activityManager != null;
+        return activityManager.getRunningTasks(1).get(0).topActivity.getClassName();
     }
 }

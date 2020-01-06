@@ -44,6 +44,7 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
     private static final int STANDARD_VIDEO_WIDTH = 1920;
     private static final int STANDARD_VIDEO_HEIGHT = 1080;
     private static final int FACE_CASE_SIZE = 140;
+    private static final int LINE_POINT_GAP_LIMIT = 100;
 
     @ViewById(resName = "sv_setting_video")
     IpcVideoView mVideoView;
@@ -185,7 +186,6 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
             showLoadingDialog();
             mPresenter.updateState();
         } else if (mStepIndex == ScreenAdjustSettingContract.STEP_4_LINE) {
-            showLoadingDialog();
             Pair<DoorLineView.Point, DoorLineView.Point> points = mLineView.getPoints();
             DoorLineView.Point start = points.first.getX() < points.second.getX() ?
                     points.first : points.second;
@@ -197,6 +197,12 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
             int[] lineEnd = {(int) (end.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth()),
                     (int) (end.getY() * STANDARD_VIDEO_HEIGHT / mVideoView.getHeight())};
 
+            if (lineEnd[0] - lineStart[0] < LINE_POINT_GAP_LIMIT) {
+                shortTip(R.string.ipc_recognition_line_error);
+                return;
+            }
+
+            showLoadingDialog();
             mPresenter.line(lineStart, lineEnd);
         } else {
             updateViewsStepTo(++mStepIndex);
@@ -475,7 +481,7 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
         public boolean isLineInvalid(DoorLineView.Point start, DoorLineView.Point end) {
             float x1 = start.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
             float x2 = end.getX() * STANDARD_VIDEO_WIDTH / mVideoView.getWidth();
-            boolean invalid = Math.abs(x1 - x2) < 100;
+            boolean invalid = Math.abs(x1 - x2) < LINE_POINT_GAP_LIMIT;
             if (invalid) {
                 shortTip(R.string.ipc_recognition_line_error);
             }

@@ -6,7 +6,6 @@ import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IotcCmdResp;
 import com.sunmi.ipc.model.IpcManageBean;
-import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.utils.IOTCClient;
@@ -34,26 +33,6 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     private static final int STATE_CASH_VIDEO_SERVICE_ON = 1;
 
     @Override
-    public void startLive(IOTCClient iotcClient) {
-        if (iotcClient == null) {
-            return;
-        }
-        iotcClient.startPlay(new P2pCmdCallback<List<VideoTimeSlotBean>>() {
-            @Override
-            public void onResponse(int cmd, IotcCmdResp<List<VideoTimeSlotBean>> result) {
-                if (isViewAttached()) {
-                    mView.startLiveSuccess();
-                }
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        });
-    }
-
-    @Override
     public void changeQuality(int quality, IOTCClient iotcClient) {
         if (iotcClient == null) {
             return;
@@ -69,6 +48,25 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             @Override
             public void onError() {
 
+            }
+        });
+    }
+
+    public void resumePlay(int quality, IOTCClient iotcClient) {
+        if (iotcClient == null) {
+            return;
+        }
+        iotcClient.changeValue(quality, new P2pCmdCallback() {
+            @Override
+            public void onResponse(int cmd, IotcCmdResp result) {
+
+            }
+
+            @Override
+            public void onError() {
+                if (isViewAttached()) {
+                    mView.startLiveFail();
+                }
             }
         });
     }
