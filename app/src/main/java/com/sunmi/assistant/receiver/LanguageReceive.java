@@ -5,9 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.sunmi.assistant.MyApplication;
-import com.sunmi.assistant.ui.activity.MainActivity;
 
-public class LanuageReceive extends BroadcastReceiver {
+public class LanguageReceive extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -19,7 +19,7 @@
         tools:replace="label">
 
         <receiver
-            android:name=".receiver.LanuageReceive"
+            android:name=".receiver.LanguageReceive"
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="1000">

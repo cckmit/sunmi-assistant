@@ -63,7 +63,7 @@ public class ShopInfo implements Parcelable {
     @SerializedName("lng")
     private String lng;
     @SerializedName("business_area")
-    private float businessArea;
+    private double businessArea;
     @SerializedName("region")
     private String region;
     @SerializedName("business_hours")
@@ -133,7 +133,7 @@ public class ShopInfo implements Parcelable {
         return lng;
     }
 
-    public float getBusinessArea() {
+    public double getBusinessArea() {
         return businessArea;
     }
 
@@ -217,7 +217,7 @@ public class ShopInfo implements Parcelable {
         this.lng = lng;
     }
 
-    public void setBusinessArea(float businessArea) {
+    public void setBusinessArea(double businessArea) {
         this.businessArea = businessArea;
     }
 
@@ -267,7 +267,7 @@ public class ShopInfo implements Parcelable {
         address = in.readString();
         lat = in.readString();
         lng = in.readString();
-        businessArea = in.readFloat();
+        businessArea = in.readDouble();
         region = in.readString();
         businessHours = in.readString();
         contactPerson = in.readString();
@@ -293,7 +293,7 @@ public class ShopInfo implements Parcelable {
         dest.writeString(address);
         dest.writeString(lat);
         dest.writeString(lng);
-        dest.writeFloat(businessArea);
+        dest.writeDouble(businessArea);
         dest.writeString(region);
         dest.writeString(businessHours);
         dest.writeString(contactPerson);

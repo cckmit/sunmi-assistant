@@ -44,6 +44,7 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -94,6 +95,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (sunmiDevices != null) {
             for (SunmiDevice sm : sunmiDevices) {
                 if (!isBindSuccess(sm)) {

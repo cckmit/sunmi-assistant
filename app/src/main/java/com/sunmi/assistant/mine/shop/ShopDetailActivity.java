@@ -228,7 +228,7 @@ public class ShopDetailActivity extends BaseActivity {
     public void onAreaResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             isUpdateShopInfo = true;
-            info.setBusinessArea(Float.parseFloat(data.getStringExtra(INTENT_EXTRA_AREA)));
+            info.setBusinessArea(Double.parseDouble(data.getStringExtra(INTENT_EXTRA_AREA)));
             silShopArea.setEndContent(floatTrans(info.getBusinessArea()) + "㎡");
         }
     }
