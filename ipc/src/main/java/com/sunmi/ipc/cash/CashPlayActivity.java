@@ -978,14 +978,14 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     }
 
     @Override
-    public void getAbnormalEventSuccess(int eventType, double riskScore, List<CashBox> boxes) {
-        if (eventType == CashTagFilter.TAG_ID_CUSTOM) {
+    public void getAbnormalEventSuccess(float riskScore, List<CashBox> boxes) {
+        if (riskScore < 0) {
             return;
         }
         cashBoxOverlay.setData(boxes);
         sbMark.setData(boxes);
         String tip = getString(R.string.cash_abnormal_tip,
-                CashAbnormalTagUtils.getInstance().getCashTag(eventType).getDescription(),
+                CashAbnormalTagUtils.getInstance().getCashTag(getCurrent().getVideoTag()[0]).getDescription(),
                 (int) riskScore);
         tvAbnormalTip.setText(tip);
         sbMark.setVisibility(View.VISIBLE);

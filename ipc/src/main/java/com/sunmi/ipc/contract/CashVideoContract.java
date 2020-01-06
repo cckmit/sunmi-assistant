@@ -33,7 +33,7 @@ public interface CashVideoContract {
 
         void getStorageSuccess(ServiceListResp.DeviceListBean data);
 
-        void getAbnormalEventSuccess(int eventType, double riskScore, List<CashBox> boxes);
+        void getAbnormalEventSuccess(float riskScore, List<CashBox> boxes);
 
         void getAbnormalEventFail(int code, String msg);
     }

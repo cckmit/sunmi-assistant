@@ -178,7 +178,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
             public void onSuccess(int code, String msg, CashVideoEventResp data) {
                 if (data == null) {
                     if (isViewAttached()) {
-                        mView.getAbnormalEventSuccess(CashTagFilter.TAG_ID_CUSTOM, 0, null);
+                        mView.getAbnormalEventSuccess(-1, null);
                     }
                     return;
                 }
@@ -196,7 +196,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                     result.add(item);
                 }
                 if (isViewAttached()) {
-                    mView.getAbnormalEventSuccess(data.getEventType(), data.getRiskScore(), result);
+                    mView.getAbnormalEventSuccess(data.getRiskScore(), result);
                 }
             }
 
