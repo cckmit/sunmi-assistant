@@ -6,8 +6,8 @@ import com.google.gson.Gson;
 import com.sunmi.ipc.face.model.FaceArrivalCount;
 import com.sunmi.ipc.face.model.FaceArrivalLogResp;
 import com.sunmi.ipc.model.CashOrderResp;
-import com.sunmi.ipc.model.CashVideoAbnormalEventResp;
 import com.sunmi.ipc.model.CashVideoCountResp;
+import com.sunmi.ipc.model.CashVideoEventResp;
 import com.sunmi.ipc.model.CashVideoListBean;
 import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.model.CashVideoTimeSlotBean;
@@ -699,7 +699,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * time_range_start	是	int64
      * time_range_end	是	int64
      */
-    public void getCashVidoTimeSlots(int deviceId, long startTime, long endTime, RetrofitCallback<CashVideoTimeSlotBean> callback) {
+    public void getCashVideoTimeSlots(int deviceId, long startTime, long endTime, RetrofitCallback<CashVideoTimeSlotBean> callback) {
         try {
             JSONObject jsonObject = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
@@ -869,7 +869,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
         }
     }
 
-    public void getCashVideoAbnormalEvent(long eventId, RetrofitCallback<CashVideoAbnormalEventResp> callback) {
+    public void getCashVideoAbnormalEvent(long eventId, RetrofitCallback<CashVideoEventResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
@@ -894,17 +894,17 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * video_type	    是	int32	标记类型 1:正常视频，2:异常视频
      * video_tag	    否	array[integer]	标记类型 1:自定义类型，2:飞单，3:钱箱未关，4:偷钱，5:漏扫，6:偷换条码，7:交易类型不匹配
      */
-    public void updateTag(long videoId, int videoType, List<Integer> videoTags, String desc,
+    public void updateTag(long videoId, int source, int type, List<Integer> tags, String desc,
                           RetrofitCallback<Object> callback) {
         try {
             JSONObject params = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId())
                     .put("audit_video_id", videoId)
-                    .put("video_type", videoType);
-            boolean hasCustomTag = false;
-            if (videoTags != null && !videoTags.isEmpty()) {
-                JSONArray array = new JSONArray(videoTags);
+                    .put("video_source", source)
+                    .put("video_type", type);
+            if (tags != null && !tags.isEmpty()) {
+                JSONArray array = new JSONArray(tags);
                 params.put("video_tag", array);
             }
             if (!TextUtils.isEmpty(desc)) {

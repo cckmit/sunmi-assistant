@@ -40,7 +40,7 @@ public interface CashVideoContract {
 
     interface Presenter {
 
-        void updateTag(long videoId, CashTagFilter selected);
+        void updateTag(long videoId, int source, CashTagFilter selected);
 
         void getOrderInfo(String orderNo);
 

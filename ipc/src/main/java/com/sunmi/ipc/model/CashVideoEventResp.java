@@ -8,7 +8,7 @@ import java.util.List;
  * @author yinhui
  * @date 2019-12-30
  */
-public class CashVideoAbnormalEventResp {
+public class CashVideoEventResp {
 
     /**
      * event_id : 2
@@ -16,8 +16,9 @@ public class CashVideoAbnormalEventResp {
      * start_time : 1557805280
      * end_time : 1557805280
      * risk_score : 82.2
-     * resolution : [1440,1440]
-     * key_objects : [{"timestamp":[1.55780528522E9,1.55780529022E9],"key_object":1,"bbox":[0.82,0.4,0.85,0.42]}]
+     * video_width : 1920
+     * video_height : 1080
+     * key_objects : [{"timestamp":[1.55780528522E9,1.55780529022E9],"key_object":1,"bbox":[0.82,0.4,0.85,0.42]},"..."]
      */
 
     @SerializedName("event_id")
@@ -29,9 +30,11 @@ public class CashVideoAbnormalEventResp {
     @SerializedName("end_time")
     private long endTime;
     @SerializedName("risk_score")
-    private double riskScore;
-    @SerializedName("resolution")
-    private int[] resolution;
+    private float riskScore;
+    @SerializedName("video_width")
+    private int videoWidth;
+    @SerializedName("video_height")
+    private int videoHeight;
     @SerializedName("key_objects")
     private List<Box> keyObjects;
 
@@ -51,12 +54,16 @@ public class CashVideoAbnormalEventResp {
         return endTime;
     }
 
-    public double getRiskScore() {
+    public float getRiskScore() {
         return riskScore;
     }
 
-    public int[] getResolution() {
-        return resolution;
+    public int getVideoWidth() {
+        return videoWidth;
+    }
+
+    public int getVideoHeight() {
+        return videoHeight;
     }
 
     public List<Box> getKeyObjects() {

@@ -37,8 +37,8 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
     }
 
     @Override
-    public void getCashVidoTimeSlots(int deviceId, long startTime, long endTime) {
-        IpcCloudApi.getInstance().getCashVidoTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CashVideoTimeSlotBean>() {
+    public void getCashVideoTimeSlots(int deviceId, long startTime, long endTime) {
+        IpcCloudApi.getInstance().getCashVideoTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CashVideoTimeSlotBean>() {
             @Override
             public void onSuccess(int code, String msg, CashVideoTimeSlotBean data) {
                 if (isViewAttached()) {

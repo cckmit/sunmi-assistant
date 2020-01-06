@@ -7,7 +7,7 @@ import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
-import com.sunmi.ipc.model.CashVideoAbnormalEventResp;
+import com.sunmi.ipc.model.CashVideoEventResp;
 import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
@@ -31,7 +31,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
     private static final String TAG = CashVideoPresenter.class.getSimpleName();
 
     @Override
-    public void updateTag(long videoId, CashTagFilter selected) {
+    public void updateTag(long videoId, int source, CashTagFilter selected) {
         int videoType;
         List<Integer> videoTags = new ArrayList<>(1);
         String desc = null;
@@ -45,7 +45,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
             }
         }
 
-        IpcCloudApi.getInstance().updateTag(videoId, videoType, videoTags, desc, new RetrofitCallback<Object>() {
+        IpcCloudApi.getInstance().updateTag(videoId, source, videoType, videoTags, desc, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
@@ -173,9 +173,9 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
     @Override
     public void getAbnormalEvent(long eventId, long beginTime) {
         final long begin = beginTime * 1000;
-        IpcCloudApi.getInstance().getCashVideoAbnormalEvent(eventId, new RetrofitCallback<CashVideoAbnormalEventResp>() {
+        IpcCloudApi.getInstance().getCashVideoAbnormalEvent(eventId, new RetrofitCallback<CashVideoEventResp>() {
             @Override
-            public void onSuccess(int code, String msg, CashVideoAbnormalEventResp data) {
+            public void onSuccess(int code, String msg, CashVideoEventResp data) {
                 if (data == null) {
                     if (isViewAttached()) {
                         mView.getAbnormalEventSuccess(CashTagFilter.TAG_ID_CUSTOM, 0, null);
@@ -183,8 +183,8 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                     return;
                 }
                 List<CashBox> result = new ArrayList<>();
-                List<CashVideoAbnormalEventResp.Box> boxes = data.getKeyObjects();
-                for (CashVideoAbnormalEventResp.Box box : boxes) {
+                List<CashVideoEventResp.Box> boxes = data.getKeyObjects();
+                for (CashVideoEventResp.Box box : boxes) {
                     double[] timestamp = box.getTimestamp();
                     int start = (int) (timestamp[0] * 1000 - begin);
                     int end = (int) (timestamp[1] * 1000 - begin);
@@ -201,7 +201,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
             }
 
             @Override
-            public void onFail(int code, String msg, CashVideoAbnormalEventResp data) {
+            public void onFail(int code, String msg, CashVideoEventResp data) {
                 if (isViewAttached()) {
                     mView.getAbnormalEventFail(code, msg);
                 }

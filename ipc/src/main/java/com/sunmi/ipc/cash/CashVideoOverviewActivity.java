@@ -140,7 +140,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         threeMonth.set(Calendar.MINUTE, 0);
         threeMonth.set(Calendar.SECOND, 0);
         threeMonth.set(Calendar.MILLISECOND, 0);
-        mPresenter.getCashVidoTimeSlots(deviceId, (threeMonth.getTimeInMillis() / 1000), (DateTimeUtils.getTomorrow().getTime() / 1000));
+        mPresenter.getCashVideoTimeSlots(deviceId, (threeMonth.getTimeInMillis() / 1000), (DateTimeUtils.getTomorrow().getTime() / 1000));
         if (isSingleDevice) {
             deviceId = serviceBeans.get(0).getDeviceId();
             clShopCash.setVisibility(View.GONE);

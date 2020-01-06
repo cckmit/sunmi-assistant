@@ -216,7 +216,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * 当前播放视频的index和Model对象
      */
     private int playIndex;
-    private CashVideo current;
     /**
      * 点击item页码
      */
@@ -274,7 +273,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             loadMoreVideoList();
         } else {
             playIndex = videoListPosition;
-            current = videoList.get(playIndex);
             initCashVideoPlay();
         }
     }
@@ -441,11 +439,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
     }
 
-    //订单详情
-    private void requestOrderInfo() {
-        mPresenter.getOrderInfo(current.getOrderNo());
-    }
-
     /**
      * 检测是否需要读写权限
      */
@@ -483,7 +476,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     private void initTakeScreenShot() {
         retriever = new FFmpegMediaMetadataRetriever();
         try {
-            retriever.setDataSource(current.getVideoUrl());
+            retriever.setDataSource(getCurrent().getVideoUrl());
         } catch (Exception e) {
             shortTip(R.string.cash_init_screenshot_exception);
             e.printStackTrace();
@@ -629,8 +622,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (mSelectedTag != null) {
             mTagAdapter.setSelected(mSelectedTag.getId());
         } else {
-            mTagAdapter.setSelected(current.getVideoType() == IpcConstants.CASH_VIDEO_NORMAL ?
-                    CashTagFilter.TAG_ID_NORMAL : current.getVideoTag()[0]);
+            mTagAdapter.setSelected(getCurrent().getVideoType() == IpcConstants.CASH_VIDEO_NORMAL ?
+                    CashTagFilter.TAG_ID_NORMAL : getCurrent().getVideoTag()[0]);
         }
         mTagDialog.show();
     }
@@ -641,7 +634,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             return;
         }
         showLoadingDialog();
-        mPresenter.updateTag(current.getVideoId(), selected);
+        mPresenter.updateTag(getCurrent().getVideoId(), isAbnormalBehavior ? 1 : 2, selected);
     }
 
     /**
@@ -679,9 +672,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                 playIndex++;
             }
         }
-        current = videoList.get(playIndex);
         //恢复初始化播放状态
         playCashVideoStatus = PLAY_TYPE_NORMAL;
+        CashVideo current = getCurrent();
         boolean isAbnormal = current.getVideoType() != IpcConstants.CASH_VIDEO_NORMAL;
         if (isAbnormal) {
             mPresenter.getAbnormalEvent(current.getEventId(), current.getStartTime());
@@ -705,7 +698,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             isPaused = false;
             ibPlay.setBackgroundResource(R.mipmap.pause_normal);
             //查询当前视频订单信息
-            requestOrderInfo();
+            mPresenter.getOrderInfo(getCurrent().getOrderNo());
             //开始播放
             ivpCash.startVideo();
             //初始化截屏
@@ -791,6 +784,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             cashBoxOverlay.setCurrent(progress);
             tvCurrentPlayTime.setText(ivpCash.generateTime(generateTime));
         }
+    }
+
+    private CashVideo getCurrent() {
+        return videoList.get(playIndex);
     }
 
     /**
@@ -903,7 +900,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             shortTip(R.string.cash_tag_cancel_success);
         }
         // 如果没有开通收银防损，那么弹窗推广
-        if (!current.isHasCashLossPrevent()) {
+        if (!getCurrent().isHasCashLossPrevent()) {
             if (mLossPreventDialog == null) {
                 mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
                         .setListener((dialog, which) -> {
@@ -1031,7 +1028,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
         if (id == CommonNotifications.cashVideoPlayPosition) {
             playIndex = (int) args[0];
-            current = videoList.get(playIndex);
             playCashVideoStatus = PLAY_TYPE_DROP_SELECT;
             initCashVideoPlay();
         }
