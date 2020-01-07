@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.model.CashVideoServiceBean;
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.CashServiceInfo;
+import sunmi.common.model.ServiceResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
 
@@ -86,7 +86,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
      * 获取视频列表
      */
     @Override
-    public void getCashVideoList(Map<Integer, CashVideoServiceBean> ipcName, int deviceId, int videoType,
+    public void getCashVideoList(Map<Integer, CashServiceInfo> ipcName, int deviceId, int videoType,
                                  long startTime, long endTime, int pageNum, int pageSize) {
         IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
@@ -94,10 +94,10 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
                         for (CashVideo video : videoList) {
-                            CashVideoServiceBean bean = ipcName.get(video.getDeviceId());
+                            CashServiceInfo bean = ipcName.get(video.getDeviceId());
                             if (bean != null) {
                                 video.setDeviceName(bean.getDeviceName());
-                                video.setHasCashLossPrevent(bean.isHasCashLossPrevent());
+                                video.setHasCashLossPrevent(bean.isHasCashLossPrevention());
                             }
                         }
                         if (isViewAttached()) {
@@ -116,7 +116,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
     }
 
     @Override
-    public void getAbnormalBehaviorList(Map<Integer, CashVideoServiceBean> ipcName, int deviceId, int videoType,
+    public void getAbnormalBehaviorList(Map<Integer, CashServiceInfo> ipcName, int deviceId, int videoType,
                                         long startTime, long endTime, int pageNum, int pageSize) {
         IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(deviceId, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
@@ -124,10 +124,10 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
                         for (CashVideo video : videoList) {
-                            CashVideoServiceBean bean = ipcName.get(video.getDeviceId());
+                            CashServiceInfo bean = ipcName.get(video.getDeviceId());
                             if (bean != null) {
                                 video.setDeviceName(bean.getDeviceName());
-                                video.setHasCashLossPrevent(bean.isHasCashLossPrevent());
+                                video.setHasCashLossPrevent(bean.isHasCashLossPrevention());
                             }
                         }
                         if (isViewAttached()) {
@@ -149,12 +149,12 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
     public void getStorageList(String deviceSn) {
         List<String> snList = new ArrayList<>();
         snList.add(deviceSn);
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceResp>() {
             @Override
-            public void onSuccess(int code, String msg, ServiceListResp data) {
+            public void onSuccess(int code, String msg, ServiceResp data) {
                 if (isViewAttached()) {
-                    if (data.getDeviceList().size() > 0) {
-                        mView.getStorageSuccess(data.getDeviceList().get(0));
+                    if (data.getList().size() > 0) {
+                        mView.getStorageSuccess(data.getList().get(0));
                     } else {
                         mView.shortTip(R.string.tip_cloud_storage_error);
                     }
@@ -162,7 +162,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
             }
 
             @Override
-            public void onFail(int code, String msg, ServiceListResp data) {
+            public void onFail(int code, String msg, ServiceResp data) {
                 if (isViewAttached()) {
                     mView.shortTip(R.string.tip_cloud_storage_error);
                 }

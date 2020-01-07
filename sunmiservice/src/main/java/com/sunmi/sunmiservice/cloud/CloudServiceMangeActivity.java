@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 
 import com.sunmi.adapter.ServiceListAdapter;
 import com.sunmi.bean.ServiceDetailBean;
-import com.sunmi.constans.ServiceConstants;
+import com.sunmi.constant.ServiceConstants;
 import com.sunmi.contract.CloudServiceMangeContract;
 import com.sunmi.presenter.CloudServiceMangePresenter;
 import com.sunmi.sunmiservice.R;

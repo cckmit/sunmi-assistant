@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.bean.ServiceDetailBean;
-import com.sunmi.constans.ServiceConstants;
+import com.sunmi.constant.ServiceConstants;
 import com.sunmi.contract.ServiceDetailContract;
 import com.sunmi.presenter.ServiceDetailPresenter;
 import com.sunmi.sunmiservice.R;

@@ -11,7 +11,7 @@ import com.sunmi.ipc.R;
 
 import java.util.List;
 
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.utils.GlideRoundTransform;
 import sunmi.common.view.CircleImage;
 
@@ -20,14 +20,14 @@ import sunmi.common.view.CircleImage;
  *
  * @author linyuanpeng on 2019-12-23.
  */
-public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashVideoServiceBean, BaseViewHolder> {
+public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashServiceInfo, BaseViewHolder> {
 
 
     private Context context;
     private OnItemClickListener onItemClickListener;
     private int behaviorPos;
 
-    public CashVideoOverViewAdapter(List<CashVideoServiceBean> data, Context context) {
+    public CashVideoOverViewAdapter(List<CashServiceInfo> data, Context context) {
         super(R.layout.item_cash_video_overview, data);
         this.context = context;
         this.behaviorPos = 0;
@@ -38,7 +38,7 @@ public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashVideoServiceB
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, CashVideoServiceBean item) {
+    protected void convert(BaseViewHolder helper, CashServiceInfo item) {
         CircleImage civIpc = helper.getView(R.id.civ_ipc);
         Glide.with(context).load(item.getImgUrl()).transform(new GlideRoundTransform(context)).into(civIpc);
         helper.setText(R.id.tv_ipc_name, item.getDeviceName());
@@ -46,7 +46,7 @@ public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashVideoServiceB
         helper.setText(R.id.tv_count_cash, String.valueOf(item.getTotalCount()));
         helper.setText(R.id.tv_count_abnormal, String.valueOf(item.getAbnormalVideoCount()));
         CardView cardView = helper.getView(R.id.cv_abnormal_behavior);
-        if (item.isHasCashLossPrevent()) {
+        if (item.isHasCashLossPrevention()) {
             behaviorPos++;
             cardView.setVisibility(View.VISIBLE);
             helper.setText(R.id.tv_count_abnormal_behavior, String.valueOf(item.getAbnormalBehaviorCount()));
@@ -61,10 +61,10 @@ public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashVideoServiceB
     }
 
     public interface OnItemClickListener {
-        void onOrderClick(CashVideoServiceBean item, int position);
+        void onOrderClick(CashServiceInfo item, int position);
 
-        void onAbnormalOrderClick(CashVideoServiceBean item, int position);
+        void onAbnormalOrderClick(CashServiceInfo item, int position);
 
-        void onAbnormalBehaviorClick(CashVideoServiceBean item, int position);
+        void onAbnormalBehaviorClick(CashServiceInfo item, int position);
     }
 }
