@@ -36,7 +36,6 @@ import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.router.AppApi;
 import sunmi.common.utils.CommonHelper;
-import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -71,6 +70,8 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     TextView tvSelectedCompany;
     @ViewById(R.id.sil_selected_company)
     SettingItemLayout silSelectedCompany;
+    @ViewById(R.id.llBottomBtn)
+    LinearLayout llBottomBtn;
     @ViewById(R.id.btn_enter_main)
     Button btnEnterMain;
 
@@ -110,13 +111,13 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                 titleBar.setLeftImageVisibility(View.GONE);
             }
             titleBar.getRightText().setOnClickListener(this);
-            btnEnterMain.setVisibility(View.GONE);
+            llBottomBtn.setVisibility(View.GONE);
             mPresenter.getCompanyList();
         } else if (action == CommonConstants.ACTION_LOGIN_CHOOSE_SHOP) {
             btnEnterMain.setEnabled(false);
             titleBar.setAppTitle(R.string.str_select_store);
             tvSelectType.setText(R.string.company_shop_select);
-            btnEnterMain.setVisibility(View.VISIBLE);
+            llBottomBtn.setVisibility(View.VISIBLE);
             initShopList(shopList);
         } else if (action == CommonConstants.ACTION_CHANGE_COMPANY) {
             titleBar.setAppTitle(R.string.company_switch);
@@ -125,7 +126,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
             tvSelectType.setText(R.string.company_can_switch);
             tvSelectedCompany.setText(R.string.company_now_selected);
             silSelectedCompany.setTitle(SpUtils.getCompanyName());
-            btnEnterMain.setVisibility(View.GONE);
+            llBottomBtn.setVisibility(View.GONE);
             mPresenter.getCompanyList();
         }
     }

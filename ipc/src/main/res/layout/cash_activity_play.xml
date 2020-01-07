@@ -84,7 +84,6 @@
                 android:textSize="@dimen/sp_10" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tv_total_commodity_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -92,10 +91,10 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:text="@string/cash_goods_quality"
                 android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_10" />
+                android:textSize="@dimen/sp_10"
+                android:visibility="gone" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tv_total_commodity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,7 +102,8 @@
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_toEndOf="@id/tv_total_commodity_left"
                 android:textColor="@color/c_white"
-                android:textSize="@dimen/sp_10" />
+                android:textSize="@dimen/sp_10"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_trade_type_left"
@@ -136,9 +136,21 @@
         <!--底部控制区-->
         <include
             android:id="@+id/icd_bottom_progress"
-            layout="@layout/include_ipc_bottom_progress" />
+            layout="@layout/include_ipc_bottom_progress"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
+
+    <com.sunmi.ipc.cash.view.CashBoxView
+        android:id="@+id/cash_box_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rl_cash"
+        app:layout_constraintEnd_toEndOf="@+id/rl_cash"
+        app:layout_constraintStart_toStartOf="@+id/rl_cash"
+        app:layout_constraintTop_toTopOf="@+id/rl_cash" />
 
     <include layout="@layout/include_cash_play" />
 
@@ -189,6 +201,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/rl_cash" />
 
+    <TextView
+        android:id="@+id/tv_abnormal_tip"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_24"
+        android:background="@color/common_orange_10a"
+        android:gravity="center"
+        android:textColor="@color/common_orange"
+        android:textSize="@dimen/sp_12"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ctl_bottom_setting" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
@@ -196,7 +221,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ctl_bottom_setting" />
+        app:layout_constraintTop_toBottomOf="@id/tv_abnormal_tip" />
 
     <TextView
         android:id="@+id/tv_empty"

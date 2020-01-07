@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.cash.adapter.CashDropdownTimeAdapter;
 import com.sunmi.ipc.cash.adapter.CashVideoAdapter;
+import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashVideoListConstract;
-import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.model.DropdownTime;
 import com.sunmi.ipc.presenter.CashVideoListPresenter;
 
@@ -38,6 +38,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.NetworkUtils;
@@ -80,6 +81,10 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     TextView tvNoCash;
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
+    @ViewById(resName = "tv_fast_play")
+    TextView tvFastPlay;
+    @ViewById(resName = "tv_suggestion")
+    TextView tvSuggestion;
 
     @Extra
     int deviceId = -1;
@@ -95,10 +100,14 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     boolean isSingleDevice;
     @Extra
     int total;
+    @Extra
+    boolean isAbnormalBehavior;
+    @Extra
+    ArrayList<CashVideoServiceBean> serviceBeans;
 
     private final int REQUEST = 0x101;
 
-    private ArrayList<CashVideoResp.AuditVideoListBean> dataList = new ArrayList<>();
+    private ArrayList<CashVideo> dataList = new ArrayList<>();
     private boolean hasMore;
     private CashVideoAdapter adapter;
 
@@ -116,12 +125,18 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
-        mPresenter = new CashVideoListPresenter();
+        mPresenter = new CashVideoListPresenter(isAbnormalBehavior, serviceBeans);
         mPresenter.attachView(this);
         fastPlayStart = startTime;
         fastPlayEnd = endTime;
         if (isSingleDevice) {
             dmDevice.setVisibility(View.GONE);
+        }
+        if (isAbnormalBehavior) {
+            titleBar.setAppTitle(R.string.str_abnormal_behavior_list);
+            tvFastPlay.setVisibility(View.GONE);
+            tvSuggestion.setText(R.string.tip_other_anomalies);
+            tvAbnormal.setVisibility(View.GONE);
         }
         tvDate.setText(DateTimeUtils.secondToDate(startTime, "yyyy.MM.dd"));
         refreshLayout.setDelegate(this);
@@ -302,7 +317,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     @Override
-    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
+    public void getCashVideoSuccess(List<CashVideo> beans, int total) {
         networkError.setVisibility(View.GONE);
         if (total <= 0) {
             tvNoCash.setVisibility(View.VISIBLE);
@@ -350,7 +365,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     }
 
     @UiThread
-    protected void addData(List<CashVideoResp.AuditVideoListBean> beans, boolean isRefresh) {
+    protected void addData(List<CashVideo> beans, boolean isRefresh) {
         initAdapter();
         if (isRefresh) {
             dataList.clear();
@@ -368,21 +383,18 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     private void initAdapter() {
         if (adapter == null) {
-            adapter = new CashVideoAdapter(dataList, context);
+            adapter = new CashVideoAdapter(dataList, context, isAbnormalBehavior);
             rvCashVideo.setLayoutManager(new LinearLayoutManager(context));
-            adapter.setOnItemClickListener(new CashVideoAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(ArrayList<CashVideoResp.AuditVideoListBean> data, int pos) {
-                    if (!NetworkUtils.isNetworkAvailable(context)) {
-                        shortTip(R.string.network_error);
-                        return;
-                    }
-                    CashPlayActivity_.intent(context).deviceId(deviceId)
-                            .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
-                            .ipcName(mPresenter.getIpcName()).videoList(data)
-                            .hasMore(hasMore).pageNum(pageNum).videoListPosition(pos)
-                            .videoType(videoType).startForResult(REQUEST);
+            adapter.setOnItemClickListener((data, pos) -> {
+                if (!NetworkUtils.isNetworkAvailable(context)) {
+                    shortTip(R.string.network_error);
+                    return;
                 }
+                CashPlayActivity_.intent(context).deviceId(deviceId)
+                        .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
+                        .ipcName(mPresenter.getIpcName()).videoList(data)
+                        .hasMore(hasMore).pageNum(pageNum).videoListPosition(pos)
+                        .videoType(videoType).isAbnormalBehavior(isAbnormalBehavior).startForResult(REQUEST);
             });
             rvCashVideo.setAdapter(adapter);
         }
@@ -416,7 +428,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         if (resultCode == RESULT_OK) {
             Bundle bundle = data.getExtras();
             if (bundle != null) {
-                ArrayList<CashVideoResp.AuditVideoListBean> list = (ArrayList<CashVideoResp.AuditVideoListBean>) bundle.getSerializable("videoList");
+                ArrayList<CashVideo> list = bundle.getParcelableArrayList("videoList");
                 if (list != null) {
                     dataList.clear();
                     dataList.addAll(list);

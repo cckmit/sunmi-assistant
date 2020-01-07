@@ -61,19 +61,18 @@
         android:src="@mipmap/ic_cloud_playback"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/iv_play_type"
-        app:layout_constraintRight_toLeftOf="@id/tv_tag"
+        app:layout_constraintRight_toLeftOf="@id/iv_tag"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/tv_tag"
+    <ImageView
+        android:id="@+id/iv_tag"
         android:layout_width="@dimen/dp_64"
         android:layout_height="@dimen/dp_36"
         android:background="@drawable/bg_round_corner_black_15"
         android:gravity="center"
-        android:text="@string/cash_tag_exception"
-        android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_12"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_cash_abnormal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/iv_cloud"
         app:layout_constraintRight_toRightOf="parent"

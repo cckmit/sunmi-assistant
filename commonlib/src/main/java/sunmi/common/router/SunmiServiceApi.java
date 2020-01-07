@@ -28,6 +28,9 @@ public interface SunmiServiceApi {
     void goToWebViewCloud(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("snList") ArrayList<String> sn);
 
     @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CLOUD)
+    void goToWebViewCloud(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("sn") String sn);
+
+    @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CLOUD)
     void goToWebViewCloud(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("snList") ArrayList<String> sn, @AfterActionAnno Action action);
 
     @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CLOUD)

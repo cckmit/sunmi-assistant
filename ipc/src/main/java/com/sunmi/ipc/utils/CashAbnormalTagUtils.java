@@ -6,6 +6,9 @@ import android.util.SparseArray;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.model.CashTag;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import sunmi.common.base.BaseApplication;
 
 /**
@@ -44,7 +47,7 @@ public class CashAbnormalTagUtils {
         private static final CashAbnormalTagUtils INSTANCE = new CashAbnormalTagUtils();
     }
 
-    public CashAbnormalTagUtils getInstance() {
+    public static CashAbnormalTagUtils getInstance() {
         return Singleton.INSTANCE;
     }
 
@@ -52,6 +55,13 @@ public class CashAbnormalTagUtils {
         return cashTags.get(tag);
     }
 
+    public List<CashTag> getCashTags() {
+        List<CashTag> list = new ArrayList<>(cashTags.size());
+        for (int i = 0, size = cashTags.size(); i < size; i++) {
+            list.add(cashTags.valueAt(i));
+        }
+        return list;
+    }
     
     private String[] getStrArray(@ArrayRes int id) {
         return BaseApplication.getInstance().getResources().getStringArray(id);

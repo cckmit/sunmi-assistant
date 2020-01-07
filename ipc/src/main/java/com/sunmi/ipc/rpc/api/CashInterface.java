@@ -2,6 +2,7 @@ package com.sunmi.ipc.rpc.api;
 
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.model.CashVideoCountResp;
+import com.sunmi.ipc.model.CashVideoEventResp;
 import com.sunmi.ipc.model.CashVideoListBean;
 import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.model.CashVideoTimeSlotBean;
@@ -18,15 +19,6 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  */
 public interface CashInterface {
     String URL = "/ipc/api/";
-
-    /**
-     * 异常视频标记
-     *
-     * @param request
-     * @return
-     */
-    @POST(URL + "audit/video/updateType")
-    Call<BaseResponse<Object>> updateTag(@Body BaseRequest request);
 
     /**
      * 订单信息详情
@@ -76,4 +68,20 @@ public interface CashInterface {
      */
     @POST(URL +"audit/video/behavior/getList")
     Call<BaseResponse<CashVideoResp>> getAbnormalBehaviorVideoList(@Body BaseRequest request);
+
+    /**
+     * 获取异常视频的异常事件信息（视频加框信息）
+     */
+    @POST(URL + "audit/video/getEventInfo")
+    Call<BaseResponse<CashVideoEventResp>> getCashVideoAbnormalEvent(@Body BaseRequest request);
+
+    /**
+     * 异常视频标记
+     *
+     * @param request
+     * @return
+     */
+    @POST(URL + "audit/video/updateType")
+    Call<BaseResponse<Object>> updateTag(@Body BaseRequest request);
+
 }
