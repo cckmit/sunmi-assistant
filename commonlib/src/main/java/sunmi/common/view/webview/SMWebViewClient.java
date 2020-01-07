@@ -49,7 +49,7 @@ public abstract class SMWebViewClient extends WebViewClient {
                     .setCancelButton(R.string.sm_cancel, (dialog, which) -> handler.cancel())
                     .setConfirmButton(R.string.str_confirm, (dialog, which) -> handler.proceed()).create();
         }
-        if (!sslDialog.isShowing()) {
+        if (!sslDialog.isShowing() && !mContext.isDestroyed()) {
             sslDialog.show();
         }
     }

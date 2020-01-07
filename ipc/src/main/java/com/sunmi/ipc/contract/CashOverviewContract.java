@@ -28,7 +28,7 @@ public interface CashOverviewContract {
 
     interface Presenter {
 
-        void getCashVidoTimeSlots(int deviceId, long startTime, long endTime);
+        void getCashVideoTimeSlots(int deviceId, long startTime, long endTime);
 
         void getShopCashVideoCount(long startTime, long endTime);
 

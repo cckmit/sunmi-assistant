@@ -120,13 +120,8 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                             }
                             if (device.getStatus() == STATE_CASH_VIDEO_SERVICE_ON
                                     && device.getDeviceId() == deviceId) {
-                                CashVideoServiceBean info = new CashVideoServiceBean();
-                                info.setDeviceId(deviceId);
-                                info.setDeviceSn(device.getDeviceSn());
-                                info.setDeviceName(device.getDeviceName());
-                                info.setImgUrl(device.getImgUrl());
-                                devices.add(info);
-                                break;
+                                getAuditSecurityPolicyService(device.getDeviceSn());
+                                return;
                             }
                         }
                         if (isViewAttached()) {
@@ -142,6 +137,41 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                         }
                     }
                 });
+    }
+
+    private void getAuditSecurityPolicyService(String deviceSn) {
+        List<String> snList = new ArrayList<>();
+        snList.add(deviceSn);
+        IpcCloudApi.getInstance().getAuditSecurityPolicyList(snList, new RetrofitCallback<ServiceListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, ServiceListResp data) {
+                List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
+                ArrayList<CashVideoServiceBean> cashVideoServiceBeans = new ArrayList<>();
+                if (beans.size() > 0) {
+                    for (ServiceListResp.DeviceListBean bean : beans) {
+                        CashVideoServiceBean info = new CashVideoServiceBean();
+                        info.setDeviceId(bean.getDeviceId());
+                        info.setDeviceSn(bean.getDeviceSn());
+                        info.setDeviceName(bean.getDeviceName());
+                        info.setImgUrl(bean.getImgUrl());
+                        info.setHasCashLossPrevent(bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED);
+                        cashVideoServiceBeans.add(info);
+                    }
+                }
+                if (isViewAttached()) {
+                    mView.getCashVideoServiceSuccess(cashVideoServiceBeans, true);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, ServiceListResp data) {
+                if (isViewAttached()) {
+                    mView.shortTip(R.string.toast_network_error);
+                    mView.hideLoadingDialog();
+                }
+            }
+        });
+
     }
 
     private IpcManageBean getStorage(IpcManageBean item, ServiceListResp.DeviceListBean data, Context context) {

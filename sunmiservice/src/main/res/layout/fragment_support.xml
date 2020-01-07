@@ -45,6 +45,7 @@
                 android:paddingStart="@dimen/dp_25">
 
                 <TextView
+                    android:id="@+id/tv_cash_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_24"
@@ -53,6 +54,7 @@
                     android:textSize="@dimen/sp_24" />
 
                 <TextView
+                    android:id="@+id/tv_cash_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tip_cash_video"
@@ -64,7 +66,7 @@
                     android:layout_width="@dimen/dp_96"
                     android:layout_height="@dimen/dp_32"
                     android:layout_marginTop="@dimen/dp_20"
-                    android:background="@mipmap/ic_cash_button"
+                    android:background="@drawable/btn_common_bg_golden"
                     android:clickable="false"
                     android:gravity="center"
                     android:text="@string/str_setting_detail"

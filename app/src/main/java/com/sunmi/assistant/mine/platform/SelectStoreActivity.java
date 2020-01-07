@@ -114,15 +114,6 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
         }
     }
 
-    private void enableCompleteBtn(boolean enable) {
-        btnComplete.setEnabled(enable);
-        if (enable) {
-            btnComplete.setAlpha(1f);
-        } else {
-            btnComplete.setAlpha(0.5f);
-        }
-    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -134,11 +125,11 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
 
         private ShopListAdapter(Context context, List<SelectShopModel> list) {
             super(context, R.layout.item_merchant_auth_store, list);
-            enableCompleteBtn(false);
+            btnComplete.setEnabled(false);
             for (SelectShopModel info : list) {
                 if (info.isChecked()) {
                     selectedCount++;
-                    enableCompleteBtn(true);
+                    btnComplete.setEnabled(true);
                 }
             }
         }
@@ -151,7 +142,7 @@ public class SelectStoreActivity extends BaseMvpActivity<SelectStorePresenter>
                 SelectShopModel info = getData().get(holder.getAdapterPosition());
                 info.setChecked(!info.isChecked());
                 selectedCount = info.isChecked() ? selectedCount + 1 : selectedCount - 1;
-                enableCompleteBtn(selectedCount > 0);
+                btnComplete.setEnabled(selectedCount > 0);
             });
             return holder;
         }

@@ -13,15 +13,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.sunmi.cloudprinter.R;
-import com.sunmi.cloudprinter.bean.PrinterJSCall;
-import com.sunmi.cloudprinter.config.PrinterConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -35,26 +32,27 @@ import org.json.JSONObject;
 import java.io.File;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.FileHelper;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.bottompopmenu.BottomPopMenu;
 import sunmi.common.view.bottompopmenu.PopItemAction;
+import sunmi.common.view.webview.BaseJSCall;
+import sunmi.common.view.webview.SMWebChromeClient;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
 import sunmi.common.view.webview.SsConstants;
 
 @EActivity(resName = "activity_printer_manage")
-public class PrinterManageActivity extends BaseActivity {
+public class PrinterManageActivity extends BaseActivity implements SMWebChromeClient.Callback {
 
     private static final int timeout = 15_000;
-
-    private static final int REQUEST_GALLERY = 0xa0;
-    private static final int REQUEST_CAMERA = 0xa1;
 
     @ViewById(resName = "webView")
     SMWebView webView;
@@ -74,19 +72,15 @@ public class PrinterManageActivity extends BaseActivity {
 
     private boolean hasSendInfo = false;
     private CountDownTimer countDownTimer;
-    private ValueCallback<Uri[]> imgCaBack;
-    private BottomPopMenu choosePhotoMenu;
-
-    //传递给H5的Uri
-    private Uri imgUri;
+    private SMWebChromeClient webChrome;
 
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
-//        webView.loadUrl(CommonConfig.SERVICE_H5_URL +
-//                "cloudPrinter/index?topPadding=" + Utils.getWebViewStatusBarHeight(context));
-        webView.loadUrl(PrinterConfig.IOT_H5_URL);
+        webView.loadUrl(CommonConfig.SERVICE_H5_URL +
+                "cloudPrinter/index?topPadding=" + Utils.getWebViewStatusBarHeight(context));
+//        webView.loadUrl(PrinterConfig.IOT_H5_URL);
         startTimer();
     }
 
@@ -137,32 +131,16 @@ public class PrinterManageActivity extends BaseActivity {
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
         // 可以运行JavaScript
-//        BaseJSCall jsCall = new BaseJSCall(this, webView);
-        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
+        BaseJSCall jsCall = new BaseJSCall(this, webView);
+//        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
         });
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress < 100) {
-                    showLoadingDialog();
-                } else {
-                    hideLoadingDialog();
-                    closeTimer();
-                }
-                super.onProgressChanged(view, newProgress);
-            }
-
-            @Override
-            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-                imgCaBack = filePathCallback;
-                chooseImage();
-                return true;
-            }
-        });
+        webChrome = new SMWebChromeClient(this);
+        webChrome.setCallback(this);
+        webView.setWebChromeClient(webChrome);
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
@@ -210,52 +188,6 @@ public class PrinterManageActivity extends BaseActivity {
         });
     }
 
-    private void chooseImage() {
-        if (choosePhotoMenu == null) {
-            choosePhotoMenu = new BottomPopMenu.Builder(this)
-                    .addItemAction(new PopItemAction(R.string.str_take_photo,
-                            PopItemAction.PopItemStyle.Normal, this::takePhoto))
-                    .addItemAction(new PopItemAction(R.string.str_choose_from_album,
-                            PopItemAction.PopItemStyle.Normal, this::openGallery))
-                    .addItemAction(new PopItemAction(R.string.sm_cancel,
-                            PopItemAction.PopItemStyle.Cancel, () -> {
-                        if (imgCaBack != null) {
-                            imgCaBack.onReceiveValue(new Uri[]{});
-                        }
-                    }))
-                    .create();
-        }
-        choosePhotoMenu.show();
-    }
-
-    private void takePhoto() {
-        if (!PermissionUtils.checkSDCardCameraPermission(this)) {
-            return;
-        }
-
-        File fileUri = new File(FileHelper.SDCARD_CACHE_IMAGE_PATH + "printer.jpg");
-        imgUri = Uri.fromFile(fileUri);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            //通过FileProvider创建一个content类型的Uri
-            imgUri = FileProvider.getUriForFile(context,
-                    CommonConstants.FILE_PROVIDER_AUTHORITY, fileUri);
-        }
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
-        startActivityForResult(intent, REQUEST_CAMERA);
-    }
-
-    private void openGallery() {
-        if (!PermissionUtils.checkStoragePermission(this)) {
-            return;
-        }
-        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        photoPickerIntent.setType("image/*");
-        photoPickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(photoPickerIntent, REQUEST_GALLERY);
-    }
-
     @Click(resName = "btn_refresh")
     void refreshClick() {
         networkError.setVisibility(View.GONE);
@@ -288,31 +220,30 @@ public class PrinterManageActivity extends BaseActivity {
     }
 
     @Override
+    public void onProgressChanged(int progress) {
+        if (progress < 100) {
+            showLoadingDialog();
+        } else {
+            hideLoadingDialog();
+            closeTimer();
+        }
+    }
+
+    @Override
+    public void onProgressComplete() {
+
+    }
+
+    @Override
+    public void onReceivedTitle(String title) {
+
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Uri[] uris;
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_CAMERA:
-                    uris = new Uri[]{imgUri};
-                    break;
-                case REQUEST_GALLERY:
-                    if (data != null) {
-                        Uri image = data.getData();
-                        uris = new Uri[]{image};
-                    } else {
-                        uris = new Uri[]{};
-                    }
-                    break;
-                default:
-                    uris = new Uri[]{};
-                    break;
-            }
-        } else {
-            uris = new Uri[]{};
-        }
-        if (imgCaBack != null) {
-            imgCaBack.onReceiveValue(uris);
+        if (webChrome != null) {
+            webChrome.uploadImage(requestCode, resultCode, data);
         }
     }
 
@@ -320,20 +251,8 @@ public class PrinterManageActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case PermissionUtils.REQ_PERMISSIONS_CAMERA_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    takePhoto();
-                } else {
-                    shortTip(getString(R.string.str_please_open_camera));
-                }
-                break;
-            case PermissionUtils.REQ_PERMISSIONS_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openGallery();
-                }
-                break;
-            default:
+        if (webChrome != null) {
+            webChrome.onPermissionResult(requestCode, grantResults);
         }
     }
 }

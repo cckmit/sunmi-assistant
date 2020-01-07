@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -83,6 +84,8 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
     TextView tvIpcStatus;
     @ViewById(resName = "tv_ipc_upgrade_tip")
     TextView tvIpcUpgradeTip;
+    @ViewById(resName = "llBottomBtn")
+    LinearLayout llBottomBtn;
     @ViewById(resName = "btn_upgrade")
     Button btnUpgrade;
     @ViewById(resName = "iv_ipc")
@@ -163,7 +166,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         ipcSettingUpgradeGroup.setVisibility(View.GONE);
         if (mResp.getUpgrade_required() == 1) {
             tvIpcStatus.setText(getString(R.string.ipc_setting_version_find_new, mResp.getLatest_bin_version()));
-            btnUpgrade.setVisibility(View.VISIBLE);
+            llBottomBtn.setVisibility(View.VISIBLE);
         } else {
             String strVersion;
             if (TextUtils.isEmpty(mDevice.getFirmware())) {
@@ -179,7 +182,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 }
             }
             tvIpcStatus.setText(String.format("%s\n%s", strVersion, getString(R.string.ipc_setting_version_no_new)));
-            btnUpgrade.setVisibility(View.GONE);
+            llBottomBtn.setVisibility(View.GONE);
         }
     }
 
@@ -202,7 +205,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
      * 升级中
      */
     private void upgrading() {
-        btnUpgrade.setVisibility(View.GONE);
+        llBottomBtn.setVisibility(View.GONE);
         tvIpcStatus.setVisibility(View.VISIBLE);
         tvIpcUpgradeTip.setVisibility(View.VISIBLE);
         ipcSettingUpgradeGroup.setVisibility(View.GONE);
@@ -349,7 +352,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
 
     @UiThread
     void setLayoutVisible() {
-        btnUpgrade.setVisibility(View.GONE);
+        llBottomBtn.setVisibility(View.GONE);
     }
 
     /**
@@ -479,7 +482,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         tvIpcStatus.setVisibility(View.GONE);
         tvIpcUpgradeTip.setVisibility(View.GONE);
         mProgress.setVisibility(View.GONE);
-        btnUpgrade.setVisibility(View.GONE);
+        llBottomBtn.setVisibility(View.GONE);
     }
 
     private void startTimerCountDown(int status) {
@@ -632,7 +635,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
         mProgress.setProgress(progress);
         tvIpcStatus.setText(strStatus);
         tvIpcUpgradeTip.setText(strStatusTip);
-        btnUpgrade.setVisibility(View.GONE);
+        llBottomBtn.setVisibility(View.GONE);
     }
 
     /**

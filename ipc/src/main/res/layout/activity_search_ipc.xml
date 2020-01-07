@@ -89,25 +89,21 @@
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
-        <RelativeLayout
-            android:id="@+id/rl_start"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_84"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@color/c_white">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_0_5"
-                android:background="@color/c_divider" />
+            android:background="@drawable/bg_bottom_btn_top_divider"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/dp_20"
+            android:paddingBottom="@dimen/dp_20">
 
             <Button
                 android:id="@+id/btn_config"
                 style="@style/BtnBigOrange"
-                android:layout_centerInParent="true"
                 android:text="@string/str_confirm_connect" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 

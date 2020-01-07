@@ -7,6 +7,7 @@ import com.sunmi.ipc.face.model.FaceArrivalCount;
 import com.sunmi.ipc.face.model.FaceArrivalLogResp;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.model.CashVideoCountResp;
+import com.sunmi.ipc.model.CashVideoEventResp;
 import com.sunmi.ipc.model.CashVideoListBean;
 import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.model.CashVideoTimeSlotBean;
@@ -669,32 +670,6 @@ public class IpcCloudApi implements IpcCloudApiAnno {
         }
     }
 
-
-    /**
-     * 收银审计视频--是否异常视频tag
-     * company_id	是	int64	商户id
-     * shop_id	是	int64	店铺id
-     * audit_video_id	是	int64	收银视频id
-     * description	是	string	标记文本内容
-     * video_type  是	int32	标记类型 1:正常视频，2:异常视频
-     */
-    public void updateTag(int auditVideoId, String description, int videoType, RetrofitCallback<Object> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
-                    .put("audit_video_id", auditVideoId)
-                    .put("description", description)
-                    .put("video_type", videoType)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
-                    .updateTag(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * 收银审计订单信息
      * company_id	是	int64	商户id
@@ -724,7 +699,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * time_range_start	是	int64
      * time_range_end	是	int64
      */
-    public void getCashVidoTimeSlots(int deviceId, long startTime, long endTime, RetrofitCallback<CashVideoTimeSlotBean> callback) {
+    public void getCashVideoTimeSlots(int deviceId, long startTime, long endTime, RetrofitCallback<CashVideoTimeSlotBean> callback) {
         try {
             JSONObject jsonObject = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
@@ -837,6 +812,113 @@ public class IpcCloudApi implements IpcCloudApiAnno {
     }
 
     /**
+     * 指定设备是收银防损开通状态
+     *
+     * @param snList
+     * @param callback
+     */
+    @Override
+    public void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceListResp> callback) {
+        try {
+            JSONObject jsonObject = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            if (snList != null) {
+                JSONArray array = new JSONArray(snList);
+                jsonObject.put("device_sn_list", array);
+            }
+            String params = jsonObject.toString();
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
+                    .getAuditSecurityPolicyList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取行为异常视频列表
+     *
+     * @param deviceId  否
+     * @param startTime 是
+     * @param endTime   是
+     * @param pageNum   否
+     * @param pageSize  否
+     * @param callback
+     */
+    public void getAbnormalBehaviorVideoList(int deviceId, long startTime, long endTime, int pageNum, int pageSize,
+                                             RetrofitCallback<CashVideoResp> callback) {
+        try {
+            JSONObject jsonObject = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            if (deviceId != -1) {
+                jsonObject.put("device_id", deviceId);
+            }
+
+            jsonObject.put("time_range_start", startTime);
+            jsonObject.put("time_range_end", endTime);
+            jsonObject.put("page_num", pageNum);
+            jsonObject.put("page_size", pageSize);
+            String params = jsonObject.toString();
+            SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
+                    .getAbnormalBehaviorVideoList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getCashVideoAbnormalEvent(long eventId, RetrofitCallback<CashVideoEventResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .put("event_id", eventId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
+                    .getCashVideoAbnormalEvent(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 收银审计视频--是否异常视频tag
+     * <p>
+     * company_id	    是	int64	商户id
+     * shop_id	        是	int64	店铺id
+     * audit_video_id	是	int64	收银视频id
+     * description	    否	string	标记文本内容
+     * video_type	    是	int32	标记类型 1:正常视频，2:异常视频
+     * video_tag	    否	array[integer]	标记类型 1:自定义类型，2:飞单，3:钱箱未关，4:偷钱，5:漏扫，6:偷换条码，7:交易类型不匹配
+     */
+    public void updateTag(long videoId, int source, int type, List<Integer> tags, String desc,
+                          RetrofitCallback<Object> callback) {
+        try {
+            JSONObject params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .put("audit_video_id", videoId)
+                    .put("video_source", source)
+                    .put("video_type", type);
+            if (tags != null && !tags.isEmpty()) {
+                JSONArray array = new JSONArray(tags);
+                params.put("video_tag", array);
+            }
+            if (!TextUtils.isEmpty(desc)) {
+                params.put("description", desc);
+            }
+            SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
+                    .updateTag(new BaseRequest(params.toString()))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 获取门店下设备动态侦测/闲时看店事件视频时间信息（天）
      *
      * @param companyId 是	int	商户id
@@ -899,63 +981,6 @@ public class IpcCloudApi implements IpcCloudApiAnno {
             String params = jsonObject.toString();
             SunmiStoreRetrofitClient.getInstance().create(MotionDetectionInterface.class)
                     .getVideoList(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 指定设备是收银防损开通状态
-     *
-     * @param snList
-     * @param callback
-     */
-    @Override
-    public void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceListResp> callback) {
-        try {
-            JSONObject jsonObject = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            if (snList != null) {
-                JSONArray array = new JSONArray(snList);
-                jsonObject.put("device_sn_list", array);
-            }
-            String params = jsonObject.toString();
-            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
-                    .getAuditSecurityPolicyList(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 获取行为异常视频列表
-     * @param deviceId  否
-     * @param startTime  是
-     * @param endTime   是
-     * @param pageNum  否
-     * @param pageSize  否
-     * @param callback
-     */
-    public void getAbnormalBehaviorVideoList(int deviceId,long startTime, long endTime, int pageNum, int pageSize,
-                                             RetrofitCallback<CashVideoResp> callback) {
-        try {
-            JSONObject jsonObject = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            if (deviceId != -1) {
-                jsonObject.put("device_id", deviceId);
-            }
-
-            jsonObject.put("time_range_start", startTime);
-            jsonObject.put("time_range_end", endTime);
-            jsonObject.put("page_num", pageNum);
-            jsonObject.put("page_size", pageSize);
-            String params = jsonObject.toString();
-            SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
-                    .getAbnormalBehaviorVideoList(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

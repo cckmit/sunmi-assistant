@@ -126,4 +126,5 @@ public class CashVideoServiceBean implements Parcelable {
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
+    
 }

@@ -1,10 +1,10 @@
 package com.sunmi.assistant.mine;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebResourceError;
@@ -32,7 +32,7 @@ import sunmi.common.view.webview.SMWebViewClient;
  * @author yangshijie
  */
 @EActivity(R.layout.activity_help)
-public class HelpActivity extends BaseActivity implements View.OnClickListener {
+public class HelpActivity extends BaseActivity {
 
     @ViewById(R.id.title_bar)
     TitleBarView titleBar;
@@ -49,17 +49,8 @@ public class HelpActivity extends BaseActivity implements View.OnClickListener {
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        titleBar.getLeftLayout().setOnClickListener(this);
+        titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         loadWebView(AppConfig.HELP);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (webView.canGoBack()) {
-            webView.goBack();
-        } else {
-            finish();
-        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -118,13 +109,30 @@ public class HelpActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && webChrome != null) {
-            if (requestCode == SMWebChromeClient.CHOOSE_REQUEST_CODE) {
-                webChrome.uploadImage(data, resultCode);
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED && webChrome != null) {
-            webChrome.cancelCallback();
+        if (webChrome != null) {
+            webChrome.uploadImage(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (webChrome != null) {
+            webChrome.onPermissionResult(requestCode, grantResults);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webView == null) {
+            return;
+        }
+        if (webView.canGoBack()) {
+            webView.goBack();
+            return;
+        }
+        super.onBackPressed();
     }
 
 }

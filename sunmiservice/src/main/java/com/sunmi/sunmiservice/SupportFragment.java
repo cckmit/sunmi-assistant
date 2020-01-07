@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sunmi.contract.SupportContract;
+import com.sunmi.presenter.SupportPresenter;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
@@ -17,7 +19,6 @@ import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.xiaojinzi.component.impl.Router;
-import com.xiaojinzi.component.impl.service.ServiceManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -27,23 +28,20 @@ import org.androidannotations.annotations.ViewById;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import sunmi.common.base.BaseFragment;
+import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashVideoServiceBean;
-import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.router.IpcApi;
-import sunmi.common.router.IpcCloudApiAnno;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
-public class SupportFragment extends BaseFragment implements View.OnClickListener {
+public class SupportFragment extends BaseMvpFragment<SupportPresenter>
+        implements View.OnClickListener, SupportContract.View {
 
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
@@ -53,31 +51,17 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
     ImageView ivTipFree;
     @ViewById(resName = "tv_cash_video")
     TextView tvCashVideo;
+    @ViewById(resName = "tv_cash_name")
+    TextView tvCashName;
+    @ViewById(resName = "tv_cash_content")
+    TextView tvCashContent;
 
 
     private IWXAPI api;// 第三方app和微信通信的openApi接口
     private ArrayList<CashVideoServiceBean> cashVideoServiceBeans = new ArrayList<>();
-    private IpcCloudApiAnno ipcCloudApi;
-    private int cloudStatus;
     private boolean loadFail = false;
     private ArrayList<String> snList = new ArrayList<>();
-
-    private RetrofitCallback<ServiceListResp> callback = new RetrofitCallback<ServiceListResp>() {
-        @Override
-        public void onSuccess(int code, String msg, ServiceListResp data) {
-            cloudStatus = data.getDeviceList().get(0).getStatus();
-            if (cloudStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
-                Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false);
-            } else {
-                CashVideoNonCloudActivity_.intent(mActivity).snList(snList).start();
-            }
-        }
-
-        @Override
-        public void onFail(int code, String msg, ServiceListResp data) {
-            shortTip(R.string.toast_network_Exception);
-        }
-    };
+    private boolean hasCashLossPrevent;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,7 +72,8 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
     @AfterViews
     void init() {
         titleBar.getRightTextView().setOnClickListener(this);
-        ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
+        mPresenter = new SupportPresenter();
+        mPresenter.attachView(this);
         changeCashVideoCard();
         changeCloudCard();
     }
@@ -120,9 +105,8 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
         if (size == 0) {
             WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO).start();
         } else {
-            if (ipcCloudApi != null) {
-                ipcCloudApi.getStorageList(snList, callback);
-            }
+            mPresenter.getStorageList();
+//            Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false, hasCashLossPrevent);
         }
     }
 
@@ -171,6 +155,37 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
                 SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
+    @Override
+    public void getCashServiceSuccess(ArrayList<CashVideoServiceBean> beans, boolean hasCashLossPrevent) {
+        loadFail = false;
+        cashVideoServiceBeans.clear();
+        cashVideoServiceBeans.addAll(beans);
+        this.hasCashLossPrevent = hasCashLossPrevent;
+        if (cashVideoServiceBeans.size() > 0) {
+            tvCashVideo.setText(R.string.str_setting_detail);
+            if (hasCashLossPrevent) {
+                tvCashName.setText(R.string.str_cash_loss_prevent);
+                tvCashContent.setText(R.string.service_tip_cash_loss_prevent);
+            }
+        } else {
+            tvCashVideo.setText(R.string.str_learn_more);
+        }
+    }
+
+    @Override
+    public void getServiceFail() {
+        loadFail = true;
+    }
+
+    @Override
+    public void getStorageSeviceSuccess(int cloudStatus) {
+        if (cloudStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
+            Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false, hasCashLossPrevent);
+        } else {
+            CashVideoNonCloudActivity_.intent(mActivity).snList(snList).start();
+        }
+    }
+
     private boolean netWorkError() {
         if (!NetworkUtils.isNetworkAvailable(mActivity)) {
             shortTip(R.string.toast_network_error);
@@ -188,47 +203,14 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
 
 
     private void changeCashVideoCard() {
-        cashVideoServiceBeans.clear();
-        if (ipcCloudApi != null) {
-            ipcCloudApi.getAuditVideoServiceList(null, new RetrofitCallback<ServiceListResp>() {
-                @Override
-                public void onSuccess(int code, String msg, ServiceListResp data) {
-                    loadFail = false;
-                    List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
-                    if (beans.size() > 0) {
-                        for (ServiceListResp.DeviceListBean bean : beans) {
-                            if (bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                                CashVideoServiceBean info = new CashVideoServiceBean();
-                                info.setDeviceId(bean.getDeviceId());
-                                info.setDeviceSn(bean.getDeviceSn());
-                                snList.add(bean.getDeviceSn());
-                                info.setDeviceName(bean.getDeviceName());
-                                info.setImgUrl(bean.getImgUrl());
-                                cashVideoServiceBeans.add(info);
-                            }
-                        }
-                    }
-                    if (cashVideoServiceBeans.size() > 0) {
-                        tvCashVideo.setText(R.string.str_setting_detail);
-                    } else {
-                        tvCashVideo.setText(R.string.str_learn_more);
-                    }
-                }
-
-                @Override
-                public void onFail(int code, String msg, ServiceListResp data) {
-                    loadFail = true;
-                    changeCashVideoCard();
-                }
-            });
-        }
+        mPresenter.getAuditVideoServiceList();
     }
 
     @Override
     public int[] getStickNotificationId() {
         return new int[]{
                 CommonNotifications.activeCloudChange, CommonNotifications.cashVideoSubscribe,
-                CommonNotifications.shopSwitched, CommonNotifications.cloudStorageChange
+                CommonNotifications.shopSwitched
         };
     }
 
@@ -238,8 +220,6 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
             changeCloudCard();
         } else if (id == CommonNotifications.cashVideoSubscribe || id == CommonNotifications.shopSwitched) {
             changeCashVideoCard();
-        } else if (id == CommonNotifications.cloudStorageChange) {
-            cloudStatus = CommonConstants.SERVICE_ALREADY_OPENED;
         }
     }
 

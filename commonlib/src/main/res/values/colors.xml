@@ -62,4 +62,10 @@
     <color name="c_303540_20a">#33303540</color>
     <color name="c_777E8C_64a">#A3777E8C</color>
 
+    <!-- 金色 开通按钮渐变 -->
+    <color name="golden_light">#EDBA77</color>
+    <color name="golden_dark">#B37A40</color>
+    <color name="golden_pressed_light">#CCA066</color>
+    <color name="golden_pressed_dark">#996937</color>
+
 </resources>

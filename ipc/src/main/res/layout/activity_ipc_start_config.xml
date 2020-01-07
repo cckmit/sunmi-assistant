@@ -68,11 +68,11 @@
         android:id="@+id/ctv_privacy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/rl_start"
+        android:layout_above="@+id/llBottomBtn"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_12"
         android:checked="false"
         android:drawableStart="@drawable/selector_privacy"
         android:drawablePadding="@dimen/dp_3"
@@ -86,12 +86,15 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <RelativeLayout
-        android:id="@+id/rl_start"
+    <LinearLayout
+        android:id="@+id/llBottomBtn"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_84"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/c_white">
+        android:background="@drawable/bg_bottom_btn_top_divider"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_20">
 
         <View
             android:layout_width="match_parent"
@@ -101,9 +104,8 @@
         <Button
             android:id="@+id/btn_start"
             style="@style/BtnBigOrange"
-            android:layout_centerInParent="true"
             android:text="@string/str_next" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
