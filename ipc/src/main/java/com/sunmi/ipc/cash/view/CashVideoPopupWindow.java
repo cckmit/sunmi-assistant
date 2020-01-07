@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,9 +20,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.cash.CashTagManager;
 import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.config.IpcConstants;
-import com.sunmi.ipc.utils.CashAbnormalTagUtils;
+import com.sunmi.ipc.model.CashTag;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -50,7 +52,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
     private int currentPlayPosition;
     private double maxLength = 3.5;
     private NumberFormat numberFormat;
-    private CashAbnormalTagUtils tagUtils;
+    private CashTagManager tagManager;
     private boolean isAbnormalBehavior;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -63,7 +65,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             this.mSetTitleView = mSetViewImg;
             this.mList = list;
             this.isAbnormalBehavior = isAbnormalBehavior;
-            tagUtils = CashAbnormalTagUtils.getInstance();
+            tagManager = CashTagManager.get(activity);
         }
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View viewLayout = inflater.inflate(R.layout.cash_popwindow_video_list, null);
@@ -173,34 +175,36 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             if (isShowing()) {
                 Glide.with(mContext).load(res.getSnapshotUrl()).transform(new GlideRoundTransform(mContext)).into(imgVideo);
             }
-            int tag = res.getVideoTag() != null ? res.getVideoTag()[0] : 0;
-            if (res.getVideoType() == IpcConstants.CASH_VIDEO_NORMAL) {
-                tvTag.setVisibility(View.GONE);
-            } else if (res.getVideoType() == IpcConstants.CASH_VIDEO_ABNORMAL) {
-                if (tag == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
-                    tvTag.setText(res.getDescription());
-                } else if (tag == 0 || tag > 7) {
-                    tvTag.setText(R.string.tag_other_exception);
-                } else {
-                    tvTag.setText(tagUtils.getCashTag(tag).getDescription());
-                }
+
+            int[] tags = res.getVideoTag();
+            int tagId = tags != null && tags.length > 0 ? tags[0] : -1;
+            CashTag tag = tagManager.getTag(tagId);
+            if (res.getVideoType() == IpcConstants.CASH_VIDEO_ABNORMAL) {
                 tvTag.setVisibility(View.VISIBLE);
+                if (tagId == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
+                    tvTag.setText(res.getDescription());
+                } else {
+                    tvTag.setText(tag.getName());
+                }
+            } else {
+                tvTag.setVisibility(View.GONE);
             }
+
             if (isAbnormalBehavior) {
                 tvSuggest.setVisibility(View.VISIBLE);
                 holder.getView(R.id.group_content).setVisibility(View.GONE);
-                if (tag >= 2 && tag <= 3) {
-                    tvSuggest.setText(tagUtils.getCashTag(tag).getTip());
+                if (!TextUtils.isEmpty(tag.getTip())) {
+                    tvSuggest.setText(tag.getTip());
                 } else {
                     tvSuggest.setText(R.string.tip_other_exception);
                 }
-
             } else {
                 tvSuggest.setVisibility(View.GONE);
                 holder.getView(R.id.group_content).setVisibility(View.VISIBLE);
                 holder.setText(R.id.tv_amount, String.format("¥%s", numberFormat.format(res.getAmount())));
                 holder.setText(R.id.tv_order_num, res.getOrderNo());
             }
+
             if (mList.size() > 1) {
                 if (holder.getAdapterPosition() == mList.size() - 1) {
                     tvLineTop.setVisibility(View.VISIBLE);

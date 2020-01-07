@@ -43,7 +43,6 @@ import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.presenter.CashVideoPresenter;
-import com.sunmi.ipc.utils.CashAbnormalTagUtils;
 import com.sunmi.ipc.view.activity.CloudPlaybackActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -985,7 +984,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         cashBoxOverlay.setData(boxes);
         sbMark.setData(boxes);
         String tip = getString(R.string.cash_abnormal_tip,
-                CashAbnormalTagUtils.getInstance().getCashTag(getCurrent().getVideoTag()[0]).getDescription(),
+                CashTagManager.get(this).getTag(getCurrent().getVideoTag()[0]).getName(),
                 (int) riskScore);
         tvAbnormalTip.setText(tip);
         sbMark.setVisibility(View.VISIBLE);
