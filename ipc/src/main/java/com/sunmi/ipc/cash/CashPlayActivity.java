@@ -370,7 +370,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_big_gray), null);
         popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, playIndex,
-                videoList, titleBar.getAppTitle(),isAbnormalBehavior);
+                videoList, titleBar.getAppTitle(), isAbnormalBehavior);
     }
 
     @Override
@@ -621,8 +621,21 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (mSelectedTag != null) {
             mTagAdapter.setSelected(mSelectedTag.getId());
         } else {
-            mTagAdapter.setSelected(getCurrent().getVideoType() == IpcConstants.CASH_VIDEO_NORMAL ?
-                    CashTagFilter.TAG_ID_NORMAL : getCurrent().getVideoTag()[0]);
+            CashVideo current = getCurrent();
+            if (current.getVideoType() == IpcConstants.CASH_VIDEO_NORMAL) {
+                // 正常视频
+                mTagAdapter.setSelected(CashTagFilter.TAG_ID_NORMAL);
+            } else {
+                // 异常视频
+                int[] tags = current.getVideoTag();
+                if (tags == null || tags.length <= 0) {
+                    // FIXME: 其他异常如何在选择异常对话框中展示
+                } else if (tags[0] == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
+                    mTagAdapter.setCustom(current.getDescription());
+                } else {
+                    mTagAdapter.setSelected(tags[0]);
+                }
+            }
         }
         mTagDialog.show();
     }
@@ -882,18 +895,18 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     }
 
     @Override
-    public void updateTagSuccess(CashTagFilter tag) {
+    public void updateTagSuccess(CashTagFilter selected) {
         hideLoadingDialog();
-        mSelectedTag = tag;
+        mSelectedTag = selected;
         // 更新VideoList
         CashVideo info = getCurrent();
-        boolean isAbnormal = tag.getId() != CashTagFilter.TAG_ID_NORMAL;
+        boolean isAbnormal = selected.getId() != CashTagFilter.TAG_ID_NORMAL;
         ivTag.setSelected(isAbnormal);
         if (isAbnormal) {
             info.setVideoType(IpcConstants.CASH_VIDEO_ABNORMAL);
-            info.setVideoTag(new int[]{tag.getId()});
-            if (tag.getId() == CashTagFilter.TAG_ID_CUSTOM) {
-                info.setDescription(tag.getDesc());
+            info.setVideoTag(new int[]{selected.getId()});
+            if (selected.getId() == CashTagFilter.TAG_ID_CUSTOM) {
+                info.setDescription(selected.getDesc());
             }
             shortTip(R.string.cash_tag_success);
         } else {
@@ -901,7 +914,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             shortTip(R.string.cash_tag_cancel_success);
         }
         // 清除AI加框信息
-        getCurrent().setEventId(0);
+        info.setEventId(0);
         tvAbnormalTip.setVisibility(View.GONE);
         cashBoxOverlay.setVisibility(View.GONE);
         sbMark.setVisibility(View.GONE);
@@ -991,7 +1004,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         cashBoxOverlay.setData(boxes);
         sbMark.setData(boxes);
         String tip = getString(R.string.cash_abnormal_tip,
-                CashTagManager.get(this).getTag(getCurrent().getVideoTag()[0]).getName(),
+                CashTagManager.get(this).getTag(getCurrent().getVideoTag()).getName(),
                 (int) riskScore);
         tvAbnormalTip.setText(tip);
         cashBoxOverlay.setVisibility(View.VISIBLE);
