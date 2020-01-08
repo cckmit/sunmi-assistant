@@ -12,14 +12,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.sunmi.apmanager.config.AppConfig;
-import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
 import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
-import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.assistant.R;
@@ -53,8 +51,9 @@ import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
@@ -104,7 +103,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private RelativeLayout rlNoDevice;
     private ShopTitlePopupWindow popupWindow;
     private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
-    private Timer timer = null;
+    private ScheduledExecutorService service;
     private DeviceListAdapter deviceListAdapter;
     private DeviceSettingMenu deviceSettingMenu;
     private InputDialog dialogPassword = null;
@@ -127,8 +126,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             adList.addAll(DataSupport.findAll(AdListBean.class));
         }
         deviceList.addAll(DataSupport.findAll(SunmiDevice.class));
+        SunmiDevice currentDevice;
         for (SunmiDevice device : deviceList) {
-            device.setStatus(DeviceStatus.UNKNOWN.ordinal());
+            currentDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
+            device.setStatus(currentDevice != null && TextUtils.equals(currentDevice.getDeviceid(), device.getDeviceid()) ?
+                    DeviceStatus.EXCEPTION.ordinal() :
+                    DeviceStatus.UNKNOWN.ordinal());
         }
         initViews();
         loadData();
@@ -188,6 +191,23 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
+    private void startTimer() {
+        service = Executors.newScheduledThreadPool(1);
+        service.scheduleAtFixedRate(() -> {
+            mPresenter.getIpcList();
+            mPresenter.getRouterList();
+            mPresenter.getPrinterList();
+            mPresenter.getPosList();
+        }, 30000, 120000, TimeUnit.MILLISECONDS);
+    }
+
+    private void closeTimer() {
+        if (service != null) {
+            service.shutdownNow();
+            service = null;
+        }
+    }
+
     @Override
     public void onClick(View v) {
         addClick();
@@ -195,11 +215,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Click(R.id.btn_add)
     void addClick() {
-        if (isFastClick(1500)) return;
-        CommonUtils.trackCommonEvent(mActivity, "addDevice",
-                "主页_店铺_添加设备", Constants.EVENT_MAIN_PAGE);
-        CommonUtils.trackDurationEventBegin(mActivity, "bindDeviceDuration",
-                "添加设备开始到立即绑定弹框", Constants.EVENT_DURATION_ADD_DEVICE);
+        if (isFastClick(1500)) {
+            return;
+        }
         //选择设备
         ChooseDeviceDialog chooseDeviceDialog = new ChooseDeviceDialog(mActivity, SpUtils.getShopId());
         chooseDeviceDialog.show();
@@ -302,7 +320,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void onDeviceClick(SunmiDevice device) {
-        if (isFastClick(1500)) return;
+        if (isFastClick(1500)) {
+            return;
+        }
         switch (device.getType()) {
             case "PRINTER":
                 if (device.getStatus() != DeviceStatus.UNKNOWN.ordinal()) {
@@ -416,7 +436,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (args == null) return;
+        if (args == null) {
+            return;
+        }
         if (id == CommonConstants.tabDevice
                 || NotificationConstant.bindRouterChanged == id
                 || NotificationConstant.updateConnectComplete == id
@@ -431,40 +453,39 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (id == CommonNotifications.companySwitch) {
             tvShopTitle.setText(SpUtils.getShopName());
             loadData();
-        } else if (CommonNotifications.netDisconnection == id) {//网络断开
+        } else if (CommonNotifications.netDisconnection == id
+                || NotificationConstant.apStatusException == id) {//网络断开,异常
             networkDisconnected();
-        } else if (NotificationConstant.apStatusException == id) {//异常
-            if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
-            devStatusChangeList(MyNetworkCallback.CURRENT_ROUTER, DeviceStatus.EXCEPTION);
         } else if (NotificationConstant.connectedTosunmiDevice == id) {//异常
             devStatusUnknownToException();
         } else if (NotificationConstant.apPostStatus == id) {//在线 离线 设备状态
             String msg = (String) args[0];
-            if (TextUtils.isEmpty(msg)) return;
+            if (TextUtils.isEmpty(msg)) {
+                return;
+            }
             try {
                 JSONObject object = new JSONObject(msg);
                 JSONArray jsonArray = object.getJSONArray("params");
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = (JSONObject) jsonArray.opt(i);
                     int event = EncryptUtils.decodeOp(jsonObject.getString("event"));
+                    JSONObject object1 = jsonObject.getJSONObject("param");
                     if (NotificationConstant.apOnline == event) {
-                        JSONObject object1 = jsonObject.getJSONObject("param");
                         String sn = object1.getString("sn");
                         devStatusChangeList(sn, DeviceStatus.ONLINE); //在线状态
                     } else if (NotificationConstant.apOffline == event) {
-                        JSONObject object1 = jsonObject.getJSONObject("param");
                         String sn = object1.getString("sn");
                         devStatusChangeList(sn, DeviceStatus.OFFLINE); //离线状态
-
                         //发送广播
-                        if (!TextUtils.equals(sn, AppConfig.GLOBAL_SN)) return;
+                        if (!TextUtils.equals(sn, AppConfig.GLOBAL_SN)) {
+                            return;
+                        }
                         Intent intent = new Intent();
                         intent.setAction(AppConfig.BROADCAST_ACTION);
                         intent.putExtra("type", AppConfig.BROADCAST_STATUS);
                         mActivity.sendBroadcast(intent);
                         BaseNotification.newInstance().postNotificationName(NotificationConstant.apOffline, sn);
                     } else if (NotificationConstant.apStatusList == event) {
-                        JSONObject object1 = jsonObject.getJSONObject("param");
                         JSONArray jsonArrayList = object1.getJSONArray("device_list");//所有设备列表
                         routerList.clear();
                         for (int j = 0; j < jsonArrayList.length(); j++) {
@@ -527,7 +548,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 .setHint(R.string.str_tip_password_6_32)
                 .setCancelButton(com.sunmi.apmanager.R.string.sm_cancel, (dialog, which) -> dialogPassword = null)
                 .setConfirmButton(com.sunmi.apmanager.R.string.str_confirm, (dialog, input) -> {
-                    if (isFastClick(1500)) return;
+                    if (isFastClick(1500)) {
+                        return;
+                    }
                     password = input;
                     if (TextUtils.isEmpty(password)) {
                         shortTip(R.string.hint_input_manger_password);
@@ -627,7 +650,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     private void devStatusUnknownToException() {
-        if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) return;
+        if (TextUtils.isEmpty(MyNetworkCallback.CURRENT_ROUTER)) {
+            return;
+        }
         for (SunmiDevice device : deviceList) {
             if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
                 if (device.getStatus() == DeviceStatus.UNKNOWN.ordinal()
@@ -643,25 +668,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @UiThread
     void deviceListRefresh() {
         deviceListAdapter.notifyDataSetChanged();
-    }
-
-    private void startTimer() {
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mPresenter.getIpcList();
-                mPresenter.getPrinterList();
-                mPresenter.getPosList();
-            }
-        }, 30000, 120000);
-    }
-
-    private void closeTimer() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
     }
 
     @UiThread
@@ -681,7 +687,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @UiThread
     void showEmptyView() {
-        if (rlNoDevice == null || btnAdd == null) return;
+        if (rlNoDevice == null || btnAdd == null) {
+            return;
+        }
         if (deviceList.size() > 0) {
             rlNoDevice.setVisibility(View.GONE);
             btnAdd.setVisibility(View.VISIBLE);
@@ -694,8 +702,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @UiThread
     void networkDisconnected() {
         hideLoadingDialog();
+        SunmiDevice currentDevice;
         for (SunmiDevice device : deviceList) {
-            device.setStatus(DeviceStatus.UNKNOWN.ordinal());
+            currentDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
+            device.setStatus(currentDevice != null && TextUtils.equals(currentDevice.getDeviceid(), device.getDeviceid()) ?
+                    DeviceStatus.EXCEPTION.ordinal() :
+                    DeviceStatus.UNKNOWN.ordinal());
         }
         deviceListRefresh();
         endRefresh();
