@@ -144,6 +144,10 @@ public class CashVideo implements Parcelable {
         this.hasCashLossPrevent = hasCashLossPrevent;
     }
 
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
+    }
+
     protected CashVideo(Parcel in) {
         videoId = in.readLong();
         videoUrl = in.readString();

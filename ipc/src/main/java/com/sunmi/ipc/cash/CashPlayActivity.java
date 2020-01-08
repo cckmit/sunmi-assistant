@@ -321,7 +321,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         titleBar.getAppTitle().setCompoundDrawablePadding((int) context.getResources().getDimension(R.dimen.dp_5));
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         titleBar.getAppTitle().setOnClickListener(v -> setTitleView());
-        new Handler().postDelayed(() -> ivpCash.setVisibility(View.VISIBLE), 800);
+        mHandler.postDelayed(() -> ivpCash.setVisibility(View.VISIBLE), 800);
         ivpCash.setOnTouchListener(cashTouchListener);
         //手势
         gestureDetector = new GestureDetector(this, new GestureScaleListener());
@@ -493,7 +493,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             tvScreenshotTip.setVisibility(View.VISIBLE);
             final Bitmap bitmap = retriever.getFrameAtTime(ivpCash.getCurrentPosition() * 1000,
                     FFmpegMediaMetadataRetriever.OPTION_CLOSEST);
-            new Handler().postDelayed(() -> {
+            mHandler.postDelayed(() -> {
                 if (ImageUtils.saveImageToGallery(context, bitmap, 100)) {
                     shortTip(getString(R.string.ipc_dynamic_take_screen_shot_success));
                 } else {
@@ -594,7 +594,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (pBarLoading.isShown()) {
             return;
         }
-        mPresenter.getStorageList(videoList.get(playIndex).getDeviceSn());
+        mPresenter.getStorageList(getCurrent().getDeviceSn());
     }
 
     /**
@@ -680,10 +680,14 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         } else {
             tvAbnormalTip.setVisibility(View.GONE);
         }
+        //查询当前视频订单信息
+        if (!isAbnormalBehavior) {
+            mPresenter.getOrderInfo(getCurrent().getOrderNo());
+        }
         ivTag.setSelected(isAbnormal);
         sbBar.setProgress(0);
         ivpCash.release();
-        new Handler().postDelayed(() -> {
+        mHandler.postDelayed(() -> {
             ivpCash.load(current.getVideoUrl());
             setVideoListener();
             tvCurrentPlayTime.setText(ivpCash.generateTime(0));
@@ -696,8 +700,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             hideLoading();
             isPaused = false;
             ibPlay.setBackgroundResource(R.mipmap.pause_normal);
-            //查询当前视频订单信息
-            mPresenter.getOrderInfo(getCurrent().getOrderNo());
             //开始播放
             ivpCash.startVideo();
             //初始化截屏
@@ -876,7 +878,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Override
     public void onPrepared(IMediaPlayer iMediaPlayer) {
-        startCashPreparedPlay();
+        mHandler.postDelayed(this::startCashPreparedPlay, 1000);
     }
 
     @Override
@@ -884,7 +886,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         hideLoadingDialog();
         mSelectedTag = tag;
         // 更新VideoList
-        CashVideo info = videoList.get(playIndex);
+        CashVideo info = getCurrent();
         boolean isAbnormal = tag.getId() != CashTagFilter.TAG_ID_NORMAL;
         ivTag.setSelected(isAbnormal);
         if (isAbnormal) {
@@ -898,6 +900,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             info.setVideoType(IpcConstants.CASH_VIDEO_NORMAL);
             shortTip(R.string.cash_tag_cancel_success);
         }
+        // 清除AI加框信息
+        getCurrent().setEventId(0);
+        tvAbnormalTip.setVisibility(View.GONE);
+        cashBoxOverlay.setVisibility(View.GONE);
+        sbMark.setVisibility(View.GONE);
         // 如果没有开通收银防损，那么弹窗推广
         if (!getCurrent().isHasCashLossPrevent()) {
             if (mLossPreventDialog == null) {
@@ -987,6 +994,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                 CashTagManager.get(this).getTag(getCurrent().getVideoTag()[0]).getName(),
                 (int) riskScore);
         tvAbnormalTip.setText(tip);
+        cashBoxOverlay.setVisibility(View.VISIBLE);
         sbMark.setVisibility(View.VISIBLE);
         tvAbnormalTip.setVisibility(View.VISIBLE);
     }
@@ -994,6 +1002,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     @Override
     public void getAbnormalEventFail(int code, String msg) {
         shortTip(R.string.toast_network_error);
+        cashBoxOverlay.setVisibility(View.GONE);
         sbMark.setVisibility(View.GONE);
         tvAbnormalTip.setVisibility(View.GONE);
     }
@@ -1002,11 +1011,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     private void gotoCloudPlaybackActivity(int status) {
         pausedVideo(true);
         SunmiDevice device = new SunmiDevice();
-        device.setId(videoList.get(playIndex).getDeviceId());
-        device.setDeviceid(videoList.get(playIndex).getDeviceSn());
-        device.setName(videoList.get(playIndex).getDeviceName());
+        device.setId(getCurrent().getDeviceId());
+        device.setDeviceid(getCurrent().getDeviceSn());
+        device.setName(getCurrent().getDeviceName());
         device.setModel("SS1");
-        long cashVideoStartTime = videoList.get(playIndex).getPurchaseTime();
+        long cashVideoStartTime = getCurrent().getPurchaseTime();
         CloudPlaybackActivity_.intent(context)
                 .device(device)
                 .cloudStorageServiceStatus(status)
