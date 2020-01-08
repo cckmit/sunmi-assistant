@@ -18,31 +18,31 @@ public class CashTagManager {
     /**
      * 其他
      */
-    private static final int ID_TAG_OTHER = -1;
+    private static final int TAG_ID_OTHER = -1;
     /**
      * 飞单
      */
-    private static final int ID_TAG_ORDER_MISMATCH = 2;
+    private static final int TAG_ID_ORDER_MISMATCH = 2;
     /**
      * 钱箱未关
      */
-    private static final int ID_TAG_CASH_EXPOSED = 3;
+    private static final int TAG_ID_CASH_EXPOSED = 3;
     /**
      * 偷钱
      */
-    private static final int ID_TAG_CASH_STOLEN = 4;
+    private static final int TAG_ID_CASH_STOLEN = 4;
     /**
      * 漏扫
      */
-    private static final int ID_TAG_SCAN_MISSING = 5;
+    private static final int TAG_ID_SCAN_MISSING = 5;
     /**
      * 偷换条码
      */
-    private static final int ID_TAG_CODE_REPLACED = 6;
+    private static final int TAG_ID_CODE_REPLACED = 6;
     /**
      * 交易类型不匹配
      */
-    private static final int ID_TAG_TRANSACTION_MISMATCH = 7;
+    private static final int TAG_ID_TRANSACTION_MISMATCH = 7;
 
     private SparseArray<CashTag> tags = new SparseArray<>();
     private CashTag other;
@@ -65,20 +65,20 @@ public class CashTagManager {
         if (isInit) {
             return;
         }
-        other = new CashTag(ID_TAG_OTHER, context.getString(R.string.cash_video_tag_other), "");
-        tags.put(ID_TAG_ORDER_MISMATCH, new CashTag(ID_TAG_ORDER_MISMATCH,
+        other = new CashTag(TAG_ID_OTHER, context.getString(R.string.cash_video_tag_other), "");
+        tags.put(TAG_ID_ORDER_MISMATCH, new CashTag(TAG_ID_ORDER_MISMATCH,
                 context.getString(R.string.cash_video_tag_order_mismatch),
                 context.getString(R.string.cash_video_tag_tip_order_mismatch)));
-        tags.put(ID_TAG_CASH_EXPOSED, new CashTag(ID_TAG_CASH_EXPOSED,
+        tags.put(TAG_ID_CASH_EXPOSED, new CashTag(TAG_ID_CASH_EXPOSED,
                 context.getString(R.string.cash_video_tag_cash_exposed),
                 context.getString(R.string.cash_video_tag_tip_cash_exposed)));
-        tags.put(ID_TAG_CASH_STOLEN, new CashTag(ID_TAG_CASH_STOLEN,
+        tags.put(TAG_ID_CASH_STOLEN, new CashTag(TAG_ID_CASH_STOLEN,
                 context.getString(R.string.cash_video_tag_cash_stolen), ""));
-        tags.put(ID_TAG_SCAN_MISSING, new CashTag(ID_TAG_SCAN_MISSING,
+        tags.put(TAG_ID_SCAN_MISSING, new CashTag(TAG_ID_SCAN_MISSING,
                 context.getString(R.string.cash_video_tag_scan_missing), ""));
-        tags.put(ID_TAG_CODE_REPLACED, new CashTag(ID_TAG_CODE_REPLACED,
+        tags.put(TAG_ID_CODE_REPLACED, new CashTag(TAG_ID_CODE_REPLACED,
                 context.getString(R.string.cash_video_tag_code_replaced), ""));
-        tags.put(ID_TAG_TRANSACTION_MISMATCH, new CashTag(ID_TAG_TRANSACTION_MISMATCH,
+        tags.put(TAG_ID_TRANSACTION_MISMATCH, new CashTag(TAG_ID_TRANSACTION_MISMATCH,
                 context.getString(R.string.cash_video_tag_transaction_mismatch), ""));
         isInit = true;
     }
