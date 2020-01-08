@@ -24,18 +24,13 @@ import sunmi.common.constant.RouterConfig;
 @HostAnno(RouterConfig.SunmiService.NAME)
 public interface SunmiServiceApi {
 
-    @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CLOUD)
-    void goToWebViewCloud(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("snList") ArrayList<String> sn);
 
     @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CLOUD)
-    void goToWebViewCloud(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("sn") String sn);
-
-    @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CLOUD)
-    void goToWebViewCloud(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("snList") ArrayList<String> sn, @AfterActionAnno Action action);
+    void goToWebViewCloud(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("params") String params);
 
     @PathAnno(RouterConfig.SunmiService.WEB_VIEW_CLOUD)
     @FlagAnno({Intent.FLAG_ACTIVITY_SINGLE_TOP, Intent.FLAG_ACTIVITY_CLEAR_TOP})
-    void goToWebViewCloudSingle(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("snList") ArrayList<String> sn);
+    void goToWebViewCloudSingle(Context context, @ParameterAnno("mUrl") String url, @ParameterAnno("params") String params);
 
     @PathAnno(RouterConfig.SunmiService.SERVICE_DETAIL)
     void goToServiceDetail(Context context, @ParameterAnno("mSn") String sn, @ParameterAnno("isBind") boolean isBind, @ParameterAnno("deviceName") String deviceName);

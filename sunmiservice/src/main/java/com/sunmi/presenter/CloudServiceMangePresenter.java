@@ -6,6 +6,9 @@ import com.sunmi.contract.CloudServiceMangeContract;
 import com.sunmi.rpc.ServiceApi;
 import com.xiaojinzi.component.impl.service.ServiceManager;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
@@ -37,8 +40,8 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
     }
 
     @Override
-    public void getSubscriptionList(int pageNum, int pageSize,int category) {
-        ServiceApi.getInstance().getSubscriptionList(pageNum, pageSize, category,new RetrofitCallback<SubscriptionListBean>() {
+    public void getSubscriptionList(int pageNum, int pageSize, int category) {
+        ServiceApi.getInstance().getSubscriptionList(pageNum, pageSize, category, new RetrofitCallback<SubscriptionListBean>() {
             @Override
             public void onSuccess(int code, String msg, final SubscriptionListBean data) {
                 final List<ServiceDetailBean> beans = data.getServiceList();
@@ -74,6 +77,50 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
                 }
             }
         });
+    }
+
+    public String getCloudStorageParams() {
+        String params = "";
+        try {
+            JSONObject userInfo = new JSONObject()
+                    .put("token", SpUtils.getStoreToken())
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            JSONObject cloudStorage = new JSONObject()
+                    .put("sn_list", new JSONArray())
+                    .put("productNo", "");
+            params = new JSONObject()
+                    .put("userInfo", userInfo)
+                    .put("cloudStorage", cloudStorage)
+                    .toString();
+            return params;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return params;
+    }
+
+    public String getCloudStorageParams(ServiceDetailBean bean) {
+        String params = "";
+        try {
+            ArrayList<String> snList = new ArrayList<>();
+            snList.add(bean.getDeviceSn());
+            JSONObject userInfo = new JSONObject()
+                    .put("token", SpUtils.getStoreToken())
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            JSONObject cloudStorage = new JSONObject()
+                    .put("sn_list", new JSONArray(snList))
+                    .put("productNo", bean.getProductNo());
+            params = new JSONObject()
+                    .put("userInfo", userInfo)
+                    .put("cloudStorage", cloudStorage)
+                    .toString();
+            return params;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return params;
     }
 
     private void getIpcDetailList(final List<ServiceDetailBean> beans, final int total) {

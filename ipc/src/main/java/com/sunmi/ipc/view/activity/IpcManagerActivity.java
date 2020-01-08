@@ -983,10 +983,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 Router.withApi(SunmiServiceApi.class).goToServiceDetail(context,
                                         device.getDeviceid(), true, device.getName());
                             } else {
-                                ArrayList<String> snList = new ArrayList<>();
-                                snList.add(device.getDeviceid());
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
+                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, mPresenter.getCloudStorageParams(device.getDeviceid()));
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
@@ -995,7 +993,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             } else {
                                 if (serviceBeans.isEmpty()) {   //去开启收银视频
                                     Router.withApi(SunmiServiceApi.class)
-                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, new ArrayList<>());
+                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, mPresenter.getCashVideoParams());
                                 } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
                                     CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
                                             .serviceBeans(serviceBeans)

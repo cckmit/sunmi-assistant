@@ -21,8 +21,6 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.ArrayList;
-
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
@@ -75,7 +73,6 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     @Extra
     String deviceName;
 
-    private int status, errorCode;
     private ServiceDetailBean bean;
 
     /**
@@ -95,9 +92,9 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        mPresenter = new ServiceDetailPresenter();
+        mPresenter = new ServiceDetailPresenter(mSn);
         mPresenter.attachView(this);
-        mPresenter.getServiceDetailByDevice(mSn, ServiceConstants.CLOUD_STORAGE_CATEGORY);
+        mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
         showLoadingDialog();
     }
 
@@ -142,7 +139,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (CommonNotifications.cloudStorageChange == id) {
-            mPresenter.getServiceDetailByDevice(mSn, ServiceConstants.CLOUD_STORAGE_CATEGORY);
+            mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
         }
     }
 
@@ -172,15 +169,13 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
                     break;
             }
         } else {
-            ArrayList<String> snList = new ArrayList<>();
-            snList.add(mSn);
-            WebViewCloudServiceActivity_.intent(context).snList(snList)
-                    .productNo(bean.getProductNo()).mUrl(CommonConstants.H5_CLOUD_RENEW).start();
+            WebViewCloudServiceActivity_.intent(context).params(mPresenter.getCloudStorageParams(bean.getProductNo()))
+                    .mUrl(CommonConstants.H5_CLOUD_RENEW).start();
         }
     }
 
     @Click(resName = "btn_refresh")
     void refreshClick() {
-        mPresenter.getServiceDetailByDevice(mSn, ServiceConstants.CLOUD_STORAGE_CATEGORY);
+        mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
     }
 }

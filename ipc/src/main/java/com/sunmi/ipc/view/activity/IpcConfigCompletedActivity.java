@@ -24,7 +24,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +150,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             } else {
                 if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
                     Router.withApi(SunmiServiceApi.class)
-                            .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
+                            .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, getCashVideoParams());
                 } else {
                     Router.withApi(AppApi.class).goToMain(context);
                 }
@@ -160,7 +162,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     void finishClick() {
         if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
             Router.withApi(SunmiServiceApi.class)
-                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
+                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, getCashVideoParams());
         } else {
             Router.withApi(AppApi.class).goToMain(context, this::finish);
         }
@@ -178,7 +180,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, getCloudStorageParams());
     }
 
     @Override
@@ -289,6 +291,47 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 btnComplete.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    private String getCloudStorageParams() {
+        String params = "";
+        try {
+            JSONObject userInfo = new JSONObject()
+                    .put("token", SpUtils.getStoreToken())
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            JSONObject cloudStorage = new JSONObject()
+                    .put("sn_list", new JSONArray(snList))
+                    .put("productNo", "");
+            params = new JSONObject()
+                    .put("userInfo", userInfo)
+                    .put("cloudStorage", cloudStorage)
+                    .toString();
+            return params;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return params;
+    }
+
+    public String getCashVideoParams() {
+        String params = "";
+        try {
+            JSONObject userInfo = new JSONObject()
+                    .put("token", SpUtils.getStoreToken())
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            JSONObject cashVideo = new JSONObject()
+                    .put("shop_name", SpUtils.getShopName());
+            params = new JSONObject()
+                    .put("userInfo", userInfo)
+                    .put("cashVideo", cashVideo)
+                    .toString();
+            return params;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return params;
     }
 
     private void initList() {

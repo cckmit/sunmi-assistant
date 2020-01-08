@@ -33,6 +33,9 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -291,7 +294,23 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (isFastClick(500)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
+        try {
+            JSONObject userInfo = new JSONObject()
+                    .put("token", SpUtils.getStoreToken())
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            JSONObject cloudStorage = new JSONObject()
+                    .put("sn_list", new JSONArray())
+                    .put("productNo", "");
+            String params = new JSONObject()
+                    .put("userInfo", userInfo)
+                    .put("cloudStorage", cloudStorage)
+                    .toString();
+            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE)
+                    .params(params).start();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

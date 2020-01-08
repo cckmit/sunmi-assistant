@@ -5,8 +5,15 @@ import com.sunmi.ipc.model.CloudTimeSlotResp;
 import com.sunmi.ipc.model.VideoListResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -65,6 +72,29 @@ public class CloudPlaybackPresenter extends BasePresenter<CloudPlaybackContract.
                 }
             }
         });
+    }
+
+    public String getCloudStorageParams(String deviceSn) {
+        String params = "";
+        try {
+            ArrayList<String> snList = new ArrayList<>();
+            snList.add(deviceSn);
+            JSONObject userInfo = new JSONObject()
+                    .put("token", SpUtils.getStoreToken())
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId());
+            JSONObject cloudStorage = new JSONObject()
+                    .put("sn_list", new JSONArray(snList))
+                    .put("productNo", "");
+            params = new JSONObject()
+                    .put("userInfo", userInfo)
+                    .put("cloudStorage", cloudStorage)
+                    .toString();
+            return params;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return params;
     }
 
 }

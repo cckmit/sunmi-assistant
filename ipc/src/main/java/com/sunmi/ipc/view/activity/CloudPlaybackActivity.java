@@ -380,9 +380,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "btn_open_service")
     void openServiceClick() {
-        ArrayList<String> snList = new ArrayList<>();
-        snList.add(device.getDeviceid());
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, mPresenter.getCloudStorageParams(device.getDeviceid()));
     }
 
     @Click(resName = "rl_top")

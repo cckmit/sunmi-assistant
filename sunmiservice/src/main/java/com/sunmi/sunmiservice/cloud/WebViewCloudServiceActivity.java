@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -236,7 +237,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 hideLoadingDialog();
-                if (!hasSendDeviceInfo) {
+                /*if (!hasSendDeviceInfo) {
                     try {
                         JSONArray array = new JSONArray(snList);
                         JSONObject userInfo = new JSONObject()
@@ -266,7 +267,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
             }
 
             @Override
@@ -276,6 +277,24 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             }
 
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.onResume();
+            webView.resumeTimers();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (webView != null) {
+            webView.onPause();
+            webView.pauseTimers();
+        }
     }
 
     @Override
@@ -309,11 +328,11 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
         this.progress = progress;
         if (progress < 100) {
             showLoadingDialog();
-            /*if (progress >= 25 && !hasSendDeviceInfo) {
+            if (progress >= 25 && !hasSendDeviceInfo) {
                 webView.evaluateJavascript("javascript:getDataFromApp('" + params + "')", value -> {
                 });
                 hasSendDeviceInfo = true;
-            }*/
+            }
         } else {
             hideLoadingDialog();
             closeTimer();
@@ -337,9 +356,22 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             });
             return;
         }
-        webView.clearCache(true);
-        webView.clearHistory();
         super.onBackPressed();
     }
+
+    //销毁Webview 防止内存溢出
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            webView.clearHistory();
+
+            ((ViewGroup) webView.getParent()).removeView(webView);
+            webView.destroy();
+            webView = null;
+        }
+        super.onDestroy();
+    }
+
 }
 
