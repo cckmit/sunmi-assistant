@@ -173,8 +173,10 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
                 String ageName = mAgeList.get(item.getAgeRangeCode());
                 String maleName = String.format("%s  |  %s%s", mMaleLabel, ageName, mAgeLabel);
                 String femaleName = String.format("%s  |  %s%s", mFemaleLabel, ageName, mAgeLabel);
-                result.add(new Item(item.getAgeRangeCode(), 1, maleName, item.getMaleCount()));
-                result.add(new Item(item.getAgeRangeCode(), 2, femaleName, item.getFemaleCount()));
+                result.add(new Item(model.period, item.getAgeRangeCode(), 1, maleName,
+                        item.getMaleCount(), item.getMaleRegularCount(), item.getMaleUniqCount()));
+                result.add(new Item(model.period, item.getAgeRangeCode(), 2, femaleName,
+                        item.getFemaleCount(), item.getFemaleRegularCount(), item.getFemaleUniqCount()));
                 total = total + item.getFemaleCount() + item.getMaleCount();
             }
             Collections.sort(result, (o1, o2) -> o2.count - o1.count);
@@ -243,10 +245,16 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
     private static class DetailListAdapter extends CommonAdapter<Item> {
 
         private String mNum10Thousands;
+        private String mFrequencyDay;
+        private String mFrequencyWeek;
+        private String mFrequencyMonth;
 
         private DetailListAdapter(Context context) {
             super(context, R.layout.dashboard_recycle_item_customer_detail_item);
             mNum10Thousands = context.getString(R.string.str_num_10_thousands);
+            mFrequencyDay = context.getString(R.string.dashboard_card_customer_frequency_data_day);
+            mFrequencyWeek = context.getString(R.string.dashboard_card_customer_frequency_data_week);
+            mFrequencyMonth = context.getString(R.string.dashboard_card_customer_frequency_data_month);
         }
 
         @Override
@@ -261,14 +269,14 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
             TextView count = holder.getView(R.id.tv_dashboard_count);
             TextView ratio = holder.getView(R.id.tv_dashboard_ratio);
             TextView oldRatio = holder.getView(R.id.tv_dashboard_old_ratio);
-            TextView peak = holder.getView(R.id.tv_dashboard_peak);
+            TextView frequency = holder.getView(R.id.tv_dashboard_frequency);
             if (item.state == Item.STATE_ERROR) {
                 avatar.setImageResource(R.mipmap.dashboard_customer_avatar_error);
                 title.setText(R.string.dashboard_card_customer_none);
                 count.setText(DATA_ZERO);
                 ratio.setText(DATA_ZERO_RATIO);
                 oldRatio.setText(DATA_NONE);
-                peak.setText(DATA_NONE);
+                frequency.setText(DATA_NONE);
             } else {
                 avatar.setImageResource(item.gender == 1 ?
                         R.mipmap.dashboard_customer_avatar_male : R.mipmap.dashboard_customer_avatar_female);
@@ -278,8 +286,18 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
                         : String.valueOf(item.count));
                 ratio.setText(String.format(Locale.getDefault(), "%.0f%%",
                         (float) item.count * 100 / item.total));
-                oldRatio.setText(DATA_NONE);
-                peak.setText(DATA_NONE);
+                oldRatio.setText(String.format(Locale.getDefault(), "%.0f%%",
+                        (float) item.oldCount * 100 / item.count));
+                if (item.period == Constants.TIME_PERIOD_MONTH) {
+                    frequency.setText(String.format(Locale.getDefault(), mFrequencyMonth,
+                            (float) item.count * 100 / item.uniqueCount));
+                } else if (item.period == Constants.TIME_PERIOD_WEEK) {
+                    frequency.setText(String.format(Locale.getDefault(), mFrequencyWeek,
+                            (float) item.count * 100 / item.uniqueCount));
+                } else {
+                    frequency.setText(String.format(Locale.getDefault(), mFrequencyDay,
+                            (float) item.count * 100 / item.uniqueCount));
+                }
             }
         }
 
@@ -306,10 +324,13 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         private static final int STATE_LOADING = 1;
         private static final int STATE_ERROR = 2;
 
+        private int period;
         private int age;
         private int gender;
         private String name;
         private int count;
+        private int oldCount;
+        private int uniqueCount;
 
         private int total;
         private int state;
@@ -317,11 +338,14 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
         public Item() {
         }
 
-        public Item(int age, int gender, String name, int count) {
+        public Item(int period, int age, int gender, String name, int count, int oldCount, int uniqueCount) {
+            this.period = period;
             this.age = age;
             this.gender = gender;
             this.name = name;
             this.count = count;
+            this.oldCount = oldCount;
+            this.uniqueCount = uniqueCount;
             this.state = STATE_NORMAL;
         }
 
@@ -374,7 +398,7 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
                 String name = String.format("%s  |  %s%s", genderName, ageName, ageLabel);
                 int count = random.nextInt(1000);
                 total += count;
-                list.add(new Item(item.first, item.second, name, count));
+                list.add(new Item(Constants.TIME_PERIOD_WEEK, item.first, item.second, name, count, count * 3 / 4, count * 2 / 3));
             }
             Collections.sort(list, (o1, o2) -> o2.count - o1.count);
             if (list.size() > 3) {

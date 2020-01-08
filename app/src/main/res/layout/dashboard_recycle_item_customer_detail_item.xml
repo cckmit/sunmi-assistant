@@ -118,7 +118,7 @@
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/view_dashboard_bg"
-        app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_peak"
+        app:layout_constraintEnd_toStartOf="@+id/layout_dashboard_frequency"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/layout_dashboard_ratio"
         app:layout_constraintTop_toTopOf="@id/view_dashboard_bg">
@@ -143,7 +143,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/layout_dashboard_peak"
+        android:id="@+id/layout_dashboard_frequency"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
@@ -157,19 +157,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/dashboard_card_customer_peak"
+            android:text="@string/dashboard_card_customer_frequency"
             android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_10" />
 
         <TextView
-            android:id="@+id/tv_dashboard_peak"
+            android:id="@+id/tv_dashboard_frequency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
             android:textColor="@color/text_normal"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/sp_14"
             android:textStyle="bold"
-            tools:text="8日" />
+            tools:text="每日1.2次" />
 
     </LinearLayout>
 
@@ -204,7 +204,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:constraint_referenced_ids="tv_dashboard_title,layout_dashboard_count,layout_dashboard_ratio,layout_dashboard_old_ratio,layout_dashboard_peak" />
+        app:constraint_referenced_ids="tv_dashboard_title,layout_dashboard_count,layout_dashboard_ratio,layout_dashboard_old_ratio,layout_dashboard_frequency" />
 
     <android.support.constraint.Group
         android:id="@+id/group_dashboard_skeleton"

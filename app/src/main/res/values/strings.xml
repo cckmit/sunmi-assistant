@@ -54,6 +54,10 @@
     <string name="dashboard_card_customer_ratio">总人数占比</string>
     <string name="dashboard_card_customer_old_ratio">熟客占比</string>
     <string name="dashboard_card_customer_peak">到店高峰</string>
+    <string name="dashboard_card_customer_frequency">来店频率</string>
+    <string name="dashboard_card_customer_frequency_data_day">每日%f次</string>
+    <string name="dashboard_card_customer_frequency_data_week">每周%f次</string>
+    <string name="dashboard_card_customer_frequency_data_month">每月%f次</string>
     <string name="dashboard_card_title_business_trend">经营趋势</string>
     <string name="dashboard_card_tab_rate">转化率</string>
     <string name="dashboard_card_tab_volume">交易笔数</string>
