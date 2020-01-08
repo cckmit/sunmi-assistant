@@ -9,8 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import sunmi.common.model.CashVideoServiceBean;
-import sunmi.common.model.SunmiDevice;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.ThreadPool;
 
@@ -22,10 +21,10 @@ import sunmi.common.utils.ThreadPool;
 public class CashVideoModel {
 
     @SuppressLint("UseSparseArrays")
-    private HashMap<Integer, CashVideoServiceBean> map = new HashMap<>();
-    private ArrayList<CashVideoServiceBean> beans;
+    private HashMap<Integer, CashServiceInfo> map = new HashMap<>();
+    private ArrayList<CashServiceInfo> beans;
 
-    public CashVideoModel(ArrayList<CashVideoServiceBean> beans) {
+    public CashVideoModel(ArrayList<CashServiceInfo> beans) {
         this.beans = beans;
         initMap();
     }
@@ -34,7 +33,7 @@ public class CashVideoModel {
         ThreadPool.getSingleThreadPool().submit(new Runnable() {
             @Override
             public void run() {
-                for (CashVideoServiceBean bean : beans) {
+                for (CashServiceInfo bean : beans) {
                     map.put(bean.getDeviceId(), bean);
                 }
             }
@@ -50,10 +49,10 @@ public class CashVideoModel {
                         int n = videoList.size();
                         if (n > 0) {
                             for (int i = 0; i < videoList.size(); i++) {
-                                CashVideoServiceBean serviceBean = map.get(videoList.get(i).getDeviceId());
+                                CashServiceInfo serviceBean = map.get(videoList.get(i).getDeviceId());
                                 if (serviceBean!=null){
                                     videoList.get(i).setDeviceName(serviceBean.getDeviceName());
-                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevent());
+                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevention());
                                 }
                             }
                         }
@@ -76,10 +75,10 @@ public class CashVideoModel {
                         int n = videoList.size();
                         if (n > 0) {
                             for (int i = 0; i < videoList.size(); i++) {
-                                CashVideoServiceBean serviceBean = map.get(videoList.get(i).getDeviceId());
+                                CashServiceInfo serviceBean = map.get(videoList.get(i).getDeviceId());
                                 if (serviceBean!=null){
                                     videoList.get(i).setDeviceName(serviceBean.getDeviceName());
-                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevent());
+                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevention());
                                 }
                             }
                         }
@@ -95,7 +94,7 @@ public class CashVideoModel {
     }
 
 
-    public HashMap<Integer, CashVideoServiceBean> getIpcNameMap() {
+    public HashMap<Integer, CashServiceInfo> getIpcNameMap() {
         return map;
     }
 

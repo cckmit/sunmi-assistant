@@ -38,7 +38,7 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.NetworkUtils;
@@ -103,7 +103,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     @Extra
     boolean isAbnormalBehavior;
     @Extra
-    ArrayList<CashVideoServiceBean> serviceBeans;
+    ArrayList<CashServiceInfo> serviceBeans;
 
     private final int REQUEST = 0x101;
 

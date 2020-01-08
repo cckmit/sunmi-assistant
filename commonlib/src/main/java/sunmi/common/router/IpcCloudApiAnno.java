@@ -2,7 +2,7 @@ package sunmi.common.router;
 
 import java.util.List;
 
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.ServiceResp;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 
@@ -15,9 +15,9 @@ public interface IpcCloudApiAnno {
 
     void getDetailList(int companyId, int shopId, RetrofitCallback<IpcListResp> callback);
 
-    void getAuditVideoServiceList(List<String> snList, RetrofitCallback<ServiceListResp> callback);
+    void getAuditVideoServiceList(List<String> snList, RetrofitCallback<ServiceResp> callback);
 
-    void getStorageList(List<String> snList, RetrofitCallback<ServiceListResp> callback);
+    void getStorageList(List<String> snList, RetrofitCallback<ServiceResp> callback);
 
-    void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceListResp> callback);
+    void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceResp> callback);
 }
