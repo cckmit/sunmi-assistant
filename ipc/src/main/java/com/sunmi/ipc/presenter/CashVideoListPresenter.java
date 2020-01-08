@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 
 /**
  * Description:
@@ -25,7 +25,7 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
     private long startTime, endTime;
     private boolean hasCashLossPrevent;
 
-    public CashVideoListPresenter(boolean hasCashLossPrevent, ArrayList<CashVideoServiceBean> beans) {
+    public CashVideoListPresenter(boolean hasCashLossPrevent, ArrayList<CashServiceInfo> beans) {
         videoModel = new CashVideoModel(beans);
         this.hasCashLossPrevent = hasCashLossPrevent;
     }
@@ -71,7 +71,7 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         }
     }
 
-    public HashMap<Integer, CashVideoServiceBean> getIpcName() {
+    public HashMap<Integer, CashServiceInfo> getIpcName() {
         return videoModel.getIpcNameMap();
     }
 

@@ -7,31 +7,25 @@ package com.sunmi.ipc.model;
  */
 public class CashTag {
 
-    private int tag;
-    private String description;
+    private int id;
+    private String name;
     private String tip;
 
+    public CashTag(int id, String name, String tip) {
+        this.id = id;
+        this.name = name;
+        this.tip = tip;
+    }
+
     public int getTag() {
-        return tag;
+        return id;
     }
 
-    public void setTag(int tag) {
-        this.tag = tag;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public String getName() {
+        return name;
     }
 
     public String getTip() {
         return tip;
-    }
-
-    public void setTip(String tip) {
-        this.tip = tip;
     }
 }

@@ -5,7 +5,7 @@ import com.sunmi.ipc.model.CashVideoListBean;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 
 /**
  * Description:
@@ -20,7 +20,7 @@ public interface CashOverviewContract {
 
         void getShopCashVideoCountSuccess(CashVideoListBean bean);
 
-        void getIpcCashVideoCountSuccess(List<CashVideoServiceBean> beans);
+        void getIpcCashVideoCountSuccess(List<CashServiceInfo> beans);
 
         void netWorkError();
 

@@ -45,7 +45,7 @@ import java.util.concurrent.TimeUnit;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.RouterConfig;
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.FilterItem;
 import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.DateTimeUtils;
@@ -90,7 +90,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     View networkError;
 
     @Extra
-    ArrayList<CashVideoServiceBean> serviceBeans;
+    ArrayList<CashServiceInfo> serviceBeans;
     @Extra
     boolean isSingleDevice;
     @Extra
@@ -209,10 +209,10 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         showLoadingDialog();
         if (idList == null) {
             idList = new ArrayList<>();
-            for (CashVideoServiceBean bean : serviceBeans) {
+            for (CashServiceInfo bean : serviceBeans) {
                 idList.add(bean.getDeviceId());
                 items.add(new FilterItem(bean.getDeviceId(), bean.getDeviceName()));
-                if (bean.isHasCashLossPrevent()) {
+                if (bean.isHasCashLossPrevention()) {
                     behaviorItems.add(new FilterItem(bean.getDeviceId(), bean.getDeviceName()));
                 }
             }
@@ -308,7 +308,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     }
 
     @Override
-    public void onOrderClick(CashVideoServiceBean item, int position) {
+    public void onOrderClick(CashServiceInfo item, int position) {
         clearItems(items);
         items.get(position + 1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
@@ -317,7 +317,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     }
 
     @Override
-    public void onAbnormalOrderClick(CashVideoServiceBean item, int position) {
+    public void onAbnormalOrderClick(CashServiceInfo item, int position) {
         clearItems(items);
         items.get(position + 1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
@@ -327,7 +327,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     }
 
     @Override
-    public void onAbnormalBehaviorClick(CashVideoServiceBean item, int position) {
+    public void onAbnormalBehaviorClick(CashServiceInfo item, int position) {
         clearItems(behaviorItems);
         behaviorItems.get(1 + position).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
@@ -372,7 +372,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @UiThread
     @Override
-    public void getIpcCashVideoCountSuccess(List<CashVideoServiceBean> beans) {
+    public void getIpcCashVideoCountSuccess(List<CashServiceInfo> beans) {
         if (networkError.isShown()) {
             networkError.setVisibility(View.GONE);
         }

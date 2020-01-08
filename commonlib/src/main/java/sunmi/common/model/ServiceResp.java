@@ -9,20 +9,16 @@ import java.util.List;
  *
  * @author linyuanpeng on 2019-10-24.
  */
-public class ServiceListResp {
+public class ServiceResp {
 
     @SerializedName("device_list")
-    private List<DeviceListBean> deviceList;
+    private List<Info> list;
 
-    public List<DeviceListBean> getDeviceList() {
-        return deviceList;
+    public List<Info> getList() {
+        return list;
     }
 
-    public void setDeviceList(List<DeviceListBean> deviceList) {
-        this.deviceList = deviceList;
-    }
-
-    public static class DeviceListBean {
+    public static class Info {
         /**
          * service_type : 1
          * service_name : 7天云存储服务
@@ -76,120 +72,60 @@ public class ServiceListResp {
             return serviceType;
         }
 
-        public void setServiceType(int serviceType) {
-            this.serviceType = serviceType;
-        }
-
         public String getServiceName() {
             return serviceName;
-        }
-
-        public void setServiceName(String serviceName) {
-            this.serviceName = serviceName;
         }
 
         public int getDeviceId() {
             return deviceId;
         }
 
-        public void setDeviceId(int deviceId) {
-            this.deviceId = deviceId;
-        }
-
         public String getDeviceSn() {
             return deviceSn;
-        }
-
-        public void setDeviceSn(String deviceSn) {
-            this.deviceSn = deviceSn;
         }
 
         public String getDeviceName() {
             return deviceName;
         }
 
-        public void setDeviceName(String deviceName) {
-            this.deviceName = deviceName;
-        }
-
         public int getDeviceModelId() {
             return deviceModelId;
-        }
-
-        public void setDeviceModelId(int deviceModelId) {
-            this.deviceModelId = deviceModelId;
         }
 
         public String getDeviceModel() {
             return deviceModel;
         }
 
-        public void setDeviceModel(String deviceModel) {
-            this.deviceModel = deviceModel;
-        }
-
         public int getServiceDuration() {
             return serviceDuration;
-        }
-
-        public void setServiceDuration(int serviceDuration) {
-            this.serviceDuration = serviceDuration;
         }
 
         public int getActiveStatus() {
             return activeStatus;
         }
 
-        public void setActiveStatus(int activeStatus) {
-            this.activeStatus = activeStatus;
-        }
-
         public int getActiveTime() {
             return activeTime;
-        }
-
-        public void setActiveTime(int activeTime) {
-            this.activeTime = activeTime;
         }
 
         public int getActiveExpireTime() {
             return activeExpireTime;
         }
 
-        public void setActiveExpireTime(int activeExpireTime) {
-            this.activeExpireTime = activeExpireTime;
-        }
-
         public int getStatus() {
             return status;
-        }
-
-        public void setStatus(int status) {
-            this.status = status;
         }
 
         public int getExpireTime() {
             return expireTime;
         }
 
-        public void setExpireTime(int expireTime) {
-            this.expireTime = expireTime;
-        }
-
         public int getValidTime() {
             return validTime;
         }
 
-        public void setValidTime(int validTime) {
-            this.validTime = validTime;
-        }
-
         public String getImgUrl() {
             return imgUrl;
-        }
-
-        public void setImgUrl(String imgUrl) {
-            this.imgUrl = imgUrl;
         }
     }
 }

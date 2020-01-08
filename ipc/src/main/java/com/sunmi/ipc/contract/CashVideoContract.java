@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.CashVideoServiceBean;
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.CashServiceInfo;
+import sunmi.common.model.ServiceResp;
 
 /**
  * @author yangShiJie
@@ -31,7 +31,7 @@ public interface CashVideoContract {
 
         void cashVideoListFail(int code, String msg);
 
-        void getStorageSuccess(ServiceListResp.DeviceListBean data);
+        void getStorageSuccess(ServiceResp.Info data);
 
         void getAbnormalEventSuccess(float riskScore, List<CashBox> boxes);
 
@@ -44,10 +44,10 @@ public interface CashVideoContract {
 
         void getOrderInfo(String orderNo);
 
-        void getCashVideoList(Map<Integer, CashVideoServiceBean> ipcName, int deviceId, int videoType,
+        void getCashVideoList(Map<Integer, CashServiceInfo> ipcName, int deviceId, int videoType,
                               long startTime, long endTime, int pageNum, int pageSize);
 
-        void getAbnormalBehaviorList(Map<Integer, CashVideoServiceBean> ipcName, int deviceId, int videoType,
+        void getAbnormalBehaviorList(Map<Integer, CashServiceInfo> ipcName, int deviceId, int videoType,
                                      long startTime, long endTime, int pageNum, int pageSize);
 
         void getStorageList(String deviceSn);

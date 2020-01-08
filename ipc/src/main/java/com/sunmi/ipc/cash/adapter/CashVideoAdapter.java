@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.cash.CashTagManager;
 import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.config.IpcConstants;
-import com.sunmi.ipc.utils.CashAbnormalTagUtils;
+import com.sunmi.ipc.model.CashTag;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
     private int selectPosition = -1;
     private NumberFormat numberFormat;
     private boolean isAbnormalBehavior;
-    private CashAbnormalTagUtils tagUtils;
+    private CashTagManager tagManager;
 
     public CashVideoAdapter(ArrayList<CashVideo> data, Context context, boolean isAbnormalBehavior) {
         this.data = data;
@@ -43,7 +45,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         this.isAbnormalBehavior = isAbnormalBehavior;
         numberFormat = NumberFormat.getNumberInstance();
         numberFormat.setMinimumFractionDigits(2);
-        tagUtils = CashAbnormalTagUtils.getInstance();
+        tagManager = CashTagManager.get(context);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -70,15 +72,16 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         }
         CashVideo bean = data.get(i);
         viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getPurchaseTime(), "HH:mm:ss"));
-        int tag = bean.getVideoTag() != null ? bean.getVideoTag()[0] : 0;
+
+        int[] tags = bean.getVideoTag();
+        int tagId = tags != null && tags.length > 0 ? tags[0] : -1;
+        CashTag tag = tagManager.getTag(tagId);
         if (bean.getVideoType() == IpcConstants.CASH_VIDEO_ABNORMAL) {
             viewHolder.tvDescription.setVisibility(View.VISIBLE);
-            if (tag == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
+            if (tagId == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
                 viewHolder.tvDescription.setText(bean.getDescription());
-            } else if (tag == 0 || tag > 7) {
-                viewHolder.tvDescription.setText(R.string.tag_other_exception);
             } else {
-                viewHolder.tvDescription.setText(tagUtils.getCashTag(tag).getDescription());
+                viewHolder.tvDescription.setText(tag.getName());
             }
         } else {
             viewHolder.tvDescription.setVisibility(View.GONE);
@@ -86,8 +89,8 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         viewHolder.tvName.setText(bean.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
         if (isAbnormalBehavior) {
-            if (tag >= 2 && tag <= 3) {
-                viewHolder.tvSuggest.setText(tagUtils.getCashTag(tag).getTip());
+            if (!TextUtils.isEmpty(tag.getTip())) {
+                viewHolder.tvSuggest.setText(tag.getTip());
             } else {
                 viewHolder.tvSuggest.setText(R.string.tip_other_exception);
             }

@@ -32,7 +32,7 @@ import java.util.List;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.ServiceResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.AppApi;
 import sunmi.common.router.SunmiServiceApi;
@@ -264,12 +264,12 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
 
     protected void initSs() {
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceResp>() {
             @Override
-            public void onSuccess(int code, String msg, ServiceListResp data) {
-                List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
+            public void onSuccess(int code, String msg, ServiceResp data) {
+                List<ServiceResp.Info> beans = data.getList();
                 snList.clear();
-                for (ServiceListResp.DeviceListBean bean : beans) {
+                for (ServiceResp.Info bean : beans) {
                     if (bean.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED) {
                         snList.add(bean.getDeviceSn());
                     }
@@ -285,7 +285,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             }
 
             @Override
-            public void onFail(int code, String msg, ServiceListResp data) {
+            public void onFail(int code, String msg, ServiceResp data) {
                 btnComplete.setVisibility(View.VISIBLE);
             }
         });
