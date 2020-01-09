@@ -56,6 +56,8 @@ public class CashVideo implements Parcelable {
     private long endTime;
     @SerializedName("video_tag")
     private int[] videoTag;
+    @SerializedName("user_modified")
+    private int userModified;
 
     private String deviceName;
     private boolean hasCashLossPrevent;
@@ -148,6 +150,14 @@ public class CashVideo implements Parcelable {
         this.eventId = eventId;
     }
 
+    public int getUserModified() {
+        return userModified;
+    }
+
+    public void setUserModified(int userModified) {
+        this.userModified = userModified;
+    }
+
     protected CashVideo(Parcel in) {
         videoId = in.readLong();
         videoUrl = in.readString();
@@ -163,6 +173,7 @@ public class CashVideo implements Parcelable {
         startTime = in.readLong();
         endTime = in.readLong();
         videoTag = in.createIntArray();
+        userModified = in.readInt();
         deviceName = in.readString();
         hasCashLossPrevent = in.readByte() != 0;
     }
@@ -183,6 +194,7 @@ public class CashVideo implements Parcelable {
         dest.writeLong(startTime);
         dest.writeLong(endTime);
         dest.writeIntArray(videoTag);
+        dest.writeInt(userModified);
         dest.writeString(deviceName);
         dest.writeByte((byte) (hasCashLossPrevent ? 1 : 0));
     }

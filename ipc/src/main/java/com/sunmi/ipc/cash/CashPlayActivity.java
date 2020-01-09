@@ -688,9 +688,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         playCashVideoStatus = PLAY_TYPE_NORMAL;
         CashVideo current = getCurrent();
         boolean isAbnormal = current.getVideoType() != IpcConstants.CASH_VIDEO_NORMAL;
-        if (isAbnormal) {
+        if (isAbnormal && current.getUserModified() == 0) {
             mPresenter.getAbnormalEvent(current.getEventId(), current.getStartTime());
         } else {
+            cashBoxOverlay.setVisibility(View.GONE);
+            sbMark.setVisibility(View.GONE);
             tvAbnormalTip.setVisibility(View.GONE);
         }
         //查询当前视频订单信息
@@ -914,7 +916,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             shortTip(R.string.cash_tag_cancel_success);
         }
         // 清除AI加框信息
-        info.setEventId(0);
+        info.setUserModified(1);
         tvAbnormalTip.setVisibility(View.GONE);
         cashBoxOverlay.setVisibility(View.GONE);
         sbMark.setVisibility(View.GONE);
