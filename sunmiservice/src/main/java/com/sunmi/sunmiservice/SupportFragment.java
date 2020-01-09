@@ -38,6 +38,7 @@ import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.router.IpcApi;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
@@ -168,7 +169,8 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         }
         if (cashServiceInfoList.isEmpty()) {
             // 没有设备开通收银视频，进入开通页
-            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO).start();
+            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO)
+                    .params(WebViewParamsUtils.getCashVideoParams()).start();
         } else if (hasCloudService) {
             // 有设备开通收银视频，并已经开通云存储服务，进入收银视频总览页
             Router.withApi(IpcApi.class)
@@ -184,7 +186,8 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE)
+                .params(WebViewParamsUtils.getCloudStorageParams(new ArrayList<>(), "")).start();
     }
 
     @Click(resName = "ll_after_sales")

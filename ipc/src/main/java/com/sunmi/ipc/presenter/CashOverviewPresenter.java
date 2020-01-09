@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.CashServiceInfo;
@@ -26,7 +25,7 @@ import sunmi.common.utils.ThreadPool;
  */
 public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.View> implements CashOverviewContract.Presenter {
 
-    private Map<Integer, CashServiceInfo> beanMap;
+    private HashMap<Integer, CashServiceInfo> beanMap;
 
     @SuppressLint("UseSparseArrays")
     public CashOverviewPresenter(List<CashServiceInfo> serviceBeans) {
@@ -104,4 +103,9 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
             }
         });
     }
+
+    public HashMap<Integer, CashServiceInfo> getCashServiceMap() {
+        return beanMap;
+    }
+
 }
