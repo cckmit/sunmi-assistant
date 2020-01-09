@@ -37,7 +37,7 @@ public interface DeviceContract {
 
         void apEventStatus(String sn, boolean isOnline);
 
-        void refreshApEventStatus();
+        void refreshApEventStatus(List<SunmiDevice> eventApList);
 
         void getCheckApLoginSuccess(boolean isAgainCheck);
 
@@ -70,7 +70,7 @@ public interface DeviceContract {
 
         void getApConfig(Context context, ResponseBean res, SunmiDevice clickedDevice);
 
-        void getStatusEvent(String result, List<SunmiDevice> routerList);
+        void getStatusEvent(String result);
 
         void checkApLoginPassword(Context context, ResponseBean res, SunmiDevice clickedDevice);
 

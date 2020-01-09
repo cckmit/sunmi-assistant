@@ -278,7 +278,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void refreshApEventStatus() {
+    public void refreshApEventStatus(List<SunmiDevice> eventApList) {
+        routerList.clear();
+        routerList.addAll(eventApList);
         refreshList();
     }
 
@@ -464,7 +466,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (NotificationConstant.connectedTosunmiDevice == id) {//异常
             devStatusUnknownToException();
         } else if (NotificationConstant.apPostStatus == id) {//在线 离线 设备状态
-            mPresenter.getStatusEvent((String) args[0], routerList);
+            mPresenter.getStatusEvent((String) args[0]);
         } else if (CommonNotifications.shopNameChanged == id) {
             tvShopTitle.setText(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034

@@ -94,7 +94,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @Override
-    public void getStatusEvent(String result, List<SunmiDevice> routerList) {
+    public void getStatusEvent(String result) {
         if (TextUtils.isEmpty(result)) {
             return;
         }
@@ -112,7 +112,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 mView.apEventStatus(sn, false);
             }
         } else if (NotificationConstant.apStatusList == event) {//w1所有设备列表
-            routerList.clear();
+            List<SunmiDevice> eventApList = new ArrayList<>();
             List<ApEventResp.ParamsBean.ParamBean.DeviceListBean> beanList =
                     eventResp.getParams().get(0).getParam().getDeviceList();
             for (ApEventResp.ParamsBean.ParamBean.DeviceListBean bean : beanList) {
@@ -125,11 +125,11 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     device.setName("SUNMI-W1");
                     device.setModel("W1");
                     device.setType("ROUTER");
-                    routerList.add(device);
+                    eventApList.add(device);
                 }
             }
             if (isViewAttached()) {
-                mView.refreshApEventStatus();
+                mView.refreshApEventStatus(eventApList);
             }
         }
     }
