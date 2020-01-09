@@ -44,6 +44,7 @@ import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.presenter.CashVideoPresenter;
 import com.sunmi.ipc.view.activity.CloudPlaybackActivity_;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -58,16 +59,19 @@ import java.util.List;
 import java.util.Objects;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -925,7 +929,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             if (mLossPreventDialog == null) {
                 mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
                         .setListener((dialog, which) -> {
-                            // TODO: 跳转开通页面
+                            Router.withApi(SunmiServiceApi.class)
+                                    .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
+                                            WebViewParamsUtils.getCashPreventLossParams(info.getDeviceSn()));
                         })
                         .create();
             }

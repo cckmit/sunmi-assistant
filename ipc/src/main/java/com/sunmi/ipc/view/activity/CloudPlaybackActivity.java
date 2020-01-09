@@ -61,6 +61,7 @@ import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.VolumeHelper;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
@@ -380,9 +381,8 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     @Click(resName = "btn_open_service")
     void openServiceClick() {
-        ArrayList<String> snList = new ArrayList<>();
-        snList.add(device.getDeviceid());
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
+        Router.withApi(SunmiServiceApi.class)
+                .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(),""));
     }
 
     @Click(resName = "rl_top")

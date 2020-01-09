@@ -68,4 +68,5 @@ public class CommonConstants {
     public static final String H5_ORDER_MANAGE = CommonConfig.SERVICE_H5_URL + "orderManagement/orderList";
     public static final String H5_CLOUD_RENEW = CommonConfig.SERVICE_H5_URL + "cloudStorage/subscribeService";
     public static final String H5_AGREEMENT = CommonConfig.SERVICE_H5_URL + "privacyManagement";
+    public static final String H5_CASH_PREVENT_LOSS = CommonConfig.SERVICE_H5_URL + "cashPreventLoss";
 }

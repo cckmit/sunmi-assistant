@@ -32,6 +32,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CircleImage;
 import sunmi.common.view.SettingItemLayout;
 
@@ -162,6 +163,7 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     @Click(R.id.sil_order)
     public void orderClick() {
         WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_ORDER_MANAGE)
+                .params(WebViewParamsUtils.getUserInfoParams())
                 .start();
     }
 

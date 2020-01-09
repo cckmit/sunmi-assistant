@@ -2,23 +2,19 @@ package com.sunmi.cloudprinter.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.CountDownTimer;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
 import android.view.View;
-import android.webkit.ValueCallback;
+import android.webkit.CookieManager;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
-import com.sunmi.cloudprinter.R;
+import com.sunmi.cloudprinter.bean.PrinterJSCall;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -29,20 +25,14 @@ import org.androidannotations.annotations.ViewById;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConfig;
-import sunmi.common.constant.CommonConstants;
-import sunmi.common.utils.FileHelper;
-import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
-import sunmi.common.view.bottompopmenu.BottomPopMenu;
-import sunmi.common.view.bottompopmenu.PopItemAction;
+import sunmi.common.view.webview.AndroidBug5497Workaround;
 import sunmi.common.view.webview.BaseJSCall;
 import sunmi.common.view.webview.SMWebChromeClient;
 import sunmi.common.view.webview.SMWebView;
@@ -76,6 +66,7 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
 
     @AfterViews
     protected void init() {
+        AndroidBug5497Workaround.assistActivity(this, true);
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
         webView.loadUrl(CommonConfig.SERVICE_H5_URL +
@@ -131,15 +122,18 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
         // 可以运行JavaScript
-        BaseJSCall jsCall = new BaseJSCall(this, webView);
-//        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
+        BaseJSCall baseJsCall = new BaseJSCall(this, webView);
+        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
+        webView.addJavascriptInterface(baseJsCall, SsConstants.JS_INTERFACE_NAME);
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
         });
         webChrome = new SMWebChromeClient(this);
         webChrome.setCallback(this);
+        //允许第三方访问Cookie
+        CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
         webView.setWebChromeClient(webChrome);
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
