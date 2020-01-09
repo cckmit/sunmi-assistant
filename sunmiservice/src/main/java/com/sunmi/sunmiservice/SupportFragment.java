@@ -199,16 +199,6 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
                 SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
-    @Click(resName = "ll_sunmi_store")
-    void sunmiStoreClick() {
-        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
-            return;
-        }
-        WebViewSunmiMallActivity_.intent(mActivity)
-                .mUrl(SunmiServiceConfig.SUNMI_MALL_HOST + "?channel=2&subchannel=4")
-                .start();
-    }
-
     @Click(resName = "tv_weBank")
     void weBankClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {

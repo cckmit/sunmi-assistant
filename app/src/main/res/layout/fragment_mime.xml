@@ -119,28 +119,6 @@
                 app:type="arrow"
                 tools:visibility="visible" />
 
-            <sunmi.common.view.SettingItemLayout
-                android:id="@+id/sil_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:showDivider="top"
-                app:startImage="@mipmap/ic_address"
-                app:title="@string/str_receive_address"
-                app:type="arrow"
-                tools:visibility="visible" />
-
-            <sunmi.common.view.SettingItemLayout
-                android:id="@+id/sil_coupon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:showDivider="both"
-                app:startImage="@mipmap/ic_coupon"
-                app:title="@string/str_coupon"
-                app:type="arrow"
-                tools:visibility="visible" />
-
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_16"
