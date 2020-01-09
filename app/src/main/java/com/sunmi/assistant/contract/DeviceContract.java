@@ -5,6 +5,7 @@ import java.util.List;
 import sunmi.common.base.BaseView;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 
 /**
  * Description:
@@ -29,6 +30,16 @@ public interface DeviceContract {
         void getShopListSuccess(List<ShopInfo> shopList);
 
         void getPosListSuccess(List<SunmiDevice> devices);
+
+        void getApConfigSuccess(String factory);
+
+        void apEventStatus(String sn, boolean isOnline);
+
+        void refreshApEventStatus();
+
+        void getCheckApLoginSuccess();
+
+        void getCheckApLoginFail(String errorCode);
     }
 
     interface Presenter {
@@ -50,6 +61,12 @@ public interface DeviceContract {
         void apConfig(String sn);
 
         void apCheckLogin(String password);
+
+        void getApConfig(ResponseBean res);
+
+        void getStatusEvent(String result, List<SunmiDevice> routerList);
+
+        void checkApLoginPassword(ResponseBean res);
     }
 
 }

@@ -1,13 +1,22 @@
 package com.sunmi.assistant.presenter;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.sunmi.apmanager.config.AppConfig;
+import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
+import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
+import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
+import com.sunmi.assistant.data.apresp.ApConfigResp;
+import com.sunmi.assistant.data.apresp.ApEventResp;
+import com.sunmi.assistant.data.apresp.ApLoginResp;
 import com.sunmi.assistant.pos.data.PosApi;
 import com.sunmi.assistant.pos.response.PosListResp;
 import com.sunmi.cloudprinter.rpc.IOTCloudApi;
@@ -28,11 +37,13 @@ import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
 import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
@@ -64,6 +75,95 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     @Override
     public void apCheckLogin(String password) {
         APCall.getInstance().checkLogin(activity, password);
+    }
+
+    /**
+     * factory: 0已初始配置 1未初始化设置
+     * 检测ap是否配置：已配置校验密码 ,未配置进行搜索
+     */
+    @Override
+    public void getApConfig(ResponseBean res) {
+        if (TextUtils.equals("0", res.getErrCode())) {
+            ApConfigResp resp = new Gson().fromJson(res.getResult().toString(), ApConfigResp.class);
+            String factory = resp.getSystem().getFactory();
+            if (isViewAttached()) {
+                mView.getApConfigSuccess(factory);
+            }
+        }
+    }
+
+    @Override
+    public void getStatusEvent(String result, List<SunmiDevice> routerList) {
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
+        ApEventResp eventResp = new Gson().fromJson(result, ApEventResp.class);
+        String opcode = eventResp.getParams().get(0).getEvent();
+        int event = EncryptUtils.decodeOp(opcode);
+        if (NotificationConstant.apOnline == event) { //在线状态
+            String sn = eventResp.getParams().get(0).getParam().getSn();
+            if (isViewAttached()) {
+                mView.apEventStatus(sn, true);
+            }
+        } else if (NotificationConstant.apOffline == event) {//离线状态
+            String sn = eventResp.getParams().get(0).getParam().getSn();
+            if (isViewAttached()) {
+                mView.apEventStatus(sn, false);
+            }
+            if (TextUtils.equals(sn, AppConfig.GLOBAL_SN)) {
+                Intent intent = new Intent();
+                intent.setAction(AppConfig.BROADCAST_ACTION);
+                intent.putExtra("type", AppConfig.BROADCAST_STATUS);
+                activity.sendBroadcast(intent);
+                BaseNotification.newInstance().postNotificationName(NotificationConstant.apOffline, sn);
+            }
+        } else if (NotificationConstant.apStatusList == event) {//w1所有设备列表
+            routerList.clear();
+            List<ApEventResp.ParamsBean.ParamBean.DeviceListBean> beanList =
+                    eventResp.getParams().get(0).getParam().getDeviceList();
+            for (ApEventResp.ParamsBean.ParamBean.DeviceListBean bean : beanList) {
+                int shopId = bean.getShopId();
+                if (shopId == SpUtils.getShopId()) {
+                    SunmiDevice device = new SunmiDevice();
+                    device.setDeviceid(bean.getSn());
+                    device.setStatus(bean.getActiveStatus());
+                    device.setShopId(shopId);
+                    device.setName("SUNMI-W1");
+                    device.setModel("W1");
+                    device.setType("ROUTER");
+                    routerList.add(device);
+                }
+            }
+            if (isViewAttached()) {
+                mView.refreshApEventStatus();
+            }
+        }
+    }
+
+    /**
+     * 设备ap登录，检测管理密码item
+     */
+    @Override
+    public void checkApLoginPassword(ResponseBean res) {
+        String errorCode = res.getErrCode();
+        if (TextUtils.equals(errorCode, "0")) {
+            ApLoginResp resp = new Gson().fromJson(res.getResult().toString(), ApLoginResp.class);
+            SpUtils.saveRouterToken(resp.getAccount().getToken());
+            if (isViewAttached()) {
+                mView.getCheckApLoginSuccess();
+            }
+        } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_ERROR)
+                || TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_INVALID)) {// 账户密码错误 ,账户登录缺少密码
+            if (isViewAttached()) {
+                mView.getCheckApLoginFail(errorCode);
+            }
+        } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
+            if (isViewAttached()) {
+                mView.shortTip(R.string.tip_password_fail_too_often);
+            }
+        } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_UNSET_PASSWORD)) { // 账户密码未设置
+            activity.startActivity(new Intent(activity, PrimaryRouteStartActivity.class));
+        }
     }
 
     @Override
