@@ -1,5 +1,7 @@
 package com.sunmi.assistant.contract;
 
+import android.content.Context;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -31,15 +33,17 @@ public interface DeviceContract {
 
         void getPosListSuccess(List<SunmiDevice> devices);
 
-        void getApConfigSuccess(String factory);
+        void getApConfigSuccess();
 
         void apEventStatus(String sn, boolean isOnline);
 
         void refreshApEventStatus();
 
-        void getCheckApLoginSuccess();
+        void getCheckApLoginSuccess(boolean isAgainCheck);
 
-        void getCheckApLoginFail(String errorCode);
+        void getCheckApLoginFail(String type);
+
+        void gotoPrimaryRouteStartActivity();
     }
 
     interface Presenter {
@@ -58,15 +62,19 @@ public interface DeviceContract {
 
         void getPosList();
 
-        void apConfig(String sn);
+        void apConfig(Context context, String sn);
 
-        void apCheckLogin(String password);
+        void apCheckLogin(Context context, String password);
 
-        void getApConfig(ResponseBean res);
+        void apCheckLoginAgain(Context context, String password);
+
+        void getApConfig(Context context, ResponseBean res, SunmiDevice clickedDevice);
 
         void getStatusEvent(String result, List<SunmiDevice> routerList);
 
-        void checkApLoginPassword(ResponseBean res);
+        void checkApLoginPassword(Context context, ResponseBean res, SunmiDevice clickedDevice);
+
+        void checkApLoginPasswordAgain(Context context, ResponseBean res, SunmiDevice clickedDevice, String password);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.sunmi.assistant.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -16,7 +17,6 @@ import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
 import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
-import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.pos.PosManagerActivity_;
@@ -93,7 +93,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private InputDialog dialogPassword = null;
     private String password = "";    //路由管理密码
     private SunmiDevice clickedDevice;
-    private boolean isFirstLogin;//是否首次校验ap管理密码
 
     private List<SunmiDevice> routerList = new ArrayList<>();
     private List<SunmiDevice> ipcList = new ArrayList<>();
@@ -103,7 +102,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @AfterViews
     protected void init() {
         initDimens(mActivity);
-        mPresenter = new DevicePresenter(mActivity);
+        mPresenter = new DevicePresenter();
         mPresenter.attachView(this);
         deviceList.addAll(DataSupport.findAll(SunmiDevice.class));
         SunmiDevice currentDevice;
@@ -254,13 +253,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
      * W1是否配置
      */
     @Override
-    public void getApConfigSuccess(String factory) {
-        if (TextUtils.equals("0", factory)) {
-            isFirstLogin = true;
-            mPresenter.apCheckLogin(RouterDBHelper.queryApPassword(clickedDevice.getDeviceid()));
-        } else {
-            openActivity(mActivity, PrimaryRouteStartActivity.class);
-        }
+    public void getApConfigSuccess() {
+        openActivity(mActivity, PrimaryRouteStartActivity.class);
     }
 
     /**
@@ -273,6 +267,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             devStatusChangeList(sn, DeviceStatus.ONLINE);
         } else {
             devStatusChangeList(sn, DeviceStatus.OFFLINE);
+            if (TextUtils.equals(sn, AppConfig.GLOBAL_SN)) {
+                Intent intent = new Intent();
+                intent.setAction(AppConfig.BROADCAST_ACTION);
+                intent.putExtra("type", AppConfig.BROADCAST_STATUS);
+                mActivity.sendBroadcast(intent);
+                BaseNotification.newInstance().postNotificationName(NotificationConstant.apOffline, sn);
+            }
         }
     }
 
@@ -286,12 +287,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
      */
     @UiThread
     @Override
-    public void getCheckApLoginSuccess() {
-        if (!isFirstLogin) {
-            RouterDBHelper.saveLocalMangerPassword(clickedDevice.getDeviceid(), password);//保存本地管理密码
+    public void getCheckApLoginSuccess(boolean isAgainCheck) {
+        if (isAgainCheck) {
             dialogPasswordDismiss();
         }
-        checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus()); //校验版本
+        checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus());
     }
 
     /**
@@ -299,13 +299,14 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
      */
     @UiThread
     @Override
-    public void getCheckApLoginFail(String errorCode) {
-        if (isFirstLogin) {
-            dialogPassword = null;
-            saveMangerPasswordDialog(TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_ERROR) ? "1" : "0");
-        } else {
-            shortTip(R.string.tip_password_error);
-        }
+    public void getCheckApLoginFail(String type) {
+        dialogPassword = null;
+        saveMangerPasswordDialog(type);
+    }
+
+    @Override
+    public void gotoPrimaryRouteStartActivity() {
+        openActivity(mActivity, PrimaryRouteStartActivity.class);
     }
 
     @Override
@@ -348,7 +349,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 showLoadingDialog();
                 //校验ap是已初始化配置
                 if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
-                    mPresenter.apConfig(device.getDeviceid());
+                    mPresenter.apConfig(mActivity, device.getDeviceid());
                 } else if (device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
                     checkApVersion(device.getDeviceid(), device.getStatus());
                 } else {
@@ -421,7 +422,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{
                 NotificationConstant.bindRouterChanged,
                 NotificationConstant.apPostStatus, NotificationConstant.apStatusException,
-                NotificationConstant.apLogin, NotificationConstant.apisConfig,
+                NotificationConstant.checkLogin, NotificationConstant.checkLoginAgain,
+                NotificationConstant.apisConfig,
                 NotificationConstant.checkLoginAgain, CommonConstants.tabDevice,
                 com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED
         };
@@ -467,10 +469,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             tvShopTitle.setText(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034
             ResponseBean res = (ResponseBean) args[0];
-            mPresenter.getApConfig(res);
-        } else if (NotificationConstant.apLogin == id) {
+            mPresenter.getApConfig(mActivity, res, clickedDevice);
+        } else if (NotificationConstant.checkLogin == id) {
             ResponseBean res = (ResponseBean) args[0];
-            mPresenter.checkApLoginPassword(res);
+            mPresenter.checkApLoginPassword(mActivity, res, clickedDevice);
+        } else if (NotificationConstant.checkLoginAgain == id) {
+            ResponseBean res = (ResponseBean) args[0];
+            mPresenter.checkApLoginPasswordAgain(mActivity, res, clickedDevice, password);
         } else if (com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED == id) {
             mPresenter.getPrinterList();
         } else if (IpcConstants.refreshIpcList == id) {
@@ -505,8 +510,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                         return;
                     }
                     //再次校验管理密码
-                    isFirstLogin = false;
-                    mPresenter.apCheckLogin(password);
+                    mPresenter.apCheckLoginAgain(mActivity, password);
                 }).create();
         dialogPassword.setCancelable(false);
         dialogPassword.show();

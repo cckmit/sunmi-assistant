@@ -1,6 +1,6 @@
 package com.sunmi.assistant.presenter;
 
-import android.content.Intent;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -10,8 +10,8 @@ import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
-import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
 import com.sunmi.apmanager.utils.EncryptUtils;
+import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
 import com.sunmi.assistant.data.apresp.ApConfigResp;
@@ -29,7 +29,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
@@ -37,7 +36,6 @@ import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
-import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
@@ -55,26 +53,25 @@ import sunmi.common.utils.ThreadPool;
 public class DevicePresenter extends BasePresenter<DeviceContract.View>
         implements DeviceContract.Presenter {
 
-    private BaseActivity activity;
-
-    public DevicePresenter(BaseActivity mActivity) {
-        this.activity = mActivity;
-    }
-
     /**
      * 校验路由器是否配置
      */
     @Override
-    public void apConfig(String sn) {
-        APCall.getInstance().apIsConfig(activity, sn);
+    public void apConfig(Context context, String sn) {
+        APCall.getInstance().apIsConfig(context, sn);
     }
 
     /**
      * 校验路由器登录密码
      */
     @Override
-    public void apCheckLogin(String password) {
-        APCall.getInstance().checkLogin(activity, password);
+    public void apCheckLogin(Context context, String password) {
+        APCall.getInstance().checkLogin(context, password);
+    }
+
+    @Override
+    public void apCheckLoginAgain(Context context, String password) {
+        APCall.getInstance().checkLoginAgain(context, password);
     }
 
     /**
@@ -82,12 +79,16 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
      * 检测ap是否配置：已配置校验密码 ,未配置进行搜索
      */
     @Override
-    public void getApConfig(ResponseBean res) {
+    public void getApConfig(Context context, ResponseBean res, SunmiDevice clickedDevice) {
         if (TextUtils.equals("0", res.getErrCode())) {
             ApConfigResp resp = new Gson().fromJson(res.getResult().toString(), ApConfigResp.class);
             String factory = resp.getSystem().getFactory();
-            if (isViewAttached()) {
-                mView.getApConfigSuccess(factory);
+            if (TextUtils.equals("0", factory)) {
+                apCheckLogin(context, RouterDBHelper.queryApPassword(clickedDevice.getDeviceid()));
+            } else {
+                if (isViewAttached()) {
+                    mView.getApConfigSuccess();
+                }
             }
         }
     }
@@ -109,13 +110,6 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             String sn = eventResp.getParams().get(0).getParam().getSn();
             if (isViewAttached()) {
                 mView.apEventStatus(sn, false);
-            }
-            if (TextUtils.equals(sn, AppConfig.GLOBAL_SN)) {
-                Intent intent = new Intent();
-                intent.setAction(AppConfig.BROADCAST_ACTION);
-                intent.putExtra("type", AppConfig.BROADCAST_STATUS);
-                activity.sendBroadcast(intent);
-                BaseNotification.newInstance().postNotificationName(NotificationConstant.apOffline, sn);
             }
         } else if (NotificationConstant.apStatusList == event) {//w1所有设备列表
             routerList.clear();
@@ -144,25 +138,51 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
      * 设备ap登录，检测管理密码item
      */
     @Override
-    public void checkApLoginPassword(ResponseBean res) {
+    public void checkApLoginPassword(Context context, ResponseBean res, SunmiDevice clickedDevice) {
         String errorCode = res.getErrCode();
         if (TextUtils.equals(errorCode, "0")) {
             ApLoginResp resp = new Gson().fromJson(res.getResult().toString(), ApLoginResp.class);
             SpUtils.saveRouterToken(resp.getAccount().getToken());
             if (isViewAttached()) {
-                mView.getCheckApLoginSuccess();
+                mView.getCheckApLoginSuccess(false);
             }
         } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_ERROR)
                 || TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_INVALID)) {// 账户密码错误 ,账户登录缺少密码
             if (isViewAttached()) {
-                mView.getCheckApLoginFail(errorCode);
+                mView.getCheckApLoginFail(TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_ERROR) ? "1" : "0");
             }
         } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
             if (isViewAttached()) {
                 mView.shortTip(R.string.tip_password_fail_too_often);
             }
         } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_UNSET_PASSWORD)) { // 账户密码未设置
-            activity.startActivity(new Intent(activity, PrimaryRouteStartActivity.class));
+            if (isViewAttached()) {
+                mView.gotoPrimaryRouteStartActivity();
+            }
+        }
+    }
+
+    /**
+     * 再次校验管理密码
+     */
+    @Override
+    public void checkApLoginPasswordAgain(Context context, ResponseBean res, SunmiDevice clickedDevice, String password) {
+        String errorCode = res.getErrCode();
+        if (TextUtils.equals(errorCode, "0")) {
+            ApLoginResp resp = new Gson().fromJson(res.getResult().toString(), ApLoginResp.class);
+            SpUtils.saveRouterToken(resp.getAccount().getToken());
+            RouterDBHelper.saveLocalMangerPassword(clickedDevice.getDeviceid(), password);//保存本地管理密码
+            if (isViewAttached()) {
+                mView.getCheckApLoginSuccess(true);
+            }
+        } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_ERROR)) {// 账户密码错误
+            if (isViewAttached()) {
+                mView.shortTip(R.string.tip_password_error);
+            }
+        } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
+            if (isViewAttached()) {
+                mView.shortTip(R.string.tip_password_fail_too_often);
+            }
         }
     }
 
