@@ -8,7 +8,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
-import android.webkit.ValueCallback;
+import android.view.ViewGroup;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -28,9 +28,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +36,6 @@ import java.util.Map;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.RouterConfig;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
@@ -161,7 +157,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        webSettings.setAppCacheEnabled(true);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);//关闭webview中缓存
         // 可以运行JavaScript
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
@@ -236,37 +232,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 hideLoadingDialog();
-                if (!hasSendDeviceInfo) {
-                    try {
-                        JSONArray array = new JSONArray(snList);
-                        JSONObject userInfo = new JSONObject()
-                                .put("token", SpUtils.getStoreToken())
-                                .put("company_id", SpUtils.getCompanyId())
-                                .put("shop_id", SpUtils.getShopId());
-                        JSONObject cloudStorage = new JSONObject()
-                                .put("sn_list", array)
-                                .put("productNo", productNo);
-                        JSONObject cashVideo = new JSONObject()
-                                .put("shop_name", SpUtils.getShopName());
-                        JSONObject cashPreventLoss = new JSONObject()
-                                .put("sn", sn);
-                        String params = new JSONObject()
-                                .put("userInfo", userInfo)
-                                .put("cloudStorage", cloudStorage)
-                                .put("cashVideo", cashVideo)
-                                .put("cashPreventLoss", cashPreventLoss)
-                                .toString();
-                        webView.evaluateJavascript("javascript:getDataFromApp('" + params + "')", new ValueCallback<String>() {
-                            @Override
-                            public void onReceiveValue(String value) {
-
-                            }
-                        });
-                        hasSendDeviceInfo = true;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
 
             @Override
@@ -276,6 +241,24 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             }
 
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.onResume();
+            webView.resumeTimers();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (webView != null) {
+            webView.onPause();
+            webView.pauseTimers();
+        }
     }
 
     @Override
@@ -309,11 +292,11 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
         this.progress = progress;
         if (progress < 100) {
             showLoadingDialog();
-            /*if (progress >= 25 && !hasSendDeviceInfo) {
+            if (progress >= 25 && !hasSendDeviceInfo) {
                 webView.evaluateJavascript("javascript:getDataFromApp('" + params + "')", value -> {
                 });
                 hasSendDeviceInfo = true;
-            }*/
+            }
         } else {
             hideLoadingDialog();
             closeTimer();
@@ -337,9 +320,22 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             });
             return;
         }
-        webView.clearCache(true);
-        webView.clearHistory();
         super.onBackPressed();
     }
+
+    //销毁Webview 防止内存溢出
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            webView.clearHistory();
+
+            ((ViewGroup) webView.getParent()).removeView(webView);
+            webView.destroy();
+            webView = null;
+        }
+        super.onDestroy();
+    }
+
 }
 

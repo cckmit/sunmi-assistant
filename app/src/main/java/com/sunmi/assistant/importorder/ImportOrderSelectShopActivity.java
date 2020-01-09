@@ -28,6 +28,7 @@ import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
@@ -89,7 +90,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                             Router.withApi(AppApi.class).goToMain(context);
                         } else {
                             Router.withApi(SunmiServiceApi.class)
-                                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
+                                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams());
                         }
                     }
 

@@ -21,23 +21,10 @@ import sunmi.common.utils.ThreadPool;
 public class CashVideoModel {
 
     @SuppressLint("UseSparseArrays")
-    private HashMap<Integer, CashServiceInfo> map = new HashMap<>();
-    private ArrayList<CashServiceInfo> beans;
+    private HashMap<Integer, CashServiceInfo> map;
 
-    public CashVideoModel(ArrayList<CashServiceInfo> beans) {
-        this.beans = beans;
-        initMap();
-    }
-
-    private void initMap() {
-        ThreadPool.getSingleThreadPool().submit(new Runnable() {
-            @Override
-            public void run() {
-                for (CashServiceInfo bean : beans) {
-                    map.put(bean.getDeviceId(), bean);
-                }
-            }
-        });
+    public CashVideoModel(HashMap<Integer, CashServiceInfo> map) {
+        this.map = map;
     }
 
     public void loadCashVideo(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize, CallBack callBack) {
@@ -50,7 +37,7 @@ public class CashVideoModel {
                         if (n > 0) {
                             for (int i = 0; i < videoList.size(); i++) {
                                 CashServiceInfo serviceBean = map.get(videoList.get(i).getDeviceId());
-                                if (serviceBean!=null){
+                                if (serviceBean != null) {
                                     videoList.get(i).setDeviceName(serviceBean.getDeviceName());
                                     videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevention());
                                 }
@@ -76,7 +63,7 @@ public class CashVideoModel {
                         if (n > 0) {
                             for (int i = 0; i < videoList.size(); i++) {
                                 CashServiceInfo serviceBean = map.get(videoList.get(i).getDeviceId());
-                                if (serviceBean!=null){
+                                if (serviceBean != null) {
                                     videoList.get(i).setDeviceName(serviceBean.getDeviceName());
                                     videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevention());
                                 }
@@ -91,11 +78,6 @@ public class CashVideoModel {
                     }
                 });
 
-    }
-
-
-    public HashMap<Integer, CashServiceInfo> getIpcNameMap() {
-        return map;
     }
 
     public interface CallBack {

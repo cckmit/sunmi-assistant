@@ -24,7 +24,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,7 @@ import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -148,7 +151,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             } else {
                 if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
                     Router.withApi(SunmiServiceApi.class)
-                            .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
+                            .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams());
                 } else {
                     Router.withApi(AppApi.class).goToMain(context);
                 }
@@ -160,7 +163,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     void finishClick() {
         if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
             Router.withApi(SunmiServiceApi.class)
-                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
+                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams());
         } else {
             Router.withApi(AppApi.class).goToMain(context, this::finish);
         }
@@ -178,7 +181,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
+        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE,WebViewParamsUtils.getCloudStorageParams(snList,""));
     }
 
     @Override
