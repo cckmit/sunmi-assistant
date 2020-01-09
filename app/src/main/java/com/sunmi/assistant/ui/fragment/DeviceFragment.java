@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
-import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
 import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
@@ -22,31 +22,25 @@ import com.sunmi.apmanager.utils.EncryptUtils;
 import com.sunmi.apmanager.utils.RouterDBHelper;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
+import com.sunmi.assistant.data.apresp.ApConfigResp;
+import com.sunmi.assistant.data.apresp.ApEventResp;
+import com.sunmi.assistant.data.apresp.ApLoginResp;
 import com.sunmi.assistant.pos.PosManagerActivity_;
 import com.sunmi.assistant.presenter.DevicePresenter;
 import com.sunmi.assistant.ui.DeviceSettingMenu;
 import com.sunmi.assistant.ui.adapter.DeviceListAdapter;
-import com.sunmi.assistant.utils.GlideImageLoader;
 import com.sunmi.assistant.utils.ShopTitlePopupWindow;
 import com.sunmi.cloudprinter.ui.activity.PrinterManageActivity_;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.IpcManagerActivity_;
 import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
-import com.sunmi.sunmiservice.WebViewActivity_;
-import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
-import com.youth.banner.Transformer;
-import com.youth.banner.listener.OnBannerListener;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
@@ -61,8 +55,6 @@ import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
-import sunmi.common.model.AdListBean;
-import sunmi.common.model.AdListResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
@@ -85,7 +77,7 @@ import sunmi.common.view.dialog.InputDialog;
 @EFragment(R.layout.fragment_device)
 public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         implements DeviceContract.View, DeviceListAdapter.OnDeviceClickListener,
-        DeviceSettingMenu.OnSettingsClickListener, OnBannerListener,
+        DeviceSettingMenu.OnSettingsClickListener,
         BGARefreshLayout.BGARefreshLayoutDelegate, View.OnClickListener {
 
     @ViewById(R.id.bga_refresh)
@@ -98,8 +90,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     RelativeLayout rlShopTitle;
     @ViewById(R.id.tv_shop_title)
     TextView tvShopTitle;
-
-    private Banner vpBanner;
     private RelativeLayout rlNoDevice;
     private ShopTitlePopupWindow popupWindow;
     private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
@@ -108,10 +98,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private DeviceSettingMenu deviceSettingMenu;
     private InputDialog dialogPassword = null;
     private String password = "";    //路由管理密码
-    private String mPassword;
     private SunmiDevice clickedDevice;
+    private boolean isFirstLogin;//是否首次校验ap管理密码
 
-    private List<AdListBean> adList = new ArrayList<>();//广告
     private List<SunmiDevice> routerList = new ArrayList<>();
     private List<SunmiDevice> ipcList = new ArrayList<>();
     private List<SunmiDevice> printerList = new ArrayList<>();
@@ -120,16 +109,13 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @AfterViews
     protected void init() {
         initDimens(mActivity);
-        mPresenter = new DevicePresenter();
+        mPresenter = new DevicePresenter(mActivity);
         mPresenter.attachView(this);
-        if (!CommonHelper.isGooglePlay()) {
-            adList.addAll(DataSupport.findAll(AdListBean.class));
-        }
         deviceList.addAll(DataSupport.findAll(SunmiDevice.class));
         SunmiDevice currentDevice;
         for (SunmiDevice device : deviceList) {
             currentDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
-            device.setStatus(currentDevice != null && TextUtils.equals(currentDevice.getDeviceid(), device.getDeviceid()) ?
+            device.setStatus(currentDevice != null ?
                     DeviceStatus.EXCEPTION.ordinal() :
                     DeviceStatus.UNKNOWN.ordinal());
         }
@@ -157,11 +143,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 (ViewGroup) refreshView.getParent(), false);
         deviceListAdapter.addHeaderView(headerView);
         rlNoDevice = headerView.findViewById(R.id.rl_empty);
-        vpBanner = headerView.findViewById(R.id.vp_banner);
-        if (!CommonHelper.isGooglePlay()) {
-            vpBanner.setVisibility(View.VISIBLE);
-            initBanner();
-        }
         headerView.findViewById(R.id.btn_add_device).setOnClickListener(this);
         deviceListAdapter.setClickListener(this);
         rvDevice.setAdapter(deviceListAdapter);
@@ -184,7 +165,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void loadData() {
         mPresenter.getRouterList();
         if (!CommonHelper.isGooglePlay()) {
-            mPresenter.getBannerList();
             mPresenter.getIpcList();
             mPresenter.getPrinterList();
             mPresenter.getPosList();
@@ -246,29 +226,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     public void onDestroy() {
         super.onDestroy();
         closeTimer();
-    }
-
-    @Override
-    public void getAdListSuccess(AdListResp adListResp) {
-        adList.clear();
-        adList.addAll(adListResp.getAd_list());
-        if (mActivity == null || mActivity.isDestroyed()) {
-            return;
-        }
-        initBanner();
-    }
-
-    @UiThread
-    void initBanner() {
-        vpBanner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);//设置banner样式
-        vpBanner.setImageLoader(new GlideImageLoader());//设置图片加载器
-        vpBanner.setImages(adList);//设置图片集合
-        vpBanner.setBannerAnimation(Transformer.DepthPage);//设置banner动画效果
-        vpBanner.setOnBannerListener(this);
-        vpBanner.isAutoPlay(true);//设置自动轮播，默认为true
-        vpBanner.setDelayTime(4000);//设置轮播时间
-        vpBanner.setIndicatorGravity(BannerConfig.CENTER);//设置指示器位置（当banner模式中有指示器时）
-        vpBanner.start();//banner设置方法全部调用完毕时最后调用
     }
 
     @Override
@@ -339,7 +296,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 showLoadingDialog();
                 //校验ap是已初始化配置
                 if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
-                    APCall.getInstance().apIsConfig(mActivity, device.getDeviceid());
+                    mPresenter.apConfig(device.getDeviceid());
                 } else if (device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
                     checkApVersion(device.getDeviceid(), device.getStatus());
                 } else {
@@ -398,11 +355,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void OnBannerClick(int position) {
-        WebViewActivity_.intent(mActivity).url(adList.get(position).getLink()).start();
-    }
-
-    @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         loadData();
     }
@@ -417,8 +369,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{
                 NotificationConstant.bindRouterChanged,
                 NotificationConstant.apPostStatus, NotificationConstant.apStatusException,
-                NotificationConstant.checkApPassword,
-                NotificationConstant.checkLogin, NotificationConstant.apisConfig,
+                NotificationConstant.apLogin, NotificationConstant.apisConfig,
                 NotificationConstant.checkLoginAgain, CommonConstants.tabDevice,
                 com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED
         };
@@ -431,7 +382,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade, IpcConstants.refreshIpcList,
                 CommonNotifications.companyNameChanged, CommonNotifications.companySwitch,
-                CommonNotifications.shopNameChanged, IpcConstants.ipcDiscovered};
+                CommonNotifications.shopNameChanged, IpcConstants.ipcDiscovered, NotificationConstant.apPostStatus};
     }
 
     @Override
@@ -459,69 +410,15 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (NotificationConstant.connectedTosunmiDevice == id) {//异常
             devStatusUnknownToException();
         } else if (NotificationConstant.apPostStatus == id) {//在线 离线 设备状态
-            String msg = (String) args[0];
-            if (TextUtils.isEmpty(msg)) {
-                return;
-            }
-            try {
-                JSONObject object = new JSONObject(msg);
-                JSONArray jsonArray = object.getJSONArray("params");
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = (JSONObject) jsonArray.opt(i);
-                    int event = EncryptUtils.decodeOp(jsonObject.getString("event"));
-                    JSONObject object1 = jsonObject.getJSONObject("param");
-                    if (NotificationConstant.apOnline == event) {
-                        String sn = object1.getString("sn");
-                        devStatusChangeList(sn, DeviceStatus.ONLINE); //在线状态
-                    } else if (NotificationConstant.apOffline == event) {
-                        String sn = object1.getString("sn");
-                        devStatusChangeList(sn, DeviceStatus.OFFLINE); //离线状态
-                        //发送广播
-                        if (!TextUtils.equals(sn, AppConfig.GLOBAL_SN)) {
-                            return;
-                        }
-                        Intent intent = new Intent();
-                        intent.setAction(AppConfig.BROADCAST_ACTION);
-                        intent.putExtra("type", AppConfig.BROADCAST_STATUS);
-                        mActivity.sendBroadcast(intent);
-                        BaseNotification.newInstance().postNotificationName(NotificationConstant.apOffline, sn);
-                    } else if (NotificationConstant.apStatusList == event) {
-                        JSONArray jsonArrayList = object1.getJSONArray("device_list");//所有设备列表
-                        routerList.clear();
-                        for (int j = 0; j < jsonArrayList.length(); j++) {
-                            JSONObject object2 = (JSONObject) jsonArrayList.opt(j);
-                            int shopId = object2.getInt("ShopId");
-                            if (shopId == SpUtils.getShopId()) {
-                                SunmiDevice device = new SunmiDevice();
-                                device.setDeviceid(object2.getString("Sn"));
-                                device.setShopId(shopId);
-                                device.setName("SUNMI-W1");
-                                device.setModel("W1");
-                                device.setStatus(object2.getInt("ActiveStatus"));
-                                device.setType("ROUTER");
-                                routerList.add(device);
-                            }
-                        }
-                        refreshList();
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            apStatusEvent((String) args[0]);
         } else if (CommonNotifications.shopNameChanged == id) {
             tvShopTitle.setText(SpUtils.getShopName());
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034
             ResponseBean res = (ResponseBean) args[0];
             checkApIsConfig(res);
-        } else if (NotificationConstant.checkApPassword == id) {
+        } else if (NotificationConstant.apLogin == id) {
             ResponseBean res = (ResponseBean) args[0];
             checkApLoginMangerPsd(res);
-        } else if (NotificationConstant.checkLogin == id) {
-            ResponseBean res = (ResponseBean) args[0];
-            checkApLoginMangerPsd(res);
-        } else if (NotificationConstant.checkLoginAgain == id) {
-            ResponseBean res = (ResponseBean) args[0];
-            apLoginCheckPsdAgain(res);
         } else if (com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED == id) {
             mPresenter.getPrinterList();
         } else if (IpcConstants.refreshIpcList == id) {
@@ -540,7 +437,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             dialogPassword = null;
             return;
         }
-
         password = "";
         dialogPassword = new InputDialog.Builder(mActivity)
                 .setTitle(TextUtils.equals(type, "0") ?
@@ -556,31 +452,55 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                         shortTip(R.string.hint_input_manger_password);
                         return;
                     }
-//                    dialog.dismiss();
-                    APCall.getInstance().checkLoginAgain(mActivity, password);//todo opcode
+                    //再次校验管理密码
+                    isFirstLogin = false;
+                    mPresenter.apCheckLogin(password);
                 }).create();
         dialogPassword.setCancelable(false);
         dialogPassword.show();
     }
 
-    //设备ap登录，检测管理密码item  dialogPassword
-    private void apLoginCheckPsdAgain(ResponseBean res) {
-        try {
-            if (TextUtils.equals(res.getErrCode(), "0")) {//成功
-                JSONObject object2 = res.getResult();
-                JSONObject object3 = object2.getJSONObject("account");
-                String token = object3.getString("token");
-                SpUtils.saveRouterToken(token);//保存token
+    /**
+     * factory: 0已初始配置 1未初始化设置
+     * 检测ap是否配置：已配置校验密码 ,未配置进行搜索
+     */
+    private void checkApIsConfig(ResponseBean res) {
+        if (TextUtils.equals("0", res.getErrCode())) {
+            ApConfigResp resp = new Gson().fromJson(res.getResult().toString(), ApConfigResp.class);
+            String factory = resp.getSystem().getFactory();
+            if (TextUtils.equals("0", factory)) {
+                isFirstLogin = true;
+                mPresenter.apCheckLogin(RouterDBHelper.queryApPassword(clickedDevice.getDeviceid()));
+            } else {
+                openActivity(mActivity, PrimaryRouteStartActivity.class);
+            }
+        }
+    }
+
+    //设备ap登录，检测管理密码item
+    private void checkApLoginMangerPsd(ResponseBean res) {
+        String errorCode = res.getErrCode();
+        if (TextUtils.equals(errorCode, "0")) {
+            ApLoginResp resp = new Gson().fromJson(res.getResult().toString(), ApLoginResp.class);
+            SpUtils.saveRouterToken(resp.getAccount().getToken());
+            if (!isFirstLogin) {
                 RouterDBHelper.saveLocalMangerPassword(clickedDevice.getDeviceid(), password);//保存本地管理密码
                 dialogPasswordDismiss();
-                checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus());
-            } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_ERROR)) {// 账户密码错误
-                shortTip(getString(R.string.tip_password_error));
-            } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
-                shortTip(R.string.tip_password_fail_too_often);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+            checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus()); //校验版本
+        } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_ERROR)
+                || TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_INVALID)) {// 账户密码错误 ,账户登录缺少密码
+            if (isFirstLogin) {
+                dialogPassword = null;
+                saveMangerPasswordDialog(TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_ERROR) ?
+                        "1" : "0");
+            } else {
+                shortTip(getString(R.string.tip_password_error));
+            }
+        } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
+            shortTip(R.string.tip_password_fail_too_often);
+        } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_UNSET_PASSWORD)) { // 账户密码未设置
+            openActivity(mActivity, PrimaryRouteStartActivity.class);
         }
     }
 
@@ -589,53 +509,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (dialogPassword != null) {
             dialogPassword.dismiss();
             dialogPassword = null;
-        }
-    }
-
-    //检测ap是否配置
-    private void checkApIsConfig(ResponseBean res) {
-        try {
-            if (TextUtils.equals("0", res.getErrCode())) {
-                JSONObject object = res.getResult();
-                JSONObject object1 = object.getJSONObject("system");
-                String factory = object1.getString("factory");
-                if (TextUtils.equals("0", factory)) {//0已初始配置 1未初始化设置
-                    //校验密码 管理密码是否正确
-                    mPassword = RouterDBHelper.queryApPassword(clickedDevice.getDeviceid());
-                    APCall.getInstance().checkLogin(mActivity, mPassword);
-                } else {
-                    openActivity(mActivity, PrimaryRouteStartActivity.class);
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //设备ap登录，检测管理密码item
-    private void checkApLoginMangerPsd(ResponseBean res) {
-        try {
-            if (TextUtils.equals(res.getErrCode(), "0")) {//成功
-                JSONObject object2 = res.getResult();
-                JSONObject object3 = object2.getJSONObject("account");
-                String token = object3.getString("token");
-                SpUtils.saveRouterToken(token);//保存token
-                SpUtils.saveRouterMangerPassword(mPassword);//保存管理密码
-                //校验版本
-                checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus());
-            } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_ERROR)) {// 账户密码错误
-                dialogPassword = null;
-                saveMangerPasswordDialog("1"); //检测管理密码是否为空或丢失dialog
-            } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_INVALID)) {// 账户登录缺少密码
-                dialogPassword = null;
-                saveMangerPasswordDialog("0");
-            } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
-                shortTip(R.string.tip_password_fail_too_often);
-            } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_UNSET_PASSWORD)) { // 账户密码未设置
-                openActivity(mActivity, PrimaryRouteStartActivity.class);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
@@ -705,7 +578,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         SunmiDevice currentDevice;
         for (SunmiDevice device : deviceList) {
             currentDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
-            device.setStatus(currentDevice != null && TextUtils.equals(currentDevice.getDeviceid(), device.getDeviceid()) ?
+            device.setStatus(currentDevice != null ?
                     DeviceStatus.EXCEPTION.ordinal() :
                     DeviceStatus.UNKNOWN.ordinal());
         }
@@ -759,4 +632,45 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss()).create().show();
     }
 
+    @UiThread
+    void apStatusEvent(String result) {
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
+        ApEventResp eventResp = new Gson().fromJson(result, ApEventResp.class);
+        String opcode = eventResp.getParams().get(0).getEvent();
+        int event = EncryptUtils.decodeOp(opcode);
+        if (NotificationConstant.apOnline == event) { //在线状态
+            String sn = eventResp.getParams().get(0).getParam().getSn();
+            devStatusChangeList(sn, DeviceStatus.ONLINE);
+        } else if (NotificationConstant.apOffline == event) {//离线状态
+            String sn = eventResp.getParams().get(0).getParam().getSn();
+            devStatusChangeList(sn, DeviceStatus.OFFLINE);
+            if (TextUtils.equals(sn, AppConfig.GLOBAL_SN)) {
+                Intent intent = new Intent();
+                intent.setAction(AppConfig.BROADCAST_ACTION);
+                intent.putExtra("type", AppConfig.BROADCAST_STATUS);
+                mActivity.sendBroadcast(intent);
+                BaseNotification.newInstance().postNotificationName(NotificationConstant.apOffline, sn);
+            }
+        } else if (NotificationConstant.apStatusList == event) {//w1所有设备列表
+            routerList.clear();
+            List<ApEventResp.ParamsBean.ParamBean.DeviceListBean> beanList =
+                    eventResp.getParams().get(0).getParam().getDeviceList();
+            for (ApEventResp.ParamsBean.ParamBean.DeviceListBean bean : beanList) {
+                int shopId = bean.getShopId();
+                if (shopId == SpUtils.getShopId()) {
+                    SunmiDevice device = new SunmiDevice();
+                    device.setDeviceid(bean.getSn());
+                    device.setStatus(bean.getActiveStatus());
+                    device.setShopId(shopId);
+                    device.setName("SUNMI-W1");
+                    device.setModel("W1");
+                    device.setType("ROUTER");
+                    routerList.add(device);
+                }
+            }
+            refreshList();
+        }
+    }
 }

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
+import com.sunmi.apmanager.rpc.ap.APCall;
 import com.sunmi.apmanager.rpc.cloud.CloudApi;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
@@ -15,17 +16,15 @@ import com.sunmi.ipc.rpc.IpcCloudApi;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import sunmi.common.base.BaseActivity;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.enums.DeviceStatus;
-import sunmi.common.model.AdListBean;
-import sunmi.common.model.AdListResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
@@ -45,33 +44,26 @@ import sunmi.common.utils.ThreadPool;
 public class DevicePresenter extends BasePresenter<DeviceContract.View>
         implements DeviceContract.Presenter {
 
-    @Override
-    public void getBannerList() {
-        SunmiStoreApi.getInstance().getAdList(SpUtils.getCompanyId(), SpUtils.getShopId(),
-                new RetrofitCallback<AdListResp>() {
-                    @Override
-                    public void onSuccess(int code, String msg, AdListResp data) {
-                        if (isViewAttached()) {
-                            mView.endRefresh();
-                            mView.getAdListSuccess(data);
-                        }
-                        try {
-                            DataSupport.deleteAll(AdListBean.class);
-                            DataSupport.saveAll(data.getAd_list());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
+    private BaseActivity activity;
 
-                    @Override
-                    public void onFail(int code, String msg, AdListResp data) {
-                        if (isViewAttached()) {
-                            mView.hideLoadingDialog();
-                            mView.shortTip(R.string.toast_network_Exception);
-                            mView.endRefresh();
-                        }
-                    }
-                });
+    public DevicePresenter(BaseActivity mActivity) {
+        this.activity = mActivity;
+    }
+
+    /**
+     * 校验路由器是否配置
+     */
+    @Override
+    public void apConfig(String sn) {
+        APCall.getInstance().apIsConfig(activity, sn);
+    }
+
+    /**
+     * 校验路由器登录密码
+     */
+    @Override
+    public void apCheckLogin(String password) {
+        APCall.getInstance().checkLogin(activity, password);
     }
 
     @Override

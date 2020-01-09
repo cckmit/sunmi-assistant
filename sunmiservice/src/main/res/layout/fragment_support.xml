@@ -209,49 +209,6 @@
                 android:layout_marginStart="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_15"
-                android:text="@string/str_sunmi_store"
-                android:textColor="@color/text_caption"
-                android:textSize="@dimen/sp_16" />
-
-            <LinearLayout
-                android:id="@+id/ll_sunmi_store"
-                android:layout_width="@dimen/dp_345"
-                android:layout_height="@dimen/dp_156"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_8"
-                android:background="@mipmap/ic_sunmi_store"
-                android:orientation="vertical"
-                android:paddingStart="@dimen/dp_25">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_24"
-                    android:text="@string/str_sunmi_store_service"
-                    android:textColor="@color/c_white"
-                    android:textSize="@dimen/sp_24" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/tip_sunmi_store"
-                    android:textColor="@color/c_white"
-                    android:textSize="@dimen/sp_14" />
-
-                <TextView
-                    android:id="@+id/tv_sunmi_store"
-                    style="@style/BtnSolidWhite"
-                    android:layout_marginTop="@dimen/dp_20"
-                    android:clickable="false"
-                    android:text="@string/str_enter_store" />
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_15"
-                android:layout_marginTop="@dimen/dp_20"
-                android:layout_marginEnd="@dimen/dp_15"
                 android:text="@string/str_promotion"
                 android:textColor="@color/text_caption"
                 android:textSize="@dimen/sp_16" />

@@ -3,7 +3,6 @@ package com.sunmi.assistant.contract;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.AdListResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.SunmiDevice;
 
@@ -14,7 +13,6 @@ import sunmi.common.model.SunmiDevice;
 public interface DeviceContract {
 
     interface View extends BaseView {
-        void getAdListSuccess(AdListResp adListResp);
 
         void getRouterListSuccess(List<SunmiDevice> devices);
 
@@ -35,8 +33,6 @@ public interface DeviceContract {
 
     interface Presenter {
 
-        void getBannerList();
-
         void getRouterList();
 
         void getIpcList();
@@ -50,6 +46,10 @@ public interface DeviceContract {
         void getShopList();
 
         void getPosList();
+
+        void apConfig(String sn);
+
+        void apCheckLogin(String password);
     }
 
 }
