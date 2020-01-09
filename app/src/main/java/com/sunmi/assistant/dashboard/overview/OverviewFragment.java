@@ -59,7 +59,6 @@ public class OverviewFragment extends BaseMvpFragment<OverviewPresenter>
         mParent = (DashboardContract.View) parent;
         mPresenter = new OverviewPresenter(mParent.getPresenter());
         mPresenter.attachView(this);
-        showLoadingDialog();
         initRefreshLayout(context);
         initRecycler(context);
         mPresenter.load();

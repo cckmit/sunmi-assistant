@@ -59,7 +59,6 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
         mParent = (DashboardContract.View) parent;
         mPresenter = new CustomerPresenter(mParent.getPresenter());
         mPresenter.attachView(this);
-        showLoadingDialog();
         initRefreshLayout(context);
         initRecycler(context);
         mPresenter.load();

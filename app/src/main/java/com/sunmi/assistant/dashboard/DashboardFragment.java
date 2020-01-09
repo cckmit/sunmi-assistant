@@ -186,6 +186,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private void initViewPager(Context context) {
         mPages = mPresenter.createPages();
+        mPager.setOffscreenPageLimit(2);
         mPager.setAdapter(new PageAdapter(getChildFragmentManager()));
         mPager.addOnPageChangeListener(new PageListener());
         ArrayList<CustomTabEntity> tabs = new ArrayList<>(mPages.size());

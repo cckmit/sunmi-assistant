@@ -1,7 +1,6 @@
 package com.sunmi.assistant.dashboard;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.SparseArray;
@@ -54,7 +53,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private static final int REFRESH_TIME_PERIOD = 120_000;
 
-    private Context mContext;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private SparseArray<PageContract.PagePresenter> mPages = new SparseArray<>(2);
 
@@ -436,7 +434,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     @Override
     public void detachView() {
         super.detachView();
-        mContext = null;
         stopAutoRefresh();
         for (int i = 0, size = mPages.size(); i < size; i++) {
             PageContract.PagePresenter page = mPages.valueAt(i);

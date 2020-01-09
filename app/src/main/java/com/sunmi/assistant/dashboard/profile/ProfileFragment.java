@@ -59,7 +59,6 @@ public class ProfileFragment extends BaseMvpFragment<ProfilePresenter>
         mParent = (DashboardContract.View) parent;
         mPresenter = new ProfilePresenter(mParent.getPresenter());
         mPresenter.attachView(this);
-        showLoadingDialog();
         initRefreshLayout(context);
         initRecycler(context);
         mPresenter.load();
