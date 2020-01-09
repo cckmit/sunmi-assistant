@@ -184,7 +184,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * ipc名称 ，视频列表 ，是否一天快放,设备id, 一天快放的开始结束时间 ,是否有更多列表数据（一天快放或点击item进入）
      */
     @Extra
-    HashMap<Integer, CashServiceInfo> ipcName;
+    HashMap<Integer, CashServiceInfo> serviceInfoMap;
     @Extra
     ArrayList<CashVideo> videoList = new ArrayList<>();
     @Extra
@@ -374,7 +374,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_big_gray), null);
         popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, playIndex,
-                videoList, titleBar.getAppTitle(), isAbnormalBehavior);
+                videoList, serviceInfoMap, titleBar.getAppTitle(), isAbnormalBehavior);
     }
 
     @Override
@@ -429,13 +429,13 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (hasMore) {
             if (isWholeDayVideoPlay) {
                 //一天快放
-                mPresenter.getCashVideoList(ipcName, deviceId, -1, startTime, endTime, ++mWholeDayPlayPageNum, 10);
+                mPresenter.getCashVideoList(deviceId, -1, startTime, endTime, ++mWholeDayPlayPageNum, 10);
             } else if (isAbnormalBehavior) {
                 // 行为异常视频拉取更多
-                mPresenter.getAbnormalBehaviorList(ipcName, deviceId, videoType, startTime, endTime, ++pageNum, 10);
+                mPresenter.getAbnormalBehaviorList(deviceId, videoType, startTime, endTime, ++pageNum, 10);
             } else {
                 //item点击进入是否有更多
-                mPresenter.getCashVideoList(ipcName, deviceId, videoType, startTime, endTime, ++pageNum, 10);
+                mPresenter.getCashVideoList(deviceId, videoType, startTime, endTime, ++pageNum, 10);
             }
         } else {
             shortTip(R.string.tip_no_more_data);
@@ -905,33 +905,34 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         hideLoadingDialog();
         mSelectedTag = selected;
         // 更新VideoList
-        CashVideo info = getCurrent();
+        CashVideo video = getCurrent();
         boolean isAbnormal = selected.getId() != CashTagFilter.TAG_ID_NORMAL;
         ivTag.setSelected(isAbnormal);
         if (isAbnormal) {
-            info.setVideoType(IpcConstants.CASH_VIDEO_ABNORMAL);
-            info.setVideoTag(new int[]{selected.getId()});
+            video.setVideoType(IpcConstants.CASH_VIDEO_ABNORMAL);
+            video.setVideoTag(new int[]{selected.getId()});
             if (selected.getId() == CashTagFilter.TAG_ID_CUSTOM) {
-                info.setDescription(selected.getDesc());
+                video.setDescription(selected.getDesc());
             }
             shortTip(R.string.cash_tag_success);
         } else {
-            info.setVideoType(IpcConstants.CASH_VIDEO_NORMAL);
+            video.setVideoType(IpcConstants.CASH_VIDEO_NORMAL);
             shortTip(R.string.cash_tag_cancel_success);
         }
         // 清除AI加框信息
-        info.setUserModified(1);
+        video.setUserModified(1);
         tvAbnormalTip.setVisibility(View.GONE);
         cashBoxOverlay.setVisibility(View.GONE);
         sbMark.setVisibility(View.GONE);
         // 如果没有开通收银防损，那么弹窗推广
-        if (!getCurrent().isHasCashLossPrevent()) {
+        CashServiceInfo service = serviceInfoMap.get(video.getDeviceId());
+        if (service != null && service.isHasCashLossPrevention()) {
             if (mLossPreventDialog == null) {
                 mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
                         .setListener((dialog, which) -> {
                             Router.withApi(SunmiServiceApi.class)
                                     .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
-                                            WebViewParamsUtils.getCashPreventLossParams(info.getDeviceSn()));
+                                            WebViewParamsUtils.getCashPreventLossParams(video.getDeviceSn()));
                         })
                         .create();
             }
@@ -1031,17 +1032,24 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     //进入云回放
     private void gotoCloudPlaybackActivity(int status) {
         pausedVideo(true);
+        CashServiceInfo service = getCurrentService();
+        CashVideo video = getCurrent();
+
         SunmiDevice device = new SunmiDevice();
-        device.setId(getCurrent().getDeviceId());
-        device.setDeviceid(getCurrent().getDeviceSn());
-        device.setName(getCurrent().getDeviceName());
+        device.setId(video.getDeviceId());
+        device.setDeviceid(video.getDeviceSn());
+        device.setName(service == null ? "" : service.getDeviceName());
         device.setModel("SS1");
-        long cashVideoStartTime = getCurrent().getPurchaseTime();
+        long cashVideoStartTime = video.getPurchaseTime();
         CloudPlaybackActivity_.intent(context)
                 .device(device)
                 .cloudStorageServiceStatus(status)
                 .currentTime(cashVideoStartTime)
                 .start().withAnimation(R.anim.slide_in_right, 0);
+    }
+
+    private CashServiceInfo getCurrentService() {
+        return serviceInfoMap.get(getCurrent().getDeviceId());
     }
 
     @Override

@@ -5,13 +5,11 @@ import android.annotation.SuppressLint;
 import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.ThreadPool;
 
 /**
  * Description:
@@ -33,16 +31,6 @@ public class CashVideoModel {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
-                        int n = videoList.size();
-                        if (n > 0) {
-                            for (int i = 0; i < videoList.size(); i++) {
-                                CashServiceInfo serviceBean = map.get(videoList.get(i).getDeviceId());
-                                if (serviceBean != null) {
-                                    videoList.get(i).setDeviceName(serviceBean.getDeviceName());
-                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevention());
-                                }
-                            }
-                        }
                         callBack.getCashVideoSuccess(videoList, data.getTotalCount());
                     }
 
@@ -59,16 +47,6 @@ public class CashVideoModel {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
-                        int n = videoList.size();
-                        if (n > 0) {
-                            for (int i = 0; i < videoList.size(); i++) {
-                                CashServiceInfo serviceBean = map.get(videoList.get(i).getDeviceId());
-                                if (serviceBean != null) {
-                                    videoList.get(i).setDeviceName(serviceBean.getDeviceName());
-                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevention());
-                                }
-                            }
-                        }
                         callBack.getCashVideoSuccess(videoList, data.getTotalCount());
                     }
 

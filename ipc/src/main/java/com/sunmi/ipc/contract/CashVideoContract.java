@@ -6,10 +6,8 @@ import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.model.CashOrderResp;
 
 import java.util.List;
-import java.util.Map;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.ServiceResp;
 
 /**
@@ -44,10 +42,10 @@ public interface CashVideoContract {
 
         void getOrderInfo(String orderNo);
 
-        void getCashVideoList(Map<Integer, CashServiceInfo> ipcName, int deviceId, int videoType,
+        void getCashVideoList(int deviceId, int videoType,
                               long startTime, long endTime, int pageNum, int pageSize);
 
-        void getAbnormalBehaviorList(Map<Integer, CashServiceInfo> ipcName, int deviceId, int videoType,
+        void getAbnormalBehaviorList(int deviceId, int videoType,
                                      long startTime, long endTime, int pageNum, int pageSize);
 
         void getStorageList(String deviceSn);
