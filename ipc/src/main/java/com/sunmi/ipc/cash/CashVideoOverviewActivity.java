@@ -51,6 +51,7 @@ import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CircleImage;
 import sunmi.common.view.dialog.BottomDialog;
 import sunmi.common.view.widget.CenterLayoutManager;
@@ -305,8 +306,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     @Click(resName = "btn_floating")
     public void floatingClick() {
         Router.withApi(SunmiServiceApi.class)
-                .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS, mPresenter.getCashPreventLossParams(serviceBeans.get(0).getDeviceSn()));
-
+                .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
+                        WebViewParamsUtils.getCashPreventLossParams(serviceBeans.get(0).getDeviceSn()));
     }
 
     @Override

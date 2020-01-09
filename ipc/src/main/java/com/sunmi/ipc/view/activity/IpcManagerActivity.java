@@ -69,6 +69,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -984,7 +985,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                         device.getDeviceid(), true, device.getName());
                             } else {
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, mPresenter.getCloudStorageParams(device.getDeviceid()));
+                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE,
+                                                WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(),""));
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
@@ -993,7 +995,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             } else {
                                 if (serviceBeans.isEmpty()) {   //去开启收银视频
                                     Router.withApi(SunmiServiceApi.class)
-                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, mPresenter.getCashVideoParams());
+                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO,
+                                                    WebViewParamsUtils.getCashVideoParams());
                                 } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
                                     CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
                                             .serviceBeans(serviceBeans)

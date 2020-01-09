@@ -7,10 +7,6 @@ import com.sunmi.ipc.model.CashVideoCountResp;
 import com.sunmi.ipc.model.CashVideoListBean;
 import com.sunmi.ipc.model.CashVideoTimeSlotBean;
 import com.sunmi.ipc.rpc.IpcCloudApi;
-import com.xiaojinzi.component.impl.Router;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,11 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.CashServiceInfo;
-import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
 
 /**
@@ -115,22 +108,4 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
         return beanMap;
     }
 
-    public String getCashPreventLossParams(String sn) {
-        String params = "";
-        try {
-            JSONObject userInfo = new JSONObject()
-                    .put("token", SpUtils.getStoreToken())
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            JSONObject cashPreventLoss = new JSONObject()
-                    .put("sn", sn);
-            params = new JSONObject()
-                    .put("userInfo", userInfo)
-                    .put("cashPreventLoss", cashPreventLoss)
-                    .toString();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return params;
-    }
 }

@@ -12,16 +12,13 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 
 /**
  * Description:
@@ -55,23 +52,8 @@ public class CashVideoNonCloudActivity extends BaseActivity {
 
     @Click(resName = "btn_open")
     public void openClick() {
-        try {
-            JSONObject userInfo = new JSONObject()
-                    .put("token", SpUtils.getStoreToken())
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            JSONObject cloudStorage = new JSONObject()
-                    .put("sn_list", new JSONArray(snList))
-                    .put("productNo", "");
-            String params = new JSONObject()
-                    .put("userInfo", userInfo)
-                    .put("cloudStorage", cloudStorage)
-                    .toString();
-            WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_CLOUD_STORAGE)
-                    .params(params).startForResult(REQ_OPEN_CLOUD);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_CLOUD_STORAGE)
+                .params(WebViewParamsUtils.getCloudStorageParams(snList, "")).startForResult(REQ_OPEN_CLOUD);
     }
 
     @OnActivityResult(REQ_OPEN_CLOUD)

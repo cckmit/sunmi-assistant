@@ -5,10 +5,6 @@ import android.util.SparseArray;
 import com.sunmi.contract.SupportContract;
 import com.xiaojinzi.component.impl.service.ServiceManager;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +15,6 @@ import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.router.IpcCloudApiAnno;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -46,47 +41,6 @@ public class SupportPresenter extends BasePresenter<SupportContract.View> implem
         }
         // 依次获取收银服务状态，防损服务状态和云存储服务状态
         getCashVideoService();
-    }
-
-    public String getCloudStorageParams() {
-        String params = "";
-        try {
-            JSONObject userInfo = new JSONObject()
-                    .put("token", SpUtils.getStoreToken())
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            JSONObject cloudStorage = new JSONObject()
-                    .put("sn_list", new JSONArray())
-                    .put("productNo", "");
-            params = new JSONObject()
-                    .put("userInfo", userInfo)
-                    .put("cloudStorage", cloudStorage)
-                    .toString();
-            return params;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return params;
-    }
-
-    public String getCashVideoParams() {
-        String params = "";
-        try {
-            JSONObject userInfo = new JSONObject()
-                    .put("token", SpUtils.getStoreToken())
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            JSONObject cashVideo = new JSONObject()
-                    .put("shop_name", SpUtils.getShopName());
-            params = new JSONObject()
-                    .put("userInfo", userInfo)
-                    .put("cashVideo", cashVideo)
-                    .toString();
-            return params;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return params;
     }
 
     private void getCashVideoService() {

@@ -69,6 +69,7 @@ import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.VolumeHelper;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
 
@@ -337,7 +338,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     void openServiceClick() {
         if (isServiceUnopened()) {
             Router.withApi(SunmiServiceApi.class)
-                    .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, mPresenter.getCloudStorageParams(device.getDeviceid()));
+                    .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE,
+                            WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(), ""));
         } else {
             CloudPlaybackActivity_.intent(context).device(device)
                     .cloudStorageServiceStatus(cloudStorageServiceStatus)

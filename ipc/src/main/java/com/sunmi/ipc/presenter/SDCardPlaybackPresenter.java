@@ -6,15 +6,10 @@ import com.sunmi.ipc.model.VideoTimeSlotBean;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.tutk.IOTC.P2pCmdCallback;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -100,26 +95,4 @@ public class SDCardPlaybackPresenter extends BasePresenter<SDCardPlaybackContrac
         });
     }
 
-    public String getCloudStorageParams(String deviceSn) {
-        String params = "";
-        try {
-            ArrayList<String> snList = new ArrayList<>();
-            snList.add(deviceSn);
-            JSONObject userInfo = new JSONObject()
-                    .put("token", SpUtils.getStoreToken())
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            JSONObject cloudStorage = new JSONObject()
-                    .put("sn_list", new JSONArray(snList))
-                    .put("productNo", "");
-            params = new JSONObject()
-                    .put("userInfo", userInfo)
-                    .put("cloudStorage", cloudStorage)
-                    .toString();
-            return params;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return params;
-    }
 }

@@ -28,6 +28,7 @@ import sunmi.common.constant.RouterConfig;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 
 /**
  * Description:
@@ -169,7 +170,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
                     break;
             }
         } else {
-            WebViewCloudServiceActivity_.intent(context).params(mPresenter.getCloudStorageParams(bean.getProductNo()))
+            WebViewCloudServiceActivity_.intent(context).params(WebViewParamsUtils.getCloudStorageParams(bean.getDeviceSn(), bean.getProductNo()))
                     .mUrl(CommonConstants.H5_CLOUD_RENEW).start();
         }
     }

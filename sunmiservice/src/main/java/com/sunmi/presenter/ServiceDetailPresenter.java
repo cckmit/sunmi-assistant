@@ -4,15 +4,8 @@ import com.sunmi.bean.ServiceDetailBean;
 import com.sunmi.contract.ServiceDetailContract;
 import com.sunmi.rpc.ServiceApi;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -47,29 +40,6 @@ public class ServiceDetailPresenter extends BasePresenter<ServiceDetailContract.
                 }
             }
         });
-    }
-
-    public String getCloudStorageParams(String productNo) {
-        String params = "";
-        try {
-            ArrayList<String> snList = new ArrayList<>();
-            snList.add(deviceSn);
-            JSONObject userInfo = new JSONObject()
-                    .put("token", SpUtils.getStoreToken())
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            JSONObject cloudStorage = new JSONObject()
-                    .put("sn_list", new JSONArray(snList))
-                    .put("productNo", productNo);
-            params = new JSONObject()
-                    .put("userInfo", userInfo)
-                    .put("cloudStorage", cloudStorage)
-                    .toString();
-            return params;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return params;
     }
 
 }

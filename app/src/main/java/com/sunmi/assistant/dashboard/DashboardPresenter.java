@@ -15,9 +15,6 @@ import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.rpc.ServiceApi;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
@@ -454,27 +451,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             info.saveOrUpdate("shopId=?", String.valueOf(mShopId));
             BaseNotification.newInstance().postNotificationName(CommonNotifications.activeCloudChange);
         });
-    }
-
-    public String getCloudStorageParams() {
-        String params = "";
-        try {
-            JSONObject userInfo = new JSONObject()
-                    .put("token", SpUtils.getStoreToken())
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            JSONObject cloudStorage = new JSONObject()
-                    .put("sn_list", new JSONArray())
-                    .put("productNo", "");
-            params = new JSONObject()
-                    .put("userInfo", userInfo)
-                    .put("cloudStorage", cloudStorage)
-                    .toString();
-            return params;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return params;
     }
 
     private class RefreshTask implements Runnable {

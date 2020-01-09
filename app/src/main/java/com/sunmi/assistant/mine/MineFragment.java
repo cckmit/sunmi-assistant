@@ -23,8 +23,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import cn.bingoogolapple.badgeview.BGABadgeRelativeLayout;
 import sunmi.common.base.BaseMvpFragment;
@@ -34,6 +32,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StringHelper;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CircleImage;
 import sunmi.common.view.SettingItemLayout;
 
@@ -163,19 +162,9 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
      */
     @Click(R.id.sil_order)
     public void orderClick() {
-        try {
-            JSONObject userInfo = new JSONObject()
-                    .put("token", SpUtils.getStoreToken())
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
-            String params = new JSONObject()
-                    .put("userInfo", userInfo)
-                    .toString();
-            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_ORDER_MANAGE).params(params)
-                    .start();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_ORDER_MANAGE)
+                .params(WebViewParamsUtils.getUserInfoParams())
+                .start();
     }
 
     /**

@@ -44,6 +44,7 @@ import sunmi.common.model.FilterItem;
 import sunmi.common.router.IpcApi;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.DropdownMenu;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
@@ -292,7 +293,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             return;
         }
         WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE)
-                .params(mPresenter.getCloudStorageParams()).start();
+                .params(WebViewParamsUtils.getCloudStorageParams(new ArrayList<>(), "")).start();
     }
 
     @Override
