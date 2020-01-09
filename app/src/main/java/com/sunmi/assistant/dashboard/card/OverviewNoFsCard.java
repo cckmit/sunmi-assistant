@@ -8,33 +8,34 @@ import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
-import com.sunmi.assistant.importorder.ImportOrderPreviewActivity_;
+import com.xiaojinzi.component.impl.Router;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.router.IpcApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
  * @author yinhui
  * @since 2019-07-01
  */
-public class NoOrderCard extends BaseRefreshCard<NoOrderCard.Model, Object> {
+public class OverviewNoFsCard extends BaseRefreshCard<OverviewNoFsCard.Model, Object> {
 
-    private static NoOrderCard sInstance;
+    private static OverviewNoFsCard sInstance;
 
     private int mColorGray;
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    private NoOrderCard(Presenter presenter, int source) {
+    private OverviewNoFsCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static NoOrderCard get(Presenter presenter, int source) {
+    public static OverviewNoFsCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new NoOrderCard(presenter, source);
+            sInstance = new OverviewNoFsCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -47,7 +48,7 @@ public class NoOrderCard extends BaseRefreshCard<NoOrderCard.Model, Object> {
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_no_order;
+        return R.layout.dashboard_recycle_item_no_fs;
     }
 
     @Override
@@ -76,10 +77,8 @@ public class NoOrderCard extends BaseRefreshCard<NoOrderCard.Model, Object> {
         this.mContentBg = new GradientDrawable();
         this.mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
 
-        holder.addOnClickListener(R.id.btn_dashboard_dock, (h, model, position) -> {
-            ImportOrderPreviewActivity_.intent(context).importOrderType(CommonConstants.IMPORT_ORDER_FROM_COMMON).start();
-        });
-
+        holder.addOnClickListener(R.id.btn_dashboard_add, (h, model, position) ->
+                Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_FS, CommonConstants.CONFIG_IPC_FROM_COMMON));
         return holder;
     }
 

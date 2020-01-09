@@ -1,15 +1,16 @@
-package com.sunmi.assistant.dashboard.customer;
+package com.sunmi.assistant.dashboard.profile;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.card.CustomerNoDataCard;
-import com.sunmi.assistant.dashboard.card.CustomerNoFsCard;
-import com.sunmi.assistant.dashboard.card.CustomerPeriodCard;
-import com.sunmi.assistant.dashboard.card.CustomerTrendCard;
-import com.sunmi.assistant.dashboard.card.CustomerWaitDataCard;
+import com.sunmi.assistant.dashboard.card.ProfileAnalysisCard;
+import com.sunmi.assistant.dashboard.card.ProfileDataCard;
+import com.sunmi.assistant.dashboard.card.ProfileNoDataCard;
+import com.sunmi.assistant.dashboard.card.ProfileNoFsCard;
+import com.sunmi.assistant.dashboard.card.ProfilePeriodCard;
+import com.sunmi.assistant.dashboard.card.ProfileWaitDataCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,10 @@ import sunmi.common.base.BasePresenter;
  * @author yinhui
  * @date 2019-10-14
  */
-public class CustomerPresenter extends BasePresenter<CustomerContract.View>
-        implements CustomerContract.Presenter, BaseRefreshCard.Presenter {
+public class ProfilePresenter extends BasePresenter<ProfileContract.View>
+        implements ProfileContract.Presenter, BaseRefreshCard.Presenter {
 
-    private static final String TAG = CustomerPresenter.class.getSimpleName();
+    private static final String TAG = ProfilePresenter.class.getSimpleName();
 
     private int mSource = -1;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
@@ -33,7 +34,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
-    CustomerPresenter(PageContract.ParentPresenter parent) {
+    ProfilePresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
         this.mParent.onChildCreate(getType(), this);
     }
@@ -89,7 +90,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public int getType() {
-        return Constants.PAGE_CUSTOMER;
+        return Constants.PAGE_PROFILE;
     }
 
     @Override
@@ -125,17 +126,15 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private void initList(int source) {
         mList.clear();
-        mList.add(CustomerPeriodCard.get(this, source));
+        mList.add(ProfilePeriodCard.get(this, source));
         if (Utils.hasCustomer(source)) {
-            // TODO: 增加顶部数据卡片
-            mList.add(CustomerTrendCard.get(this, source));
-            // TODO: 增加进店率折线图卡片
-            // TODO: 增加客群到店频率1~3张卡片
+            mList.add(ProfileDataCard.get(this, source));
+            mList.add(ProfileAnalysisCard.get(this, source));
         } else if (Utils.hasFs(source)) {
-            mList.add(CustomerWaitDataCard.get(this, source));
+            mList.add(ProfileWaitDataCard.get(this, source));
         } else {
-            mList.add(CustomerNoDataCard.get(this, source));
-            mList.add(CustomerNoFsCard.get(this, source));
+            mList.add(ProfileNoDataCard.get(this, source));
+            mList.add(ProfileNoFsCard.get(this, source));
         }
     }
 

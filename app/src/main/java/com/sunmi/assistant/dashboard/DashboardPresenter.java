@@ -11,6 +11,8 @@ import com.sunmi.assistant.dashboard.customer.CustomerFragment;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment;
 import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
+import com.sunmi.assistant.dashboard.profile.ProfileFragment;
+import com.sunmi.assistant.dashboard.profile.ProfileFragment_;
 import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.rpc.ServiceApi;
@@ -124,8 +126,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         CustomerFragment customerFragment = new CustomerFragment_();
         pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment, Constants.PAGE_CUSTOMER));
-        mPageType = Constants.PAGE_OVERVIEW;
 
+        ProfileFragment profileFragment = new ProfileFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_profile, 0, profileFragment, Constants.PAGE_PROFILE));
+
+        mPageType = Constants.PAGE_OVERVIEW;
         return pages;
     }
 

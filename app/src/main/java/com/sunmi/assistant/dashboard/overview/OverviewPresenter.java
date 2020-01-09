@@ -5,12 +5,12 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.card.EmptyDataCard;
-import com.sunmi.assistant.dashboard.card.EmptyGapCard;
-import com.sunmi.assistant.dashboard.card.NoFsCard;
-import com.sunmi.assistant.dashboard.card.NoOrderCard;
 import com.sunmi.assistant.dashboard.card.OverviewDataCard;
 import com.sunmi.assistant.dashboard.card.OverviewDistributionCard;
+import com.sunmi.assistant.dashboard.card.OverviewGapCard;
+import com.sunmi.assistant.dashboard.card.OverviewNoDataCard;
+import com.sunmi.assistant.dashboard.card.OverviewNoFsCard;
+import com.sunmi.assistant.dashboard.card.OverviewNoOrderCard;
 import com.sunmi.assistant.dashboard.card.OverviewOrderImportCard;
 import com.sunmi.assistant.dashboard.card.OverviewPeriodCard;
 import com.sunmi.assistant.dashboard.card.OverviewTrendCard;
@@ -41,7 +41,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
-    public OverviewPresenter(PageContract.ParentPresenter parent) {
+    OverviewPresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
         this.mParent.onChildCreate(getType(), this);
     }
@@ -146,11 +146,16 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
         mList.add(OverviewPeriodCard.get(this, source));
         // No any data
         if (!Utils.hasAuth(source) && !Utils.hasFs(source)) {
-            mList.add(EmptyDataCard.get(this, source));
-            mList.add(NoOrderCard.get(this, source));
-            mList.add(NoFsCard.get(this, source));
-            mList.add(EmptyGapCard.get(this, source));
+            mList.add(OverviewNoDataCard.get(this, source));
+            mList.add(OverviewNoOrderCard.get(this, source));
+            mList.add(OverviewNoFsCard.get(this, source));
+            mList.add(OverviewGapCard.get(this, source));
             return;
+        }
+
+        // Shop entry rate card.
+        if (Utils.hasFs(source)) {
+            // TODO: 增加进店率进度条卡片
         }
 
         // Time tab & data & trend card
@@ -166,7 +171,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
         // No order card or import card
         if (!Utils.hasAuth(source)) {
-            mList.add(NoOrderCard.get(this, source));
+            mList.add(OverviewNoOrderCard.get(this, source));
         } else if (!Utils.hasImport(source) || mImportState == IMPORT_STATE_SHOW) {
             OverviewOrderImportCard card = OverviewOrderImportCard.get(this, source);
             card.setListener(this);
@@ -175,9 +180,9 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
 
         // No fs card
         if (!Utils.hasFs(source)) {
-            mList.add(NoFsCard.get(this, source));
+            mList.add(OverviewNoFsCard.get(this, source));
         }
-        mList.add(EmptyGapCard.get(this, source));
+        mList.add(OverviewGapCard.get(this, source));
     }
 
     @Override

@@ -17,17 +17,17 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class EmptyGapCard extends BaseRefreshCard<EmptyGapCard.Model, Object> {
+public class OverviewGapCard extends BaseRefreshCard<OverviewGapCard.Model, Object> {
 
-    private static EmptyGapCard sInstance;
+    private static OverviewGapCard sInstance;
 
-    private EmptyGapCard(Presenter presenter, int source) {
+    private OverviewGapCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static EmptyGapCard get(Presenter presenter, int source) {
+    public static OverviewGapCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new EmptyGapCard(presenter, source);
+            sInstance = new OverviewGapCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }

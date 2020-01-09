@@ -27,9 +27,9 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  * @author yinhui
  * @since 2019-07-01
  */
-public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Object> {
+public class ProfileDataCard extends BaseRefreshCard<ProfileDataCard.Model, Object> {
 
-    private static CustomerDataCard sInstance;
+    private static ProfileDataCard sInstance;
 
     private static final int NUM_100_MILLION = 100000000;
     private static final int NUM_10_THOUSANDS = 10000;
@@ -37,13 +37,13 @@ public class CustomerDataCard extends BaseRefreshCard<CustomerDataCard.Model, Ob
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DATE_FORMAT_PARAMS = new SimpleDateFormat("yyyy-MM-dd");
 
-    private CustomerDataCard(Presenter presenter, int source) {
+    private ProfileDataCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static CustomerDataCard get(Presenter presenter, int source) {
+    public static ProfileDataCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new CustomerDataCard(presenter, source);
+            sInstance = new ProfileDataCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }

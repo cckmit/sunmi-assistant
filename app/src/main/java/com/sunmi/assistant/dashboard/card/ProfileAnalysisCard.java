@@ -41,12 +41,12 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  * @author yinhui
  * @since 2019-07-01
  */
-public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.Model, CustomerHistoryDetailResp> {
+public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Model, CustomerHistoryDetailResp> {
 
     private static final int NUM_10_THOUSANDS = 10000;
     private static final int MAX_ITEM_COUNT = 3;
 
-    private static CustomerAnalysisCard sInstance;
+    private static ProfileAnalysisCard sInstance;
 
     private String mAgeLabel;
     private String mMaleLabel;
@@ -55,13 +55,13 @@ public class CustomerAnalysisCard extends BaseRefreshCard<CustomerAnalysisCard.M
     private SparseArray<String> mAgeList;
     private CommonAdapter<Item> mAdapter;
 
-    private CustomerAnalysisCard(Presenter presenter, int source) {
+    private ProfileAnalysisCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static CustomerAnalysisCard get(Presenter presenter, int source) {
+    public static ProfileAnalysisCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new CustomerAnalysisCard(presenter, source);
+            sInstance = new ProfileAnalysisCard(presenter, source);
         } else {
             sInstance.mPresenter = presenter;
             sInstance.reset(presenter, source);

@@ -29,7 +29,7 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @date 2019-10-11
  */
-@EFragment(R.layout.dashboard_fragment_customer)
+@EFragment(R.layout.dashboard_fragment_list)
 public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
         implements CustomerContract.View, RefreshLayout.RefreshLayoutDelegate {
 
