@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.contract.SupportContract;
@@ -59,10 +60,14 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     ImageView ivTipFree;
     @ViewById(resName = "tv_cash_video")
     TextView tvCashVideo;
-    @ViewById(resName = "tv_cash_name")
-    TextView tvCashName;
-    @ViewById(resName = "tv_cash_content")
-    TextView tvCashContent;
+    @ViewById(resName = "tv_cash")
+    TextView tvCash;
+    @ViewById(resName = "tv_cash_prevent")
+    TextView tvCashPrevent;
+    @ViewById(resName = "ll_cash_prevent")
+    LinearLayout llCashPrevent;
+    @ViewById(resName = "ll_cash_video")
+    LinearLayout llCashVideo;
 
     /**
      * 第三方app和微信通信的openApi接口
@@ -91,6 +96,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         showLoadingDialog();
         initTitleBar();
         initCloudCard();
+        initCashCardVisibility(View.VISIBLE, View.GONE);
         mPresenter.load();
     }
 
@@ -126,8 +132,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
             // 确认是否有设备开通了收银防损，并更新卡片
             for (CashServiceInfo info : cashServiceInfoList) {
                 if (info.isHasCashLossPrevention()) {
-                    tvCashName.setText(R.string.str_cash_loss_prevent);
-                    tvCashContent.setText(R.string.service_tip_cash_loss_prevent);
+                    initCashCardVisibility(View.GONE, View.VISIBLE);
                     return;
                 }
             }
@@ -149,7 +154,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         mPresenter.load();
     }
 
-    @Click(resName = "ll_cash_video")
+    @Click(resName = {"ll_cash_video", "ll_cash_prevent"})
     void cashVideoClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
@@ -258,6 +263,13 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
             cashServiceInfoList.clear();
             mPresenter.load();
         }
+    }
+
+    private void initCashCardVisibility(int videoCard, int preventCard) {
+        tvCash.setVisibility(videoCard);
+        llCashVideo.setVisibility(videoCard);
+        tvCashPrevent.setVisibility(preventCard);
+        llCashPrevent.setVisibility(preventCard);
     }
 
     /**

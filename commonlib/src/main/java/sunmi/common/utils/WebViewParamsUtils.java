@@ -80,6 +80,8 @@ public class WebViewParamsUtils {
     }
 
     public static String getCashPreventLossParams(String sn) {
+        List<String> snList = new ArrayList<>();
+        snList.add(sn);
         String params = "";
         try {
             JSONObject userInfo = new JSONObject()
@@ -87,7 +89,7 @@ public class WebViewParamsUtils {
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId());
             JSONObject cashPreventLoss = new JSONObject()
-                    .put("sn", sn);
+                    .put("snList", new JSONArray(snList));
             params = new JSONObject()
                     .put("userInfo", userInfo)
                     .put("cashPreventLoss", cashPreventLoss)

@@ -986,7 +986,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             } else {
                                 Router.withApi(SunmiServiceApi.class)
                                         .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE,
-                                                WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(),""));
+                                                WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(), ""));
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
