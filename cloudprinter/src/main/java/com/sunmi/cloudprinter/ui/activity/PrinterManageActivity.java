@@ -15,7 +15,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import com.sunmi.cloudprinter.bean.PrinterJSCall;
-import com.sunmi.cloudprinter.config.PrinterConfig;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -27,11 +26,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.AndroidBug5497Workaround;
+import sunmi.common.view.webview.BaseJSCall;
 import sunmi.common.view.webview.SMWebChromeClient;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
@@ -67,9 +69,9 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
         AndroidBug5497Workaround.assistActivity(this, true);
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
         initWebView();
-//        webView.loadUrl(CommonConfig.SERVICE_H5_URL +
-//                "cloudPrinter/index?topPadding=" + Utils.getWebViewStatusBarHeight(context));
-        webView.loadUrl(PrinterConfig.IOT_H5_URL);
+        webView.loadUrl(CommonConfig.SERVICE_H5_URL +
+                "cloudPrinter/index?topPadding=" + Utils.getWebViewStatusBarHeight(context));
+//        webView.loadUrl(PrinterConfig.IOT_H5_URL);
         startTimer();
     }
 
@@ -120,9 +122,10 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
         // 可以运行JavaScript
-//        BaseJSCall jsCall = new BaseJSCall(this, webView);
+        BaseJSCall baseJsCall = new BaseJSCall(this, webView);
         PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
+        webView.addJavascriptInterface(baseJsCall, SsConstants.JS_INTERFACE_NAME);
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
