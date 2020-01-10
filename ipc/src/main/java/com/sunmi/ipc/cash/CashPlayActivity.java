@@ -711,6 +711,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (!isAbnormalBehavior) {
             mPresenter.getOrderInfo(getCurrent().getOrderNo());
         }
+        rlOrderInfo.setVisibility(isAbnormalBehavior ? View.GONE : View.VISIBLE);
         ivTag.setSelected(isAbnormal);
         sbBar.setProgress(0);
         ivpCash.release();
@@ -751,7 +752,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         startCountDownTimer();
         pBarLoading.setVisibility(View.VISIBLE);
         llPlayFail.setVisibility(View.GONE);
-        rlOrderInfo.setVisibility(View.VISIBLE);
         tvEmpty.setVisibility(View.GONE);
     }
 
