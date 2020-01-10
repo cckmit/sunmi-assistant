@@ -2,9 +2,12 @@ package com.sunmi.ipc.cash;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,8 +24,11 @@ import com.sunmi.ipc.contract.CashOverviewContract;
 import com.sunmi.ipc.model.CashVideoListBean;
 import com.sunmi.ipc.presenter.CashOverviewPresenter;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterRequest;
+import com.xiaojinzi.component.impl.RouterResult;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -32,6 +38,8 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,9 +52,11 @@ import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.FilterItem;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -153,10 +163,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
             deviceId = -1;
         }
         if (hasCashLossPrevent) {
-            llAbnormalBehavior.setVisibility(View.VISIBLE);
-            llFloating.setVisibility(View.GONE);
-            behaviorItems = new ArrayList<>();
-            behaviorItems.add(new FilterItem(-1, getString(R.string.str_all_device), false));
+            initCashPrent();
         }
         initDate();
     }
@@ -201,6 +208,15 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
             llManager.smoothScrollToPosition(rvCalender, new RecyclerView.State(), selectPos);
         }
     }
+
+    private void initCashPrent() {
+        llAbnormalBehavior.setVisibility(View.VISIBLE);
+        llFloating.setVisibility(View.GONE);
+        behaviorItems = new ArrayList<>();
+        behaviorItems.add(new FilterItem(-1, getString(R.string.str_all_device), false));
+        hasCashLossPrevent = true;
+    }
+
 
     /**
      * 计算开始时间和结束时间并定时调用接口
@@ -307,7 +323,37 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     public void floatingClick() {
         Router.withApi(SunmiServiceApi.class)
                 .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
-                        WebViewParamsUtils.getCashPreventLossParams(serviceBeans.get(0).getDeviceSn()));
+                        WebViewParamsUtils.getCashPreventLossParams(serviceBeans.get(0).getDeviceSn())
+                        , new BiCallback<Intent>() {
+                            @Override
+                            public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
+                                String args = intent.getStringExtra("args");
+                                if (!TextUtils.isEmpty(args)) {
+                                    try {
+                                        JSONObject jsonObject = new JSONObject(args);
+                                        int service = jsonObject.getInt("service");
+                                        int status = jsonObject.getInt("status");
+                                        if (service == IpcConstants.SERVICE_TYPE_CASH_PREVENT
+                                                && status == CommonConstants.RESULT_OK) {
+                                            updateStatus();
+                                            BaseNotification.newInstance().postNotificationName(CommonNotifications.cashPreventSubscribe);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancel(@Nullable RouterRequest originalRequest) {
+
+                            }
+
+                            @Override
+                            public void onError(@NonNull RouterErrorResult errorResult) {
+
+                            }
+                        });
     }
 
     @Override
@@ -385,6 +431,18 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         initCashVideoOverViewAdapter();
     }
 
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.cashPreventSubscribe) {
+            updateStatus();
+        }
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{CommonNotifications.cashPreventSubscribe};
+    }
+
     private void initCashVideoOverViewAdapter() {
         if (cashVideoOverViewAdapter == null) {
             cashVideoOverViewAdapter = new CashVideoOverViewAdapter(serviceBeans, context);
@@ -393,6 +451,12 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         } else {
             cashVideoOverViewAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void updateStatus() {
+        serviceBeans.get(0).setHasCashLossPrevention(true);
+        initCashPrent();
+        initStartAndEndTime();
     }
 
     @Override

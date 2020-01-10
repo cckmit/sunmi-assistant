@@ -1,6 +1,7 @@
 package sunmi.common.view.webview;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.webkit.JavascriptInterface;
 
@@ -67,5 +68,12 @@ public class BaseJSCall {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @JavascriptInterface
+    public void onResult(String args){
+        Intent intent = new Intent();
+        intent.putExtra("args",args);
+        context.setResult(Activity.RESULT_OK,intent);
     }
 }
