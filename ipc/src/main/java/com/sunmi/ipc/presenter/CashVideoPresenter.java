@@ -182,6 +182,9 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                 List<CashVideoEventResp.Box> boxes = data.getKeyObjects();
                 for (CashVideoEventResp.Box box : boxes) {
                     double[] timestamp = box.getTimestamp();
+                    if (timestamp == null || timestamp.length < 2) {
+                        continue;
+                    }
                     int start = (int) (timestamp[0] * 1000 - begin);
                     int end = (int) (timestamp[1] * 1000 - begin);
                     if (end <= 0) {

@@ -933,7 +933,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         sbMark.setVisibility(View.GONE);
         // 如果没有开通收银防损，那么弹窗推广
         CashServiceInfo service = serviceInfoMap.get(video.getDeviceId());
-        if (service != null && service.isHasCashLossPrevention()) {
+        if (service == null || !service.isHasCashLossPrevention()) {
             if (mLossPreventDialog == null) {
                 mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
                         .setListener((dialog, which) -> Router.withApi(SunmiServiceApi.class)
