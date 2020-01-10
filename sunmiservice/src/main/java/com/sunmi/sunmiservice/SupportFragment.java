@@ -75,6 +75,8 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     private IWXAPI api;
 
     private ArrayList<CashServiceInfo> cashServiceInfoList = new ArrayList<>();
+    private boolean hasCloudService = false;
+    private ArrayList<String> snList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         showLoadingDialog();
         initTitleBar();
         initCloudCard();
-        initCashCardVisibility(View.VISIBLE, View.GONE);
+        initCashPreventCardVisibility(false);
         mPresenter.load();
     }
 
@@ -131,10 +133,13 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
             tvCashVideo.setText(R.string.str_setting_detail);
             // 确认是否有设备开通了收银防损，并更新卡片
             for (CashServiceInfo info : cashServiceInfoList) {
-                if (info.isHasCashLossPrevention()) {
-                    initCashCardVisibility(View.GONE, View.VISIBLE);
-                    return;
+                if (info.isHasCloudStorage()) {
+                    hasCloudService = true;
                 }
+                if (info.isHasCashLossPrevention()) {
+                    initCashPreventCardVisibility(true);
+                }
+                snList.add(info.getDeviceSn());
             }
         }
     }
@@ -154,23 +159,25 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         mPresenter.load();
     }
 
-    @Click(resName = {"ll_cash_video", "ll_cash_prevent"})
-    void cashVideoClick() {
+    @Click(resName = "ll_cash_prevent")
+    void cashPreventClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
-        // 判断是否开通云存储，是否开通收银防损
-        boolean hasCloudService = false;
-        boolean hasCashLossPrevention = false;
-        ArrayList<String> snList = new ArrayList<>();
-        for (CashServiceInfo info : cashServiceInfoList) {
-            if (info.isHasCloudStorage()) {
-                hasCloudService = true;
-            }
-            if (info.isHasCashLossPrevention()) {
-                hasCashLossPrevention = true;
-            }
-            snList.add(info.getDeviceSn());
+        if (hasCloudService) {
+            // 已经开通云存储服务,进入收银总揽页
+            Router.withApi(IpcApi.class)
+                    .goToCashVideoOverview(mActivity, cashServiceInfoList, false, true);
+        } else {
+            // 有设备开通收银反损，但是没有开通云存储，进入开通页
+            CashVideoNonCloudActivity_.intent(mActivity).snList(snList).start();
+        }
+    }
+
+    @Click(resName = "ll_cash_video")
+    void cashVideoClick() {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
+            return;
         }
         if (cashServiceInfoList.isEmpty()) {
             // 没有设备开通收银视频，进入开通页
@@ -179,7 +186,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         } else if (hasCloudService) {
             // 有设备开通收银视频，并已经开通云存储服务，进入收银视频总览页
             Router.withApi(IpcApi.class)
-                    .goToCashVideoOverview(mActivity, cashServiceInfoList, false, hasCashLossPrevention);
+                    .goToCashVideoOverview(mActivity, cashServiceInfoList, false, false);
         } else {
             // 有设备开通收银视频，但是没有开通云存储，进入开通页
             CashVideoNonCloudActivity_.intent(mActivity).snList(snList).start();
@@ -250,7 +257,9 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         return new int[]{
                 CommonNotifications.activeCloudChange,
                 CommonNotifications.cashVideoSubscribe,
-                CommonNotifications.shopSwitched
+                CommonNotifications.shopSwitched,
+                CommonNotifications.cashPreventSubscribe,
+                CommonNotifications.cloudStorageChange
         };
     }
 
@@ -258,18 +267,28 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.activeCloudChange) {
             initCloudCard();
-        } else if (id == CommonNotifications.cashVideoSubscribe || id == CommonNotifications.shopSwitched) {
+        } else if (id == CommonNotifications.cashVideoSubscribe || id == CommonNotifications.shopSwitched
+                || id == CommonNotifications.cashPreventSubscribe) {
             showDarkLoading();
             cashServiceInfoList.clear();
             mPresenter.load();
+        } else if (id == CommonNotifications.cloudStorageChange) {
+            hasCloudService = true;
         }
     }
 
-    private void initCashCardVisibility(int videoCard, int preventCard) {
-        tvCash.setVisibility(videoCard);
-        llCashVideo.setVisibility(videoCard);
-        tvCashPrevent.setVisibility(preventCard);
-        llCashPrevent.setVisibility(preventCard);
+    private void initCashPreventCardVisibility(boolean hasCashLossPrevention) {
+        if (hasCashLossPrevention) {
+            tvCash.setVisibility(View.GONE);
+            llCashVideo.setVisibility(View.GONE);
+            tvCashPrevent.setVisibility(View.VISIBLE);
+            llCashPrevent.setVisibility(View.VISIBLE);
+        } else {
+            tvCash.setVisibility(View.VISIBLE);
+            llCashVideo.setVisibility(View.VISIBLE);
+            tvCashPrevent.setVisibility(View.GONE);
+            llCashPrevent.setVisibility(View.GONE);
+        }
     }
 
     /**

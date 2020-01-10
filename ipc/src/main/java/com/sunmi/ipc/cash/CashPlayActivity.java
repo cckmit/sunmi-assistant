@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,7 +45,11 @@ import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.presenter.CashVideoPresenter;
 import com.sunmi.ipc.view.activity.CloudPlaybackActivity_;
+import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.RouterErrorResult;
+import com.xiaojinzi.component.impl.RouterRequest;
+import com.xiaojinzi.component.impl.RouterResult;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -909,7 +914,23 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                         .setListener((dialog, which) -> {
                             Router.withApi(SunmiServiceApi.class)
                                     .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
-                                            WebViewParamsUtils.getCashPreventLossParams(info.getDeviceSn()));
+                                            WebViewParamsUtils.getCashPreventLossParams(info.getDeviceSn())
+                                            , new BiCallback<Intent>() {
+                                                @Override
+                                                public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
+                                                    // TODO 添加 收银防损订阅成功的逻辑
+                                                }
+
+                                                @Override
+                                                public void onCancel(@Nullable RouterRequest originalRequest) {
+
+                                                }
+
+                                                @Override
+                                                public void onError(@NonNull RouterErrorResult errorResult) {
+
+                                                }
+                                            });
                         })
                         .create();
             }

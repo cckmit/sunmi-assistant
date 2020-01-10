@@ -636,7 +636,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         return new int[]{IpcConstants.ipcNameChanged, OpcodeConstants.getVideoParams,
                 OpcodeConstants.fsAdjustFocusAdd, OpcodeConstants.fsAdjustFocusMinus,
                 OpcodeConstants.fsAdjustFocusReset,
-                CommonNotifications.cloudStorageChange, CommonNotifications.cashVideoSubscribe};
+                CommonNotifications.cloudStorageChange, CommonNotifications.cashVideoSubscribe,
+                CommonNotifications.cashPreventSubscribe
+        };
     }
 
     @Override
@@ -658,6 +660,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 || id == OpcodeConstants.fsAdjustFocusAdd
                 || id == OpcodeConstants.fsAdjustFocusMinus) {
             hideLoadingDialog();
+        }else if (id == CommonNotifications.cashPreventSubscribe){
+            mPresenter.getCashPreventService(device.getDeviceid());
         }
 
         if (args != null && args[0] instanceof ResponseBean) {
