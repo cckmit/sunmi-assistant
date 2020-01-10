@@ -1,5 +1,7 @@
 package com.sunmi.ipc.contract;
 
+import android.content.Intent;
+
 import com.sunmi.ipc.model.CashVideoListBean;
 
 import java.util.List;
@@ -33,5 +35,7 @@ public interface CashOverviewContract {
         void getShopCashVideoCount(long startTime, long endTime);
 
         void getIpcCashVideoCount(List<Integer> deviceId, long startTime, long endTime);
+
+        void onServiceSubscribeResult(Intent intent);
     }
 }

@@ -120,7 +120,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                             }
                             if (device.getStatus() == STATE_CASH_VIDEO_SERVICE_ON
                                     && device.getDeviceId() == deviceId) {
-                                getAuditSecurityPolicyService(device.getDeviceSn());
+                                getCashPreventService(device.getDeviceSn());
                                 return;
                             }
                         }
@@ -139,7 +139,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                 });
     }
 
-    private void getAuditSecurityPolicyService(String deviceSn) {
+    public void getCashPreventService(String deviceSn) {
         List<String> snList = new ArrayList<>();
         snList.add(deviceSn);
         IpcCloudApi.getInstance().getAuditSecurityPolicyList(snList, new RetrofitCallback<ServiceResp>() {

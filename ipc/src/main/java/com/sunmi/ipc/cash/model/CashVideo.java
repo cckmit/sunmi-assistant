@@ -56,9 +56,8 @@ public class CashVideo implements Parcelable {
     private long endTime;
     @SerializedName("video_tag")
     private int[] videoTag;
-
-    private String deviceName;
-    private boolean hasCashLossPrevent;
+    @SerializedName("user_modified")
+    private int userModified;
 
     public long getVideoId() {
         return videoId;
@@ -116,12 +115,8 @@ public class CashVideo implements Parcelable {
         return videoTag;
     }
 
-    public String getDeviceName() {
-        return deviceName;
-    }
-
-    public boolean isHasCashLossPrevent() {
-        return hasCashLossPrevent;
+    public int getUserModified() {
+        return userModified;
     }
 
     public void setDescription(String description) {
@@ -136,12 +131,8 @@ public class CashVideo implements Parcelable {
         this.videoTag = videoTag;
     }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-    }
-
-    public void setHasCashLossPrevent(boolean hasCashLossPrevent) {
-        this.hasCashLossPrevent = hasCashLossPrevent;
+    public void setUserModified(int userModified) {
+        this.userModified = userModified;
     }
 
     protected CashVideo(Parcel in) {
@@ -159,8 +150,7 @@ public class CashVideo implements Parcelable {
         startTime = in.readLong();
         endTime = in.readLong();
         videoTag = in.createIntArray();
-        deviceName = in.readString();
-        hasCashLossPrevent = in.readByte() != 0;
+        userModified = in.readInt();
     }
 
     @Override
@@ -179,8 +169,7 @@ public class CashVideo implements Parcelable {
         dest.writeLong(startTime);
         dest.writeLong(endTime);
         dest.writeIntArray(videoTag);
-        dest.writeString(deviceName);
-        dest.writeByte((byte) (hasCashLossPrevent ? 1 : 0));
+        dest.writeInt(userModified);
     }
 
     @Override

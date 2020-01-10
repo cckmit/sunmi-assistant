@@ -37,6 +37,10 @@ public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashServiceInfo, 
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void initBehaviorPosition() {
+        this.behaviorPos = 0;
+    }
+
     @Override
     protected void convert(BaseViewHolder helper, CashServiceInfo item) {
         CircleImage civIpc = helper.getView(R.id.civ_ipc);

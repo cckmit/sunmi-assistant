@@ -307,8 +307,13 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             shortTip(R.string.str_no_cash_video);
             return;
         }
-        CashPlayActivity_.intent(context).deviceId(deviceId).startTime(fastPlayStart).endTime(fastPlayEnd).isWholeDayVideoPlay(true)
-                .ipcName(cashServiceMap).start();
+        CashPlayActivity_.intent(context)
+                .isWholeDayVideoPlay(true)
+                .deviceId(deviceId)
+                .startTime(fastPlayStart)
+                .endTime(fastPlayEnd)
+                .serviceInfoMap(cashServiceMap)
+                .start();
     }
 
     @Click(resName = "btn_refresh")
@@ -384,16 +389,20 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     private void initAdapter() {
         if (adapter == null) {
-            adapter = new CashVideoAdapter(dataList, context, isAbnormalBehavior);
+            adapter = new CashVideoAdapter(context, dataList, cashServiceMap, isAbnormalBehavior);
             rvCashVideo.setLayoutManager(new LinearLayoutManager(context));
             adapter.setOnItemClickListener((data, pos) -> {
                 if (!NetworkUtils.isNetworkAvailable(context)) {
                     shortTip(R.string.network_error);
                     return;
                 }
-                CashPlayActivity_.intent(context).deviceId(deviceId)
-                        .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
-                        .ipcName(cashServiceMap).videoList(data)
+                CashPlayActivity_.intent(context)
+                        .isWholeDayVideoPlay(false)
+                        .deviceId(deviceId)
+                        .startTime(startTime)
+                        .endTime(endTime)
+                        .serviceInfoMap(cashServiceMap)
+                        .videoList(data)
                         .hasMore(hasMore).pageNum(pageNum).videoListPosition(pos)
                         .videoType(videoType).isAbnormalBehavior(isAbnormalBehavior).startForResult(REQUEST);
             });

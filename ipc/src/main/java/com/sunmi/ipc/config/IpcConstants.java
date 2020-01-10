@@ -32,4 +32,6 @@ public class IpcConstants {
     public static final int IPC_MANAGE_TYPE_CASH = 2;
     public static final int IPC_MANAGE_TYPE_DETECT = 3;
 
+    public static final int SERVICE_TYPE_CASH_PREVENT = 1;
+
 }

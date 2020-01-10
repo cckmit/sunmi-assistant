@@ -232,6 +232,11 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 hideLoadingDialog();
+                if (!hasSendDeviceInfo) {
+                    webView.evaluateJavascript("javascript:getDataFromApp('" + params + "')", value -> {
+                    });
+                    hasSendDeviceInfo = true;
+                }
             }
 
             @Override
@@ -292,11 +297,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
         this.progress = progress;
         if (progress < 100) {
             showLoadingDialog();
-            if (progress >= 25 && !hasSendDeviceInfo) {
-                webView.evaluateJavascript("javascript:getDataFromApp('" + params + "')", value -> {
-                });
-                hasSendDeviceInfo = true;
-            }
         } else {
             hideLoadingDialog();
             closeTimer();

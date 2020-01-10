@@ -113,8 +113,19 @@ public class CashTagAdapter extends SimpleArrayAdapter<CashTagFilter> {
     @Override
     public void setupView(@NonNull BaseViewHolder<CashTagFilter> holder, CashTagFilter model, int position) {
         TextView itemView = (TextView) holder.itemView;
-        itemView.setText(model.getDesc());
+        itemView.setText(model.getName());
         itemView.setSelected(model.isChecked());
+    }
+
+    public View getRootView() {
+        return mRoot;
+    }
+
+    public CashTagFilter getSelected() {
+        if (mSelected.getId() == CashTagFilter.TAG_ID_CUSTOM) {
+            mSelected.setDesc(mEtCustom.getText().toString());
+        }
+        return mSelected;
     }
 
     public void setSelected(int id) {
@@ -143,15 +154,26 @@ public class CashTagAdapter extends SimpleArrayAdapter<CashTagFilter> {
         notifyDataSetChanged();
     }
 
-    public View getRootView() {
-        return mRoot;
-    }
-
-    public CashTagFilter getSelected() {
-        if (mSelected.getId() == CashTagFilter.TAG_ID_CUSTOM) {
-            mSelected.setDesc(mEtCustom.getText().toString());
+    public void setCustom(String desc) {
+        List<CashTagFilter> data = getData();
+        if (data == null || data.isEmpty()) {
+            return;
         }
-        return mSelected;
+        for (CashTagFilter item : data) {
+            if (item.getId() == CashTagFilter.TAG_ID_CUSTOM) {
+                item.setChecked(true);
+                mSelected = item;
+            } else {
+                item.setChecked(false);
+            }
+        }
+        mSelected.setDesc(desc);
+        if (mSelected == null) {
+            return;
+        }
+        mEtCustom.setVisibility(View.VISIBLE);
+        mEtCustom.setText(desc);
+        notifyDataSetChanged();
     }
 
 }
