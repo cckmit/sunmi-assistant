@@ -2,6 +2,8 @@ package com.sunmi.ipc.cash;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +23,11 @@ import com.sunmi.ipc.contract.CashOverviewContract;
 import com.sunmi.ipc.model.CashVideoListBean;
 import com.sunmi.ipc.presenter.CashOverviewPresenter;
 import com.xiaojinzi.component.anno.RouterAnno;
+import com.xiaojinzi.component.impl.BiCallback;
+import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.RouterErrorResult;
 import com.xiaojinzi.component.impl.RouterRequest;
+import com.xiaojinzi.component.impl.RouterResult;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -42,12 +48,16 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.FilterItem;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CircleImage;
 import sunmi.common.view.dialog.BottomDialog;
 import sunmi.common.view.widget.CenterLayoutManager;
@@ -87,7 +97,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     View networkError;
 
     @Extra
-    ArrayList<CashVideoServiceBean> serviceBeans;
+    ArrayList<CashServiceInfo> serviceBeans;
     @Extra
     boolean isSingleDevice;
     @Extra
@@ -140,7 +150,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         threeMonth.set(Calendar.MINUTE, 0);
         threeMonth.set(Calendar.SECOND, 0);
         threeMonth.set(Calendar.MILLISECOND, 0);
-        mPresenter.getCashVidoTimeSlots(deviceId, (threeMonth.getTimeInMillis() / 1000), (DateTimeUtils.getTomorrow().getTime() / 1000));
+        mPresenter.getCashVideoTimeSlots(deviceId, (threeMonth.getTimeInMillis() / 1000), (DateTimeUtils.getTomorrow().getTime() / 1000));
         if (isSingleDevice) {
             deviceId = serviceBeans.get(0).getDeviceId();
             clShopCash.setVisibility(View.GONE);
@@ -149,10 +159,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
             deviceId = -1;
         }
         if (hasCashLossPrevent) {
-            llAbnormalBehavior.setVisibility(View.VISIBLE);
-            llFloating.setVisibility(View.GONE);
-            behaviorItems = new ArrayList<>();
-            behaviorItems.add(new FilterItem(-1, getString(R.string.str_all_device), false));
+            initCashPrent();
         }
         initDate();
     }
@@ -198,6 +205,15 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         }
     }
 
+    private void initCashPrent() {
+        llAbnormalBehavior.setVisibility(View.VISIBLE);
+        llFloating.setVisibility(View.GONE);
+        behaviorItems = new ArrayList<>();
+        behaviorItems.add(new FilterItem(-1, getString(R.string.str_all_device), false));
+        hasCashLossPrevent = true;
+    }
+
+
     /**
      * 计算开始时间和结束时间并定时调用接口
      */
@@ -206,10 +222,10 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         showLoadingDialog();
         if (idList == null) {
             idList = new ArrayList<>();
-            for (CashVideoServiceBean bean : serviceBeans) {
+            for (CashServiceInfo bean : serviceBeans) {
                 idList.add(bean.getDeviceId());
                 items.add(new FilterItem(bean.getDeviceId(), bean.getDeviceName()));
-                if (bean.isHasCashLossPrevent()) {
+                if (bean.isHasCashLossPrevention()) {
                     behaviorItems.add(new FilterItem(bean.getDeviceId(), bean.getDeviceName()));
                 }
             }
@@ -270,7 +286,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         clearItems(items);
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime).items(items)
-                .isSingleDevice(isSingleDevice).total(shopCashCount).startForResult(REQUEST);
+                .isSingleDevice(isSingleDevice).total(shopCashCount)
+                .cashServiceMap(mPresenter.getCashServiceMap()).startForResult(REQUEST);
     }
 
     @Click(resName = "ll_abnormal_video")
@@ -279,13 +296,16 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         items.get(0).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .videoType(IpcConstants.CASH_VIDEO_ABNORMAL).items(items).isSingleDevice(isSingleDevice)
-                .total(shopCashCount).startForResult(REQUEST);
+                .total(shopCashCount).cashServiceMap(mPresenter.getCashServiceMap()).startForResult(REQUEST);
     }
 
     @Click(resName = "ll_abnormal_behavior")
     public void totalAbnormalBehaviorClick() {
         clearItems(behaviorItems);
         behaviorItems.get(0).setChecked(true);
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
+                .items(behaviorItems).isSingleDevice(isSingleDevice)
+                .isAbnormalBehavior(true).cashServiceMap(mPresenter.getCashServiceMap()).startForResult(REQUEST);
     }
 
     @Click(resName = "iv_close")
@@ -297,32 +317,53 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @Click(resName = "btn_floating")
     public void floatingClick() {
+        Router.withApi(SunmiServiceApi.class)
+                .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
+                        WebViewParamsUtils.getCashPreventLossParams(serviceBeans.get(0).getDeviceSn())
+                        , new BiCallback<Intent>() {
+                            @Override
+                            public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
+                                mPresenter.onServiceSubscribeResult(intent);
+                            }
 
+                            @Override
+                            public void onCancel(@Nullable RouterRequest originalRequest) {
+
+                            }
+
+                            @Override
+                            public void onError(@NonNull RouterErrorResult errorResult) {
+
+                            }
+                        });
     }
 
     @Override
-    public void onOrderClick(CashVideoServiceBean item, int position) {
+    public void onOrderClick(CashServiceInfo item, int position) {
         clearItems(items);
         items.get(position + 1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(item.getDeviceId()).items(items).isSingleDevice(isSingleDevice)
-                .total(item.getTotalCount()).startForResult(REQUEST);
+                .total(item.getTotalCount()).cashServiceMap(mPresenter.getCashServiceMap()).startForResult(REQUEST);
     }
 
     @Override
-    public void onAbnormalOrderClick(CashVideoServiceBean item, int position) {
+    public void onAbnormalOrderClick(CashServiceInfo item, int position) {
         clearItems(items);
         items.get(position + 1).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .deviceId(item.getDeviceId()).videoType(IpcConstants.CASH_VIDEO_ABNORMAL)
                 .items(items).isSingleDevice(isSingleDevice).total(item.getTotalCount())
-                .startForResult(REQUEST);
+                .cashServiceMap(mPresenter.getCashServiceMap()).startForResult(REQUEST);
     }
 
     @Override
-    public void onAbnormalBehaviorClick(CashVideoServiceBean item, int position) {
+    public void onAbnormalBehaviorClick(CashServiceInfo item, int position) {
         clearItems(behaviorItems);
-        behaviorItems.get(1 + position).setChecked(true);
+        behaviorItems.get(position).setChecked(true);
+        CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
+                .items(behaviorItems).isSingleDevice(isSingleDevice)
+                .isAbnormalBehavior(true).cashServiceMap(mPresenter.getCashServiceMap()).startForResult(REQUEST);
     }
 
     private void clearItems(ArrayList<FilterItem> filterItems) {
@@ -362,7 +403,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
 
     @UiThread
     @Override
-    public void getIpcCashVideoCountSuccess(List<CashVideoServiceBean> beans) {
+    public void getIpcCashVideoCountSuccess(List<CashServiceInfo> beans) {
         if (networkError.isShown()) {
             networkError.setVisibility(View.GONE);
         }
@@ -372,14 +413,41 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         initCashVideoOverViewAdapter();
     }
 
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.cashPreventSubscribe) {
+            if (args.length <= 0 || !(args[0] instanceof Set)) {
+                return;
+            }
+            //noinspection unchecked
+            updateStatus((Set<String>) args[0]);
+        }
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{CommonNotifications.cashPreventSubscribe};
+    }
+
     private void initCashVideoOverViewAdapter() {
         if (cashVideoOverViewAdapter == null) {
             cashVideoOverViewAdapter = new CashVideoOverViewAdapter(serviceBeans, context);
             cashVideoOverViewAdapter.setOnItemClickListener(this);
             rvCashOverview.setAdapter(cashVideoOverViewAdapter);
         } else {
+            cashVideoOverViewAdapter.initBehaviorPosition();
             cashVideoOverViewAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void updateStatus(Set<String> snSet) {
+        for (CashServiceInfo serviceBean : serviceBeans) {
+            if (snSet.contains(serviceBean.getDeviceSn())) {
+                serviceBean.setHasCashLossPrevention(true);
+            }
+        }
+        initCashPrent();
+        initStartAndEndTime();
     }
 
     @Override

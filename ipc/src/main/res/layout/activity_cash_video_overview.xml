@@ -219,7 +219,7 @@
         android:layout_height="wrap_content"
         android:background="@color/transparent"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -277,7 +277,7 @@
                 android:layout_height="@dimen/dp_28"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="@dimen/dp_16"
-                android:background="@mipmap/ic_cash_button"
+                android:background="@drawable/btn_common_bg_golden"
                 android:text="@string/btn_protect_immediately"
                 android:textColor="@color/c_white"
                 android:textSize="@dimen/sp_12" />

@@ -27,6 +27,7 @@ import com.sunmi.assistant.mine.contract.MainContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.mine.presenter.MainPresenter;
 import com.sunmi.assistant.utils.MainTab;
+import com.sunmi.sunmiservice.SupportFragment;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
@@ -141,9 +142,17 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
             View v = mTabHost.getTabWidget().getChildAt(i);
             if (i == mTabHost.getCurrentTab()) {
                 v.setSelected(true);
-                if (TextUtils.equals(mTabHost.getCurrentTabTag(),
-                        getString(R.string.str_tab_device))) {
+                if (TextUtils.equals(mTabHost.getCurrentTabTag(), getString(R.string.str_tab_device))) {
+                    // 切换到设备页
                     BaseNotification.newInstance().postNotificationName(CommonConstants.tabDevice);
+                }
+                String serviceTab = getString(R.string.str_tab_support);
+                if (TextUtils.equals(mTabHost.getCurrentTabTag(), serviceTab)) {
+                    // 切换到服务页
+                    SupportFragment fragment = (SupportFragment) getFragment(serviceTab);
+                    if (fragment != null) {
+                        fragment.refresh();
+                    }
                 }
             } else {
                 v.setSelected(false);

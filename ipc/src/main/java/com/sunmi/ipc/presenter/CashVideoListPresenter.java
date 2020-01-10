@@ -1,14 +1,15 @@
 package com.sunmi.ipc.presenter;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.contract.CashVideoListConstract;
 import com.sunmi.ipc.model.CashVideoModel;
-import com.sunmi.ipc.model.CashVideoResp;
 
 import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.CashServiceInfo;
 
 /**
  * Description:
@@ -21,9 +22,11 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
     private CashVideoModel videoModel;
     private int deviceId, videoType;
     private long startTime, endTime;
+    private boolean hasCashLossPrevent;
 
-    public CashVideoListPresenter() {
-        videoModel = new CashVideoModel();
+    public CashVideoListPresenter(boolean hasCashLossPrevent, HashMap<Integer, CashServiceInfo> map) {
+        videoModel = new CashVideoModel(map);
+        this.hasCashLossPrevent = hasCashLossPrevent;
     }
 
     @Override
@@ -32,16 +35,24 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
         this.videoType = videoType;
         this.startTime = startTime;
         this.endTime = endTime;
-        videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        if (hasCashLossPrevent) {
+            videoModel.loadAbnormalBehaviorVideo(deviceId, startTime, endTime, pageNum, pageSize, this);
+        } else {
+            videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        }
     }
 
     @Override
     public void loadMore(int pageNum, int pageSize) {
-        videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        if (hasCashLossPrevent) {
+            videoModel.loadAbnormalBehaviorVideo(deviceId, startTime, endTime, pageNum, pageSize, this);
+        } else {
+            videoModel.loadCashVideo(deviceId, videoType, startTime, endTime, pageNum, pageSize, this);
+        }
     }
 
     @Override
-    public void getCashVideoSuccess(List<CashVideoResp.AuditVideoListBean> beans, int total) {
+    public void getCashVideoSuccess(List<CashVideo> beans, int total) {
         if (isViewAttached()) {
             mView.getCashVideoSuccess(beans, total);
             mView.hideLoadingDialog();
@@ -57,10 +68,6 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
             mView.endRefresh();
             mView.netWorkError();
         }
-    }
-
-    public HashMap<Integer, String> getIpcName() {
-        return videoModel.getIpcNameMap();
     }
 
 }

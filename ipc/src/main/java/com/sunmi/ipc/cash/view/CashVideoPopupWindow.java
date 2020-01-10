@@ -1,4 +1,4 @@
-package com.sunmi.ipc.cash;
+package com.sunmi.ipc.cash.view;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,12 +20,17 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.sunmi.ipc.R;
-import com.sunmi.ipc.model.CashVideoResp;
+import com.sunmi.ipc.cash.CashTagManager;
+import com.sunmi.ipc.cash.model.CashVideo;
+import com.sunmi.ipc.config.IpcConstants;
+import com.sunmi.ipc.model.CashTag;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.GlideRoundTransform;
@@ -44,21 +50,26 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
     private static final int SHOP_ITEM_SIZE = 3;
     private Activity mContext;
     private TextView mSetTitleView;
-    private ArrayList<CashVideoResp.AuditVideoListBean> mList;
+    private ArrayList<CashVideo> mList;
+    private HashMap<Integer, CashServiceInfo> mServiceInfo;
     private int currentPlayPosition;
     private double maxLength = 3.5;
     private NumberFormat numberFormat;
+    private CashTagManager tagManager;
+    private boolean isAbnormalBehavior;
 
     @SuppressLint("ClickableViewAccessibility")
     public CashVideoPopupWindow(Activity activity, View topToPopupWindowView, int currentPlayPosition,
-                                ArrayList<CashVideoResp.AuditVideoListBean> list, TextView mSetViewImg) {
+                                ArrayList<CashVideo> list, HashMap<Integer, CashServiceInfo> serviceInfo,
+                                TextView mSetViewImg, boolean isAbnormalBehavior) {
         super();
-        if (activity != null) {
-            this.mContext = activity;
-            this.currentPlayPosition = currentPlayPosition;
-            this.mSetTitleView = mSetViewImg;
-            this.mList = list;
-        }
+        this.mContext = activity;
+        this.currentPlayPosition = currentPlayPosition;
+        this.mSetTitleView = mSetViewImg;
+        this.mList = list;
+        this.mServiceInfo = serviceInfo;
+        this.isAbnormalBehavior = isAbnormalBehavior;
+        tagManager = CashTagManager.get(activity);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View viewLayout = inflater.inflate(R.layout.cash_popwindow_video_list, null);
         setContentView(viewLayout);
@@ -144,36 +155,60 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         super.showAsDropDown(anchor);
     }
 
-    private class CashRecyclerViewAdapter extends CommonListAdapter<CashVideoResp.AuditVideoListBean> {
+    private class CashRecyclerViewAdapter extends CommonListAdapter<CashVideo> {
         /**
          * @param context 上下文
          * @param list    列表数据
          */
-        public CashRecyclerViewAdapter(Context context, ArrayList<CashVideoResp.AuditVideoListBean> list) {
+        public CashRecyclerViewAdapter(Context context, ArrayList<CashVideo> list) {
             super(context, R.layout.cash_item_trade_details, list);
         }
 
         @Override
-        public void convert(ViewHolder holder, CashVideoResp.AuditVideoListBean res) {
+        public void convert(ViewHolder holder, CashVideo res) {
+            CashServiceInfo info = mServiceInfo.get(res.getDeviceId());
             holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getPurchaseTime(), "HH:mm:ss"));
-            holder.setText(R.id.tv_amount, String.format("¥%s", numberFormat.format(res.getAmount())));
-            holder.setText(R.id.tv_order_num, res.getOrderNo());
-            holder.setText(R.id.tv_pos, res.getDeviceName());
+            holder.setText(R.id.tv_pos, info == null ? "" : info.getDeviceName());
             ImageView imgVideo = holder.getView(R.id.iv_preview_img);
             ImageView ivFlag = holder.getView(R.id.iv_left_flag);
             TextView tvTag = holder.getView(R.id.tv_exception_des);
             TextView tvLineTop = holder.getView(R.id.tv_left_top_line);
             TextView tvLineBottom = holder.getView(R.id.tv_left_bottom_line);
+            TextView tvSuggest = holder.getView(R.id.tv_suggest);
             ivFlag.setSelected(holder.getAdapterPosition() == currentPlayPosition);
             if (isShowing()) {
                 Glide.with(mContext).load(res.getSnapshotUrl()).transform(new GlideRoundTransform(mContext)).into(imgVideo);
             }
-            if (res.getVideoType() == 1) {
-                tvTag.setVisibility(View.GONE);
-            } else if (res.getVideoType() == 2) {
-                tvTag.setText(res.getDescription());
+
+            int[] tags = res.getVideoTag();
+            int tagId = tags != null && tags.length > 0 ? tags[0] : -1;
+            CashTag tag = tagManager.getTag(tagId);
+            if (res.getVideoType() == IpcConstants.CASH_VIDEO_ABNORMAL) {
                 tvTag.setVisibility(View.VISIBLE);
+                if (tagId == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
+                    tvTag.setText(res.getDescription());
+                } else {
+                    tvTag.setText(tag.getName());
+                }
+            } else {
+                tvTag.setVisibility(View.GONE);
             }
+
+            if (isAbnormalBehavior) {
+                tvSuggest.setVisibility(View.VISIBLE);
+                holder.getView(R.id.group_content).setVisibility(View.GONE);
+                if (!TextUtils.isEmpty(tag.getTip())) {
+                    tvSuggest.setText(tag.getTip());
+                } else {
+                    tvSuggest.setText(R.string.tip_other_exception);
+                }
+            } else {
+                tvSuggest.setVisibility(View.GONE);
+                holder.getView(R.id.group_content).setVisibility(View.VISIBLE);
+                holder.setText(R.id.tv_amount, String.format("¥%s", numberFormat.format(res.getAmount())));
+                holder.setText(R.id.tv_order_num, res.getOrderNo());
+            }
+
             if (mList.size() > 1) {
                 if (holder.getAdapterPosition() == mList.size() - 1) {
                     tvLineTop.setVisibility(View.VISIBLE);

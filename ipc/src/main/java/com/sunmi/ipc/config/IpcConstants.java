@@ -21,6 +21,8 @@ public class IpcConstants {
     public static final int CASH_VIDEO_NORMAL = 1;
     public static final int CASH_VIDEO_ABNORMAL = 2;
 
+    public static final int CASH_VIDEO_TAG_CUSTOM = 1;
+
     public static final int MOTION_DETECTION_SOURCE_ALL = 0;
     public static final int MOTION_DETECTION_SOURCE_VIDEO = 1;
     public static final int MOTION_DETECTION_SOURCE_SOUND = 2;
@@ -29,5 +31,7 @@ public class IpcConstants {
     public static final int IPC_MANAGE_TYPE_CLOUD = 1;
     public static final int IPC_MANAGE_TYPE_CASH = 2;
     public static final int IPC_MANAGE_TYPE_DETECT = 3;
+
+    public static final int SERVICE_TYPE_CASH_PREVENT = 1;
 
 }

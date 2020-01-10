@@ -5,8 +5,8 @@ import com.sunmi.ipc.utils.IOTCClient;
 
 import java.util.ArrayList;
 
-import sunmi.common.model.CashVideoServiceBean;
 import sunmi.common.base.BaseView;
+import sunmi.common.model.CashServiceInfo;
 
 /**
  * Description:
@@ -21,7 +21,7 @@ public interface IpcManagerContract {
 
         void getStorageSuccess(IpcManageBean bean);
 
-        void getCashVideoServiceSuccess(ArrayList<CashVideoServiceBean> devices, boolean alreadySubscribe);
+        void getCashVideoServiceSuccess(ArrayList<CashServiceInfo> devices, boolean alreadySubscribe);
 
         void videoParamsObtained(int compensation, int saturation, int contrast);
     }

@@ -314,7 +314,7 @@
     <string name="str_chose_network">选择网络连接方式</string>
     <string name="str_confirm_ipc_linked">确认摄像机已连接</string>
     <string name="tip_config_ipc_dialog4">检查摄像机连接的网络是否正常</string>
-    <string name="msg_device_offline">当前摄像机离线，且手机和摄像机未连相同网络，无法管理【设置】</string>
+    <string name="msg_device_offline">当前摄像机离线，且手机和摄像机未连相同Wi-Fi，无法管理【设置】</string>
     <string name="tip_ipc_offline">摄像机已离线</string>
     <string name="str_confirm_connect">Confirm</string>
     <string name="tip_ipc_wifi_24g">暂只支持2.4GHz</string>
@@ -362,14 +362,22 @@
     <string name="cash_empty_data">暂无收银信息</string>
     <string name="cash_play_complete">播放完毕</string>
     <string name="cash_no_more_video">无更多视频了</string>
-    <string name="tag_flying_order">飞单</string>
-    <string name="tag_box_not_open">钱箱未关</string>
-    <string name="tag_steal_money">偷钱</string>
-    <string name="tag_missing_scan">漏扫</string>
-    <string name="tag_steal_bar_code">偷换条码</string>
-    <string name="tag_transaction_not_match">交易类型不匹配</string>
-    <string name="tip_flying_order">加强对员工工作行为的管理、形成有效的威慑力、促使收银人员提高思想觉悟</string>
-    <string name="tip_box_not_open">加强对员工工作行为规范的培训，以降低门店收银风险概率的发生</string>
+    <string name="cash_video_tag_order_mismatch">飞单</string>
+    <string name="cash_video_tag_cash_exposed">钱箱未关</string>
+    <string name="cash_video_tag_cash_stolen">偷钱</string>
+    <string name="cash_video_tag_scan_missing">漏扫</string>
+    <string name="cash_video_tag_code_replaced">偷换条码</string>
+    <string name="cash_video_tag_transaction_mismatch">交易类型不匹配</string>
+    <string name="cash_video_tag_other">其他异常</string>
+    <string name="cash_video_tag_tip_order_mismatch">加强对员工工作行为的管理、形成有效的威慑力、促使收银人员提高思想觉悟</string>
+    <string name="cash_video_tag_tip_cash_exposed">加强对员工工作行为规范的培训，以降低门店收银风险概率的发生</string>
+    <string name="tip_other_exception">点击视频查看详情</string>
+    <string name="cash_tag_dialog_title">视频类型</string>
+    <string name="cash_tag_name_normal">正常视频</string>
+    <string name="cash_tag_name_custom">自定义类型</string>
+    <string name="cash_tag_custom_hint">请输入自定义异常类型</string>
+    <string name="cash_abnormal_tip">%s，风险率%d%%</string>
+    <string name="cash_loss_prevention_dialog_tip">AI智能识别异常风险交易</string>
 
     <string name="motion_detection_video_empty">暂无看店视频</string>
     <string name="motion_detection_source_all">全部事件</string>
@@ -395,7 +403,8 @@
     <string name="str_focus_adjust">对焦微调</string>
     <string name="dialog_title_input_ipc_name">请输入摄像机名称</string>
     <string name="tip_input_len_36">请输入1-36位字符</string>
-    <string name="str_tip_use_wired_network">请确认摄像机插入网线，并将手机连接至同一网络</string>
+    <string name="tip_other_anomalies">今日门店内其他异常</string>
+    <string name="str_abnormal_behavior_list">异常行为视频列表</string>
 </resources>
 
 

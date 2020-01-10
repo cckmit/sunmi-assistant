@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="@dimen/dp_270"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dialog_bg_round_corner"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_dismiss"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_delete_grey" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_cash_loss_prevention_dialog" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/str_cash_loss_prevent"
+            android:textColor="@color/text_normal"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_4"
+            android:text="@string/cash_loss_prevention_dialog_tip"
+            android:textColor="@color/c_golden"
+            android:textSize="@dimen/sp_12" />
+
+        <Button
+            android:id="@+id/btn_learn_more"
+            android:layout_width="@dimen/dp_104"
+            android:layout_height="@dimen/dp_36"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_24"
+            android:background="@drawable/btn_common_bg_golden"
+            android:text="@string/str_learn_more"
+            android:textColor="@color/c_white"
+            android:textSize="@dimen/sp_14" />
+
+    </LinearLayout>
+
+</FrameLayout>

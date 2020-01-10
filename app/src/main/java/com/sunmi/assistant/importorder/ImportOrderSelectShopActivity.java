@@ -28,6 +28,7 @@ import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SettingItemLayout;
@@ -89,7 +90,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                             Router.withApi(AppApi.class).goToMain(context);
                         } else {
                             Router.withApi(SunmiServiceApi.class)
-                                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
+                                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams());
                         }
                     }
 
@@ -108,26 +109,16 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                 });
     }
 
-
-    private void enableCompleteBtn(boolean enable) {
-        btnComplete.setEnabled(enable);
-        if (enable) {
-            btnComplete.setAlpha(1f);
-        } else {
-            btnComplete.setAlpha(0.5f);
-        }
-    }
-
     private class ShopListAdapter extends CommonListAdapter<AuthStoreInfo.SaasUserInfoListBean> {
         int selectedIndex = -1;
 
         private ShopListAdapter(Context context, List<AuthStoreInfo.SaasUserInfoListBean> list) {
             super(context, R.layout.item_common_checked, list);
             if (list.size() > 1) {
-                enableCompleteBtn(false);
+                btnComplete.setEnabled(false);
             }
             if (list.size() == 1) {
-                enableCompleteBtn(true);
+                btnComplete.setEnabled(true);
                 selectBean = list.get(0);
             }
         }
@@ -141,7 +132,7 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
             holder.itemView.setOnClickListener(v -> {
                 selectedIndex = holder.getAdapterPosition();
                 selectBean = info;
-                enableCompleteBtn(true);
+                btnComplete.setEnabled(true);
                 notifyDataSetChanged();
             });
         }
