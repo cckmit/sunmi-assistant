@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,8 +37,6 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,7 +53,6 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.FilterItem;
-import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -327,21 +323,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
                         , new BiCallback<Intent>() {
                             @Override
                             public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
-                                String args = intent.getStringExtra("args");
-                                if (!TextUtils.isEmpty(args)) {
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(args);
-                                        int service = jsonObject.getInt("service");
-                                        int status = jsonObject.getInt("status");
-                                        if (service == IpcConstants.SERVICE_TYPE_CASH_PREVENT
-                                                && status == CommonConstants.RESULT_OK) {
-                                            updateStatus();
-                                            BaseNotification.newInstance().postNotificationName(CommonNotifications.cashPreventSubscribe);
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
+                                mPresenter.onServiceSubscribeResult(intent);
                             }
 
                             @Override
@@ -378,7 +360,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     @Override
     public void onAbnormalBehaviorClick(CashServiceInfo item, int position) {
         clearItems(behaviorItems);
-        behaviorItems.get(1 + position).setChecked(true);
+        behaviorItems.get(position).setChecked(true);
         CashVideoListActivity_.intent(context).startTime(startTime).endTime(endTime)
                 .items(behaviorItems).isSingleDevice(isSingleDevice)
                 .isAbnormalBehavior(true).cashServiceMap(mPresenter.getCashServiceMap()).startForResult(REQUEST);
@@ -434,7 +416,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.cashPreventSubscribe) {
-            updateStatus();
+            updateStatus((Set<String>) args[0]);
         }
     }
 
@@ -453,8 +435,12 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         }
     }
 
-    private void updateStatus() {
-        serviceBeans.get(0).setHasCashLossPrevention(true);
+    private void updateStatus(Set<String> snSet) {
+        for (CashServiceInfo serviceBean : serviceBeans) {
+            if (snSet.contains(serviceBean.getDeviceSn())) {
+                serviceBean.setHasCashLossPrevention(true);
+            }
+        }
         initCashPrent();
         initStartAndEndTime();
     }

@@ -154,7 +154,6 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     @Click(resName = "btn_refresh")
     public void refresh() {
         showDarkLoading();
-        shortTip(R.string.toast_network_error);
         cashServiceInfoList.clear();
         mPresenter.load();
     }

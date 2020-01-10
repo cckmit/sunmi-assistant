@@ -8,6 +8,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -33,7 +34,6 @@ import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.webview.AndroidBug5497Workaround;
-import sunmi.common.view.webview.BaseJSCall;
 import sunmi.common.view.webview.SMWebChromeClient;
 import sunmi.common.view.webview.SMWebView;
 import sunmi.common.view.webview.SMWebViewClient;
@@ -121,11 +121,11 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
         webSettings.setGeolocationEnabled(true);//启用地理定位
         webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
         webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         // 可以运行JavaScript
-        BaseJSCall baseJsCall = new BaseJSCall(this, webView);
-        PrinterJSCall jsCall = new PrinterJSCall(userId, shopId, sn, channelId);
+        PrinterJSCall jsCall = new PrinterJSCall(this, webView, userId, shopId, sn, channelId);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        webView.addJavascriptInterface(baseJsCall, SsConstants.JS_INTERFACE_NAME);
+//        webView.addJavascriptInterface(baseJsCall, SsConstants.JS_INTERFACE_NAME);
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
@@ -139,9 +139,7 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
         webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
             public boolean shouldOverrideUrlLoading(final WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-                view.loadUrl(url);
-                return true;
+                return false;
             }
 
             @Override
@@ -175,11 +173,43 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                loadError();
+//                loadError();
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.onResume();
+            webView.resumeTimers();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (webView != null) {
+            webView.onPause();
+            webView.pauseTimers();
+        }
+    }
+
+    //销毁Webview 防止内存溢出
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            webView.clearHistory();
+
+            ((ViewGroup) webView.getParent()).removeView(webView);
+            webView.destroy();
+            webView = null;
+        }
+        super.onDestroy();
     }
 
     @Click(resName = "btn_refresh")
@@ -198,19 +228,6 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
         networkError.setVisibility(View.VISIBLE);
         titleBar.setVisibility(View.VISIBLE);
         hideLoadingDialog();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (webView == null) {
-            return;
-        }
-        if (webView.canGoBack()) {
-            webView.goBack();
-            return;
-        }
-        webView.clearCache(true);
-        super.onBackPressed();
     }
 
     @Override
