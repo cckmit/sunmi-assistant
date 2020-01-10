@@ -15,11 +15,14 @@ import com.sunmi.ipc.model.CashVideoEventResp;
 import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
@@ -208,11 +211,24 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
         if (!TextUtils.isEmpty(args)) {
             try {
                 JSONObject jsonObject = new JSONObject(args);
-                int service = jsonObject.getInt("service");
-                int status = jsonObject.getInt("status");
-                if (service == IpcConstants.SERVICE_TYPE_CASH_PREVENT && status == CommonConstants.RESULT_OK) {
-                    BaseNotification.newInstance().postNotificationName(CommonNotifications.cashPreventSubscribe);
+                int code = jsonObject.getInt("code");
+                JSONObject data = jsonObject.getJSONObject("data");
+                Set<String> snSet = new HashSet<>();
+                if (code == 100) {
+                    JSONArray list = data.getJSONArray("list");
+                    for (int i = 0; i < list.length(); i++) {
+                        JSONObject serviceObject = list.optJSONObject(i);
+                        int service = serviceObject.getInt("service");
+                        int status = serviceObject.getInt("status");
+                        if (service == IpcConstants.SERVICE_TYPE_CASH_PREVENT
+                                && status == CommonConstants.RESULT_OK) {
+                            snSet.add(serviceObject.getString("sn"));
+                        }
+                    }
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.cashPreventSubscribe, snSet);
                 }
+
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
