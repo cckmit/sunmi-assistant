@@ -122,14 +122,14 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
         if (!TextUtils.isEmpty(args)) {
             try {
                 JSONObject jsonObject = new JSONObject(args);
-                int code = jsonObject.getInt("opCode");
+                int code = jsonObject.getInt("code");
                 JSONObject data = jsonObject.getJSONObject("data");
                 Set<String> snSet = new HashSet<>();
                 if (code == 100) {
                     JSONArray list = data.getJSONArray("list");
                     for (int i = 0; i < list.length(); i++) {
                         JSONObject serviceObject = list.optJSONObject(i);
-                        int service = serviceObject.getInt("opCode");
+                        int service = serviceObject.getInt("service");
                         int status = serviceObject.getInt("status");
                         if (service == IpcConstants.SERVICE_TYPE_CASH_PREVENT
                                 && status == CommonConstants.RESULT_OK) {
