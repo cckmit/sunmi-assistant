@@ -61,7 +61,9 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
@@ -1087,7 +1089,17 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             playCashVideoStatus = PLAY_TYPE_DROP_SELECT;
             initCashVideoPlay();
         } else if (id == CommonNotifications.cashPreventSubscribe) {
-            // TODO：订阅了收银防损
+            if (args.length <= 0 || !(args[0] instanceof Set)) {
+                return;
+            }
+            @SuppressWarnings("unchecked")
+            Set<String> snSet = (Set<String>) args[0];
+            for (Map.Entry<Integer, CashServiceInfo> entry : serviceInfoMap.entrySet()) {
+                CashServiceInfo info = entry.getValue();
+                if (snSet.contains(info.getDeviceSn())) {
+                    info.setHasCashLossPrevention(true);
+                }
+            }
         }
     }
 
