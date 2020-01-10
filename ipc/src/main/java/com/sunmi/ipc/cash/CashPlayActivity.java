@@ -704,7 +704,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         } else {
             cashBoxOverlay.setVisibility(View.GONE);
             sbMark.setVisibility(View.GONE);
-            tvAbnormalTip.setVisibility(View.GONE);
+            tvAbnormalTip.setText(CashTagManager.get(this).getTagName(current.getVideoTag(), current.getDescription()));
+            tvAbnormalTip.setVisibility(isAbnormal ? View.VISIBLE : View.GONE);
         }
         //查询当前视频订单信息
         if (!isAbnormalBehavior) {
@@ -919,16 +920,20 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             video.setVideoType(IpcConstants.CASH_VIDEO_ABNORMAL);
             video.setVideoTag(new int[]{selected.getId()});
             if (selected.getId() == CashTagFilter.TAG_ID_CUSTOM) {
+                tvAbnormalTip.setText(selected.getDesc());
                 video.setDescription(selected.getDesc());
+            } else {
+                tvAbnormalTip.setText(selected.getName());
             }
             shortTip(R.string.cash_tag_success);
+            tvAbnormalTip.setVisibility(View.VISIBLE);
         } else {
             video.setVideoType(IpcConstants.CASH_VIDEO_NORMAL);
             shortTip(R.string.cash_tag_cancel_success);
+            tvAbnormalTip.setVisibility(View.GONE);
         }
         // 清除AI加框信息
         video.setUserModified(1);
-        tvAbnormalTip.setVisibility(View.GONE);
         cashBoxOverlay.setVisibility(View.GONE);
         sbMark.setVisibility(View.GONE);
         // 如果没有开通收银防损，那么弹窗推广
@@ -1047,7 +1052,6 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         shortTip(R.string.toast_network_error);
         cashBoxOverlay.setVisibility(View.GONE);
         sbMark.setVisibility(View.GONE);
-        tvAbnormalTip.setVisibility(View.GONE);
     }
 
     //进入云回放
