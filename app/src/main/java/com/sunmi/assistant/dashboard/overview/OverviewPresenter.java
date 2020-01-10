@@ -14,6 +14,7 @@ import com.sunmi.assistant.dashboard.card.OverviewNoOrderCard;
 import com.sunmi.assistant.dashboard.card.OverviewOrderImportCard;
 import com.sunmi.assistant.dashboard.card.OverviewPeriodCard;
 import com.sunmi.assistant.dashboard.card.OverviewTrendCard;
+import com.sunmi.assistant.dashboard.card.OverviewVolumeCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,6 +162,7 @@ public class OverviewPresenter extends BasePresenter<OverviewContract.View>
         // Time tab & data & trend card
         if (Utils.hasAuth(source) || Utils.hasFs(source)) {
             mList.add(OverviewDataCard.get(this, source));
+            mList.add(OverviewVolumeCard.get(this, source));
             mList.add(OverviewTrendCard.get(this, source));
         }
 
