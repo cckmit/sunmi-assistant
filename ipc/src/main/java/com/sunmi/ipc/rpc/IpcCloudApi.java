@@ -46,7 +46,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import sunmi.common.constant.CommonConfig;
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.ServiceResp;
 import sunmi.common.router.IpcCloudApiAnno;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreRetrofitClient;
@@ -630,7 +630,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * device_id	否	int64	设备id 不传为查询所有设
      */
     @Override
-    public void getStorageList(List<String> snList, RetrofitCallback<ServiceListResp> callback) {
+    public void getStorageList(List<String> snList, RetrofitCallback<ServiceResp> callback) {
         try {
             JSONArray array = new JSONArray(snList);
             String params = new JSONObject()
@@ -652,7 +652,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * device_id	否	int64	设备id 不传为查询所有设
      */
     @Override
-    public void getAuditVideoServiceList(List<String> snList, RetrofitCallback<ServiceListResp> callback) {
+    public void getAuditVideoServiceList(List<String> snList, RetrofitCallback<ServiceResp> callback) {
         try {
             JSONObject jsonObject = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())
@@ -818,7 +818,7 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * @param callback
      */
     @Override
-    public void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceListResp> callback) {
+    public void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceResp> callback) {
         try {
             JSONObject jsonObject = new JSONObject()
                     .put("company_id", SpUtils.getCompanyId())

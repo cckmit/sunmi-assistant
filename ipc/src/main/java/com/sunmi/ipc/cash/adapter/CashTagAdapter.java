@@ -14,9 +14,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.cash.CashTagManager;
 import com.sunmi.ipc.cash.model.CashTagFilter;
 import com.sunmi.ipc.model.CashTag;
-import com.sunmi.ipc.utils.CashAbnormalTagUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +54,12 @@ public class CashTagAdapter extends SimpleArrayAdapter<CashTagFilter> {
     }
 
     private void initList(Context context) {
-        List<CashTag> tags = CashAbnormalTagUtils.getInstance().getCashTags();
+        List<CashTag> tags = CashTagManager.get(context).getTags();
 
         List<CashTagFilter> list = new ArrayList<>();
         list.add(new CashTagFilter(CashTagFilter.TAG_ID_NORMAL, context.getString(R.string.cash_tag_name_normal)));
         for (CashTag tag : tags) {
-            list.add(new CashTagFilter(tag.getTag(), tag.getDescription()));
+            list.add(new CashTagFilter(tag.getTag(), tag.getName()));
         }
         list.add(new CashTagFilter(CashTagFilter.TAG_ID_CUSTOM, context.getString(R.string.cash_tag_name_custom)));
         setData(list);

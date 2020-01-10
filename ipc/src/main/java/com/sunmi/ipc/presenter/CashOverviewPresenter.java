@@ -12,10 +12,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.ThreadPool;
 
@@ -26,12 +25,12 @@ import sunmi.common.utils.ThreadPool;
  */
 public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.View> implements CashOverviewContract.Presenter {
 
-    private Map<Integer, CashVideoServiceBean> beanMap;
+    private HashMap<Integer, CashServiceInfo> beanMap;
 
     @SuppressLint("UseSparseArrays")
-    public CashOverviewPresenter(List<CashVideoServiceBean> serviceBeans) {
+    public CashOverviewPresenter(List<CashServiceInfo> serviceBeans) {
         beanMap = new HashMap<>(serviceBeans.size());
-        for (CashVideoServiceBean bean : serviceBeans) {
+        for (CashServiceInfo bean : serviceBeans) {
             beanMap.put(bean.getDeviceId(), bean);
         }
     }
@@ -81,7 +80,7 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
                     List<CashVideoListBean> list = data.getStatInfoList();
                     if (list != null) {
                         for (CashVideoListBean bean : list) {
-                            CashVideoServiceBean info = beanMap.get(bean.getDeviceId());
+                            CashServiceInfo info = beanMap.get(bean.getDeviceId());
                             if (info != null) {
                                 info.setTotalCount(bean.getTotalCount());
                                 info.setAbnormalVideoCount(bean.getAbnormalVideoCount());
@@ -89,7 +88,7 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
                             }
                         }
                     }
-                    Collection<CashVideoServiceBean> collection = beanMap.values();
+                    Collection<CashServiceInfo> collection = beanMap.values();
                     if (isViewAttached()) {
                         mView.getIpcCashVideoCountSuccess(new ArrayList<>(collection));
                     }
@@ -104,4 +103,9 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
             }
         });
     }
+
+    public HashMap<Integer, CashServiceInfo> getCashServiceMap() {
+        return beanMap;
+    }
+
 }

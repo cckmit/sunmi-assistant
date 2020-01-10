@@ -1,9 +1,9 @@
 package com.sunmi.contract;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 
 /**
  * Description:
@@ -11,18 +11,18 @@ import sunmi.common.model.CashVideoServiceBean;
  * @author linyuanpeng on 2019-12-30.
  */
 public interface SupportContract {
+
     interface View extends BaseView {
-        void getCashServiceSuccess(ArrayList<CashVideoServiceBean> beans, boolean hasCashLossPrevent);
 
-        void getServiceFail();
+        void loadSuccess(List<CashServiceInfo> infoList);
 
-        void getStorageSeviceSuccess(int cloudStatus);
+        void loadFailed();
 
     }
 
     interface Presenter {
-        void getAuditVideoServiceList();
 
-        void getStorageList();
+        void load();
+
     }
 }

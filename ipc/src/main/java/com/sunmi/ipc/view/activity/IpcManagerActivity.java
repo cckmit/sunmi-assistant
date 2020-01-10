@@ -61,7 +61,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -69,6 +69,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -181,7 +182,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private IpcManageBean cloudStorageItem;
     private IpcManageBean cashVideoItem;
     private boolean cashVideoSubscribed = false;
-    private ArrayList<CashVideoServiceBean> serviceBeans = new ArrayList<>();
+    private ArrayList<CashServiceInfo> serviceBeans = new ArrayList<>();
 
     P2pService p2pService;
     boolean isBind;
@@ -591,12 +592,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
-    public void getCashVideoServiceSuccess(ArrayList<CashVideoServiceBean> devices, boolean alreadySubscribe) {
+    public void getCashVideoServiceSuccess(ArrayList<CashServiceInfo> devices, boolean alreadySubscribe) {
         hideLoadingDialog();
         serviceBeans = devices;
         if (!devices.isEmpty()) {
             cashVideoItem.setRightText(context.getString(R.string.str_setting_detail));
-            if (devices.get(0).isHasCashLossPrevent()) {
+            if (devices.get(0).isHasCashLossPrevention()) {
                 cashVideoItem.setLeftImageResId(R.mipmap.ipc_manage_cash_loss_prevent);
                 cashVideoItem.setTitle(getString(R.string.str_cash_loss_prevent));
             }
@@ -983,10 +984,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 Router.withApi(SunmiServiceApi.class).goToServiceDetail(context,
                                         device.getDeviceid(), true, device.getName());
                             } else {
-                                ArrayList<String> snList = new ArrayList<>();
-                                snList.add(device.getDeviceid());
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
+                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE,
+                                                WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(),""));
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
@@ -995,11 +995,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             } else {
                                 if (serviceBeans.isEmpty()) {   //去开启收银视频
                                     Router.withApi(SunmiServiceApi.class)
-                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, new ArrayList<>());
+                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO,
+                                                    WebViewParamsUtils.getCashVideoParams());
                                 } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
                                     CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
                                             .serviceBeans(serviceBeans)
-                                            .hasCashLossPrevent(serviceBeans.get(0).isHasCashLossPrevent()).start();
+                                            .hasCashLossPrevent(serviceBeans.get(0).isHasCashLossPrevention()).start();
                                 } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
                                     shortTip(R.string.tip_after_cloud_cash_video);
                                 } else {

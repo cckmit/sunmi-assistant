@@ -43,8 +43,8 @@ import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.CashVideoContract;
 import com.sunmi.ipc.model.CashOrderResp;
 import com.sunmi.ipc.presenter.CashVideoPresenter;
-import com.sunmi.ipc.utils.CashAbnormalTagUtils;
 import com.sunmi.ipc.view.activity.CloudPlaybackActivity_;
+import com.xiaojinzi.component.impl.Router;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -59,16 +59,19 @@ import java.util.List;
 import java.util.Objects;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.model.CashVideoServiceBean;
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.CashServiceInfo;
+import sunmi.common.model.ServiceResp;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -181,7 +184,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * ipc名称 ，视频列表 ，是否一天快放,设备id, 一天快放的开始结束时间 ,是否有更多列表数据（一天快放或点击item进入）
      */
     @Extra
-    HashMap<Integer, CashVideoServiceBean> ipcName;
+    HashMap<Integer, CashServiceInfo> ipcName;
     @Extra
     ArrayList<CashVideo> videoList = new ArrayList<>();
     @Extra
@@ -371,7 +374,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         titleBar.getAppTitle().setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(this, R.drawable.ic_arrow_up_big_gray), null);
         popupWindow = new CashVideoPopupWindow(CashPlayActivity.this, titleBar, playIndex,
-                videoList, titleBar.getAppTitle(),isAbnormalBehavior);
+                videoList, titleBar.getAppTitle(), isAbnormalBehavior);
     }
 
     @Override
@@ -904,7 +907,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             if (mLossPreventDialog == null) {
                 mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
                         .setListener((dialog, which) -> {
-                            // TODO: 跳转开通页面
+                            Router.withApi(SunmiServiceApi.class)
+                                    .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
+                                            WebViewParamsUtils.getCashPreventLossParams(info.getDeviceSn()));
                         })
                         .create();
             }
@@ -972,7 +977,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      * @param data
      */
     @Override
-    public void getStorageSuccess(ServiceListResp.DeviceListBean data) {
+    public void getStorageSuccess(ServiceResp.Info data) {
         int status = data.getStatus();
         gotoCloudPlaybackActivity(status);
     }
@@ -985,7 +990,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         cashBoxOverlay.setData(boxes);
         sbMark.setData(boxes);
         String tip = getString(R.string.cash_abnormal_tip,
-                CashAbnormalTagUtils.getInstance().getCashTag(getCurrent().getVideoTag()[0]).getDescription(),
+                CashTagManager.get(this).getTag(getCurrent().getVideoTag()[0]).getName(),
                 (int) riskScore);
         tvAbnormalTip.setText(tip);
         sbMark.setVisibility(View.VISIBLE);

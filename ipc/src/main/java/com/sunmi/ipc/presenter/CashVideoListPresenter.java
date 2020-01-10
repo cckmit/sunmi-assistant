@@ -5,12 +5,11 @@ import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.contract.CashVideoListConstract;
 import com.sunmi.ipc.model.CashVideoModel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.model.CashVideoServiceBean;
+import sunmi.common.model.CashServiceInfo;
 
 /**
  * Description:
@@ -25,8 +24,8 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
     private long startTime, endTime;
     private boolean hasCashLossPrevent;
 
-    public CashVideoListPresenter(boolean hasCashLossPrevent, ArrayList<CashVideoServiceBean> beans) {
-        videoModel = new CashVideoModel(beans);
+    public CashVideoListPresenter(boolean hasCashLossPrevent, HashMap<Integer, CashServiceInfo> map) {
+        videoModel = new CashVideoModel(map);
         this.hasCashLossPrevent = hasCashLossPrevent;
     }
 
@@ -69,10 +68,6 @@ public class CashVideoListPresenter extends BasePresenter<CashVideoListConstract
             mView.endRefresh();
             mView.netWorkError();
         }
-    }
-
-    public HashMap<Integer, CashVideoServiceBean> getIpcName() {
-        return videoModel.getIpcNameMap();
     }
 
 }
