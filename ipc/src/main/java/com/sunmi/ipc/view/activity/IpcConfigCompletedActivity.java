@@ -24,9 +24,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,7 +179,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE,WebViewParamsUtils.getCloudStorageParams(snList,""));
+        Router.withApi(SunmiServiceApi.class)
+                .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, WebViewParamsUtils.getCloudStorageParams(snList, ""));
     }
 
     @Override
