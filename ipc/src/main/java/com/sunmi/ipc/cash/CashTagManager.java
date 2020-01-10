@@ -1,6 +1,7 @@
 package com.sunmi.ipc.cash;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import com.sunmi.ipc.R;
@@ -83,12 +84,22 @@ public class CashTagManager {
         isInit = true;
     }
 
+    @NonNull
     public CashTag getTag(int id) {
         CashTag tag = tags.get(id);
         if (tag == null) {
             tag = other;
         }
         return tag;
+    }
+
+    @NonNull
+    public CashTag getTag(int[] ids) {
+        if (ids == null || ids.length <= 0) {
+            return other;
+        } else {
+            return getTag(ids[0]);
+        }
     }
 
     public List<CashTag> getTags() {

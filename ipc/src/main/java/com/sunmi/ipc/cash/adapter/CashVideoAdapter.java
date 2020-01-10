@@ -20,7 +20,9 @@ import com.sunmi.ipc.model.CashTag;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.GlideRoundTransform;
 
@@ -31,17 +33,22 @@ import sunmi.common.utils.GlideRoundTransform;
  */
 public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.ViewHolder> {
 
-    private ArrayList<CashVideo> data;
     private Context context;
+    private ArrayList<CashVideo> data;
+    private HashMap<Integer, CashServiceInfo> serviceInfo;
+    private boolean isAbnormalBehavior;
+
     private OnItemClickListener listener;
+
     private int selectPosition = -1;
     private NumberFormat numberFormat;
-    private boolean isAbnormalBehavior;
     private CashTagManager tagManager;
 
-    public CashVideoAdapter(ArrayList<CashVideo> data, Context context, boolean isAbnormalBehavior) {
-        this.data = data;
+    public CashVideoAdapter(Context context, ArrayList<CashVideo> data, HashMap<Integer, CashServiceInfo> serviceInfo,
+                            boolean isAbnormalBehavior) {
         this.context = context;
+        this.data = data;
+        this.serviceInfo = serviceInfo;
         this.isAbnormalBehavior = isAbnormalBehavior;
         numberFormat = NumberFormat.getNumberInstance();
         numberFormat.setMinimumFractionDigits(2);
@@ -86,7 +93,8 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         } else {
             viewHolder.tvDescription.setVisibility(View.GONE);
         }
-        viewHolder.tvName.setText(bean.getDeviceName());
+        CashServiceInfo info = serviceInfo.get(bean.getDeviceId());
+        viewHolder.tvName.setText(info == null ? "" : info.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
         if (isAbnormalBehavior) {
             if (!TextUtils.isEmpty(tag.getTip())) {

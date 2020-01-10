@@ -1,5 +1,9 @@
 package com.sunmi.ipc.presenter;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.cash.model.CashBox;
 import com.sunmi.ipc.cash.model.CashTagFilter;
@@ -11,13 +15,17 @@ import com.sunmi.ipc.model.CashVideoEventResp;
 import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.model.CashServiceInfo;
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.ServiceResp;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
 
@@ -86,20 +94,12 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
      * 获取视频列表
      */
     @Override
-    public void getCashVideoList(Map<Integer, CashServiceInfo> ipcName, int deviceId, int videoType,
-                                 long startTime, long endTime, int pageNum, int pageSize) {
+    public void getCashVideoList(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize) {
         IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
-                        for (CashVideo video : videoList) {
-                            CashServiceInfo bean = ipcName.get(video.getDeviceId());
-                            if (bean != null) {
-                                video.setDeviceName(bean.getDeviceName());
-                                video.setHasCashLossPrevent(bean.isHasCashLossPrevention());
-                            }
-                        }
                         if (isViewAttached()) {
                             mView.cashVideoListSuccess(videoList);
                         }
@@ -116,20 +116,13 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
     }
 
     @Override
-    public void getAbnormalBehaviorList(Map<Integer, CashServiceInfo> ipcName, int deviceId, int videoType,
-                                        long startTime, long endTime, int pageNum, int pageSize) {
+    public void getAbnormalBehaviorList(int deviceId, int videoType, long startTime, long endTime,
+                                        int pageNum, int pageSize) {
         IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(deviceId, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
-                        for (CashVideo video : videoList) {
-                            CashServiceInfo bean = ipcName.get(video.getDeviceId());
-                            if (bean != null) {
-                                video.setDeviceName(bean.getDeviceName());
-                                video.setHasCashLossPrevent(bean.isHasCashLossPrevention());
-                            }
-                        }
                         if (isViewAttached()) {
                             mView.cashVideoListSuccess(videoList);
                         }
@@ -207,5 +200,22 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                 }
             }
         });
+    }
+
+    @Override
+    public void onServiceSubscribeResult(@NonNull Intent intent) {
+        String args = intent.getStringExtra("args");
+        if (!TextUtils.isEmpty(args)) {
+            try {
+                JSONObject jsonObject = new JSONObject(args);
+                int service = jsonObject.getInt("service");
+                int status = jsonObject.getInt("status");
+                if (service == IpcConstants.SERVICE_TYPE_CASH_PREVENT && status == CommonConstants.RESULT_OK) {
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.cashPreventSubscribe);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
