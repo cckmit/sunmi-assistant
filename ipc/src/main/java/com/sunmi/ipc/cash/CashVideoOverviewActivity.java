@@ -416,6 +416,10 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.cashPreventSubscribe) {
+            if (args.length <= 0 || !(args[0] instanceof Set)) {
+                return;
+            }
+            //noinspection unchecked
             updateStatus((Set<String>) args[0]);
         }
     }
