@@ -173,7 +173,7 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-//                loadError();
+                loadError();
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
