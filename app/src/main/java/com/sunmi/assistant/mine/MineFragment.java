@@ -14,8 +14,6 @@ import com.sunmi.assistant.mine.message.MsgCenterActivity_;
 import com.sunmi.assistant.mine.presenter.MinePresenter;
 import com.sunmi.assistant.mine.setting.SettingActivity_;
 import com.sunmi.assistant.mine.shop.ShopListActivity_;
-import com.sunmi.sunmiservice.SunmiServiceConfig;
-import com.sunmi.sunmiservice.WebViewSunmiMallActivity_;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 
 import org.androidannotations.annotations.AfterViews;
@@ -55,10 +53,6 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     BGABadgeRelativeLayout rlMsg;
     @ViewById(R.id.sil_order)
     SettingItemLayout silOrder;
-    @ViewById(R.id.sil_address)
-    SettingItemLayout silAddress;
-    @ViewById(R.id.sil_coupon)
-    SettingItemLayout silCoupon;
     @ViewById(R.id.sil_help)
     SettingItemLayout silHelp;
 
@@ -73,8 +67,6 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
     private void initView() {
         if (!CommonHelper.isGooglePlay()) {
             silOrder.setVisibility(View.VISIBLE);
-            silAddress.setVisibility(View.VISIBLE);
-            silCoupon.setVisibility(View.VISIBLE);
             silHelp.setVisibility(View.VISIBLE);
             rlMsg.setVisibility(View.VISIBLE);
         }
@@ -165,25 +157,6 @@ public class MineFragment extends BaseMvpFragment<MinePresenter>
         WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_ORDER_MANAGE)
                 .params(WebViewParamsUtils.getUserInfoParams())
                 .start();
-    }
-
-    /**
-     * 收货地址
-     */
-    @Click(R.id.sil_address)
-    public void addressClick() {
-        WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
-                + "select-address?channel=2&subchannel=4").start();
-
-    }
-
-    /**
-     * 优惠券
-     */
-    @Click(R.id.sil_coupon)
-    public void couponClick() {
-        WebViewSunmiMallActivity_.intent(mActivity).mUrl(SunmiServiceConfig.SUNMI_MALL_HOST
-                + "my-coupon?channel=2&subchannel=4").start();
     }
 
     /**
