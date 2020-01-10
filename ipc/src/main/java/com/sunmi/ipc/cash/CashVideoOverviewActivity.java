@@ -435,6 +435,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
             cashVideoOverViewAdapter.setOnItemClickListener(this);
             rvCashOverview.setAdapter(cashVideoOverViewAdapter);
         } else {
+            cashVideoOverViewAdapter.initBehaviorPosition();
             cashVideoOverViewAdapter.notifyDataSetChanged();
         }
     }
