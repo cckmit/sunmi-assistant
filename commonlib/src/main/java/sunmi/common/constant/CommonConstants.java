@@ -63,6 +63,7 @@ public class CommonConstants {
     public static final int IMPORT_ORDER_FROM_COMMON = 1;
     public static final int IMPORT_ORDER_FROM_CASH_VIDEO = 2;
 
+    //H5 返回的结果
     public static final int RESULT_OK = 1;
     public static final int RESULT_FAIL = 0;
 

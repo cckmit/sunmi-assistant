@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,15 +36,13 @@ public class WebViewParamsUtils {
 
     public static String getCloudStorageParams(String sn, String productNo) {
         String params = "";
-        List<String> snList = new ArrayList<>();
-        snList.add(sn);
         try {
             JSONObject userInfo = new JSONObject()
                     .put("token", SpUtils.getStoreToken())
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId());
             JSONObject cloudStorage = new JSONObject()
-                    .put("sn_list", new JSONArray(snList))
+                    .put("sn_list", new JSONArray().put(sn))
                     .put("productNo", productNo);
             params = new JSONObject()
                     .put("userInfo", userInfo)
@@ -80,8 +77,6 @@ public class WebViewParamsUtils {
     }
 
     public static String getCashPreventLossParams(String sn) {
-        List<String> snList = new ArrayList<>();
-        snList.add(sn);
         String params = "";
         try {
             JSONObject userInfo = new JSONObject()
@@ -89,7 +84,7 @@ public class WebViewParamsUtils {
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId());
             JSONObject cashPreventLoss = new JSONObject()
-                    .put("snList", new JSONArray(snList));
+                    .put("snList", new JSONArray().put(sn));
             params = new JSONObject()
                     .put("userInfo", userInfo)
                     .put("cashPreventLoss", cashPreventLoss)
