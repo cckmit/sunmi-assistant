@@ -934,27 +934,25 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (service != null && service.isHasCashLossPrevention()) {
             if (mLossPreventDialog == null) {
                 mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
-                        .setListener((dialog, which) -> {
-                            Router.withApi(SunmiServiceApi.class)
-                                    .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
-                                            WebViewParamsUtils.getCashPreventLossParams(info.getDeviceSn())
-                                            , new BiCallback<Intent>() {
-                                                @Override
-                                                public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
-                                                    // TODO 添加 收银防损订阅成功的逻辑
-                                                }
+                        .setListener((dialog, which) -> Router.withApi(SunmiServiceApi.class)
+                                .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
+                                        WebViewParamsUtils.getCashPreventLossParams(service.getDeviceSn())
+                                        , new BiCallback<Intent>() {
+                                            @Override
+                                            public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
+                                                mPresenter.onServiceSubscribeResult(intent);
+                                            }
 
-                                                @Override
-                                                public void onCancel(@Nullable RouterRequest originalRequest) {
+                                            @Override
+                                            public void onCancel(@Nullable RouterRequest originalRequest) {
 
-                                                }
+                                            }
 
-                                                @Override
-                                                public void onError(@NonNull RouterErrorResult errorResult) {
+                                            @Override
+                                            public void onError(@NonNull RouterErrorResult errorResult) {
 
-                                                }
-                                            });
-                        })
+                                            }
+                                        }))
                         .create();
             }
             mLossPreventDialog.show();
@@ -1075,7 +1073,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.cashVideoPlayPosition};
+        return new int[]{CommonNotifications.cashVideoPlayPosition, CommonNotifications.cashPreventSubscribe};
     }
 
     @Override
@@ -1088,6 +1086,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             playIndex = (int) args[0];
             playCashVideoStatus = PLAY_TYPE_DROP_SELECT;
             initCashVideoPlay();
+        } else if (id == CommonNotifications.cashPreventSubscribe) {
+            // TODO：订阅了收银防损
         }
     }
 

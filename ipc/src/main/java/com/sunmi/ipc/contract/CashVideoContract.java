@@ -1,5 +1,8 @@
 package com.sunmi.ipc.contract;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+
 import com.sunmi.ipc.cash.model.CashBox;
 import com.sunmi.ipc.cash.model.CashTagFilter;
 import com.sunmi.ipc.cash.model.CashVideo;
@@ -51,5 +54,7 @@ public interface CashVideoContract {
         void getStorageList(String deviceSn);
 
         void getAbnormalEvent(long eventId, long beginTime);
+
+        void onServiceSubscribeResult(@NonNull Intent intent);
     }
 }

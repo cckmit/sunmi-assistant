@@ -1,5 +1,9 @@
 package com.sunmi.ipc.presenter;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.cash.model.CashBox;
 import com.sunmi.ipc.cash.model.CashTagFilter;
@@ -11,11 +15,17 @@ import com.sunmi.ipc.model.CashVideoEventResp;
 import com.sunmi.ipc.model.CashVideoResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.ServiceResp;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.log.LogCat;
 
@@ -190,5 +200,22 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
                 }
             }
         });
+    }
+
+    @Override
+    public void onServiceSubscribeResult(@NonNull Intent intent) {
+        String args = intent.getStringExtra("args");
+        if (!TextUtils.isEmpty(args)) {
+            try {
+                JSONObject jsonObject = new JSONObject(args);
+                int service = jsonObject.getInt("service");
+                int status = jsonObject.getInt("status");
+                if (service == IpcConstants.SERVICE_TYPE_CASH_PREVENT && status == CommonConstants.RESULT_OK) {
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.cashPreventSubscribe);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
