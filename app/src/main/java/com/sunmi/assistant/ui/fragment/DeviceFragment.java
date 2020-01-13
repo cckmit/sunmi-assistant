@@ -39,6 +39,7 @@ import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -132,7 +133,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         initRefreshLayout();
         rvDevice.init(R.drawable.divider_transparent_8dp);
         deviceListAdapter = new DeviceListAdapter(mActivity, deviceList);
-        View headerView = getLayoutInflater().inflate(R.layout.include_banner,
+        View headerView = getLayoutInflater().inflate(R.layout.include_empty_device,
                 (ViewGroup) refreshView.getParent(), false);
         deviceListAdapter.addHeaderView(headerView);
         rlNoDevice = headerView.findViewById(R.id.rl_empty);
@@ -278,9 +279,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void refreshApEventStatus(List<SunmiDevice> eventApList) {
-        routerList.clear();
-        routerList.addAll(eventApList);
+    public void refreshApEventStatus(Map<String, SunmiDevice> map) {
+        for (SunmiDevice bean : routerList) {
+            if (map.get(bean.getDeviceid()) == null) {
+                routerList.add(bean);
+            }
+        }
         refreshList();
     }
 

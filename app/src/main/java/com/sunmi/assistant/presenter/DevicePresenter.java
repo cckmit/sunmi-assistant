@@ -27,7 +27,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
@@ -112,9 +114,9 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 mView.apEventStatus(sn, false);
             }
         } else if (NotificationConstant.apStatusList == event) {//w1所有设备列表
-            List<SunmiDevice> eventApList = new ArrayList<>();
             List<ApEventResp.ParamsBean.ParamBean.DeviceListBean> beanList =
                     eventResp.getParams().get(0).getParam().getDeviceList();
+            Map<String, SunmiDevice> map = new HashMap<>();
             for (ApEventResp.ParamsBean.ParamBean.DeviceListBean bean : beanList) {
                 int shopId = bean.getShopId();
                 if (shopId == SpUtils.getShopId()) {
@@ -125,11 +127,11 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     device.setName("SUNMI-W1");
                     device.setModel("W1");
                     device.setType("ROUTER");
-                    eventApList.add(device);
+                    map.put(bean.getSn(), device);
                 }
             }
             if (isViewAttached()) {
-                mView.refreshApEventStatus(eventApList);
+                mView.refreshApEventStatus(map);
             }
         }
     }
