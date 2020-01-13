@@ -1054,7 +1054,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @Override
     public void getAbnormalEventFail(int code, String msg) {
-        shortTip(R.string.toast_network_error);
+        if (code != 5600) {
+            // 5600：事件不存在
+            shortTip(R.string.toast_network_error);
+        }
         cashBoxOverlay.setVisibility(View.GONE);
         sbMark.setVisibility(View.GONE);
     }
