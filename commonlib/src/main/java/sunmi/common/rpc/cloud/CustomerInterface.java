@@ -6,6 +6,11 @@ import retrofit2.http.POST;
 import sunmi.common.model.CustomerAgeGenderResp;
 import sunmi.common.model.CustomerAgeNewOldResp;
 import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.CustomerDataResp;
+import sunmi.common.model.CustomerEnterRateTrendResp;
+import sunmi.common.model.CustomerFrequencyAvgResp;
+import sunmi.common.model.CustomerFrequencyDistributionResp;
+import sunmi.common.model.CustomerFrequencyTrendResp;
 import sunmi.common.model.CustomerHistoryDetailResp;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerHistoryTrendResp;
@@ -69,5 +74,46 @@ public interface CustomerInterface {
     @POST(path + "age/getHistoryWithAgeAndGender")
     Call<BaseResponse<CustomerHistoryDetailResp>> getHistoryCustomerDetail(@Body BaseRequest request);
 
+    /**
+     * T+1客流分析概览(2:本周 3:本月 4:昨日)
+     */
+    @POST(path + "history/getOverview")
+    Call<BaseResponse<CustomerDataResp>> getCustomerData(@Body BaseRequest request);
+
+    /**
+     * T+1客流分析-进店率趋势( 2:本周 3:本月 4:昨日)
+     *
+     * @param request
+     * @return
+     */
+    @POST(path + "history/getEnteringDistribution")
+    Call<BaseResponse<CustomerEnterRateTrendResp>> getCustomerEnterRateTrend(@Body BaseRequest request);
+
+
+    /**
+     * T+1客流分析-客群到店频率分布(2:本周 3:本月 4:昨日)
+     *
+     * @param request
+     * @return
+     */
+    @POST(path + "history/getFrequencyList")
+    Call<BaseResponse<CustomerFrequencyDistributionResp>> getCustomerFrequencyDistribution(@Body BaseRequest request);
+
+    /**
+     * T+1客流分析-客群到店频率趋势(2:本周 3:本月)
+     *
+     * @param request
+     * @return
+     */
+    @POST(path + "history/getFrequencyDistribution")
+    Call<BaseResponse<CustomerFrequencyTrendResp>> getCustomerFrequencyTrend(@Body BaseRequest request);
+
+    /**
+     * T+1客流分析-客群平均到店频率(2:本周 3:本月 )
+     * @param request
+     * @return
+     */
+    @POST(path + "history/getFrequencyWithAgeAndGender")
+    Call<BaseResponse<CustomerFrequencyAvgResp>> getCustomerFrequencyAvg(@Body BaseRequest request);
 
 }
