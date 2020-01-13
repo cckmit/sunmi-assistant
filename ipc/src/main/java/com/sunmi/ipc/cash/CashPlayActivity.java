@@ -712,6 +712,12 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (!isAbnormalBehavior) {
             mPresenter.getOrderInfo(getCurrent().getOrderNo());
         }
+        //更新title
+        if (getCurrentService() != null && getCurrentService().isHasCashLossPrevention()) {
+            titleBar.setAppTitle(R.string.str_cash_loss_prevent);
+        } else {
+            titleBar.setAppTitle(R.string.cash_video);
+        }
         rlOrderInfo.setVisibility(isAbnormalBehavior ? View.GONE : View.VISIBLE);
         ivTag.setSelected(isAbnormal);
         sbBar.setProgress(0);
@@ -1072,6 +1078,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                 .start().withAnimation(R.anim.slide_in_right, 0);
     }
 
+    @Nullable
     private CashServiceInfo getCurrentService() {
         return serviceInfoMap.get(getCurrent().getDeviceId());
     }
