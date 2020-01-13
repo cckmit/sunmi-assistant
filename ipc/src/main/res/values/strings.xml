@@ -335,7 +335,7 @@
     <string name="str_order_video">订单视频</string>
     <string name="str_abnormal_oder">异常订单</string>
     <string name="cash_pos_device">摄像机：</string>
-    <string name="cash_video_list">视频列表</string>
+    <string name="cash_order_list">订单视频列表</string>
     <string name="str_fast_play">一天快放</string>
     <string name="tip_fast_play">支持今日收银视频连续播放</string>
     <string name="cash_tag_exception">标记异常</string>
@@ -378,6 +378,7 @@
     <string name="cash_tag_custom_hint">请输入自定义异常类型</string>
     <string name="cash_abnormal_tip">%s，风险率%d%%</string>
     <string name="cash_loss_prevention_dialog_tip">AI智能识别异常风险交易</string>
+    <string name="cash_only_look_exception">只看异常</string>
 
     <string name="motion_detection_video_empty">暂无看店视频</string>
     <string name="motion_detection_source_all">全部事件</string>
