@@ -59,7 +59,7 @@ public class CashBoxView extends View {
         mBoxPaint.setColor(ContextCompat.getColor(context, R.color.common_orange));
         mBoxPaint.setStrokeWidth(4.0f);
         mBoxPaint.setStyle(Paint.Style.STROKE);
-        mBoxMin = context.getResources().getDimension(R.dimen.dp_56);
+        mBoxMin = context.getResources().getDimension(R.dimen.dp_24);
     }
 
     public void setData(List<CashBox> data) {
