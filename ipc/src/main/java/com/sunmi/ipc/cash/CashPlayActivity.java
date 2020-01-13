@@ -73,6 +73,7 @@ import sunmi.common.model.ServiceResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.IVideoPlayer;
 import sunmi.common.utils.ImageUtils;
 import sunmi.common.utils.NetworkUtils;
@@ -938,7 +939,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         sbMark.setVisibility(View.GONE);
         // 如果没有开通收银防损，那么弹窗推广
         CashServiceInfo service = serviceInfoMap.get(video.getDeviceId());
-        if (service == null || !service.isHasCashLossPrevention()) {
+        if (service != null && !service.isHasCashLossPrevention() && ConfigManager.get().getCashSecurityEnable()) {
             if (mLossPreventDialog == null) {
                 mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
                         .setListener((dialog, which) -> Router.withApi(SunmiServiceApi.class)
@@ -952,12 +953,10 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
                                             @Override
                                             public void onCancel(@Nullable RouterRequest originalRequest) {
-
                                             }
 
                                             @Override
                                             public void onError(@NonNull RouterErrorResult errorResult) {
-
                                             }
                                         }))
                         .create();
