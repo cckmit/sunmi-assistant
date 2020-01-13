@@ -26,6 +26,7 @@ import sunmi.common.model.CustomerRateResp;
 import sunmi.common.model.HealthInfoBean;
 import sunmi.common.model.NetEventListBean;
 import sunmi.common.model.PlatformInfo;
+import sunmi.common.model.ServiceEnableResp;
 import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
@@ -570,6 +571,20 @@ public class SunmiStoreApi {
         SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                 .getShopRegion(new BaseRequest(""))
                 .enqueue(callback);
+    }
+
+    public void getServiceEnable(RetrofitCallback<ServiceEnableResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .getServiceEnable(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
