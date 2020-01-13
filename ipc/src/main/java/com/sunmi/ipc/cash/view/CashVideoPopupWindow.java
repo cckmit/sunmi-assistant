@@ -167,7 +167,6 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         @Override
         public void convert(ViewHolder holder, CashVideo res) {
             CashServiceInfo info = mServiceInfo.get(res.getDeviceId());
-            holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getPurchaseTime(), "HH:mm:ss"));
             holder.setText(R.id.tv_pos, info == null ? "" : info.getDeviceName());
             ImageView imgVideo = holder.getView(R.id.iv_preview_img);
             ImageView ivFlag = holder.getView(R.id.iv_left_flag);
@@ -195,6 +194,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             }
 
             if (isAbnormalBehavior) {
+                holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getStartTime(), "HH:mm:ss"));
                 tvSuggest.setVisibility(View.VISIBLE);
                 holder.getView(R.id.group_content).setVisibility(View.GONE);
                 if (!TextUtils.isEmpty(tag.getTip())) {
@@ -203,6 +203,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
                     tvSuggest.setText(R.string.tip_other_exception);
                 }
             } else {
+                holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getPurchaseTime(), "HH:mm:ss"));
                 tvSuggest.setVisibility(View.GONE);
                 holder.getView(R.id.group_content).setVisibility(View.VISIBLE);
                 holder.setText(R.id.tv_amount, String.format("¥%s", numberFormat.format(res.getAmount())));

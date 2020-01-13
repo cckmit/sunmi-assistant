@@ -126,6 +126,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         layoutNetworkError.setVisibility(View.GONE);
         cashServiceInfoList.clear();
         cashServiceInfoList.addAll(infoList);
+        boolean hasCashLossPrevention = false;
         if (cashServiceInfoList.isEmpty()) {
             tvCashVideo.setText(R.string.str_learn_more);
         } else {
@@ -137,13 +138,12 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
                     hasCloudService = true;
                 }
                 if (info.isHasCashLossPrevention()) {
-                    initCashPreventCardVisibility(true);
-                } else {
-                    initCashPreventCardVisibility(false);
+                    hasCashLossPrevention = true;
                 }
                 snList.add(info.getDeviceSn());
             }
         }
+        initCashPreventCardVisibility(hasCashLossPrevention);
     }
 
     @Override
