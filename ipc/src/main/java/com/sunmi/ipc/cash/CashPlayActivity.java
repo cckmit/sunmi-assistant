@@ -738,7 +738,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             //开始播放
             ivpCash.startVideo();
             //初始化截屏
-//            initTakeScreenShot();
+            initTakeScreenShot();
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
             long duration = ivpCash.getDuration();
             //不足一秒补一秒
