@@ -3,6 +3,7 @@ package com.sunmi.assistant.contract;
 import android.content.Context;
 
 import java.util.List;
+import java.util.Map;
 
 import sunmi.common.base.BaseView;
 import sunmi.common.model.ShopInfo;
@@ -37,7 +38,7 @@ public interface DeviceContract {
 
         void apEventStatus(String sn, boolean isOnline);
 
-        void refreshApEventStatus(List<SunmiDevice> eventApList);
+        void refreshApEventStatus(Map<String, SunmiDevice> map);
 
         void getCheckApLoginSuccess(boolean isAgainCheck);
 
