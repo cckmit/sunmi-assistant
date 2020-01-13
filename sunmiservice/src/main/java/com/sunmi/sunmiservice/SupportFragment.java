@@ -138,6 +138,8 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
                 }
                 if (info.isHasCashLossPrevention()) {
                     initCashPreventCardVisibility(true);
+                } else {
+                    initCashPreventCardVisibility(false);
                 }
                 snList.add(info.getDeviceSn());
             }

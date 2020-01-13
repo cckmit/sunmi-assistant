@@ -59,6 +59,7 @@ import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CircleImage;
+import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.BottomDialog;
 import sunmi.common.view.widget.CenterLayoutManager;
 
@@ -95,6 +96,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     LinearLayout llFloating;
     @ViewById(resName = "layout_network_error")
     View networkError;
+    @ViewById(resName = "title_bar")
+    TitleBarView titleBar;
 
     @Extra
     ArrayList<CashServiceInfo> serviceBeans;
@@ -211,6 +214,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         behaviorItems = new ArrayList<>();
         behaviorItems.add(new FilterItem(-1, getString(R.string.str_all_device), false));
         hasCashLossPrevent = true;
+        titleBar.setAppTitle(R.string.str_cash_loss_prevent);
     }
 
 

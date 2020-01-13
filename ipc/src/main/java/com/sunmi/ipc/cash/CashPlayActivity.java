@@ -711,6 +711,12 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (!isAbnormalBehavior) {
             mPresenter.getOrderInfo(getCurrent().getOrderNo());
         }
+        //更新title
+        if (getCurrentService().isHasCashLossPrevention()) {
+            titleBar.setAppTitle(R.string.str_cash_loss_prevent);
+        } else {
+            titleBar.setAppTitle(R.string.cash_video);
+        }
         rlOrderInfo.setVisibility(isAbnormalBehavior ? View.GONE : View.VISIBLE);
         ivTag.setSelected(isAbnormal);
         sbBar.setProgress(0);
@@ -731,7 +737,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             //开始播放
             ivpCash.startVideo();
             //初始化截屏
-            initTakeScreenShot();
+//            initTakeScreenShot();
             //设置seekBar的最大限度值，当前视频的总时长（毫秒）
             long duration = ivpCash.getDuration();
             //不足一秒补一秒
