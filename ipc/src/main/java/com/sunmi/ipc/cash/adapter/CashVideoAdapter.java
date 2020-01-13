@@ -78,7 +78,6 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
             viewHolder.itemView.setSelected(selectPosition == i);
         }
         CashVideo bean = data.get(i);
-        viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getPurchaseTime(), "HH:mm:ss"));
 
         int[] tags = bean.getVideoTag();
         int tagId = tags != null && tags.length > 0 ? tags[0] : -1;
@@ -97,12 +96,14 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         viewHolder.tvName.setText(info == null ? "" : info.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
         if (isAbnormalBehavior) {
+            viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getStartTime(), "HH:mm:ss"));
             if (!TextUtils.isEmpty(tag.getTip())) {
                 viewHolder.tvSuggest.setText(tag.getTip());
             } else {
                 viewHolder.tvSuggest.setText(R.string.tip_other_exception);
             }
         } else {
+            viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getPurchaseTime(), "HH:mm:ss"));
             viewHolder.tvAmount.setText(String.format("¥%s", numberFormat.format(bean.getAmount())));
             viewHolder.tvOrderNum.setText(bean.getOrderNo());
         }
