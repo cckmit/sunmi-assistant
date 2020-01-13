@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -628,7 +629,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                     .setTitle(R.string.cash_tag_dialog_title)
                     .setContent(root, lp)
                     .setCancelButton(R.string.sm_cancel)
-                    .setOkButton(R.string.str_confirm, (dialog, which) -> updateVideoTag())
+                    .setOkButton(R.string.str_confirm, (dialog, which) -> {
+                        if (updateVideoTag()) {
+                            dialog.dismiss();
+                        }
+                    }, false)
                     .create();
         }
         if (mSelectedTag != null) {
@@ -641,8 +646,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             } else {
                 // 异常视频
                 int[] tags = current.getVideoTag();
+                // noinspection StatementWithEmptyBody
                 if (tags == null || tags.length <= 0) {
-                    // FIXME: 其他异常如何在选择异常对话框中展示
+                    // FIXME: 其他异常如何在选择异常对话框中展示，目前处理方法为不默认选中任何一个选项
                 } else if (tags[0] == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
                     mTagAdapter.setCustom(current.getDescription());
                 } else {
@@ -653,13 +659,25 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         mTagDialog.show();
     }
 
-    private void updateVideoTag() {
+    private boolean updateVideoTag() {
         CashTagFilter selected = mTagAdapter.getSelected();
-        if (mSelectedTag != null && mSelectedTag.equals(selected)) {
-            return;
+        if (selected == null) {
+            return false;
         }
-        showLoadingDialog();
+        if (selected.getId() == CashTagFilter.TAG_ID_CUSTOM) {
+            String desc = selected.getDesc();
+            desc = desc == null ? null : desc.trim();
+            if (TextUtils.isEmpty(desc)) {
+                shortTip(R.string.ipc_cash_tag_empty_tip);
+                return false;
+            }
+        }
+        if (mSelectedTag != null && mSelectedTag.equals(selected)) {
+            return true;
+        }
+        showDarkLoading();
         mPresenter.updateTag(getCurrent().getVideoId(), isAbnormalBehavior ? 1 : 2, selected);
+        return true;
     }
 
     /**
