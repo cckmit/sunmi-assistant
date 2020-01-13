@@ -54,6 +54,7 @@ import sunmi.common.constant.RouterConfig;
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.FilterItem;
 import sunmi.common.router.SunmiServiceApi;
+import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
@@ -160,6 +161,8 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         }
         if (hasCashLossPrevent) {
             initCashPrent();
+        } else if (!ConfigManager.get().getCashSecurityEnable()) {
+            llFloating.setVisibility(View.GONE);
         }
         initDate();
     }

@@ -21,6 +21,7 @@ import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.DateTimeUtils;
 
 /**
@@ -154,7 +155,8 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                         info.setDeviceSn(bean.getDeviceSn());
                         info.setDeviceName(bean.getDeviceName());
                         info.setImgUrl(bean.getImgUrl());
-                        info.setHasCashLossPrevention(bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED);
+                        info.setHasCashLossPrevention(bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED
+                                && ConfigManager.get().getCashSecurityEnable());
                         cashServiceInfos.add(info);
                     }
                 }
