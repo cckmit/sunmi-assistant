@@ -25,6 +25,7 @@ public class CashBoxView extends View {
 
     private int mWidth;
     private int mHeight;
+    private float mBoxMin;
     private int mCurrentTime;
     private int mInterval = 1;
     private boolean mStart = false;
@@ -58,6 +59,7 @@ public class CashBoxView extends View {
         mBoxPaint.setColor(ContextCompat.getColor(context, R.color.common_orange));
         mBoxPaint.setStrokeWidth(4.0f);
         mBoxPaint.setStyle(Paint.Style.STROKE);
+        mBoxMin = context.getResources().getDimension(R.dimen.dp_24);
     }
 
     public void setData(List<CashBox> data) {
@@ -106,10 +108,22 @@ public class CashBoxView extends View {
                 continue;
             }
             float[] rect = model.getRect();
-            mRect.set((rect[0] * mWidth),
-                    (rect[1] * mHeight),
-                    (rect[2] * mWidth),
-                    (rect[3] * mHeight));
+            float l = rect[0] * mWidth;
+            float t = rect[1] * mHeight;
+            float r = rect[2] * mWidth;
+            float b = rect[3] * mHeight;
+            if (r - l < mBoxMin) {
+                float offset = (mBoxMin + l - r) / 2;
+                l = Math.max(l - offset, 0);
+                r = Math.min(r + offset, mWidth);
+            }
+            if (b - t < mBoxMin) {
+                float offset = (mBoxMin + t - b) / 2;
+                t = Math.max(t - offset, 0);
+                b = Math.min(b + offset, mHeight);
+            }
+
+            mRect.set(l, t, r, b);
             canvas.drawRoundRect(mRect, 10, 10, mBoxPaint);
         }
     }
