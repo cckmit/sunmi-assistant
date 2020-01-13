@@ -72,6 +72,7 @@ import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.SunmiServiceApi;
+import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.IVideoPlayer;
@@ -1054,8 +1055,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
 
     @Override
     public void getAbnormalEventFail(int code, String msg) {
-        if (code != 5600) {
-            // 5600：事件不存在
+        if (code != RpcErrorCode.ERR_CASH_EVENT_NOT_EXIST) {
             shortTip(R.string.toast_network_error);
         }
         cashBoxOverlay.setVisibility(View.GONE);
