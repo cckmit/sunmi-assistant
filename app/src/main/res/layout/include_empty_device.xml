@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/iv_no_device"
-        android:layout_width="@dimen/dp_180"
-        android:layout_height="@dimen/dp_180"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_80"
+        android:layout_marginTop="@dimen/dp_156"
         android:background="@mipmap/ic_no_device_default" />
 
     <TextView
@@ -20,9 +20,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_8"
         android:text="@string/ap_no_device_list"
-        android:textColor="@color/text_main"
-        android:textSize="@dimen/sp_16"
-        android:textStyle="bold" />
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12" />
 
     <Button
         android:id="@+id/btn_add_device"
