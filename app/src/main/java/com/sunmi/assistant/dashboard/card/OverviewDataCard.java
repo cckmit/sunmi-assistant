@@ -35,8 +35,8 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
 
     private static OverviewDataCard sInstance;
 
-    private static final int NUM_100_MILLION = 100000000;
-    private static final int NUM_10_THOUSANDS = 10000;
+    private static final int NUM_100_MILLION = 100_000_000;
+    private static final int NUM_10_THOUSANDS = 10_000;
 
     private OverviewDataCard(Presenter presenter, int source) {
         super(presenter, source);

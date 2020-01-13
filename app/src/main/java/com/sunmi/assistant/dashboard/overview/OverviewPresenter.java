@@ -25,7 +25,7 @@ import sunmi.common.base.BasePresenter;
  * @author yinhui
  * @date 2019-10-14
  */
-public class OverviewPresenter extends BasePresenter<OverviewContract.View>
+public class  OverviewPresenter extends BasePresenter<OverviewContract.View>
         implements OverviewContract.Presenter, BaseRefreshCard.Presenter,
         OverviewOrderImportCard.OnImportStateChangeListener {
 
