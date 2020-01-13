@@ -34,11 +34,14 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
@@ -407,6 +410,28 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
                         .videoType(videoType).isAbnormalBehavior(isAbnormalBehavior).startForResult(REQUEST);
             });
             rvCashVideo.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{CommonNotifications.cashPreventSubscribe};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.cashPreventSubscribe) {
+            if (args.length <= 0 || !(args[0] instanceof Set)) {
+                return;
+            }
+            @SuppressWarnings("unchecked")
+            Set<String> snSet = (Set<String>) args[0];
+            for (Map.Entry<Integer, CashServiceInfo> entry : cashServiceMap.entrySet()) {
+                CashServiceInfo info = entry.getValue();
+                if (snSet.contains(info.getDeviceSn())) {
+                    info.setHasCashLossPrevention(true);
+                }
+            }
         }
     }
 
