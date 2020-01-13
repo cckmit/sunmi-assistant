@@ -62,6 +62,13 @@
 
     </FrameLayout>
 
+    <View
+        android:id="@+id/debug"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <sunmi.common.view.DropdownMenu
         android:id="@+id/layout_shop_title"
         android:layout_width="0dp"
