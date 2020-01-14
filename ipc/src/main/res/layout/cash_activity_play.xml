@@ -36,6 +36,12 @@
             android:background="@color/c_black"
             android:visibility="invisible" />
 
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/iv_screen_play_pause"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <RelativeLayout
             android:id="@+id/rl_order_info"
             android:layout_width="wrap_content"
@@ -140,6 +146,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
             android:layout_alignParentBottom="true" />
+
 
     </RelativeLayout>
 
