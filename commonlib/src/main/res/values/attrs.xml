@@ -72,16 +72,26 @@
 
         <!-- 标题 -->
         <attr name="title" format="string" />
+        <!-- 标题文字大小 -->
+        <attr name="titleSize" format="dimension" />
         <!-- 右侧内容 -->
         <attr name="endContentText" format="string" />
+        <!-- 右侧内容文字大小 -->
+        <attr name="endContentSize" format="dimension" />
         <!-- 多行列表项中间内容，仅当styleType=multi时有效 -->
         <attr name="middleContentText" format="string" />
+        <!-- 多行列表项中间内容文字大小，仅当styleType=multi时有效 -->
+        <attr name="middleContentSize" format="dimension" />
         <!-- 内容最大行数 -->
-        <attr name="contentMaxLines" format="integer" />
+        <attr name="middleContentMaxLines" format="integer" />
         <!-- 底部单行左边小字内容 -->
         <attr name="smallStartContent" format="string" />
+        <!-- 底部单行左边小字内容文字大小 -->
+        <attr name="smallStartContentSize" format="dimension" />
         <!-- 底部单行右边小字内容 -->
         <attr name="smallEndContent" format="string" />
+        <!-- 底部单行右边小字内容文字大小 -->
+        <attr name="smallEndContentSize" format="dimension" />
         <!-- Tag标签内容 -->
         <attr name="tag" format="string" />
         <!-- 分割线位置 -->

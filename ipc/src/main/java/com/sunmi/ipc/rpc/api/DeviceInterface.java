@@ -5,7 +5,7 @@ import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.ServiceResp;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -54,7 +54,7 @@ public interface DeviceInterface {
      * @return
      */
     @POST(path + "getStorageList")
-    Call<BaseResponse<ServiceListResp>> getStorageList(@Body BaseRequest request);
+    Call<BaseResponse<ServiceResp>> getStorageList(@Body BaseRequest request);
 
     /**
      * 通过设备sn或shopId查询ipc设备收银视频服务信息
@@ -63,7 +63,7 @@ public interface DeviceInterface {
      * @return
      */
     @POST(path + "getAuditVideoServiceList")
-    Call<BaseResponse<ServiceListResp>> getAuditVideoServiceList(@Body BaseRequest request);
+    Call<BaseResponse<ServiceResp>> getAuditVideoServiceList(@Body BaseRequest request);
 
     /**
      * 指定设备是收银防损开通状态
@@ -71,6 +71,6 @@ public interface DeviceInterface {
      * @return
      */
     @POST(path + "getAuditSecurityPolicyList")
-    Call<BaseResponse<ServiceListResp>> getAuditSecurityPolicyList(@Body BaseRequest request);
+    Call<BaseResponse<ServiceResp>> getAuditSecurityPolicyList(@Body BaseRequest request);
 
 }

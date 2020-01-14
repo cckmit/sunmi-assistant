@@ -94,7 +94,7 @@
             android:layout_height="0dp"
             android:layout_marginEnd="@dimen/dp_20"
             android:gravity="center"
-            android:text="@string/str_abnormal_oder"
+            android:text="@string/cash_only_look_exception"
             android:textColor="@color/text_common_normal_checkable"
             android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -133,7 +133,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_light"
-        app:titleText="@string/cash_video_list"
+        app:titleText="@string/cash_order_list"
         app:titleTextColor="@color/c_white" />
 
     <RelativeLayout
@@ -157,6 +157,7 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tv_suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_date"

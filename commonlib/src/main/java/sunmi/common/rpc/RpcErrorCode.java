@@ -23,4 +23,9 @@ public class RpcErrorCode {
     //服务相关错误码
     public static final int ERR_SERVICE_SUBSCRIBE_ERROR = 5420;
 
+    /**
+     * 收银防损查询AI事件不存在
+     */
+    public static final int ERR_CASH_EVENT_NOT_EXIST = 5600;
+
 }

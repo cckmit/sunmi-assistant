@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 
 /**
  * Description:
@@ -41,6 +43,7 @@ public class CashVideoNonCloudActivity extends BaseActivity {
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
         if (status == CommonConstants.SERVICE_EXPIRED) {
             tvTip.setText(R.string.tip_cloud_expired);
             btnOpen.setText(R.string.str_renew_cloud_storage);
@@ -49,7 +52,8 @@ public class CashVideoNonCloudActivity extends BaseActivity {
 
     @Click(resName = "btn_open")
     public void openClick() {
-        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_CLOUD_STORAGE).snList(snList).startForResult(REQ_OPEN_CLOUD);
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_CLOUD_STORAGE)
+                .params(WebViewParamsUtils.getCloudStorageParams(snList, "")).startForResult(REQ_OPEN_CLOUD);
     }
 
     @OnActivityResult(REQ_OPEN_CLOUD)

@@ -2,12 +2,26 @@ package sunmi.common.view.webview;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.content.FileProvider;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import com.commonlibrary.R;
+
+import java.io.File;
+
+import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.utils.FileHelper;
+import sunmi.common.utils.PermissionUtils;
+import sunmi.common.view.bottompopmenu.BottomPopMenu;
+import sunmi.common.view.bottompopmenu.PopItemAction;
 
 /**
  * Class  Name: SMWebChromeClient
@@ -15,20 +29,23 @@ import com.commonlibrary.R;
  * Created by Bruce on 18/11/27
  */
 public class SMWebChromeClient extends WebChromeClient {
-    public static final int CHOOSE_REQUEST_CODE = 10001;
+    private static final int REQUEST_GALLERY = 0xa0;
+    private static final int REQUEST_CAMERA = 0xa1;
     private ValueCallback<Uri> filePathCallback;
     private ValueCallback<Uri[]> filePathCallbacks;
-    private Activity mActivity;
+    private BaseActivity mActivity;
 
     private boolean mIsInjectedJS;
     private Callback callback;
     private JsCallJava mJsCallJava;
+    private BottomPopMenu choosePhotoMenu;
+    private Uri imgUri;
 
-    public SMWebChromeClient(Activity activity) {
+    public SMWebChromeClient(BaseActivity activity) {
         mActivity = activity;
     }
 
-    public SMWebChromeClient(Activity activity, String injectedName, Class injectedCls) {
+    public SMWebChromeClient(BaseActivity activity, String injectedName, Class injectedCls) {
         this.mActivity = activity;
         mJsCallJava = new JsCallJava(injectedName, injectedCls);
     }
@@ -101,21 +118,65 @@ public class SMWebChromeClient extends WebChromeClient {
     }
 
     private void selectImage() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        if (mActivity != null)
-            mActivity.startActivityForResult(Intent.createChooser(intent,
-                    mActivity.getString(R.string.str_title_selected_pic)), CHOOSE_REQUEST_CODE);
+        if (choosePhotoMenu == null) {
+            choosePhotoMenu = new BottomPopMenu.Builder(mActivity)
+                    .addItemAction(new PopItemAction(R.string.str_take_photo,
+                            PopItemAction.PopItemStyle.Normal, this::takePhoto))
+                    .addItemAction(new PopItemAction(R.string.str_choose_from_album,
+                            PopItemAction.PopItemStyle.Normal, this::openGallery))
+                    .addItemAction(new PopItemAction(R.string.sm_cancel,
+                            PopItemAction.PopItemStyle.Cancel, this::cancelCallback))
+                    .create();
+        }
+        choosePhotoMenu.show();
+    }
+
+    private void takePhoto() {
+        if (!PermissionUtils.checkSDCardCameraPermission(mActivity)) {
+            return;
+        }
+
+        File fileUri = new File(FileHelper.SDCARD_CACHE_IMAGE_PATH + "/web_image.jpg");
+        imgUri = Uri.fromFile(fileUri);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            //通过FileProvider创建一个content类型的Uri
+            imgUri = FileProvider.getUriForFile(mActivity,
+                    CommonConstants.FILE_PROVIDER_AUTHORITY, fileUri);
+        }
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imgUri);
+        mActivity.startActivityForResult(intent, REQUEST_CAMERA);
+    }
+
+    private void openGallery() {
+        if (!PermissionUtils.checkStoragePermission(mActivity)) {
+            return;
+        }
+        Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        photoPickerIntent.setType("image/*");
+        photoPickerIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        mActivity.startActivityForResult(photoPickerIntent, REQUEST_GALLERY);
     }
 
     /**
      * 所有需要上传图片的地方必须在对应的onActivityResult实现此方法
      */
-    public void uploadImage(Intent data, int resultCode) {
+    public void uploadImage(int requestCode, int resultCode, Intent data) {
+        Uri result = null;
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CAMERA:
+                    result = imgUri;
+                    break;
+                case REQUEST_GALLERY:
+                    result = data == null ? null : data.getData();
+                    break;
+                default:
+                    break;
+            }
+        }
         if (filePathCallback != null) {
-            Uri result = data == null || resultCode != Activity.RESULT_OK ? null
-                    : data.getData();
             if (result != null) {
                 filePathCallback.onReceiveValue(result);
             } else {
@@ -123,8 +184,6 @@ public class SMWebChromeClient extends WebChromeClient {
             }
         }
         if (filePathCallbacks != null) {
-            Uri result = data == null || resultCode != Activity.RESULT_OK ? null
-                    : data.getData();
             if (result != null) {
                 filePathCallbacks.onReceiveValue(new Uri[]{result});
             } else {
@@ -134,6 +193,24 @@ public class SMWebChromeClient extends WebChromeClient {
 
         filePathCallback = null;
         filePathCallbacks = null;
+    }
+
+    public void onPermissionResult(int requestCode, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PermissionUtils.REQ_PERMISSIONS_CAMERA_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    takePhoto();
+                } else {
+                    mActivity.shortTip(R.string.str_please_open_camera);
+                }
+                break;
+            case PermissionUtils.REQ_PERMISSIONS_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openGallery();
+                }
+                break;
+            default:
+        }
     }
 
     /**

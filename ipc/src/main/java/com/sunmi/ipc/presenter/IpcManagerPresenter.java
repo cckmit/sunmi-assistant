@@ -17,10 +17,11 @@ import java.util.List;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
-import sunmi.common.model.CashVideoServiceBean;
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.CashServiceInfo;
+import sunmi.common.model.ServiceResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.DateTimeUtils;
 
 /**
@@ -75,12 +76,12 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     public void getStorageList(String deviceSn, final IpcManageBean item) {
         List<String> snList = new ArrayList<>();
         snList.add(deviceSn);
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceResp>() {
             @Override
-            public void onSuccess(int code, String msg, ServiceListResp data) {
+            public void onSuccess(int code, String msg, ServiceResp data) {
                 if (isViewAttached()) {
-                    if (data.getDeviceList().size() > 0) {
-                        mView.getStorageSuccess(getStorage(item, data.getDeviceList().get(0), BaseApplication.getContext()));
+                    if (data.getList().size() > 0) {
+                        mView.getStorageSuccess(getStorage(item, data.getList().get(0), BaseApplication.getContext()));
                     } else {
                         mView.getStorageSuccess(getStorage(item, null, BaseApplication.getContext()));
                         mView.shortTip(R.string.tip_cloud_storage_error);
@@ -89,7 +90,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             }
 
             @Override
-            public void onFail(int code, String msg, ServiceListResp data) {
+            public void onFail(int code, String msg, ServiceResp data) {
                 if (isViewAttached()) {
                     mView.getStorageSuccess(getStorage(item, null, BaseApplication.getContext()));
                     mView.shortTip(R.string.tip_cloud_storage_error);
@@ -101,12 +102,12 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     @Override
     public void getCashVideoService(final int deviceId) {
         IpcCloudApi.getInstance().getAuditVideoServiceList(null,
-                new RetrofitCallback<ServiceListResp>() {
+                new RetrofitCallback<ServiceResp>() {
 
                     @Override
-                    public void onSuccess(int code, String msg, ServiceListResp data) {
-                        List<ServiceListResp.DeviceListBean> list = data.getDeviceList();
-                        ArrayList<CashVideoServiceBean> devices = new ArrayList<>();
+                    public void onSuccess(int code, String msg, ServiceResp data) {
+                        List<ServiceResp.Info> list = data.getList();
+                        ArrayList<CashServiceInfo> devices = new ArrayList<>();
                         if (list == null || list.isEmpty()) {
                             if (isViewAttached()) {
                                 mView.getCashVideoServiceSuccess(devices, false);
@@ -114,19 +115,14 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                             return;
                         }
                         boolean hasCashVideoService = false;
-                        for (ServiceListResp.DeviceListBean device : list) {
+                        for (ServiceResp.Info device : list) {
                             if (device.getStatus() == STATE_CASH_VIDEO_SERVICE_ON) {
                                 hasCashVideoService = true;
                             }
                             if (device.getStatus() == STATE_CASH_VIDEO_SERVICE_ON
                                     && device.getDeviceId() == deviceId) {
-                                CashVideoServiceBean info = new CashVideoServiceBean();
-                                info.setDeviceId(deviceId);
-                                info.setDeviceSn(device.getDeviceSn());
-                                info.setDeviceName(device.getDeviceName());
-                                info.setImgUrl(device.getImgUrl());
-                                devices.add(info);
-                                break;
+                                getCashPreventService(device.getDeviceSn());
+                                return;
                             }
                         }
                         if (isViewAttached()) {
@@ -135,7 +131,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                     }
 
                     @Override
-                    public void onFail(int code, String msg, ServiceListResp data) {
+                    public void onFail(int code, String msg, ServiceResp data) {
                         if (isViewAttached()) {
                             mView.shortTip(R.string.toast_network_error);
                             mView.hideLoadingDialog();
@@ -144,7 +140,43 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                 });
     }
 
-    private IpcManageBean getStorage(IpcManageBean item, ServiceListResp.DeviceListBean data, Context context) {
+    public void getCashPreventService(String deviceSn) {
+        List<String> snList = new ArrayList<>();
+        snList.add(deviceSn);
+        IpcCloudApi.getInstance().getAuditSecurityPolicyList(snList, new RetrofitCallback<ServiceResp>() {
+            @Override
+            public void onSuccess(int code, String msg, ServiceResp data) {
+                List<ServiceResp.Info> beans = data.getList();
+                ArrayList<CashServiceInfo> cashServiceInfos = new ArrayList<>();
+                if (beans.size() > 0) {
+                    for (ServiceResp.Info bean : beans) {
+                        CashServiceInfo info = new CashServiceInfo();
+                        info.setDeviceId(bean.getDeviceId());
+                        info.setDeviceSn(bean.getDeviceSn());
+                        info.setDeviceName(bean.getDeviceName());
+                        info.setImgUrl(bean.getImgUrl());
+                        info.setHasCashLossPrevention(bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED
+                                && ConfigManager.get().getCashSecurityEnable());
+                        cashServiceInfos.add(info);
+                    }
+                }
+                if (isViewAttached()) {
+                    mView.getCashVideoServiceSuccess(cashServiceInfos, true);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, ServiceResp data) {
+                if (isViewAttached()) {
+                    mView.shortTip(R.string.toast_network_error);
+                    mView.hideLoadingDialog();
+                }
+            }
+        });
+
+    }
+
+    private IpcManageBean getStorage(IpcManageBean item, ServiceResp.Info data, Context context) {
         if (data != null) {
             item.setEnabled(true);
             item.setStatus(data.getStatus());

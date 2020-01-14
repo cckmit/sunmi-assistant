@@ -32,7 +32,7 @@ import java.util.List;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.ServiceResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.AppApi;
 import sunmi.common.router.SunmiServiceApi;
@@ -45,6 +45,7 @@ import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -148,7 +149,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             } else {
                 if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
                     Router.withApi(SunmiServiceApi.class)
-                            .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
+                            .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams());
                 } else {
                     Router.withApi(AppApi.class).goToMain(context);
                 }
@@ -160,7 +161,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     void finishClick() {
         if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
             Router.withApi(SunmiServiceApi.class)
-                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, null);
+                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams());
         } else {
             Router.withApi(AppApi.class).goToMain(context, this::finish);
         }
@@ -178,7 +179,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Click(resName = "btn_cloud")
     void cloudClick() {
-        Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
+        Router.withApi(SunmiServiceApi.class)
+                .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, WebViewParamsUtils.getCloudStorageParams(snList, ""));
     }
 
     @Override
@@ -264,12 +266,12 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
 
     protected void initSs() {
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceListResp>() {
+        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceResp>() {
             @Override
-            public void onSuccess(int code, String msg, ServiceListResp data) {
-                List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
+            public void onSuccess(int code, String msg, ServiceResp data) {
+                List<ServiceResp.Info> beans = data.getList();
                 snList.clear();
-                for (ServiceListResp.DeviceListBean bean : beans) {
+                for (ServiceResp.Info bean : beans) {
                     if (bean.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED) {
                         snList.add(bean.getDeviceSn());
                     }
@@ -285,7 +287,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             }
 
             @Override
-            public void onFail(int code, String msg, ServiceListResp data) {
+            public void onFail(int code, String msg, ServiceResp data) {
                 btnComplete.setVisibility(View.VISIBLE);
             }
         });

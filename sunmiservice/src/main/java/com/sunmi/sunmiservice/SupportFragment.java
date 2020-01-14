@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.sunmi.contract.SupportContract;
+import com.sunmi.presenter.SupportPresenter;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.tencent.mm.opensdk.constants.Build;
 import com.tencent.mm.opensdk.modelbiz.WXLaunchMiniProgram;
@@ -17,7 +20,6 @@ import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.xiaojinzi.component.impl.Router;
-import com.xiaojinzi.component.impl.service.ServiceManager;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -29,55 +31,52 @@ import org.litepal.crud.DataSupport;
 import java.util.ArrayList;
 import java.util.List;
 
-import sunmi.common.base.BaseFragment;
+import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.model.CashVideoServiceBean;
-import sunmi.common.model.ServiceListResp;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.router.IpcApi;
-import sunmi.common.router.IpcCloudApiAnno;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.TitleBarView;
 
 @EFragment(resName = "fragment_support")
-public class SupportFragment extends BaseFragment implements View.OnClickListener {
+public class SupportFragment extends BaseMvpFragment<SupportPresenter> implements SupportContract.View {
+
+    private static final int FAST_CLICK_INTERVAL = 500;
 
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
+    @ViewById(resName = "layoutContent")
+    View layoutContent;
+    @ViewById(resName = "layoutNetworkError")
+    View layoutNetworkError;
+
     @ViewById(resName = "tv_cloud_storage")
     TextView tvCloudStorage;
     @ViewById(resName = "iv_tip_free")
     ImageView ivTipFree;
     @ViewById(resName = "tv_cash_video")
     TextView tvCashVideo;
+    @ViewById(resName = "tv_cash")
+    TextView tvCash;
+    @ViewById(resName = "tv_cash_prevent")
+    TextView tvCashPrevent;
+    @ViewById(resName = "ll_cash_prevent")
+    LinearLayout llCashPrevent;
+    @ViewById(resName = "ll_cash_video")
+    LinearLayout llCashVideo;
 
+    /**
+     * 第三方app和微信通信的openApi接口
+     */
+    private IWXAPI api;
 
-    private IWXAPI api;// 第三方app和微信通信的openApi接口
-    private ArrayList<CashVideoServiceBean> cashVideoServiceBeans = new ArrayList<>();
-    private IpcCloudApiAnno ipcCloudApi;
-    private int cloudStatus;
-    private boolean loadFail = false;
+    private ArrayList<CashServiceInfo> cashServiceInfoList = new ArrayList<>();
+    private boolean hasCloudService = false;
     private ArrayList<String> snList = new ArrayList<>();
-
-    private RetrofitCallback<ServiceListResp> callback = new RetrofitCallback<ServiceListResp>() {
-        @Override
-        public void onSuccess(int code, String msg, ServiceListResp data) {
-            cloudStatus = data.getDeviceList().get(0).getStatus();
-            if (cloudStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
-                Router.withApi(IpcApi.class).goToCashVideoOverview(mActivity, cashVideoServiceBeans, false);
-            } else {
-                CashVideoNonCloudActivity_.intent(mActivity).snList(snList).start();
-            }
-        }
-
-        @Override
-        public void onFail(int code, String msg, ServiceListResp data) {
-            shortTip(R.string.toast_network_Exception);
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,16 +84,30 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
         regToWx();
     }
 
+    private void regToWx() {
+        // 通过WXAPIFactory工厂，获取IWXAPI的实例
+        api = WXAPIFactory.createWXAPI(mActivity, SunmiServiceConfig.WECHAT_APP_ID, true);
+        // 将应用的appId注册到微信
+        api.registerApp(SunmiServiceConfig.WECHAT_APP_ID);
+    }
+
     @AfterViews
     void init() {
-        titleBar.getRightTextView().setOnClickListener(this);
-        ipcCloudApi = ServiceManager.get(IpcCloudApiAnno.class);
-        changeCashVideoCard();
-        changeCloudCard();
+        mPresenter = new SupportPresenter();
+        mPresenter.attachView(this);
+        showLoadingDialog();
+        initTitleBar();
+        initCloudCard();
+        initCashPreventCardVisibility(false);
+        mPresenter.load();
+    }
+
+    private void initTitleBar() {
+        titleBar.getRightTextView().setOnClickListener(v -> ServiceManageActivity_.intent(mActivity).start());
     }
 
     @UiThread
-    protected void changeCloudCard() {
+    protected void initCloudCard() {
         ShopBundledCloudInfo info = DataSupport.where("shopId=?",
                 String.valueOf(SpUtils.getShopId())).findFirst(ShopBundledCloudInfo.class);
         if (info != null && info.getSnSet().size() > 0) {
@@ -107,55 +120,101 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
-    public void onClick(View v) {
-        ServiceManageActivity_.intent(mActivity).start();
+    public void loadSuccess(List<CashServiceInfo> infoList) {
+        hideLoadingDialog();
+        layoutContent.setVisibility(View.VISIBLE);
+        layoutNetworkError.setVisibility(View.GONE);
+        cashServiceInfoList.clear();
+        cashServiceInfoList.addAll(infoList);
+        boolean hasCashLossPrevention = false;
+        if (cashServiceInfoList.isEmpty()) {
+            tvCashVideo.setText(R.string.str_learn_more);
+        } else {
+            // 已经开通收银视频
+            tvCashVideo.setText(R.string.str_setting_detail);
+            // 确认是否有设备开通了收银防损，并更新卡片
+            for (CashServiceInfo info : cashServiceInfoList) {
+                if (info.isHasCloudStorage()) {
+                    hasCloudService = true;
+                }
+                if (info.isHasCashLossPrevention()) {
+                    hasCashLossPrevention = true;
+                }
+                snList.add(info.getDeviceSn());
+            }
+        }
+        initCashPreventCardVisibility(hasCashLossPrevention);
+    }
+
+    @Override
+    public void loadFailed() {
+        hideLoadingDialog();
+        layoutContent.setVisibility(View.GONE);
+        layoutNetworkError.setVisibility(View.VISIBLE);
+    }
+
+    @Click(resName = "btn_refresh")
+    public void refresh() {
+        showDarkLoading();
+        cashServiceInfoList.clear();
+        mPresenter.load();
+    }
+
+    @Click(resName = "ll_cash_prevent")
+    void cashPreventClick() {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
+            return;
+        }
+        if (hasCloudService) {
+            // 已经开通云存储服务,进入收银总揽页
+            Router.withApi(IpcApi.class)
+                    .goToCashVideoOverview(mActivity, cashServiceInfoList, false, true);
+        } else {
+            // 有设备开通收银反损，但是没有开通云存储，进入开通页
+            CashVideoNonCloudActivity_.intent(mActivity).snList(snList).start();
+        }
     }
 
     @Click(resName = "ll_cash_video")
-    void cashVidoClick() {
-        if (netWorkError() || isLoadFail() || isFastClick(500)) {
+    void cashVideoClick() {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
-        int size = cashVideoServiceBeans.size();
-        if (size == 0) {
-            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO).start();
+        if (cashServiceInfoList.isEmpty()) {
+            // 没有设备开通收银视频，进入开通页
+            WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO)
+                    .params(WebViewParamsUtils.getCashVideoParams()).start();
+        } else if (hasCloudService) {
+            // 有设备开通收银视频，并已经开通云存储服务，进入收银视频总览页
+            Router.withApi(IpcApi.class)
+                    .goToCashVideoOverview(mActivity, cashServiceInfoList, false, false);
         } else {
-            if (ipcCloudApi != null) {
-                ipcCloudApi.getStorageList(snList, callback);
-            }
+            // 有设备开通收银视频，但是没有开通云存储，进入开通页
+            CashVideoNonCloudActivity_.intent(mActivity).snList(snList).start();
         }
     }
 
     @Click(resName = "ll_cloud_storage")
     void cloudStorageClick() {
-        if (netWorkError() || isFastClick(500)) {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
-        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CLOUD_STORAGE)
+                .params(WebViewParamsUtils.getCloudStorageParams(new ArrayList<>(), "")).start();
     }
 
     @Click(resName = "ll_after_sales")
     void afterSalesClick() {
-        if (isFastClick(500)) {
+        if (isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
         launchMiniProgram(SunmiServiceConfig.WECHAT_USER_NAME, SunmiServiceConfig.WECHAT_PATH,
                 SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
-    @Click(resName = "ll_sunmi_store")
-    void sunmiStoreClick() {
-        if (netWorkError() || isFastClick(500)) {
-            return;
-        }
-        WebViewSunmiMallActivity_.intent(mActivity)
-                .mUrl(SunmiServiceConfig.SUNMI_MALL_HOST + "?channel=2&subchannel=4")
-                .start();
-    }
-
     @Click(resName = "tv_weBank")
     void weBankClick() {
-        if (netWorkError() || isFastClick(500)) {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
         WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
@@ -163,7 +222,7 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
 
     @Click(resName = "tv_recruit")
     void recruitClick() {
-        if (netWorkError() || isFastClick(500)) {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
         launchMiniProgram(SunmiServiceConfig.WECHAT_USER_NAME_QINGTUAN,
@@ -171,87 +230,61 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
                 SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
-    private boolean netWorkError() {
-        if (!NetworkUtils.isNetworkAvailable(mActivity)) {
+    private String getParams() {
+        String param = "{\"param\":{\"name\":\"" + SpUtils.getUsername() + "\",\"mobile\":\"" + SpUtils.getMobile() + "\"}}";
+        return new String(Base64.encode(param.getBytes(), Base64.NO_WRAP));
+    }
+
+    private boolean isNetworkError() {
+        if (!NetworkUtils.isNetworkAvailable(getContext())) {
             shortTip(R.string.toast_network_error);
             return true;
         }
         return false;
     }
 
-    private boolean isLoadFail() {
-        if (loadFail) {
-            shortTip(R.string.toast_network_Exception);
-        }
-        return loadFail;
-    }
-
-
-    private void changeCashVideoCard() {
-        cashVideoServiceBeans.clear();
-        if (ipcCloudApi != null) {
-            ipcCloudApi.getAuditVideoServiceList(null, new RetrofitCallback<ServiceListResp>() {
-                @Override
-                public void onSuccess(int code, String msg, ServiceListResp data) {
-                    loadFail = false;
-                    List<ServiceListResp.DeviceListBean> beans = data.getDeviceList();
-                    if (beans.size() > 0) {
-                        for (ServiceListResp.DeviceListBean bean : beans) {
-                            if (bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                                CashVideoServiceBean info = new CashVideoServiceBean();
-                                info.setDeviceId(bean.getDeviceId());
-                                info.setDeviceSn(bean.getDeviceSn());
-                                snList.add(bean.getDeviceSn());
-                                info.setDeviceName(bean.getDeviceName());
-                                info.setImgUrl(bean.getImgUrl());
-                                cashVideoServiceBeans.add(info);
-                            }
-                        }
-                    }
-                    if (cashVideoServiceBeans.size() > 0) {
-                        tvCashVideo.setText(R.string.str_setting_detail);
-                    } else {
-                        tvCashVideo.setText(R.string.str_learn_more);
-                    }
-                }
-
-                @Override
-                public void onFail(int code, String msg, ServiceListResp data) {
-                    loadFail = true;
-                    changeCashVideoCard();
-                }
-            });
-        }
-    }
-
     @Override
     public int[] getStickNotificationId() {
         return new int[]{
-                CommonNotifications.activeCloudChange, CommonNotifications.cashVideoSubscribe,
-                CommonNotifications.shopSwitched, CommonNotifications.cloudStorageChange
+                CommonNotifications.activeCloudChange,
+                CommonNotifications.cashVideoSubscribe,
+                CommonNotifications.shopSwitched,
+                CommonNotifications.cashPreventSubscribe,
+                CommonNotifications.cloudStorageChange
         };
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.activeCloudChange) {
-            changeCloudCard();
-        } else if (id == CommonNotifications.cashVideoSubscribe || id == CommonNotifications.shopSwitched) {
-            changeCashVideoCard();
+            initCloudCard();
+        } else if (id == CommonNotifications.cashVideoSubscribe || id == CommonNotifications.shopSwitched
+                || id == CommonNotifications.cashPreventSubscribe) {
+            showDarkLoading();
+            cashServiceInfoList.clear();
+            mPresenter.load();
         } else if (id == CommonNotifications.cloudStorageChange) {
-            cloudStatus = CommonConstants.SERVICE_ALREADY_OPENED;
+            hasCloudService = true;
         }
     }
 
-    private void regToWx() {
-        // 通过WXAPIFactory工厂，获取IWXAPI的实例
-        api = WXAPIFactory.createWXAPI(mActivity, SunmiServiceConfig.WECHAT_APP_ID, true);
-        // 将应用的appId注册到微信
-        api.registerApp(SunmiServiceConfig.WECHAT_APP_ID);
+    private void initCashPreventCardVisibility(boolean hasCashLossPrevention) {
+        if (hasCashLossPrevention) {
+            tvCash.setVisibility(View.GONE);
+            llCashVideo.setVisibility(View.GONE);
+            tvCashPrevent.setVisibility(View.VISIBLE);
+            llCashPrevent.setVisibility(View.VISIBLE);
+        } else {
+            tvCash.setVisibility(View.VISIBLE);
+            llCashVideo.setVisibility(View.VISIBLE);
+            tvCashPrevent.setVisibility(View.GONE);
+            llCashPrevent.setVisibility(View.GONE);
+        }
     }
 
     /**
      * app主动发送消息给微信，发送完成之后会切回到第三方app界面
+     * FIXME: 没有地方调用该方法，是否应该删除
      */
     private void sendWXReq(String text, String imgUrl) {
         //初始化一个 WXTextObject 对象，填写分享的文本内容
@@ -277,6 +310,7 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
 
     /**
      * 微信向第三方app请求数据，第三方app回应数据之后会切回到微信界面
+     * FIXME: 没有地方调用该方法，是否应该删除
      */
     private void sendWXResp(String text, Bundle bundle) {
         // 初始化一个 WXTextObject 对象
@@ -298,7 +332,9 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
     }
 
     private void launchMiniProgram(String userName, String path, int miniProgramType) {
-        if (api == null) return;
+        if (api == null) {
+            return;
+        }
         if (!api.isWXAppInstalled()) {
             shortTip(R.string.tip_wechat_not_installed);
             return;
@@ -317,11 +353,5 @@ public class SupportFragment extends BaseFragment implements View.OnClickListene
         miniProgramReq.miniprogramType = miniProgramTypeInt;// 可选打开 开发版，体验版和正式版
         api.sendReq(miniProgramReq);
     }
-
-    private String getParams() {
-        String param = "{\"param\":{\"name\":\"" + SpUtils.getUsername() + "\",\"mobile\":\"" + SpUtils.getMobile() + "\"}}";
-        return new String(Base64.encode(param.getBytes(), Base64.NO_WRAP));
-    }
-
 
 }

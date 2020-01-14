@@ -56,11 +56,16 @@ public class CommonConstants {
     public static final int SERVICE_INACTIVATED = 1;
     public static final int SERVICE_ACTIVATED = 2;
 
+    //配置IPC的不同来源
     public static final int CONFIG_IPC_FROM_COMMON = 1;
     public static final int CONFIG_IPC_FROM_CASH_VIDEO = 2;
 
     public static final int IMPORT_ORDER_FROM_COMMON = 1;
     public static final int IMPORT_ORDER_FROM_CASH_VIDEO = 2;
+
+    //H5 返回的结果
+    public static final int RESULT_OK = 1;
+    public static final int RESULT_FAIL = 0;
 
     //H5后序地址
     public static final String H5_CLOUD_STORAGE = CommonConfig.SERVICE_H5_URL + "cloudStorage";
@@ -68,4 +73,5 @@ public class CommonConstants {
     public static final String H5_ORDER_MANAGE = CommonConfig.SERVICE_H5_URL + "orderManagement/orderList";
     public static final String H5_CLOUD_RENEW = CommonConfig.SERVICE_H5_URL + "cloudStorage/subscribeService";
     public static final String H5_AGREEMENT = CommonConfig.SERVICE_H5_URL + "privacyManagement";
+    public static final String H5_CASH_PREVENT_LOSS = CommonConfig.SERVICE_H5_URL + "cashPreventLoss";
 }

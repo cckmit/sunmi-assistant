@@ -34,8 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_selected_company"
-        app:type="checked"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:type="checked" />
 
     <TextView
         android:id="@+id/tv_select_type"
@@ -64,13 +64,22 @@
 
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
-    <Button
-        android:id="@+id/btn_enter_main"
-        style="@style/BtnBigOrange"
+    <LinearLayout
+        android:id="@+id/llBottomBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:text="@string/company_shop_enter_main" />
+        android:background="@drawable/bg_bottom_btn_top_divider"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_20">
+
+        <Button
+            android:id="@+id/btn_enter_main"
+            style="@style/BtnBigOrange"
+            android:text="@string/company_shop_enter_main" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_no_data"
