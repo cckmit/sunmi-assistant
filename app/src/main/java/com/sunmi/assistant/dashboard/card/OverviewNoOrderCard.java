@@ -47,7 +47,7 @@ public class OverviewNoOrderCard extends BaseRefreshCard<OverviewNoOrderCard.Mod
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_no_order;
+        return R.layout.dashboard_item_overview_no_order;
     }
 
     @Override

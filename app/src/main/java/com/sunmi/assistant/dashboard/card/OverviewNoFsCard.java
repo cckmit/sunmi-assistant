@@ -48,7 +48,7 @@ public class OverviewNoFsCard extends BaseRefreshCard<OverviewNoFsCard.Model, Ob
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_no_fs;
+        return R.layout.dashboard_item_no_fs;
     }
 
     @Override

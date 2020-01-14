@@ -94,7 +94,7 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_distribution;
+        return R.layout.dashboard_item_overview_distribution;
     }
 
     @Override

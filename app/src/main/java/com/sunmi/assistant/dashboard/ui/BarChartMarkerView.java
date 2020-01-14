@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.ui;
 
 import android.content.Context;
+import android.support.annotation.StringRes;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,10 +11,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
-
-import java.util.Locale;
 
 /**
  * @author yinhui
@@ -30,46 +27,45 @@ public class BarChartMarkerView extends MarkerView {
     private MPPointF mRealOffset;
     private float mGap;
 
-    private String label;
-    private int period;
-    private int type;
+    private IMarkerFormatter formatter;
 
     /**
      * Constructor. Sets up the MarkerView with a custom layout resource.
      *
      * @param context context
      */
-    public BarChartMarkerView(Context context) {
+    public BarChartMarkerView(Context context, IMarkerFormatter formatter) {
         super(context, R.layout.dashboard_chart_bar_marker);
+        this.formatter = formatter;
+
         mTvTitle = findViewById(R.id.tv_dashboard_marker_title);
         mTvValue = findViewById(R.id.tv_dashboard_marker_value);
         mTvLabel = findViewById(R.id.tv_dashboard_marker_label);
         mGap = getResources().getDimension(R.dimen.dp_4);
-        label = context.getString(R.string.dashboard_card_marker_time);
     }
 
-    public void setType(int period, int type) {
-        this.period = period;
-        this.type = type;
-        if (type == Constants.DATA_TYPE_RATE) {
-            mTvTitle.setText(R.string.dashboard_card_tab_rate);
-        } else if (type == Constants.DATA_TYPE_VOLUME) {
-            mTvTitle.setText(R.string.dashboard_card_tab_volume);
-        } else {
-            mTvTitle.setText(R.string.dashboard_card_tab_customer);
-        }
+    public void setTitle(@StringRes int titleId) {
+        this.mTvTitle.setText(titleId);
     }
+
+//    public void setType(int period, int type) {
+//        this.period = period;
+//        this.type = type;
+//        if (type == Constants.DATA_TYPE_RATE) {
+//            mTvTitle.setText(R.string.dashboard_card_tab_rate);
+//        } else if (type == Constants.DATA_TYPE_VOLUME) {
+//            mTvTitle.setText(R.string.dashboard_card_tab_volume);
+//        } else {
+//            mTvTitle.setText(R.string.dashboard_card_tab_customer);
+//        }
+//    }
 
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
         if (e instanceof ChartEntry) {
-            if (type == Constants.DATA_TYPE_RATE) {
-                mTvValue.setText(String.format(Locale.getDefault(), "%.2f%%", e.getY() * 100));
-            } else {
-                mTvValue.setText(String.valueOf((int) e.getY()));
-            }
-            mTvLabel.setText(String.format("%s %s", label,
-                    Utils.convertXToMarkerName(getContext(), period, ((ChartEntry) e).getTime())));
+            ChartEntry entry = (ChartEntry) e;
+            mTvValue.setText(formatter.valueFormat(entry.getY()));
+            mTvLabel.setText(formatter.timeFormat(entry.getTime()));
         }
         super.refreshContent(e, highlight);
     }

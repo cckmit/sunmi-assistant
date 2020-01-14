@@ -28,6 +28,7 @@ import com.sunmi.assistant.dashboard.ui.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.LineYAxisLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.MarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.RateYAxisLabelsRenderer;
 import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
 import com.sunmi.assistant.dashboard.ui.VolumeYAxisLabelsRenderer;
@@ -59,10 +60,14 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
 
     private XAxisLabelsRenderer lineXAxisRenderer;
     private RateYAxisLabelsRenderer lineYAxisRenderer;
+    private LineChartMarkerView mLineChartMarker;
+    private MarkerFormatter lineMarkerFormatter;
+
     private XAxisLabelsRenderer barXAxisRenderer;
     private VolumeYAxisLabelsRenderer barYAxisRenderer;
-    private LineChartMarkerView mLineChartMarker;
     private BarChartMarkerView mBarChartMarker;
+    private MarkerFormatter barMarkerFormatter;
+
     private float mDashLength;
     private float mDashSpaceLength;
 
@@ -85,7 +90,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_trend;
+        return R.layout.dashboard_item_overview_trend;
     }
 
     private void setupClick(BaseViewHolder<Model> holder) {
@@ -150,8 +155,11 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         lineYAxis.setMinWidth(36f);
 
         // 设置Marker
-        mLineChartMarker = new LineChartMarkerView(context);
+        lineMarkerFormatter = new MarkerFormatter(context);
+        lineMarkerFormatter.setValueType(MarkerFormatter.VALUE_TYPE_RATE);
+        mLineChartMarker = new LineChartMarkerView(context, lineMarkerFormatter);
         mLineChartMarker.setChartView(chart);
+        mLineChartMarker.setTitle(R.string.dashboard_card_tab_rate);
         chart.setMarker(mLineChartMarker);
     }
 
@@ -201,7 +209,8 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         chart.setRenderer(renderer);
         chart.setFitBars(true);
         chart.setDrawBarShadow(false);
-        mBarChartMarker = new BarChartMarkerView(context);
+        barMarkerFormatter = new MarkerFormatter(context);
+        mBarChartMarker = new BarChartMarkerView(context, barMarkerFormatter);
         mBarChartMarker.setChartView(chart);
         chart.setMarker(mBarChartMarker);
     }
@@ -299,7 +308,12 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         line.getXAxis().setAxisMaximum(xAxisRange.second);
 
         int color = ContextCompat.getColor(line.getContext(), R.color.common_orange);
-        mLineChartMarker.setType(model.period, model.type);
+        if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
+            lineMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_HOUR);
+        } else {
+            lineMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE);
+        }
+
         LineDataSet set;
         LineData data = line.getData();
         List<ChartEntry> dataSet = model.dataSets.get(model.type);
@@ -338,7 +352,12 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
         bar.getXAxis().setAxisMaximum(xAxisRange.second);
         bar.getAxisLeft().setAxisMaximum(maxAxis);
 
-        mBarChartMarker.setType(model.period, model.type);
+        if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
+            barMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_HOUR);
+        } else {
+            barMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE);
+        }
+
         float barWidthRatio = calcBarWidth(model.period);
         int color = model.type == Constants.DATA_TYPE_VOLUME ?
                 ContextCompat.getColor(bar.getContext(), R.color.color_FFD0B3) :

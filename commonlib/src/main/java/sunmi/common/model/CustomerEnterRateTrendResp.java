@@ -12,17 +12,13 @@ import java.util.List;
 public class CustomerEnterRateTrendResp {
 
     @SerializedName("count_list")
-    private List<CountListBean> countList;
+    private List<Item> countList;
 
-    public List<CountListBean> getCountList() {
+    public List<Item> getCountList() {
         return countList;
     }
 
-    public void setCountList(List<CountListBean> countList) {
-        this.countList = countList;
-    }
-
-    public static class CountListBean {
+    public static class Item {
         /**
          * time : 2019-09-11 12:00
          * passenger_count : 12
@@ -40,24 +36,12 @@ public class CustomerEnterRateTrendResp {
             return time;
         }
 
-        public void setTime(String time) {
-            this.time = time;
-        }
-
         public int getPassengerCount() {
             return passengerCount;
         }
 
-        public void setPassengerCount(int passengerCount) {
-            this.passengerCount = passengerCount;
-        }
-
         public int getPassPassengerCount() {
             return passPassengerCount;
-        }
-
-        public void setPassPassengerCount(int passPassengerCount) {
-            this.passPassengerCount = passPassengerCount;
         }
     }
 }

@@ -58,7 +58,7 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_overview_data;
+        return R.layout.dashboard_item_overview_data;
     }
 
     @Override

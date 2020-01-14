@@ -67,7 +67,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_order_import;
+        return R.layout.dashboard_item_overview_order_import;
     }
 
     @Override

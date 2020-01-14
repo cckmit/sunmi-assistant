@@ -22,6 +22,7 @@ import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.CustomerLineMarkerView;
 import com.sunmi.assistant.dashboard.ui.LineChartMarkerView;
+import com.sunmi.assistant.dashboard.ui.MarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.VolumeYAxisLabelsRenderer;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
@@ -64,6 +65,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     private VolumeYAxisLabelsRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private CustomerLineMarkerView mLineComplexMarker;
+    private MarkerFormatter mMarkerFormatter;
     private float mDashLength;
     private float mDashSpaceLength;
 
@@ -86,7 +88,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_customer_trend;
+        return R.layout.dashboard_item_customer_trend;
     }
 
     @NonNull
@@ -156,7 +158,8 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         lineYAxis.setMinWidth(36f);
 
         // 设置Line图
-        mLineChartMarker = new LineChartMarkerView(context);
+        mMarkerFormatter = new MarkerFormatter(context);
+        mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
         mLineComplexMarker = new CustomerLineMarkerView(context);
         mLineChartMarker.setChartView(lineChart);
         mLineComplexMarker.setChartView(lineChart);
@@ -356,12 +359,16 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
 
         // Get color of line
         int color;
+        int markerTitle;
         if (model.type == Constants.DATA_TYPE_NEW) {
             color = COLOR_NEW;
+            markerTitle = R.string.dashboard_card_tab_new;
         } else if (model.type == Constants.DATA_TYPE_OLD) {
             color = COLOR_OLD;
+            markerTitle = R.string.dashboard_card_tab_old;
         } else {
             color = COLOR_ALL;
+            markerTitle = R.string.dashboard_card_tab_all;
         }
 
         // Use correct chart marker & update it.
@@ -371,8 +378,13 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             mLineComplexMarker.setPeriod(model.period);
         } else {
             line.setMarker(mLineChartMarker);
-            mLineChartMarker.setType(model.period, model.type);
+            mLineChartMarker.setTitle(markerTitle);
             mLineChartMarker.setPointColor(color);
+            if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
+                mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_HOUR_SPAN);
+            } else {
+                mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE);
+            }
         }
 
         // Refresh data set

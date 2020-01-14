@@ -78,7 +78,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_customer_detail;
+        return R.layout.dashboard_item_profile_analysis;
     }
 
     @Override
@@ -250,7 +250,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
         private String mFrequencyMonth;
 
         private DetailListAdapter(Context context) {
-            super(context, R.layout.dashboard_recycle_item_customer_detail_item);
+            super(context, R.layout.dashboard_item_profile_analysis_item);
             mNum10Thousands = context.getString(R.string.str_num_10_thousands);
             mFrequencyDay = context.getString(R.string.dashboard_card_customer_frequency_data_day);
             mFrequencyWeek = context.getString(R.string.dashboard_card_customer_frequency_data_week);

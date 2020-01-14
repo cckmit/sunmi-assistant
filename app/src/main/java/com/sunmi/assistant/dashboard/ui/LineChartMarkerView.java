@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.support.annotation.StringRes;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,10 +15,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
-
-import java.util.Locale;
 
 /**
  * @author yinhui
@@ -34,56 +31,55 @@ public class LineChartMarkerView extends MarkerView {
     private MPPointF mOffset;
     private MPPointF mRealOffset;
 
-    private String label;
-    private int period;
-    private int type;
+    private IMarkerFormatter formatter;
 
     /**
      * Constructor. Sets up the MarkerView with a custom layout resource.
      */
-    public LineChartMarkerView(Context context) {
+    public LineChartMarkerView(Context context, IMarkerFormatter formatter) {
         super(context, R.layout.dashboard_chart_line_marker);
+        this.formatter = formatter;
+
         mTvTitle = findViewById(R.id.tv_dashboard_marker_title);
         mTvValue = findViewById(R.id.tv_dashboard_marker_value);
         mTvLabel = findViewById(R.id.tv_dashboard_marker_label);
         mIvPoint = findViewById(R.id.iv_dashboard_marker_point);
         mOffsetPoint = mIvPoint.getWidth() / 2;
-        label = context.getString(R.string.dashboard_card_marker_time);
     }
 
-    public void setType(int period, int type) {
-        this.period = period;
-        this.type = type;
-        switch (type) {
-            case Constants.DATA_TYPE_RATE:
-                mTvTitle.setText(R.string.dashboard_card_tab_rate);
-                break;
-            case Constants.DATA_TYPE_VOLUME:
-                mTvTitle.setText(R.string.dashboard_card_tab_volume);
-                break;
-            case Constants.DATA_TYPE_CUSTOMER:
-                mTvTitle.setText(R.string.dashboard_card_tab_customer);
-                break;
-            case Constants.DATA_TYPE_NEW_OLD:
-                mTvTitle.setText(R.string.dashboard_card_tab_new_old);
-                break;
-            case Constants.DATA_TYPE_GENDER:
-                mTvTitle.setText(R.string.dashboard_card_tab_gender);
-                break;
-            case Constants.DATA_TYPE_AGE:
-                mTvTitle.setText(R.string.str_common_age);
-                break;
-            case Constants.DATA_TYPE_ALL:
-                mTvTitle.setText(R.string.dashboard_card_tab_all);
-                break;
-            case Constants.DATA_TYPE_NEW:
-                mTvTitle.setText(R.string.dashboard_card_tab_new);
-                break;
-            case Constants.DATA_TYPE_OLD:
-                mTvTitle.setText(R.string.dashboard_card_tab_old);
-                break;
-            default:
-        }
+    public void setTitle(@StringRes int titleId) {
+        this.mTvTitle.setText(titleId);
+//
+//        switch (type) {
+//            case Constants.DATA_TYPE_RATE:
+//                mTvTitle.setText(R.string.dashboard_card_tab_rate);
+//                break;
+//            case Constants.DATA_TYPE_VOLUME:
+//                mTvTitle.setText(R.string.dashboard_card_tab_volume);
+//                break;
+//            case Constants.DATA_TYPE_CUSTOMER:
+//                mTvTitle.setText(R.string.dashboard_card_tab_customer);
+//                break;
+//            case Constants.DATA_TYPE_NEW_OLD:
+//                mTvTitle.setText(R.string.dashboard_card_tab_new_old);
+//                break;
+//            case Constants.DATA_TYPE_GENDER:
+//                mTvTitle.setText(R.string.dashboard_card_tab_gender);
+//                break;
+//            case Constants.DATA_TYPE_AGE:
+//                mTvTitle.setText(R.string.str_common_age);
+//                break;
+//            case Constants.DATA_TYPE_ALL:
+//                mTvTitle.setText(R.string.dashboard_card_tab_all);
+//                break;
+//            case Constants.DATA_TYPE_NEW:
+//                mTvTitle.setText(R.string.dashboard_card_tab_new);
+//                break;
+//            case Constants.DATA_TYPE_OLD:
+//                mTvTitle.setText(R.string.dashboard_card_tab_old);
+//                break;
+//            default:
+//        }
     }
 
     public void setPointColor(int color) {
@@ -107,13 +103,9 @@ public class LineChartMarkerView extends MarkerView {
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
         if (e instanceof ChartEntry) {
-            if (type == Constants.DATA_TYPE_RATE) {
-                mTvValue.setText(String.format(Locale.getDefault(), "%.2f%%", e.getY() * 100));
-            } else {
-                mTvValue.setText(String.valueOf((int) e.getY()));
-            }
-            mTvLabel.setText(String.format("%s %s", label,
-                    Utils.convertXToMarkerName(getContext(), period, ((ChartEntry) e).getTime())));
+            ChartEntry entry = (ChartEntry) e;
+            mTvValue.setText(formatter.valueFormat(entry.getY()));
+            mTvLabel.setText(formatter.timeFormat(entry.getTime()));
         }
         super.refreshContent(e, highlight);
     }

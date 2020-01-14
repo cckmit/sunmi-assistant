@@ -44,7 +44,7 @@ public class OverviewCustomerVolumeCard extends BaseRefreshCard<OverviewCustomer
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_customer_volume;
+        return R.layout.dashboard_item_overview_customer_volume;
     }
 
     @Override

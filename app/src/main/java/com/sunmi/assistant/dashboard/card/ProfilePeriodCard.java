@@ -43,7 +43,7 @@ public class ProfilePeriodCard extends BaseRefreshCard<ProfilePeriodCard.Model, 
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_period_tab;
+        return R.layout.dashboard_item_period_tab;
     }
 
     @Override
