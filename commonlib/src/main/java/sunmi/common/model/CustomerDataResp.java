@@ -9,7 +9,6 @@ import com.google.gson.annotations.SerializedName;
  */
 public class CustomerDataResp {
 
-
     /**
      * latest_passenger_count : 1213
      * early_passenger_count : 1213
@@ -17,6 +16,12 @@ public class CustomerDataResp {
      * early_pass_passenger_count : 1213
      * latest_uniq_passenger_count : 1213
      * early_uniq_passenger_count : 1213
+     * latest_regular_passenger_count : 1213
+     * early_regular_passenger_count : 1213
+     * latest_stranger_passenger_count : 1213
+     * early_stranger_passenger_count : 1213
+     * latest_member_passenger_count : 1213
+     * early_member_passenger_count : 1213
      */
 
     @SerializedName("latest_passenger_count")
@@ -31,52 +36,64 @@ public class CustomerDataResp {
     private int latestUniqPassengerCount;
     @SerializedName("early_uniq_passenger_count")
     private int earlyUniqPassengerCount;
+    @SerializedName("latest_regular_passenger_count")
+    private int latestRegularPassengerCount;
+    @SerializedName("early_regular_passenger_count")
+    private int earlyRegularPassengerCount;
+    @SerializedName("latest_stranger_passenger_count")
+    private int latestStrangerPassengerCount;
+    @SerializedName("early_stranger_passenger_count")
+    private int earlyStrangerPassengerCount;
+    @SerializedName("latest_member_passenger_count")
+    private int latestMemberPassengerCount;
+    @SerializedName("early_member_passenger_count")
+    private int earlyMemberPassengerCount;
 
     public int getLatestPassengerCount() {
         return latestPassengerCount;
-    }
-
-    public void setLatestPassengerCount(int latestPassengerCount) {
-        this.latestPassengerCount = latestPassengerCount;
     }
 
     public int getEarlyPassengerCount() {
         return earlyPassengerCount;
     }
 
-    public void setEarlyPassengerCount(int earlyPassengerCount) {
-        this.earlyPassengerCount = earlyPassengerCount;
-    }
-
     public int getLatestPassPassengerCount() {
         return latestPassPassengerCount;
-    }
-
-    public void setLatestPassPassengerCount(int latestPassPassengerCount) {
-        this.latestPassPassengerCount = latestPassPassengerCount;
     }
 
     public int getEarlyPassPassengerCount() {
         return earlyPassPassengerCount;
     }
 
-    public void setEarlyPassPassengerCount(int earlyPassPassengerCount) {
-        this.earlyPassPassengerCount = earlyPassPassengerCount;
-    }
-
     public int getLatestUniqPassengerCount() {
         return latestUniqPassengerCount;
-    }
-
-    public void setLatestUniqPassengerCount(int latestUniqPassengerCount) {
-        this.latestUniqPassengerCount = latestUniqPassengerCount;
     }
 
     public int getEarlyUniqPassengerCount() {
         return earlyUniqPassengerCount;
     }
 
-    public void setEarlyUniqPassengerCount(int earlyUniqPassengerCount) {
-        this.earlyUniqPassengerCount = earlyUniqPassengerCount;
+    public int getLatestRegularPassengerCount() {
+        return latestRegularPassengerCount;
+    }
+
+    public int getEarlyRegularPassengerCount() {
+        return earlyRegularPassengerCount;
+    }
+
+    public int getLatestStrangerPassengerCount() {
+        return latestStrangerPassengerCount;
+    }
+
+    public int getEarlyStrangerPassengerCount() {
+        return earlyStrangerPassengerCount;
+    }
+
+    public int getLatestMemberPassengerCount() {
+        return latestMemberPassengerCount;
+    }
+
+    public int getEarlyMemberPassengerCount() {
+        return earlyMemberPassengerCount;
     }
 }
