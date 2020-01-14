@@ -96,11 +96,6 @@
         android:paddingTop="@dimen/dp_20"
         android:paddingBottom="@dimen/dp_20">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_0_5"
-            android:background="@color/c_divider" />
-
         <Button
             android:id="@+id/btn_start"
             style="@style/BtnBigOrange"
