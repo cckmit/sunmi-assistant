@@ -289,14 +289,14 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
                 oldRatio.setText(String.format(Locale.getDefault(), "%.0f%%",
                         (float) item.oldCount * 100 / item.count));
                 if (item.period == Constants.TIME_PERIOD_MONTH) {
-                    frequency.setText(String.format(Locale.getDefault(), mFrequencyMonth,
-                            (float) item.count * 100 / item.uniqueCount));
+                    frequency.setText(String.format(Locale.getDefault(), mFrequencyMonth, item.uniqueCount > 0 ?
+                            (float) item.count * 100 / item.uniqueCount : 0f));
                 } else if (item.period == Constants.TIME_PERIOD_WEEK) {
-                    frequency.setText(String.format(Locale.getDefault(), mFrequencyWeek,
-                            (float) item.count * 100 / item.uniqueCount));
+                    frequency.setText(String.format(Locale.getDefault(), mFrequencyWeek, item.uniqueCount > 0 ?
+                            (float) item.count * 100 / item.uniqueCount : 0f));
                 } else {
-                    frequency.setText(String.format(Locale.getDefault(), mFrequencyDay,
-                            (float) item.count * 100 / item.uniqueCount));
+                    frequency.setText(String.format(Locale.getDefault(), mFrequencyDay, item.uniqueCount > 0 ?
+                            (float) item.count * 100 / item.uniqueCount : 0f));
                 }
             }
         }

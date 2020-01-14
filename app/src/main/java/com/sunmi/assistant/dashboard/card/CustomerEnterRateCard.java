@@ -19,8 +19,9 @@ import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.LineChartMarkerView;
+import com.sunmi.assistant.dashboard.ui.LineYAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.MarkerFormatter;
-import com.sunmi.assistant.dashboard.ui.VolumeYAxisLabelsRenderer;
+import com.sunmi.assistant.dashboard.ui.RateYAxisLabelsRenderer;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
 
@@ -47,14 +48,8 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
 
     private static CustomerEnterRateCard sInstance;
 
-    private static final long MILLIS_PER_HOUR = 3600000;
-    private static final long MILLIS_PER_DAY = 3600000 * 24;
-
-    private static final int MAX_POINT_DAY = 25;
-    private static final int MAX_POINT_WEEK = 8;
-
     private XAxisLabelsRenderer lineXAxisRenderer;
-    private VolumeYAxisLabelsRenderer lineYAxisRenderer;
+    private RateYAxisLabelsRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private MarkerFormatter mMarkerFormatter;
 
@@ -93,26 +88,26 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         mDashLength = CommonHelper.dp2px(context, 4f);
         mDashSpaceLength = CommonHelper.dp2px(context, 2f);
 
-        LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
+        LineChart chart = holder.getView(R.id.view_dashboard_line_chart);
 
         // 设置图表坐标Label格式
-        lineXAxisRenderer = new XAxisLabelsRenderer(lineChart);
-        lineYAxisRenderer = new VolumeYAxisLabelsRenderer(lineChart);
-        lineChart.setXAxisRenderer(lineXAxisRenderer);
-        lineChart.setRendererLeftYAxis(lineYAxisRenderer);
+        lineXAxisRenderer = new XAxisLabelsRenderer(chart);
+        lineYAxisRenderer = new RateYAxisLabelsRenderer(chart);
+        chart.setXAxisRenderer(lineXAxisRenderer);
+        chart.setRendererLeftYAxis(lineYAxisRenderer);
 
         // 设置通用图表
-        lineChart.setTouchEnabled(true);
-        lineChart.setScaleEnabled(false);
-        lineChart.setPinchZoom(false);
-        lineChart.setDoubleTapToZoomEnabled(false);
-        lineChart.getDescription().setEnabled(false);
-        lineChart.setDrawGridBackground(false);
-        lineChart.getLegend().setEnabled(false);
-        lineChart.getAxisRight().setEnabled(false);
+        chart.setTouchEnabled(true);
+        chart.setScaleEnabled(false);
+        chart.setPinchZoom(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.getDescription().setEnabled(false);
+        chart.setDrawGridBackground(false);
+        chart.getLegend().setEnabled(false);
+        chart.getAxisRight().setEnabled(false);
 
         // 设置X轴
-        XAxis lineXAxis = lineChart.getXAxis();
+        XAxis lineXAxis = chart.getXAxis();
         lineXAxis.setDrawAxisLine(true);
         lineXAxis.setDrawGridLines(false);
         lineXAxis.setTextSize(10f);
@@ -121,24 +116,26 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         lineXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
 
         // 设置Y轴
-        YAxis lineYAxis = lineChart.getAxisLeft();
+        YAxis lineYAxis = chart.getAxisLeft();
         lineYAxis.setDrawAxisLine(false);
         lineYAxis.setGranularityEnabled(true);
-        lineYAxis.setGranularity(1f);
+        lineYAxis.setGranularity(0.2f);
         lineYAxis.setTextSize(10f);
         lineYAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         lineYAxis.setAxisMinimum(0f);
+        lineYAxis.setAxisMaximum(1f);
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
+        lineYAxis.setValueFormatter(new LineYAxisLabelFormatter());
         lineYAxis.setMinWidth(36f);
 
         // 设置Line图
         mMarkerFormatter = new MarkerFormatter(context);
         mMarkerFormatter.setValueType(MarkerFormatter.VALUE_TYPE_RATE);
         mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
-        mLineChartMarker.setChartView(lineChart);
+        mLineChartMarker.setChartView(chart);
         mLineChartMarker.setTitle(R.string.dashboard_card_title_customer_enter_rate);
-        lineChart.setMarker(mLineChartMarker);
+        chart.setMarker(mLineChartMarker);
 
         return holder;
     }
@@ -149,7 +146,7 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         if (period == Constants.TIME_PERIOD_YESTERDAY) {
             group = "hour";
         }
-        SunmiStoreApi.getInstance().getCustomerEnterRateTrend(period, group, callback);
+        SunmiStoreApi.getInstance().getCustomerEnterRateTrend(companyId, shopId, period, group, callback);
         return null;
     }
 
@@ -197,6 +194,9 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         int max = 0;
         float lastX = 0;
         for (ChartEntry entry : dataSet) {
+            if (entry.getY() > 1) {
+                entry.setY(1f);
+            }
             if (entry.getX() > lastX) {
                 lastX = entry.getX();
             }
@@ -206,13 +206,10 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         }
 
         int color = ContextCompat.getColor(holder.getContext(), R.color.common_orange);
-
         int maxDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
         lineXAxisRenderer.setPeriod(model.period, maxDay);
         line.getXAxis().setAxisMinimum(xAxisRange.first);
         line.getXAxis().setAxisMaximum(xAxisRange.second);
-        float maxAxis = lineYAxisRenderer.setMaxValue(max);
-        line.getAxisLeft().setAxisMaximum(maxAxis);
 
         // Use correct chart marker & update it.
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
@@ -220,7 +217,6 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         } else {
             mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE);
         }
-        mLineChartMarker.setPointColor(color);
 
         // Refresh data set
         LineDataSet set;
@@ -228,15 +224,22 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         ArrayList<Entry> values = new ArrayList<>(dataSet);
         if (data != null && data.getDataSetCount() > 0) {
             set = (LineDataSet) data.getDataSetByIndex(0);
-            set.setColor(color);
-            set.setCircleColor(color);
-            set.setHighLightColor(color);
             set.setValues(values);
             data.notifyDataChanged();
             line.notifyDataSetChanged();
         } else {
             set = new LineDataSet(values, "data");
-            setupLineData(set, color);
+            set.setDrawValues(false);
+            set.setDrawCircleHole(false);
+            set.setDrawHorizontalHighlightIndicator(false);
+            set.setColor(color);
+            set.setCircleColor(color);
+            set.setHighLightColor(color);
+            set.setLineWidth(2f);
+            set.setCircleRadius(1f);
+            set.setHighlightLineWidth(1f);
+            set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
+            mLineChartMarker.setPointColor(color);
             data = new LineData(set);
             line.setData(data);
         }

@@ -5,6 +5,7 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.card.CustomerEnterRateCard;
 import com.sunmi.assistant.dashboard.card.CustomerNoDataCard;
 import com.sunmi.assistant.dashboard.card.CustomerNoFsCard;
 import com.sunmi.assistant.dashboard.card.CustomerPeriodCard;
@@ -129,7 +130,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
         if (Utils.hasCustomer(source)) {
             // TODO: 增加顶部数据卡片
             mList.add(CustomerTrendCard.get(this, source));
-            // TODO: 增加进店率折线图卡片
+            mList.add(CustomerEnterRateCard.get(this, source));
             // TODO: 增加客群到店频率1~3张卡片
         } else if (Utils.hasFs(source)) {
             mList.add(CustomerWaitDataCard.get(this, source));
