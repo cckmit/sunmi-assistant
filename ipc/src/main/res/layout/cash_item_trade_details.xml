@@ -85,7 +85,7 @@
 
         <TextView
             android:id="@+id/tv_pos_text"
-            android:layout_width="@dimen/dp_64"
+            android:layout_width="@dimen/dp_62"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
@@ -99,7 +99,6 @@
             android:id="@+id/tv_pos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_4"
             android:ellipsize="end"
@@ -114,7 +113,7 @@
 
         <TextView
             android:id="@+id/tv_order_num_text"
-            android:layout_width="@dimen/dp_64"
+            android:layout_width="@dimen/dp_62"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
@@ -128,7 +127,6 @@
             android:id="@+id/tv_order_num"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
             android:textColor="@color/text_main"
@@ -140,7 +138,7 @@
 
         <TextView
             android:id="@+id/tv_amount_text"
-            android:layout_width="@dimen/dp_64"
+            android:layout_width="@dimen/dp_62"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
@@ -156,7 +154,6 @@
             android:id="@+id/tv_amount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_16"
@@ -184,7 +181,8 @@
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/iv_preview_img"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pos" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pos"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
         <android.support.constraint.Group
             android:id="@+id/group_content"

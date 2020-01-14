@@ -226,7 +226,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
      */
     @Background
     protected void initStartAndEndTime() {
-        showLoadingDialog();
+        showDarkLoading();
         if (idList == null) {
             idList = new ArrayList<>();
             for (CashServiceInfo bean : serviceBeans) {
