@@ -448,12 +448,13 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     }
 
     private void updateStatus(Set<String> snSet) {
+        initCashPrent();
         for (CashServiceInfo serviceBean : serviceBeans) {
             if (snSet.contains(serviceBean.getDeviceSn())) {
                 serviceBean.setHasCashLossPrevention(true);
+                behaviorItems.add(new FilterItem(serviceBean.getDeviceId(), serviceBean.getDeviceName()));
             }
         }
-        initCashPrent();
         initStartAndEndTime();
     }
 
