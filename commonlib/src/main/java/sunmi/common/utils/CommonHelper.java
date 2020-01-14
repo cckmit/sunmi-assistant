@@ -435,6 +435,9 @@ public class CommonHelper {
         SpUtils.setCompanyId(-1);
         SpUtils.setCompanyName("");
         SpUtils.setShopId(-1);
+        if (!TextUtils.isEmpty(SpUtils.getMobile())) {
+            SpUtils.setEmail("");
+        }
         SpUtils.setShopName("");
         SpUtils.setRemindUnreadMsg(-1);
         SpUtils.setUnreadMsg(-1);
