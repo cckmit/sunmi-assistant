@@ -403,9 +403,7 @@ public class CommonHelper {
         if (!TextUtils.isEmpty(bean.getUsername())) {
             SpUtils.setUsername(bean.getUsername());
         }
-        if (!TextUtils.isEmpty(bean.getEmail())) {
-            SpUtils.setEmail(bean.getEmail());
-        }
+        SpUtils.setEmail(bean.getEmail());
         BaseApplication.isCheckedToken = true;
         SpUtils.setLoginStatus("Y");
         if (!TextUtils.isEmpty(bean.getOrigin_icon())) {
