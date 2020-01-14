@@ -127,6 +127,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         cashServiceInfoList.clear();
         cashServiceInfoList.addAll(infoList);
         boolean hasCashLossPrevention = false;
+        hasCloudService = false;
         if (cashServiceInfoList.isEmpty()) {
             tvCashVideo.setText(R.string.str_learn_more);
         } else {
