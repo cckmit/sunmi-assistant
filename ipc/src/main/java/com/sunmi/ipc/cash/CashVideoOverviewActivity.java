@@ -239,7 +239,9 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
         }
         startTime = (DateTimeUtils.getDayStart(selectedCalendar).getTimeInMillis()) / 1000;
         endTime = startTime + 3600 * 24;
-        service = Executors.newScheduledThreadPool(1);
+        if (service == null) {
+            service = Executors.newScheduledThreadPool(1);
+        }
         service.scheduleAtFixedRate(() -> {
             if (isSingleDevice) {
                 mPresenter.getIpcCashVideoCount(idList, startTime, endTime);
@@ -382,7 +384,10 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        service.shutdown();
+        if (service != null) {
+            service.shutdown();
+            service = null;
+        }
     }
 
     @Override
