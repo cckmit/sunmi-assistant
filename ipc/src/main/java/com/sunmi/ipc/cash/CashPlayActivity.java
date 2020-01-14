@@ -719,12 +719,18 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         playCashVideoStatus = PLAY_TYPE_NORMAL;
         CashVideo current = getCurrent();
         boolean isAbnormal = current.getVideoType() != IpcConstants.CASH_VIDEO_NORMAL;
+        int[] videoTag = current.getVideoTag();
         if (isAbnormal && current.getUserModified() == 0) {
             mPresenter.getAbnormalEvent(current.getEventId(), current.getStartTime());
+            if (CashTagManager.get(this).getTag(videoTag).getTag() != CashTagManager.TAG_ID_ORDER_MISMATCH) {
+                // 只有飞单有风险率。换言之，如果不是飞单，则直接展示tip；否则拉取AI数据后展示。
+                tvAbnormalTip.setText(CashTagManager.get(this).getTagName(videoTag, current.getDescription()));
+                tvAbnormalTip.setVisibility(View.VISIBLE);
+            }
         } else {
             cashBoxOverlay.setVisibility(View.GONE);
             sbMark.setVisibility(View.GONE);
-            tvAbnormalTip.setText(CashTagManager.get(this).getTagName(current.getVideoTag(), current.getDescription()));
+            tvAbnormalTip.setText(CashTagManager.get(this).getTagName(videoTag, current.getDescription()));
             tvAbnormalTip.setVisibility(isAbnormal ? View.VISIBLE : View.GONE);
         }
         //查询当前视频订单信息
@@ -1062,13 +1068,16 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
         cashBoxOverlay.setData(boxes);
         sbMark.setData(boxes);
-        String tip = getString(R.string.cash_abnormal_tip,
-                CashTagManager.get(this).getTag(getCurrent().getVideoTag()).getName(),
-                (int) riskScore);
-        tvAbnormalTip.setText(tip);
         cashBoxOverlay.setVisibility(View.VISIBLE);
         sbMark.setVisibility(View.VISIBLE);
-        tvAbnormalTip.setVisibility(View.VISIBLE);
+        int[] videoTag = getCurrent().getVideoTag();
+        if (CashTagManager.get(this).getTag(videoTag).getTag() == CashTagManager.TAG_ID_ORDER_MISMATCH) {
+            // 只有飞单有风险率。
+            String tip = getString(R.string.cash_abnormal_tip, CashTagManager.get(this).getTag(videoTag).getName(),
+                    (int) riskScore);
+            tvAbnormalTip.setText(tip);
+            tvAbnormalTip.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -1076,6 +1085,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (code != RpcErrorCode.ERR_CASH_EVENT_NOT_EXIST) {
             shortTip(R.string.toast_network_error);
         }
+        CashVideo current = getCurrent();
+        tvAbnormalTip.setText(CashTagManager.get(this).getTagName(current.getVideoTag(), current.getDescription()));
+        tvAbnormalTip.setVisibility(View.VISIBLE);
         cashBoxOverlay.setVisibility(View.GONE);
         sbMark.setVisibility(View.GONE);
     }
