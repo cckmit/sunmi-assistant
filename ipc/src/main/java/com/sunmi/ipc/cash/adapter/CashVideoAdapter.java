@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,7 +23,7 @@ import java.util.HashMap;
 
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.GlideRoundTransform;
+import sunmi.common.view.CircleImage;
 
 /**
  * Description:
@@ -37,7 +36,6 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
     private ArrayList<CashVideo> data;
     private HashMap<Integer, CashServiceInfo> serviceInfo;
     private boolean isAbnormalBehavior;
-    private GlideRoundTransform transform;
 
     private OnItemClickListener listener;
 
@@ -54,7 +52,6 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         numberFormat = NumberFormat.getNumberInstance();
         numberFormat.setMinimumFractionDigits(2);
         tagManager = CashTagManager.get(context);
-        transform = new GlideRoundTransform(context);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -96,7 +93,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         }
         CashServiceInfo info = serviceInfo.get(bean.getDeviceId());
         viewHolder.tvName.setText(info == null ? "--" : info.getDeviceName());
-        Glide.with(context).load(bean.getSnapshotUrl()).transform(transform).into(viewHolder.ivPreview);
+        Glide.with(context).load(bean.getSnapshotUrl()).into(viewHolder.ivPreview);
         if (isAbnormalBehavior) {
             viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getStartTime(), "HH:mm:ss"));
             if (!TextUtils.isEmpty(tag.getTip())) {
@@ -141,7 +138,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         TextView tvDescription;
         TextView tvAmount;
         TextView tvOrderNum;
-        ImageView ivPreview;
+        CircleImage ivPreview;
         TextView tvName;
         TextView tvLineTop;
         TextView tvLineBottom;
