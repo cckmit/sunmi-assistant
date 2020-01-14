@@ -1,11 +1,14 @@
 package com.sunmi.assistant.contract;
 
+import android.content.Context;
+
 import java.util.List;
+import java.util.Map;
 
 import sunmi.common.base.BaseView;
-import sunmi.common.model.AdListResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.SunmiDevice;
+import sunmi.common.rpc.sunmicall.ResponseBean;
 
 /**
  * Description:
@@ -14,7 +17,6 @@ import sunmi.common.model.SunmiDevice;
 public interface DeviceContract {
 
     interface View extends BaseView {
-        void getAdListSuccess(AdListResp adListResp);
 
         void getRouterListSuccess(List<SunmiDevice> devices);
 
@@ -31,11 +33,21 @@ public interface DeviceContract {
         void getShopListSuccess(List<ShopInfo> shopList);
 
         void getPosListSuccess(List<SunmiDevice> devices);
+
+        void getApConfigSuccess();
+
+        void apEventStatus(String sn, boolean isOnline);
+
+        void refreshApEventStatus(Map<String, SunmiDevice> map);
+
+        void getCheckApLoginSuccess(boolean isAgainCheck);
+
+        void getCheckApLoginFail(String type);
+
+        void gotoPrimaryRouteStartActivity();
     }
 
     interface Presenter {
-
-        void getBannerList();
 
         void getRouterList();
 
@@ -50,6 +62,20 @@ public interface DeviceContract {
         void getShopList();
 
         void getPosList();
+
+        void apConfig(Context context, String sn);
+
+        void apCheckLogin(Context context, String password);
+
+        void apCheckLoginAgain(Context context, String password);
+
+        void getApConfig(Context context, ResponseBean res, SunmiDevice clickedDevice);
+
+        void getStatusEvent(String result);
+
+        void checkApLoginPassword(Context context, ResponseBean res, SunmiDevice clickedDevice);
+
+        void checkApLoginPasswordAgain(Context context, ResponseBean res, SunmiDevice clickedDevice, String password);
     }
 
 }

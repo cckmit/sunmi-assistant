@@ -31,13 +31,17 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import cn.bingoogolapple.refreshlayout.BGARefreshViewHolder;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.DateTimeUtils;
@@ -103,7 +107,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     @Extra
     boolean isAbnormalBehavior;
     @Extra
-    ArrayList<CashServiceInfo> serviceBeans;
+    HashMap<Integer, CashServiceInfo> cashServiceMap;
 
     private final int REQUEST = 0x101;
 
@@ -125,7 +129,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
     void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
-        mPresenter = new CashVideoListPresenter(isAbnormalBehavior, serviceBeans);
+        mPresenter = new CashVideoListPresenter(isAbnormalBehavior, cashServiceMap);
         mPresenter.attachView(this);
         fastPlayStart = startTime;
         fastPlayEnd = endTime;
@@ -306,8 +310,13 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
             shortTip(R.string.str_no_cash_video);
             return;
         }
-        CashPlayActivity_.intent(context).deviceId(deviceId).startTime(fastPlayStart).endTime(fastPlayEnd).isWholeDayVideoPlay(true)
-                .ipcName(mPresenter.getIpcName()).start();
+        CashPlayActivity_.intent(context)
+                .isWholeDayVideoPlay(true)
+                .deviceId(deviceId)
+                .startTime(fastPlayStart)
+                .endTime(fastPlayEnd)
+                .serviceInfoMap(cashServiceMap)
+                .start();
     }
 
     @Click(resName = "btn_refresh")
@@ -383,20 +392,46 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
 
     private void initAdapter() {
         if (adapter == null) {
-            adapter = new CashVideoAdapter(dataList, context, isAbnormalBehavior);
+            adapter = new CashVideoAdapter(context, dataList, cashServiceMap, isAbnormalBehavior);
             rvCashVideo.setLayoutManager(new LinearLayoutManager(context));
             adapter.setOnItemClickListener((data, pos) -> {
                 if (!NetworkUtils.isNetworkAvailable(context)) {
                     shortTip(R.string.network_error);
                     return;
                 }
-                CashPlayActivity_.intent(context).deviceId(deviceId)
-                        .startTime(startTime).endTime(endTime).isWholeDayVideoPlay(false)
-                        .ipcName(mPresenter.getIpcName()).videoList(data)
+                CashPlayActivity_.intent(context)
+                        .isWholeDayVideoPlay(false)
+                        .deviceId(deviceId)
+                        .startTime(startTime)
+                        .endTime(endTime)
+                        .serviceInfoMap(cashServiceMap)
+                        .videoList(data)
                         .hasMore(hasMore).pageNum(pageNum).videoListPosition(pos)
                         .videoType(videoType).isAbnormalBehavior(isAbnormalBehavior).startForResult(REQUEST);
             });
             rvCashVideo.setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public int[] getStickNotificationId() {
+        return new int[]{CommonNotifications.cashPreventSubscribe};
+    }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.cashPreventSubscribe) {
+            if (args.length <= 0 || !(args[0] instanceof Set)) {
+                return;
+            }
+            @SuppressWarnings("unchecked")
+            Set<String> snSet = (Set<String>) args[0];
+            for (Map.Entry<Integer, CashServiceInfo> entry : cashServiceMap.entrySet()) {
+                CashServiceInfo info = entry.getValue();
+                if (snSet.contains(info.getDeviceSn())) {
+                    info.setHasCashLossPrevention(true);
+                }
+            }
         }
     }
 

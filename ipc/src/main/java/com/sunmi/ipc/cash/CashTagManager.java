@@ -1,9 +1,11 @@
 package com.sunmi.ipc.cash;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.model.CashTag;
 
 import java.util.ArrayList;
@@ -18,31 +20,31 @@ public class CashTagManager {
     /**
      * 其他
      */
-    private static final int TAG_ID_OTHER = -1;
+    public static final int TAG_ID_OTHER = -1;
     /**
      * 飞单
      */
-    private static final int TAG_ID_ORDER_MISMATCH = 2;
+    public static final int TAG_ID_ORDER_MISMATCH = 2;
     /**
      * 钱箱未关
      */
-    private static final int TAG_ID_CASH_EXPOSED = 3;
+    public static final int TAG_ID_CASH_EXPOSED = 3;
     /**
      * 偷钱
      */
-    private static final int TAG_ID_CASH_STOLEN = 4;
+    public static final int TAG_ID_CASH_STOLEN = 4;
     /**
      * 漏扫
      */
-    private static final int TAG_ID_SCAN_MISSING = 5;
+    public static final int TAG_ID_SCAN_MISSING = 5;
     /**
      * 偷换条码
      */
-    private static final int TAG_ID_CODE_REPLACED = 6;
+    public static final int TAG_ID_CODE_REPLACED = 6;
     /**
      * 交易类型不匹配
      */
-    private static final int TAG_ID_TRANSACTION_MISMATCH = 7;
+    public static final int TAG_ID_TRANSACTION_MISMATCH = 7;
 
     private SparseArray<CashTag> tags = new SparseArray<>();
     private CashTag other;
@@ -83,12 +85,33 @@ public class CashTagManager {
         isInit = true;
     }
 
+    @NonNull
     public CashTag getTag(int id) {
         CashTag tag = tags.get(id);
         if (tag == null) {
             tag = other;
         }
         return tag;
+    }
+
+    @NonNull
+    public CashTag getTag(int[] ids) {
+        if (ids == null || ids.length <= 0) {
+            return other;
+        } else {
+            return getTag(ids[0]);
+        }
+    }
+
+    @NonNull
+    public String getTagName(int[] ids, String desc) {
+        if (ids == null || ids.length <= 0) {
+            return other.getName();
+        } else if (ids[0] == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
+            return desc;
+        } else {
+            return getTag(ids).getName();
+        }
     }
 
     public List<CashTag> getTags() {

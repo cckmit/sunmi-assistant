@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 
 /**
  * Description:
@@ -51,7 +52,8 @@ public class CashVideoNonCloudActivity extends BaseActivity {
 
     @Click(resName = "btn_open")
     public void openClick() {
-        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_CLOUD_STORAGE).snList(snList).startForResult(REQ_OPEN_CLOUD);
+        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_CLOUD_STORAGE)
+                .params(WebViewParamsUtils.getCloudStorageParams(snList, "")).startForResult(REQ_OPEN_CLOUD);
     }
 
     @OnActivityResult(REQ_OPEN_CLOUD)

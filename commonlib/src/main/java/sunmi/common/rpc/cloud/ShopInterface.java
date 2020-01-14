@@ -7,6 +7,7 @@ import retrofit2.http.POST;
 import sunmi.common.model.AuthStoreInfo;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.PlatformInfo;
+import sunmi.common.model.ServiceEnableResp;
 import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
@@ -52,6 +53,11 @@ public interface ShopInterface {
     @POST(shopPath + "getRegionList")
     Call<BaseResponse<ShopRegionResp>> getShopRegion(@Body BaseRequest request);
 
+    /**
+     * 查询门店各项服务的白名单状态
+     */
+    @POST(shopPath + "whiteList/getStatus")
+    Call<BaseResponse<ServiceEnableResp>> getServiceEnable(@Body BaseRequest request);
 
     //saas信息
     @POST(saasPath + "getUserInfo")

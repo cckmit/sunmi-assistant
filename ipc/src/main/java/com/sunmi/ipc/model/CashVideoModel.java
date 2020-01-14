@@ -5,13 +5,11 @@ import android.annotation.SuppressLint;
 import com.sunmi.ipc.cash.model.CashVideo;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.ThreadPool;
 
 /**
  * Description:
@@ -21,23 +19,10 @@ import sunmi.common.utils.ThreadPool;
 public class CashVideoModel {
 
     @SuppressLint("UseSparseArrays")
-    private HashMap<Integer, CashServiceInfo> map = new HashMap<>();
-    private ArrayList<CashServiceInfo> beans;
+    private HashMap<Integer, CashServiceInfo> map;
 
-    public CashVideoModel(ArrayList<CashServiceInfo> beans) {
-        this.beans = beans;
-        initMap();
-    }
-
-    private void initMap() {
-        ThreadPool.getSingleThreadPool().submit(new Runnable() {
-            @Override
-            public void run() {
-                for (CashServiceInfo bean : beans) {
-                    map.put(bean.getDeviceId(), bean);
-                }
-            }
-        });
+    public CashVideoModel(HashMap<Integer, CashServiceInfo> map) {
+        this.map = map;
     }
 
     public void loadCashVideo(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize, CallBack callBack) {
@@ -46,16 +31,6 @@ public class CashVideoModel {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
-                        int n = videoList.size();
-                        if (n > 0) {
-                            for (int i = 0; i < videoList.size(); i++) {
-                                CashServiceInfo serviceBean = map.get(videoList.get(i).getDeviceId());
-                                if (serviceBean!=null){
-                                    videoList.get(i).setDeviceName(serviceBean.getDeviceName());
-                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevention());
-                                }
-                            }
-                        }
                         callBack.getCashVideoSuccess(videoList, data.getTotalCount());
                     }
 
@@ -72,16 +47,6 @@ public class CashVideoModel {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
                         List<CashVideo> videoList = data.getAuditVideoList();
-                        int n = videoList.size();
-                        if (n > 0) {
-                            for (int i = 0; i < videoList.size(); i++) {
-                                CashServiceInfo serviceBean = map.get(videoList.get(i).getDeviceId());
-                                if (serviceBean!=null){
-                                    videoList.get(i).setDeviceName(serviceBean.getDeviceName());
-                                    videoList.get(i).setHasCashLossPrevent(serviceBean.isHasCashLossPrevention());
-                                }
-                            }
-                        }
                         callBack.getCashVideoSuccess(videoList, data.getTotalCount());
                     }
 
@@ -91,11 +56,6 @@ public class CashVideoModel {
                     }
                 });
 
-    }
-
-
-    public HashMap<Integer, CashServiceInfo> getIpcNameMap() {
-        return map;
     }
 
     public interface CallBack {

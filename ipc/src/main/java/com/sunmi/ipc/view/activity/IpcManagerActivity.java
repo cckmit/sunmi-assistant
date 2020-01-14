@@ -69,6 +69,7 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -635,7 +636,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         return new int[]{IpcConstants.ipcNameChanged, OpcodeConstants.getVideoParams,
                 OpcodeConstants.fsAdjustFocusAdd, OpcodeConstants.fsAdjustFocusMinus,
                 OpcodeConstants.fsAdjustFocusReset,
-                CommonNotifications.cloudStorageChange, CommonNotifications.cashVideoSubscribe};
+                CommonNotifications.cloudStorageChange, CommonNotifications.cashVideoSubscribe,
+                CommonNotifications.cashPreventSubscribe
+        };
     }
 
     @Override
@@ -657,6 +660,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 || id == OpcodeConstants.fsAdjustFocusAdd
                 || id == OpcodeConstants.fsAdjustFocusMinus) {
             hideLoadingDialog();
+        }else if (id == CommonNotifications.cashPreventSubscribe){
+            mPresenter.getCashPreventService(device.getDeviceid());
         }
 
         if (args != null && args[0] instanceof ResponseBean) {
@@ -983,10 +988,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                 Router.withApi(SunmiServiceApi.class).goToServiceDetail(context,
                                         device.getDeviceid(), true, device.getName());
                             } else {
-                                ArrayList<String> snList = new ArrayList<>();
-                                snList.add(device.getDeviceid());
                                 Router.withApi(SunmiServiceApi.class)
-                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, snList);
+                                        .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE,
+                                                WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(), ""));
                             }
                             break;
                         case IpcConstants.IPC_MANAGE_TYPE_CASH:
@@ -995,7 +999,8 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             } else {
                                 if (serviceBeans.isEmpty()) {   //去开启收银视频
                                     Router.withApi(SunmiServiceApi.class)
-                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO, new ArrayList<>());
+                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO,
+                                                    WebViewParamsUtils.getCashVideoParams());
                                 } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
                                     CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
                                             .serviceBeans(serviceBeans)

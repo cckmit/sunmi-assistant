@@ -30,6 +30,7 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 
 @EActivity(resName = "activity_cloud_service_mange")
 public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMangePresenter>
@@ -123,7 +124,8 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
 
     @Click(resName = "btn_open")
     void onpenClick() {
-        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
+        WebViewCloudServiceActivity_.intent(context).params(WebViewParamsUtils.getCloudStorageParams(new ArrayList<>(), ""))
+                .mUrl(CommonConstants.H5_CLOUD_STORAGE).start();
     }
 
     private void initServiceList() {
@@ -136,9 +138,7 @@ public class CloudServiceMangeActivity extends BaseMvpActivity<CloudServiceMange
                     showErrror(bean.getRenewErrorCode());
 
                 } else {
-                    ArrayList<String> snList = new ArrayList<>();
-                    snList.add(bean.getDeviceSn());
-                    WebViewCloudServiceActivity_.intent(context).snList(snList).productNo(bean.getProductNo())
+                    WebViewCloudServiceActivity_.intent(context).params(WebViewParamsUtils.getCloudStorageParams(bean.getDeviceSn(), bean.getProductNo()))
                             .mUrl(CommonConstants.H5_CLOUD_RENEW).start();
                 }
             });

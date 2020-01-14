@@ -90,9 +90,9 @@ public class InputCaptchaActivity extends BaseMvpActivity<InputCaptchaPresenter>
             case R.id.btn_confirm:
                 if (isFastClick(1500)) return;
                 if (TextUtils.equals("login", source)) {
-                    mPresenter.captchaLogin(mobile, etSmsCode.getText().toString());
+                    mPresenter.captchaLogin(context, mobile, etSmsCode.getText().toString());
                 } else {
-                    mPresenter.checkSmsCode(mobile, etSmsCode.getText().toString());
+                    mPresenter.checkSmsCode(context, mobile, etSmsCode.getText().toString());
                 }
                 break;
             default:

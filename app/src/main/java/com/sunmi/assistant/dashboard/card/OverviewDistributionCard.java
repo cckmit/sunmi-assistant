@@ -229,7 +229,7 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
         mChart.setHoleRadius(75f);
         mChart.setTransparentCircleRadius(0f);
         mChart.setExtraOffsets(10, 13, 10, 13);
-        mChart.setCenterTextSize(24);
+        mChart.setCenterTextSize(20);
         mChart.setCenterTextColor(ContextCompat.getColor(context, R.color.text_normal));
 
         mOnSelectedListener = new OnPieSelectedListener(mChart);
@@ -464,17 +464,20 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
             if (name == null) {
                 return new SpannableString("");
             }
-            int percent = total > 0 ? Math.round(value / total * 100) : 0;
+            float percent = total > 0 ? value / total * 100 : 0f;
             SpannableString s = new SpannableString(
-                    new StringBuilder(name).append("\n").append(percent).append("%"));
+                    new StringBuilder(name).append("\n").append(FORMAT_MAX_DOUBLE_DECIMAL.format(percent)).append("%"));
 
             int titleLength = name.length();
-            s.setSpan(new RelativeSizeSpan(0.5f), 0, titleLength, 0);
+            s.setSpan(new RelativeSizeSpan(0.6f), 0, titleLength, 0);
             s.setSpan(new StyleSpan(Typeface.NORMAL), 0, titleLength, 0);
             s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, titleLength, 0);
 
-            s.setSpan(new StyleSpan(Typeface.BOLD), titleLength, s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.BOLD), titleLength, s.length() - 1, 0);
             s.setSpan(new ForegroundColorSpan(0xFF525866), titleLength, s.length(), 0);
+
+            s.setSpan(new RelativeSizeSpan(0.6f), s.length() - 1, s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), s.length() - 1, s.length(), 0);
             return s;
         }
 
@@ -493,14 +496,14 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
                     new StringBuilder(totalTitle).append("\n").append(count));
 
             int titleLength = totalTitle.length();
-            s.setSpan(new RelativeSizeSpan(0.5f), 0, titleLength, 0);
+            s.setSpan(new RelativeSizeSpan(0.6f), 0, titleLength, 0);
             s.setSpan(new StyleSpan(Typeface.NORMAL), 0, titleLength, 0);
             s.setSpan(new ForegroundColorSpan(0xFF777E8C), 0, titleLength, 0);
 
             s.setSpan(new StyleSpan(Typeface.BOLD), titleLength, s.length() - unit, 0);
             s.setSpan(new ForegroundColorSpan(0xFF525866), titleLength, s.length(), 0);
 
-            s.setSpan(new RelativeSizeSpan(0.5f), s.length() - unit, s.length(), 0);
+            s.setSpan(new RelativeSizeSpan(0.6f), s.length() - unit, s.length(), 0);
             s.setSpan(new StyleSpan(Typeface.NORMAL), s.length() - unit, s.length(), 0);
             return s;
         }

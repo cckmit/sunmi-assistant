@@ -1,5 +1,7 @@
 package com.sunmi.ipc.cash.model;
 
+import java.util.Objects;
+
 /**
  * @author yinhui
  * @date 2019-12-25
@@ -16,22 +18,27 @@ public class CashTagFilter {
     public static final int TAG_ID_CUSTOM = 1;
 
     private int id;
+    private String name;
     private String desc;
     private boolean checked;
 
-    public CashTagFilter(int id, String desc) {
+    public CashTagFilter(int id, String name) {
         this.id = id;
-        this.desc = desc;
+        this.name = name;
     }
 
-    public CashTagFilter(int id, String desc, boolean checked) {
+    public CashTagFilter(int id, String name, boolean checked) {
         this.id = id;
-        this.desc = desc;
+        this.name = name;
         this.checked = checked;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getDesc() {
@@ -48,5 +55,22 @@ public class CashTagFilter {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CashTagFilter that = (CashTagFilter) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

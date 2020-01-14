@@ -27,11 +27,13 @@ import com.sunmi.ipc.model.CashTag;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.CashServiceInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.GlideRoundTransform;
+import sunmi.common.view.CircleImage;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
@@ -49,6 +51,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
     private Activity mContext;
     private TextView mSetTitleView;
     private ArrayList<CashVideo> mList;
+    private HashMap<Integer, CashServiceInfo> mServiceInfo;
     private int currentPlayPosition;
     private double maxLength = 3.5;
     private NumberFormat numberFormat;
@@ -57,16 +60,16 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
 
     @SuppressLint("ClickableViewAccessibility")
     public CashVideoPopupWindow(Activity activity, View topToPopupWindowView, int currentPlayPosition,
-                                ArrayList<CashVideo> list, TextView mSetViewImg, boolean isAbnormalBehavior) {
+                                ArrayList<CashVideo> list, HashMap<Integer, CashServiceInfo> serviceInfo,
+                                TextView mSetViewImg, boolean isAbnormalBehavior) {
         super();
-        if (activity != null) {
-            this.mContext = activity;
-            this.currentPlayPosition = currentPlayPosition;
-            this.mSetTitleView = mSetViewImg;
-            this.mList = list;
-            this.isAbnormalBehavior = isAbnormalBehavior;
-            tagManager = CashTagManager.get(activity);
-        }
+        this.mContext = activity;
+        this.currentPlayPosition = currentPlayPosition;
+        this.mSetTitleView = mSetViewImg;
+        this.mList = list;
+        this.mServiceInfo = serviceInfo;
+        this.isAbnormalBehavior = isAbnormalBehavior;
+        tagManager = CashTagManager.get(activity);
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View viewLayout = inflater.inflate(R.layout.cash_popwindow_video_list, null);
         setContentView(viewLayout);
@@ -163,9 +166,9 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
 
         @Override
         public void convert(ViewHolder holder, CashVideo res) {
-            holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getPurchaseTime(), "HH:mm:ss"));
-            holder.setText(R.id.tv_pos, res.getDeviceName());
-            ImageView imgVideo = holder.getView(R.id.iv_preview_img);
+            CashServiceInfo info = mServiceInfo.get(res.getDeviceId());
+            holder.setText(R.id.tv_pos, info == null ? "--" : info.getDeviceName());
+            CircleImage imgVideo = holder.getView(R.id.iv_preview_img);
             ImageView ivFlag = holder.getView(R.id.iv_left_flag);
             TextView tvTag = holder.getView(R.id.tv_exception_des);
             TextView tvLineTop = holder.getView(R.id.tv_left_top_line);
@@ -173,7 +176,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             TextView tvSuggest = holder.getView(R.id.tv_suggest);
             ivFlag.setSelected(holder.getAdapterPosition() == currentPlayPosition);
             if (isShowing()) {
-                Glide.with(mContext).load(res.getSnapshotUrl()).transform(new GlideRoundTransform(mContext)).into(imgVideo);
+                Glide.with(mContext).load(res.getSnapshotUrl()).into(imgVideo);
             }
 
             int[] tags = res.getVideoTag();
@@ -191,6 +194,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             }
 
             if (isAbnormalBehavior) {
+                holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getStartTime(), "HH:mm:ss"));
                 tvSuggest.setVisibility(View.VISIBLE);
                 holder.getView(R.id.group_content).setVisibility(View.GONE);
                 if (!TextUtils.isEmpty(tag.getTip())) {
@@ -199,6 +203,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
                     tvSuggest.setText(R.string.tip_other_exception);
                 }
             } else {
+                holder.setText(R.id.tv_time, DateTimeUtils.secondToDate(res.getPurchaseTime(), "HH:mm:ss"));
                 tvSuggest.setVisibility(View.GONE);
                 holder.getView(R.id.group_content).setVisibility(View.VISIBLE);
                 holder.setText(R.id.tv_amount, String.format("¥%s", numberFormat.format(res.getAmount())));

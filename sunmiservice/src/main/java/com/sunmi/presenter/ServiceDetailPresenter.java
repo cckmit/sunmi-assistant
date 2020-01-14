@@ -15,8 +15,14 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 public class ServiceDetailPresenter extends BasePresenter<ServiceDetailContract.View>
         implements ServiceDetailContract.Presenter {
 
+    private String deviceSn;
+
+    public ServiceDetailPresenter(String deviceSn) {
+        this.deviceSn = deviceSn;
+    }
+
     @Override
-    public void getServiceDetailByDevice(String deviceSn, int category) {
+    public void getServiceDetailByDevice(int category) {
         ServiceApi.getInstance().getServiceDetailByDevice(deviceSn, category, new RetrofitCallback<ServiceDetailBean>() {
             @Override
             public void onSuccess(int code, String msg, ServiceDetailBean data) {

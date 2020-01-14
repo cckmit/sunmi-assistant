@@ -32,6 +32,8 @@ import sunmi.common.view.TextLengthWatcher;
  */
 public class CashTagAdapter extends SimpleArrayAdapter<CashTagFilter> {
 
+    public static final int CUSTOM_TAG_MAX_LENGTH = 18;
+
     private View mRoot;
     private RecyclerView mRvList;
     private EditText mEtCustom;
@@ -43,7 +45,7 @@ public class CashTagAdapter extends SimpleArrayAdapter<CashTagFilter> {
         mRoot = LayoutInflater.from(context).inflate(R.layout.cash_video_dialog_abnormal_tag, null);
         mRvList = mRoot.findViewById(R.id.rvTagList);
         mEtCustom = mRoot.findViewById(R.id.etCustom);
-        mEtCustom.addTextChangedListener(new TextLengthWatcher(mEtCustom, 36) {
+        mEtCustom.addTextChangedListener(new TextLengthWatcher(mEtCustom, CUSTOM_TAG_MAX_LENGTH) {
             @Override
             public void onLengthExceed(EditText view, String content) {
                 ToastUtils.toastForShort(context, R.string.ipc_cash_tag_length_tip);
@@ -113,8 +115,19 @@ public class CashTagAdapter extends SimpleArrayAdapter<CashTagFilter> {
     @Override
     public void setupView(@NonNull BaseViewHolder<CashTagFilter> holder, CashTagFilter model, int position) {
         TextView itemView = (TextView) holder.itemView;
-        itemView.setText(model.getDesc());
+        itemView.setText(model.getName());
         itemView.setSelected(model.isChecked());
+    }
+
+    public View getRootView() {
+        return mRoot;
+    }
+
+    public CashTagFilter getSelected() {
+        if (mSelected.getId() == CashTagFilter.TAG_ID_CUSTOM) {
+            mSelected.setDesc(mEtCustom.getText().toString());
+        }
+        return mSelected;
     }
 
     public void setSelected(int id) {
@@ -143,15 +156,26 @@ public class CashTagAdapter extends SimpleArrayAdapter<CashTagFilter> {
         notifyDataSetChanged();
     }
 
-    public View getRootView() {
-        return mRoot;
-    }
-
-    public CashTagFilter getSelected() {
-        if (mSelected.getId() == CashTagFilter.TAG_ID_CUSTOM) {
-            mSelected.setDesc(mEtCustom.getText().toString());
+    public void setCustom(String desc) {
+        List<CashTagFilter> data = getData();
+        if (data == null || data.isEmpty()) {
+            return;
         }
-        return mSelected;
+        for (CashTagFilter item : data) {
+            if (item.getId() == CashTagFilter.TAG_ID_CUSTOM) {
+                item.setChecked(true);
+                mSelected = item;
+            } else {
+                item.setChecked(false);
+            }
+        }
+        mSelected.setDesc(desc);
+        if (mSelected == null) {
+            return;
+        }
+        mEtCustom.setVisibility(View.VISIBLE);
+        mEtCustom.setText(desc);
+        notifyDataSetChanged();
     }
 
 }

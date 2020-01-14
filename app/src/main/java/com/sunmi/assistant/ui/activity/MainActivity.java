@@ -50,6 +50,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ThreadPool;
@@ -95,6 +96,8 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
             initIpc();
         }
+        // Init ConfigManager
+        ConfigManager.get().load(null);
         if (TextUtils.isEmpty(SpUtils.getCompanyName())) {
             Router.withApi(AppApi.class).goToLogin(context, "");
         } else {

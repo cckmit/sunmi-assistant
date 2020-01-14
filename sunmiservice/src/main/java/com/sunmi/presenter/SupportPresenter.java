@@ -15,6 +15,7 @@ import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.router.IpcCloudApiAnno;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.ConfigManager;
 
 /**
  * Description:
@@ -87,6 +88,30 @@ public class SupportPresenter extends BasePresenter<SupportContract.View> implem
             }
             return;
         }
+
+        // 根据白名单进行拦截
+        // 如果配置没有成功拉取，再次拉取配置
+        if (!ConfigManager.get().isLoaded()) {
+            ConfigManager.get().load(new ConfigManager.Callback<Object>() {
+                @Override
+                public void onSuccess(Object result) {
+                    getCashLossPreventionService();
+                }
+
+                @Override
+                public void onFail() {
+                    // 配置拉取失败，认为不在白名单，直接跳过获取收银防损服务状态
+                    getCloudStorageService();
+                }
+            });
+            return;
+        }
+        // 如果不在白名单，直接跳过获取收银防损服务状态
+        if (!ConfigManager.get().getCashSecurityEnable()) {
+            getCloudStorageService();
+            return;
+        }
+
         List<String> snList = getDeviceSnList();
         ipcCloudApi.getAuditSecurityPolicyList(snList, new RetrofitCallback<ServiceResp>() {
             @Override

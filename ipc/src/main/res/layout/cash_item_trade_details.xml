@@ -85,7 +85,7 @@
 
         <TextView
             android:id="@+id/tv_pos_text"
-            android:layout_width="@dimen/dp_64"
+            android:layout_width="@dimen/dp_62"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
@@ -99,7 +99,6 @@
             android:id="@+id/tv_pos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_4"
             android:ellipsize="end"
@@ -114,7 +113,7 @@
 
         <TextView
             android:id="@+id/tv_order_num_text"
-            android:layout_width="@dimen/dp_64"
+            android:layout_width="@dimen/dp_62"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
@@ -128,7 +127,6 @@
             android:id="@+id/tv_order_num"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
             android:textColor="@color/text_main"
@@ -140,7 +138,7 @@
 
         <TextView
             android:id="@+id/tv_amount_text"
-            android:layout_width="@dimen/dp_64"
+            android:layout_width="@dimen/dp_62"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
@@ -148,15 +146,14 @@
             android:text="@string/cash_trade_amount"
             android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_order_num"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@+id/tv_order_num" />
 
         <TextView
             android:id="@+id/tv_amount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_16"
@@ -165,10 +162,10 @@
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/iv_preview_img"
             app:layout_constraintStart_toEndOf="@id/tv_amount_text"
             app:layout_constraintTop_toBottomOf="@id/tv_order_num"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:ignore="RelativeOverlap" />
 
         <TextView
@@ -178,9 +175,11 @@
             android:layout_marginStart="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_16"
             android:textColor="@color/common_orange"
             android:textSize="@dimen/sp_12"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/iv_preview_img"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_pos" />
@@ -192,7 +191,7 @@
             android:visibility="visible"
             app:constraint_referenced_ids="tv_order_num,tv_order_num_text,tv_amount,tv_amount_text" />
 
-        <ImageView
+        <sunmi.common.view.CircleImage
             android:id="@+id/iv_preview_img"
             android:layout_width="@dimen/dp_64"
             android:layout_height="@dimen/dp_64"
@@ -202,6 +201,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:radius="@dimen/dp_6"
             tools:ignore="ContentDescription" />
     </android.support.constraint.ConstraintLayout>
 
