@@ -54,6 +54,7 @@ public interface CustomerInterface {
      * 按时间获取历史客流统计数据（今日、本周、本月，昨日）
      */
     @POST(path + "getHistory")
+    @Deprecated
     Call<BaseResponse<CustomerHistoryResp>> getHistoryCustomer(@Body BaseRequest request);
 
     /**

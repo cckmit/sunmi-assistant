@@ -832,6 +832,7 @@ public class SunmiStoreApi {
      * @param shopId    是	number	门店ID
      * @param type      是	number	日: 1、周: 2、月: 3、昨日：4
      */
+    @Deprecated
     public void getHistoryCustomer(int companyId, int shopId, int type,
                                    RetrofitCallback<CustomerHistoryResp> callback) {
         try {

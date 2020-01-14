@@ -9,25 +9,22 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
-import com.sunmi.assistant.dashboard.Constants;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.model.CustomerHistoryResp;
+import sunmi.common.model.CustomerDataResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
-import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 /**
  * @author yinhui
  * @since 2019-07-01
  */
-public class ProfileDataCard extends BaseRefreshCard<ProfileDataCard.Model, Object> {
+public class ProfileDataCard extends BaseRefreshCard<ProfileDataCard.Model, CustomerDataResp> {
 
     private static ProfileDataCard sInstance;
 
@@ -61,79 +58,9 @@ public class ProfileDataCard extends BaseRefreshCard<ProfileDataCard.Model, Obje
     }
 
     @Override
-    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        loadCurrent(companyId, shopId, period, callback);
+    protected Call<BaseResponse<CustomerDataResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+        SunmiStoreApi.getInstance().getCustomerData(companyId, shopId, period, callback);
         return null;
-    }
-
-    private void loadCurrent(int companyId, int shopId, int period, CardCallback callback) {
-        SunmiStoreApi.getInstance().getHistoryCustomer(companyId, shopId, period,
-                new RetrofitCallback<CustomerHistoryResp>() {
-                    @Override
-                    public void onSuccess(int code, String msg, CustomerHistoryResp data) {
-                        if (data == null) {
-                            onFail(code, msg, null);
-                            return;
-                        }
-                        Model model = getModel();
-                        model.customer = data.getTotalCount();
-                        model.newCustomer = data.getStrangerCount();
-                        model.oldCustomer = data.getRegularCount();
-                        loadLastMonth(companyId, shopId, period, callback);
-                    }
-
-                    @Override
-                    public void onFail(int code, String msg, CustomerHistoryResp data) {
-                        if (code == Constants.NO_CUSTOMER_DATA) {
-                            Model model = getModel();
-                            model.customer = -1;
-                            model.newCustomer = -1;
-                            model.oldCustomer = -1;
-                            loadLastMonth(companyId, shopId, period, callback);
-                        } else {
-                            callback.onFail(code, msg, data);
-                        }
-                    }
-                });
-    }
-
-    private void loadLastMonth(int companyId, int shopId, int period, CardCallback callback) {
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.MONTH, -1);
-        c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1);
-        String startTime = DATE_FORMAT_PARAMS.format(c.getTime());
-        c.add(Calendar.MONTH, 1);
-        c.add(Calendar.DATE, -1);
-        String endTime = DATE_FORMAT_PARAMS.format(c.getTime());
-        int count = c.get(Calendar.DATE);
-        SunmiStoreApi.getInstance().getHistoryCustomer(companyId, shopId, startTime, endTime,
-                new RetrofitCallback<CustomerHistoryResp>() {
-                    @Override
-                    public void onSuccess(int code, String msg, CustomerHistoryResp data) {
-                        if (data == null) {
-                            onFail(code, msg, null);
-                            return;
-                        }
-                        Model model = getModel();
-                        model.lastNewCustomer = (int) Math.ceil((float) data.getStrangerCount() / count);
-                        model.lastOldCustomer = (int) Math.ceil((float) data.getRegularCount() / count);
-                        model.lastCustomer = model.lastNewCustomer + model.lastOldCustomer;
-                        callback.onSuccess();
-                    }
-
-                    @Override
-                    public void onFail(int code, String msg, CustomerHistoryResp data) {
-                        if (code == Constants.NO_CUSTOMER_DATA) {
-                            Model model = getModel();
-                            model.lastCustomer = -1;
-                            model.lastNewCustomer = -1;
-                            model.lastOldCustomer = -1;
-                            callback.onSuccess();
-                        } else {
-                            callback.onFail(code, msg, data);
-                        }
-                    }
-                });
     }
 
     @Override
@@ -142,14 +69,13 @@ public class ProfileDataCard extends BaseRefreshCard<ProfileDataCard.Model, Obje
     }
 
     @Override
-    protected void setupModel(Model model, Object response) {
-        // Zero fall back
-//        model.customer = Math.max(model.customer, 0);
-//        model.newCustomer = Math.max(model.newCustomer, 0);
-//        model.oldCustomer = Math.max(model.oldCustomer, 0);
-
-        // Test data
-//        model.random();
+    protected void setupModel(Model model, CustomerDataResp response) {
+        model.customer = response.getLatestPassengerCount();
+        model.lastCustomer = response.getEarlyPassengerCount();
+        model.newCustomer = response.getLatestStrangerPassengerCount();
+        model.lastNewCustomer = response.getEarlyStrangerPassengerCount();
+        model.oldCustomer = response.getLatestRegularPassengerCount();
+        model.lastOldCustomer = response.getEarlyRegularPassengerCount();
     }
 
     @NonNull
