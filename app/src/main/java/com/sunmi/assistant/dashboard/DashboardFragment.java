@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.ui.RefreshLayout;
 import com.sunmi.assistant.dashboard.ui.ScrollableViewPager;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
@@ -31,6 +32,7 @@ import com.xiaojinzi.component.impl.Router;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.LongClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -45,6 +47,7 @@ import sunmi.common.router.IpcApi;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.WebViewParamsUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownMenu;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
@@ -250,6 +253,26 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         hideLoadingDialog();
     }
 
+    private boolean debugEnable = false;
+
+    @LongClick(R.id.debug)
+    void clickDebug() {
+        debugEnable = !debugEnable;
+        LogCat.e(TAG, "status h=" + mStatusBarHeight + "; top shop h=" + mTopShopMenuHeight + "; top page h=" + mTopPageTabHeight + "; top h=" + mTopHeaderHeight);
+        LogCat.e(TAG, "shop menu: v=" + mTopShopMenu.getVisibility() + "; h=" + mTopShopMenu.getHeight() + "; y=" + mTopShopMenu.getTranslationY());
+        LogCat.e(TAG, "page menu: v=" + mTopPageTab.getVisibility() + "; h=" + mTopPageTab.getHeight() + "; y=" + mTopPageTab.getTranslationY());
+        View refresh = mPager.getChildAt(0);
+        if (refresh instanceof RefreshLayout) {
+            View recycler = ((RefreshLayout) refresh).getChildAt(1);
+            if (recycler instanceof RecyclerView) {
+                View first = ((RecyclerView) recycler).getChildAt(0);
+                if (first != null) {
+                    LogCat.e(TAG, "card m=" + ((ViewGroup.MarginLayoutParams) first.getLayoutParams()).topMargin);
+                }
+            }
+        }
+    }
+
     @Click(R.id.tv_dashboard_top_today)
     void clickPeriodToday() {
         mPresenter.setPeriod(Constants.TIME_PERIOD_TODAY);
@@ -359,6 +382,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mTopShopMenu.setTranslationY(offset);
         mTopPageTab.setTranslationY(offset);
         mShopMenuPopupHelper.setOffset(offset);
+
+        if (debugEnable) {
+            LogCat.e(TAG, "position=" + position + "; offset=" + offset);
+        }
 
         FragmentActivity activity = getActivity();
         if (activity == null) {

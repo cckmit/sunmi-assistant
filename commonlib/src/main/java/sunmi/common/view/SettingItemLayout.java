@@ -14,6 +14,7 @@ import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -210,6 +211,10 @@ public class SettingItemLayout extends FrameLayout {
 
         // 设置标题
         String title = a.getString(R.styleable.SettingItemLayout_title);
+        float titleSize = a.getDimension(R.styleable.SettingItemLayout_titleSize, -1);
+        if (titleSize > 0) {
+            tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleSize);
+        }
         if (!TextUtils.isEmpty(title)) {
             tvTitle.setVisibility(VISIBLE);
             tvTitle.setText(title);
@@ -217,25 +222,29 @@ public class SettingItemLayout extends FrameLayout {
 
         // 设置右侧文字内容
         String endContent = a.getString(R.styleable.SettingItemLayout_endContentText);
-        setTextIfExist(tvEndContent, endContent);
+        float endContentSize = a.getDimension(R.styleable.SettingItemLayout_endContentSize, -1);
+        setTextIfExist(tvEndContent, endContent, endContentSize);
 
         // 设置中间文字内容
         if (mStyle == STYLE_MULTI) {
             String middleContent = a.getString(R.styleable.SettingItemLayout_middleContentText);
-            setTextIfExist(tvMiddleContent, middleContent);
+            float middleContentSize = a.getDimension(R.styleable.SettingItemLayout_middleContentSize, -1);
+            setTextIfExist(tvMiddleContent, middleContent, middleContentSize);
         }
 
         // 多行列表项时，设置内容最大行数
-        int maxLines = a.getInteger(R.styleable.SettingItemLayout_contentMaxLines, 1);
+        int maxLines = a.getInteger(R.styleable.SettingItemLayout_middleContentMaxLines, 1);
         tvMiddleContent.setMaxLines(maxLines);
 
         // 设置底部左边小字内容
         String smallStartContent = a.getString(R.styleable.SettingItemLayout_smallStartContent);
-        setTextIfExist(tvSmallStartContent, smallStartContent);
+        float smallContentSize = a.getDimension(R.styleable.SettingItemLayout_smallStartContentSize, -1);
+        setTextIfExist(tvSmallStartContent, smallStartContent, smallContentSize);
 
         // 设置底部右边小字内容
         String smallEndContent = a.getString(R.styleable.SettingItemLayout_smallEndContent);
-        setTextIfExist(tvSmallEndContent, smallEndContent);
+        float smallEndContentSize = a.getDimension(R.styleable.SettingItemLayout_smallEndContentSize, -1);
+        setTextIfExist(tvSmallEndContent, smallEndContent, smallEndContentSize);
 
         // 设置Tag标签
         String tag = a.getString(R.styleable.SettingItemLayout_tag);
@@ -255,6 +264,18 @@ public class SettingItemLayout extends FrameLayout {
         if (!TextUtils.isEmpty(text)) {
             view.setVisibility(VISIBLE);
             view.setText(text);
+        } else {
+            view.setVisibility(GONE);
+        }
+    }
+
+    private void setTextIfExist(TextView view, String text, float size) {
+        if (size > 0) {
+            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        }
+        if (!TextUtils.isEmpty(text)) {
+            view.setText(text);
+            view.setVisibility(VISIBLE);
         } else {
             view.setVisibility(GONE);
         }
