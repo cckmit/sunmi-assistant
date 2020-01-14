@@ -37,6 +37,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
     private ArrayList<CashVideo> data;
     private HashMap<Integer, CashServiceInfo> serviceInfo;
     private boolean isAbnormalBehavior;
+    private GlideRoundTransform transform;
 
     private OnItemClickListener listener;
 
@@ -53,6 +54,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
         numberFormat = NumberFormat.getNumberInstance();
         numberFormat.setMinimumFractionDigits(2);
         tagManager = CashTagManager.get(context);
+        transform = new GlideRoundTransform(context);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -93,8 +95,8 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
             viewHolder.tvDescription.setVisibility(View.GONE);
         }
         CashServiceInfo info = serviceInfo.get(bean.getDeviceId());
-        viewHolder.tvName.setText(info == null ? "" : info.getDeviceName());
-        Glide.with(context).load(bean.getSnapshotUrl()).transform(new GlideRoundTransform(context)).into(viewHolder.ivPreview);
+        viewHolder.tvName.setText(info == null ? "--" : info.getDeviceName());
+        Glide.with(context).load(bean.getSnapshotUrl()).transform(transform).into(viewHolder.ivPreview);
         if (isAbnormalBehavior) {
             viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getStartTime(), "HH:mm:ss"));
             if (!TextUtils.isEmpty(tag.getTip())) {

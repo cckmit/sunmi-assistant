@@ -167,7 +167,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         @Override
         public void convert(ViewHolder holder, CashVideo res) {
             CashServiceInfo info = mServiceInfo.get(res.getDeviceId());
-            holder.setText(R.id.tv_pos, info == null ? "" : info.getDeviceName());
+            holder.setText(R.id.tv_pos, info == null ? "--" : info.getDeviceName());
             ImageView imgVideo = holder.getView(R.id.iv_preview_img);
             ImageView ivFlag = holder.getView(R.id.iv_left_flag);
             TextView tvTag = holder.getView(R.id.tv_exception_des);
