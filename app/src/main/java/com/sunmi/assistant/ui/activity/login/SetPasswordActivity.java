@@ -98,7 +98,7 @@ public class SetPasswordActivity extends BaseMvpActivity<SetPasswordPresenter>
                 if (type == AppConfig.SET_PASSWORD_REGISTER) {//注册
                     mPresenter.register(mobile, password, smsCode);
                 } else if (type == AppConfig.SET_PASSWORD_RESET) {//找回密码
-                    mPresenter.resetPassword(mobile, password, smsCode);
+                    mPresenter.resetPassword(context, mobile, password, smsCode);
                 }
                 break;
             default:
