@@ -22,6 +22,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.RegexUtils;
@@ -131,7 +132,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
     }
 
     private void invalidAccount() {
-        showDarkLoading();
+        showDarkLoading(getString(R.string.str_get_sms_code));
         mPresenter.isUserExist(mobile);
     }
 
@@ -183,11 +184,12 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
     @Override
     public void isUserExistFail(int code, String msg) {
         hideLoadingDialog();
-        //TODO 根据errorcode判断
-        if (checkSource == SOURCE_REGISTER) {
-            InputCaptchaActivity_.intent(context).mobile(mobile).source("register").start();
-        } else {
-            mobileUnregister();
+        if (code == RpcErrorCode.ERROR_USER_NOT_EXIST) {
+            if (checkSource == SOURCE_REGISTER) {
+                InputCaptchaActivity_.intent(context).mobile(mobile).source("register").start();
+            } else {
+                mobileUnregister();
+            }
         }
     }
 
