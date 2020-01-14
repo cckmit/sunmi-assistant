@@ -393,7 +393,8 @@
     <string name="cash_left_first_video">已经第一个视频了</string>
     <string name="cash_auth_paly_loop">自动连播</string>
     <string name="cash_paly_single">单个循环</string>
-    <string name="ipc_cash_tag_length_tip">不得超过36个字符</string>
+    <string name="ipc_cash_tag_length_tip">不得超过18个字符</string>
+    <string name="ipc_cash_tag_empty_tip">不得为空</string>
     <string name="str_abnormal_behavior">异常行为</string>
     <string name="btn_protect_immediately">立刻防护</string>
     <string name="tip_cash_loss_prevent">AI技术更好识别</string>

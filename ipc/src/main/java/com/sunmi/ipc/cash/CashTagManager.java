@@ -20,31 +20,31 @@ public class CashTagManager {
     /**
      * 其他
      */
-    private static final int TAG_ID_OTHER = -1;
+    public static final int TAG_ID_OTHER = -1;
     /**
      * 飞单
      */
-    private static final int TAG_ID_ORDER_MISMATCH = 2;
+    public static final int TAG_ID_ORDER_MISMATCH = 2;
     /**
      * 钱箱未关
      */
-    private static final int TAG_ID_CASH_EXPOSED = 3;
+    public static final int TAG_ID_CASH_EXPOSED = 3;
     /**
      * 偷钱
      */
-    private static final int TAG_ID_CASH_STOLEN = 4;
+    public static final int TAG_ID_CASH_STOLEN = 4;
     /**
      * 漏扫
      */
-    private static final int TAG_ID_SCAN_MISSING = 5;
+    public static final int TAG_ID_SCAN_MISSING = 5;
     /**
      * 偷换条码
      */
-    private static final int TAG_ID_CODE_REPLACED = 6;
+    public static final int TAG_ID_CODE_REPLACED = 6;
     /**
      * 交易类型不匹配
      */
-    private static final int TAG_ID_TRANSACTION_MISMATCH = 7;
+    public static final int TAG_ID_TRANSACTION_MISMATCH = 7;
 
     private SparseArray<CashTag> tags = new SparseArray<>();
     private CashTag other;

@@ -32,6 +32,8 @@ import sunmi.common.view.TextLengthWatcher;
  */
 public class CashTagAdapter extends SimpleArrayAdapter<CashTagFilter> {
 
+    public static final int CUSTOM_TAG_MAX_LENGTH = 18;
+
     private View mRoot;
     private RecyclerView mRvList;
     private EditText mEtCustom;
@@ -43,7 +45,7 @@ public class CashTagAdapter extends SimpleArrayAdapter<CashTagFilter> {
         mRoot = LayoutInflater.from(context).inflate(R.layout.cash_video_dialog_abnormal_tag, null);
         mRvList = mRoot.findViewById(R.id.rvTagList);
         mEtCustom = mRoot.findViewById(R.id.etCustom);
-        mEtCustom.addTextChangedListener(new TextLengthWatcher(mEtCustom, 36) {
+        mEtCustom.addTextChangedListener(new TextLengthWatcher(mEtCustom, CUSTOM_TAG_MAX_LENGTH) {
             @Override
             public void onLengthExceed(EditText view, String content) {
                 ToastUtils.toastForShort(context, R.string.ipc_cash_tag_length_tip);
