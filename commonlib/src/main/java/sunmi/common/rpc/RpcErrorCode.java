@@ -25,4 +25,9 @@ public class RpcErrorCode {
 
     public static final int ERROR_USER_NOT_EXIST = 3603;
 
+    /**
+     * 收银防损查询AI事件不存在
+     */
+    public static final int ERR_CASH_EVENT_NOT_EXIST = 5600;
+
 }

@@ -54,6 +54,7 @@ public class BottomDialog extends Dialog {
         private int okTextColor = -1;
         private int cornerRadius = 12;
         private OnClickListener cancelClickListener, okClickListener;
+        private boolean autoDismiss = true;
 
         public Builder(Context context) {
             this.context = context;
@@ -153,12 +154,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setCancelButton(@StringRes int textId) {
-            return setCancelButton(context.getText(textId), new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+            return setCancelButton(context.getText(textId), (dialog, which) -> dialog.cancel());
         }
 
         /**
@@ -179,12 +175,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setCancelButton(CharSequence text) {
-            return setCancelButton(text, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+            return setCancelButton(text, (dialog, which) -> dialog.cancel());
         }
 
         /**
@@ -206,12 +197,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setCancelButton(@StringRes int textId, @ColorInt int textColor) {
-            return setCancelButton(context.getText(textId), textColor, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+            return setCancelButton(context.getText(textId), textColor, (dialog, which) -> dialog.cancel());
         }
 
         /**
@@ -234,12 +220,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setCancelButton(CharSequence text, @ColorInt int textColor) {
-            return setCancelButton(text, textColor, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
+            return setCancelButton(text, textColor, (dialog, which) -> dialog.cancel());
         }
 
         /**
@@ -264,12 +245,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setOkButton(@StringRes int textId) {
-            return setOkButton(context.getText(textId), new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            return setOkButton(context.getText(textId), (dialog, which) -> dialog.dismiss());
         }
 
         /**
@@ -284,18 +260,25 @@ public class BottomDialog extends Dialog {
         }
 
         /**
+         * 设置确定按钮文本和事件，是否自动消失
+         *
+         * @param textId      文本资源id
+         * @param listener    事件回调
+         * @param autoDismiss 是否自动消失
+         * @return 建造者
+         */
+        public Builder setOkButton(@StringRes int textId, OnClickListener listener, boolean autoDismiss) {
+            return setOkButton(context.getText(textId), listener, autoDismiss);
+        }
+
+        /**
          * 设置确定按钮文本，默认事件为dismiss
          *
          * @param text 文本字符串
          * @return 建造者
          */
         public Builder setOkButton(CharSequence text) {
-            return setOkButton(text, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            return setOkButton(text, (dialog, which) -> dialog.dismiss());
         }
 
         /**
@@ -310,6 +293,18 @@ public class BottomDialog extends Dialog {
         }
 
         /**
+         * 设置确定按钮文本和事件，是否自动消失
+         *
+         * @param text        文本字符串
+         * @param listener    事件回调
+         * @param autoDismiss 是否自动消失
+         * @return 建造者
+         */
+        public Builder setOkButton(CharSequence text, OnClickListener listener, boolean autoDismiss) {
+            return setOkButton(text, -1, listener, autoDismiss);
+        }
+
+        /**
          * 设置确定按钮文本和颜色，默认事件为dismiss
          *
          * @param textId    文本资源id
@@ -317,12 +312,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setOkButton(@StringRes int textId, @ColorInt int textColor) {
-            return setOkButton(context.getText(textId), textColor, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            return setOkButton(context.getText(textId), textColor, (dialog, which) -> dialog.dismiss());
         }
 
         /**
@@ -338,6 +328,20 @@ public class BottomDialog extends Dialog {
         }
 
         /**
+         * 设置确定按钮文本，颜色和事件，是否自动消失
+         *
+         * @param textId      文本资源id
+         * @param textColor   文本颜色值（非资源id）
+         * @param listener    事件回调
+         * @param autoDismiss 是否自动消失
+         * @return 建造者
+         */
+        public Builder setOkButton(@StringRes int textId, @ColorInt int textColor, OnClickListener listener,
+                                   boolean autoDismiss) {
+            return setOkButton(context.getText(textId), textColor, listener, autoDismiss);
+        }
+
+        /**
          * 设置确定按钮文本和颜色，默认事件为dismiss
          *
          * @param text      文本字符串
@@ -345,12 +349,7 @@ public class BottomDialog extends Dialog {
          * @return 建造者
          */
         public Builder setOkButton(CharSequence text, @ColorInt int textColor) {
-            return setOkButton(text, textColor, new OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            return setOkButton(text, textColor, (dialog, which) -> dialog.dismiss());
         }
 
         /**
@@ -365,6 +364,23 @@ public class BottomDialog extends Dialog {
             this.okText = text;
             this.okTextColor = textColor;
             this.okClickListener = listener;
+            return this;
+        }
+
+        /**
+         * 设置确定按钮文本，颜色和事件，是否自动消失
+         *
+         * @param text        文本字符串
+         * @param textColor   文本颜色值（非资源id）
+         * @param listener    事件回调
+         * @param autoDismiss 是否自动消失
+         * @return 建造者
+         */
+        public Builder setOkButton(CharSequence text, @ColorInt int textColor, OnClickListener listener, boolean autoDismiss) {
+            this.okText = text;
+            this.okTextColor = textColor;
+            this.okClickListener = listener;
+            this.autoDismiss = autoDismiss;
             return this;
         }
 
@@ -484,12 +500,9 @@ public class BottomDialog extends Dialog {
                     btnCancel.setTextColor(cancelTextColor);
                 }
                 if (cancelClickListener != null) {
-                    btnCancel.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.cancel();
-                            cancelClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
-                        }
+                    btnCancel.setOnClickListener(v -> {
+                        dialog.cancel();
+                        cancelClickListener.onClick(dialog, DialogInterface.BUTTON_NEGATIVE);
                     });
                 }
             }
@@ -503,12 +516,11 @@ public class BottomDialog extends Dialog {
                     btnOk.setTextColor(okTextColor);
                 }
                 if (okClickListener != null) {
-                    btnOk.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
+                    btnOk.setOnClickListener(v -> {
+                        if (autoDismiss) {
                             dialog.dismiss();
-                            okClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
                         }
+                        okClickListener.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
                     });
                 }
             }

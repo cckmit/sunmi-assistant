@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -72,6 +73,7 @@ import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.SunmiServiceApi;
+import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.IVideoPlayer;
@@ -627,7 +629,11 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                     .setTitle(R.string.cash_tag_dialog_title)
                     .setContent(root, lp)
                     .setCancelButton(R.string.sm_cancel)
-                    .setOkButton(R.string.str_confirm, (dialog, which) -> updateVideoTag())
+                    .setOkButton(R.string.str_confirm, (dialog, which) -> {
+                        if (updateVideoTag()) {
+                            dialog.dismiss();
+                        }
+                    }, false)
                     .create();
         }
         if (mSelectedTag != null) {
@@ -640,8 +646,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             } else {
                 // 异常视频
                 int[] tags = current.getVideoTag();
+                // noinspection StatementWithEmptyBody
                 if (tags == null || tags.length <= 0) {
-                    // FIXME: 其他异常如何在选择异常对话框中展示
+                    // FIXME: 其他异常如何在选择异常对话框中展示，目前处理方法为不默认选中任何一个选项
                 } else if (tags[0] == IpcConstants.CASH_VIDEO_TAG_CUSTOM) {
                     mTagAdapter.setCustom(current.getDescription());
                 } else {
@@ -652,13 +659,25 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         mTagDialog.show();
     }
 
-    private void updateVideoTag() {
+    private boolean updateVideoTag() {
         CashTagFilter selected = mTagAdapter.getSelected();
-        if (mSelectedTag != null && mSelectedTag.equals(selected)) {
-            return;
+        if (selected == null) {
+            return false;
         }
-        showLoadingDialog();
+        if (selected.getId() == CashTagFilter.TAG_ID_CUSTOM) {
+            String desc = selected.getDesc();
+            desc = desc == null ? null : desc.trim();
+            if (TextUtils.isEmpty(desc)) {
+                shortTip(R.string.ipc_cash_tag_empty_tip);
+                return false;
+            }
+        }
+        if (mSelectedTag != null && mSelectedTag.equals(selected)) {
+            return true;
+        }
+        showDarkLoading();
         mPresenter.updateTag(getCurrent().getVideoId(), isAbnormalBehavior ? 1 : 2, selected);
+        return true;
     }
 
     /**
@@ -700,12 +719,18 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         playCashVideoStatus = PLAY_TYPE_NORMAL;
         CashVideo current = getCurrent();
         boolean isAbnormal = current.getVideoType() != IpcConstants.CASH_VIDEO_NORMAL;
+        int[] videoTag = current.getVideoTag();
         if (isAbnormal && current.getUserModified() == 0) {
             mPresenter.getAbnormalEvent(current.getEventId(), current.getStartTime());
+            if (CashTagManager.get(this).getTag(videoTag).getTag() != CashTagManager.TAG_ID_ORDER_MISMATCH) {
+                // 只有飞单有风险率。换言之，如果不是飞单，则直接展示tip；否则拉取AI数据后展示。
+                tvAbnormalTip.setText(CashTagManager.get(this).getTagName(videoTag, current.getDescription()));
+                tvAbnormalTip.setVisibility(View.VISIBLE);
+            }
         } else {
             cashBoxOverlay.setVisibility(View.GONE);
             sbMark.setVisibility(View.GONE);
-            tvAbnormalTip.setText(CashTagManager.get(this).getTagName(current.getVideoTag(), current.getDescription()));
+            tvAbnormalTip.setText(CashTagManager.get(this).getTagName(videoTag, current.getDescription()));
             tvAbnormalTip.setVisibility(isAbnormal ? View.VISIBLE : View.GONE);
         }
         //查询当前视频订单信息
@@ -1043,21 +1068,26 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         }
         cashBoxOverlay.setData(boxes);
         sbMark.setData(boxes);
-        String tip = getString(R.string.cash_abnormal_tip,
-                CashTagManager.get(this).getTag(getCurrent().getVideoTag()).getName(),
-                (int) riskScore);
-        tvAbnormalTip.setText(tip);
         cashBoxOverlay.setVisibility(View.VISIBLE);
         sbMark.setVisibility(View.VISIBLE);
-        tvAbnormalTip.setVisibility(View.VISIBLE);
+        int[] videoTag = getCurrent().getVideoTag();
+        if (CashTagManager.get(this).getTag(videoTag).getTag() == CashTagManager.TAG_ID_ORDER_MISMATCH) {
+            // 只有飞单有风险率。
+            String tip = getString(R.string.cash_abnormal_tip, CashTagManager.get(this).getTag(videoTag).getName(),
+                    (int) riskScore);
+            tvAbnormalTip.setText(tip);
+            tvAbnormalTip.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void getAbnormalEventFail(int code, String msg) {
-        if (code != 5600) {
-            // 5600：事件不存在
+        if (code != RpcErrorCode.ERR_CASH_EVENT_NOT_EXIST) {
             shortTip(R.string.toast_network_error);
         }
+        CashVideo current = getCurrent();
+        tvAbnormalTip.setText(CashTagManager.get(this).getTagName(current.getVideoTag(), current.getDescription()));
+        tvAbnormalTip.setVisibility(View.VISIBLE);
         cashBoxOverlay.setVisibility(View.GONE);
         sbMark.setVisibility(View.GONE);
     }
