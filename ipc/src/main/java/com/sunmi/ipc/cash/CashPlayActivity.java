@@ -1172,9 +1172,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
             }
             ivVideoChange.setVisibility(View.VISIBLE);
             if (e1.getX() - e2.getX() > MOVE_SCREEN_POSITION) {
-                ivVideoChange.setImageResource(R.mipmap.ic_cash_previous);
-            } else if (e2.getX() - e1.getX() > MOVE_SCREEN_POSITION) {
                 ivVideoChange.setImageResource(R.mipmap.ic_cash_next);
+            } else if (e2.getX() - e1.getX() > MOVE_SCREEN_POSITION) {
+                ivVideoChange.setImageResource(R.mipmap.ic_cash_previous);
             }
             return false;
         }
@@ -1190,19 +1190,19 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                 return false;
             }
             if (e1.getX() - e2.getX() > MOVE_SCREEN_POSITION) {
-                if (playIndex > 0) {
-                    playCashVideoStatus = PLAY_TYPE_LEFT_FLING;
-                    initCashVideoPlay();
-                } else {
-                    shortTip(R.string.cash_left_first_video);
-                }
-                return true;
-            } else if (e2.getX() - e1.getX() > MOVE_SCREEN_POSITION) {
                 playCashVideoStatus = PLAY_TYPE_RIGHT_FLING;
                 if (playIndex < videoList.size() - 1) {
                     initCashVideoPlay();
                 } else {
                     loadMoreVideoList();
+                }
+                return true;
+            } else if (e2.getX() - e1.getX() > MOVE_SCREEN_POSITION) {
+                if (playIndex > 0) {
+                    playCashVideoStatus = PLAY_TYPE_LEFT_FLING;
+                    initCashVideoPlay();
+                } else {
+                    shortTip(R.string.cash_left_first_video);
                 }
                 return true;
             }
