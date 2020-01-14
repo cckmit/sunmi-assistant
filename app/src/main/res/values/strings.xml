@@ -318,4 +318,7 @@
     <string name="str_agreement_manager">协议管理</string>
     <string name="tip_device_unbound_already">当前设备已解绑</string>
     <string name="ap_no_device_list">暂无设备，请添加</string>
+    <string name="str_logging_in">正在登录…</string>
+    <string name="str_verification_code">校验验证码…</string>
+    <string name="str_now_reset_psw">正在重置密码…</string>
 </resources>

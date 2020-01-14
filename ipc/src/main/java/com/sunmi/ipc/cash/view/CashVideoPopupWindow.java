@@ -33,7 +33,7 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.DateTimeUtils;
-import sunmi.common.utils.GlideRoundTransform;
+import sunmi.common.view.CircleImage;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.ViewHolder;
 
@@ -167,8 +167,8 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
         @Override
         public void convert(ViewHolder holder, CashVideo res) {
             CashServiceInfo info = mServiceInfo.get(res.getDeviceId());
-            holder.setText(R.id.tv_pos, info == null ? "" : info.getDeviceName());
-            ImageView imgVideo = holder.getView(R.id.iv_preview_img);
+            holder.setText(R.id.tv_pos, info == null ? "--" : info.getDeviceName());
+            CircleImage imgVideo = holder.getView(R.id.iv_preview_img);
             ImageView ivFlag = holder.getView(R.id.iv_left_flag);
             TextView tvTag = holder.getView(R.id.tv_exception_des);
             TextView tvLineTop = holder.getView(R.id.tv_left_top_line);
@@ -176,7 +176,7 @@ public class CashVideoPopupWindow extends PopupWindow implements View.OnTouchLis
             TextView tvSuggest = holder.getView(R.id.tv_suggest);
             ivFlag.setSelected(holder.getAdapterPosition() == currentPlayPosition);
             if (isShowing()) {
-                Glide.with(mContext).load(res.getSnapshotUrl()).transform(new GlideRoundTransform(mContext)).into(imgVideo);
+                Glide.with(mContext).load(res.getSnapshotUrl()).into(imgVideo);
             }
 
             int[] tags = res.getVideoTag();
