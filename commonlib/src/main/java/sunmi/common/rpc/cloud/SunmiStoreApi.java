@@ -914,11 +914,11 @@ public class SunmiStoreApi {
      * @param type     2:本周 3:本月 4:昨日
      * @param callback
      */
-    public void getCustomerData(int type, RetrofitCallback<CustomerDataResp> callback) {
+    public void getCustomerData(int companyId, int shopId, int type, RetrofitCallback<CustomerDataResp> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("type", type)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
@@ -936,12 +936,12 @@ public class SunmiStoreApi {
      * @param groupBy  “hour”、”day”
      * @param callback
      */
-    public void getCustomerEnterRateTrend(int type, String groupBy,
+    public void getCustomerEnterRateTrend(int companyId, int shopId, int type, String groupBy,
                                           RetrofitCallback<CustomerEnterRateTrendResp> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("type", type)
                     .put("group_by", groupBy)
                     .toString();
@@ -959,11 +959,12 @@ public class SunmiStoreApi {
      * @param type     2:本周 3:本月 4:昨日
      * @param callback
      */
-    public void getCustomerFrequencyDistribution(int type, RetrofitCallback<CustomerFrequencyDistributionResp> callback) {
+    public void getCustomerFrequencyDistribution(int companyId, int shopId, int type,
+                                                 RetrofitCallback<CustomerFrequencyDistributionResp> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("type", type)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
@@ -981,12 +982,12 @@ public class SunmiStoreApi {
      * @param groupBy  “week”、”day”
      * @param callback
      */
-    public void getCustomerFrequencyTrend(int type, String groupBy,
+    public void getCustomerFrequencyTrend(int companyId, int shopId, int type, String groupBy,
                                           RetrofitCallback<CustomerFrequencyTrendResp> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("type", type)
                     .put("group_by", groupBy)
                     .toString();
@@ -1004,11 +1005,12 @@ public class SunmiStoreApi {
      * @param type     2:本周 3:本月
      * @param callback
      */
-    public void getCustomerFrequencyAvg(int type, RetrofitCallback<CustomerFrequencyAvgResp> callback) {
+    public void getCustomerFrequencyAvg(int companyId, int shopId, int type,
+                                        RetrofitCallback<CustomerFrequencyAvgResp> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("type", type)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
