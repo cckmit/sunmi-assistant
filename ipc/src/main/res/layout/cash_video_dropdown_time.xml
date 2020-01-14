@@ -83,7 +83,7 @@
     <sunmi.common.view.loopview.LoopView
         android:id="@+id/lv_time_hour"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_140"
+        android:layout_height="@dimen/dp_160"
         android:layout_marginTop="@dimen/dp_8"
         app:awv_textsize="20"
         app:layout_constraintEnd_toStartOf="@+id/lv_time_minute"
@@ -94,7 +94,7 @@
     <sunmi.common.view.loopview.LoopView
         android:id="@+id/lv_time_minute"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_140"
+        android:layout_height="@dimen/dp_160"
         android:layout_marginTop="@dimen/dp_8"
         app:awv_textsize="20"
         app:layout_constraintEnd_toEndOf="parent"

@@ -23,6 +23,8 @@ public class RpcErrorCode {
     //服务相关错误码
     public static final int ERR_SERVICE_SUBSCRIBE_ERROR = 5420;
 
+    public static final int ERROR_USER_NOT_EXIST = 3603;
+
     /**
      * 收银防损查询AI事件不存在
      */

@@ -12,7 +12,6 @@ import com.sunmi.ipc.R;
 import java.util.List;
 
 import sunmi.common.model.CashServiceInfo;
-import sunmi.common.utils.GlideRoundTransform;
 import sunmi.common.view.CircleImage;
 
 /**
@@ -44,7 +43,7 @@ public class CashVideoOverViewAdapter extends BaseQuickAdapter<CashServiceInfo, 
     @Override
     protected void convert(BaseViewHolder helper, CashServiceInfo item) {
         CircleImage civIpc = helper.getView(R.id.civ_ipc);
-        Glide.with(context).load(item.getImgUrl()).transform(new GlideRoundTransform(context)).into(civIpc);
+        Glide.with(context).load(item.getImgUrl()).into(civIpc);
         helper.setText(R.id.tv_ipc_name, item.getDeviceName());
         helper.setText(R.id.tv_ipc_sn, context.getString(R.string.str_dev_sn, item.getDeviceSn()));
         helper.setText(R.id.tv_count_cash, String.valueOf(item.getTotalCount()));
