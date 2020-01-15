@@ -42,12 +42,7 @@ public class ConfigManager implements BaseNotification.NotificationCenterDelegat
     }
 
     public void load(@Nullable Callback<?> callback) {
-        if (isLoaded()) {
-            if (callback != null) {
-                callback.onSuccess(null);
-            }
-            return;
-        }
+        clearLoaded();
         SunmiStoreApi.getInstance().getServiceEnable(new RetrofitCallback<ServiceEnableResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceEnableResp data) {
@@ -93,7 +88,6 @@ public class ConfigManager implements BaseNotification.NotificationCenterDelegat
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.shopSwitched || id == CommonNotifications.companySwitch) {
-            clearLoaded();
             load(null);
         }
     }
