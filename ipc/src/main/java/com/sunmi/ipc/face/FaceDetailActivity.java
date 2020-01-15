@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,6 @@ import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.face.presenter.FaceDetailPresenter;
 import com.sunmi.ipc.face.util.GlideRoundCrop;
 import com.sunmi.ipc.face.util.Utils;
-import com.sunmi.ipc.model.FaceAgeRangeResp;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -103,7 +103,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     Face mFace;
     @Extra
     FaceGroup mFaceGroup;
-    private int groupId, targetGroupId, gender, ageRangeCode;
+    private int groupId, targetGroupId, gender, ageCode;
     private String groupName, ageRange;
     private List<FaceAge> faceAgesList;
     private List<FaceGroup> groupList;
@@ -360,14 +360,14 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
     }
 
     @Override
-    public void faceAgeRangeSuccessView(FaceAgeRangeResp data) {
-        faceAgesList = data.getAgeRangeList();
-        for (FaceAge age : faceAgesList) {
-            if (mFace.getAgeRangeCode() == age.getCode()) {
-                silFaceAge.setEndContent(age.getName());
-                ageRangeCode = age.getCode();
-            }
+    public void faceAgeRangeSuccessView(SparseArray<FaceAge> ageMap) {
+        int size = ageMap.size();
+        faceAgesList = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            faceAgesList.add(ageMap.valueAt(i));
         }
+        ageCode = mFace.getAgeRangeCode();
+        silFaceAge.setEndContent(ageMap.get(ageCode).getName());
     }
 
     @Override
@@ -430,7 +430,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             } else if (updateIndex == UPDATE_INDEX_GENDER) {
                 mPresenter.updateGender(gender);
             } else if (updateIndex == UPDATE_INDEX_AGE) {
-                mPresenter.updateAge(ageRangeCode);
+                mPresenter.updateAge(ageCode);
             }
             dialog.dismiss();
         });
@@ -593,7 +593,7 @@ public class FaceDetailActivity extends BaseMvpActivity<FaceDetailPresenter>
             }
             holder.itemView.setOnClickListener(v -> {
                 selectedIndex = holder.getAdapterPosition();
-                ageRangeCode = data.getCode();
+                ageCode = data.getCode();
                 notifyDataSetChanged();
             });
             item.setChecked(selectedIndex == holder.getAdapterPosition());

@@ -277,11 +277,8 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
         View rate = holder.getView(R.id.layout_dashboard_rate);
         TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView subtitle = holder.getView(R.id.tv_dashboard_subtitle);
-        TextView volumeTitle = holder.getView(R.id.tv_dashboard_volume_title);
         TextView volumeSubtitle = holder.getView(R.id.tv_dashboard_volume_subtitle);
-        TextView customerTitle = holder.getView(R.id.tv_dashboard_customer_title);
         TextView customerSubtitle = holder.getView(R.id.tv_dashboard_customer_subtitle);
-        TextView rateTitle = holder.getView(R.id.tv_dashboard_rate_title);
         TextView rateSubtitle = holder.getView(R.id.tv_dashboard_rate_subtitle);
         holder.getView(R.id.iv_dashboard_loading).setVisibility(View.GONE);
         // 根据数据来源变更View展示的部分和文案
@@ -355,7 +352,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             mNum100Million = context.getString(R.string.str_num_100_million);
         }
 
-        public String getSales() {
+        private String getSales() {
             if (sales > NUM_100_MILLION) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(sales / NUM_100_MILLION) + mNum100Million;
             } else {
@@ -363,7 +360,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             }
         }
 
-        public String getLastSales() {
+        private String getLastSales() {
             if (lastSales > NUM_100_MILLION) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(lastSales / NUM_100_MILLION) + mNum100Million;
             } else {
@@ -371,7 +368,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             }
         }
 
-        public String getVolume() {
+        private String getVolume() {
             if (volume > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) volume / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -380,7 +377,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             }
         }
 
-        public String getLastVolume() {
+        private String getLastVolume() {
             if (lastVolume > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) lastVolume / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -389,7 +386,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             }
         }
 
-        public String getCustomer() {
+        private String getCustomer() {
             if (customer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) customer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -398,7 +395,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             }
         }
 
-        public String getLastCustomer() {
+        private String getLastCustomer() {
             if (lastCustomer > NUM_10_THOUSANDS) {
                 return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
                         (float) lastCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
@@ -407,11 +404,11 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             }
         }
 
-        public String getRate() {
+        private String getRate() {
             return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_PERCENT, rate * 100);
         }
 
-        public String getLastRate() {
+        private String getLastRate() {
             return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_PERCENT, lastRate * 100);
         }
 

@@ -32,7 +32,6 @@ import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -43,6 +42,7 @@ import sunmi.common.model.CustomerAgeNewOldResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CacheManager;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -67,7 +67,7 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     private String mFemaleLabel;
 
     private PieChart mChart;
-    private SparseArray<String> mAgeList;
+    private SparseArray<FaceAge> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
 
     private RealtimeDistributionCard(Presenter presenter, int source) {
@@ -111,23 +111,26 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     }
 
     private void loadAgeList(int companyId, int shopId, String start, String end, CardCallback callback) {
+        mAgeList = CacheManager.get().get(CacheManager.CACHE_AGE_NAME);
+        if (mAgeList != null) {
+            loadNewOld(companyId, shopId, start, end, callback);
+            return;
+        }
         IpcCloudApi.getInstance().getFaceAgeRange(companyId, shopId, new RetrofitCallback<FaceAgeRangeResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
-                if (data == null) {
-                    onFail(code, msg, null);
-                    return;
-                }
-                List<FaceAge> list = data.getAgeRangeList();
-                if (list == null) {
+                if (data == null || data.getAgeRangeList() == null) {
                     onFail(code, msg, data);
                     return;
                 }
-                Collections.sort(list, (o1, o2) -> (o1.getCode() - o2.getCode()));
+                List<FaceAge> list = data.getAgeRangeList();
                 mAgeList = new SparseArray<>(list.size());
+                int size = 4;
                 for (FaceAge age : list) {
-                    mAgeList.put(age.getCode(), age.getName() + mAgeLabel);
+                    mAgeList.put(age.getCode(), age);
+                    size += age.getName().length() * 2 + 8;
                 }
+                CacheManager.get().put(CacheManager.CACHE_AGE_NAME, mAgeList, size);
                 loadNewOld(companyId, shopId, start, end, callback);
             }
 

@@ -36,6 +36,7 @@ import sunmi.common.model.CustomerHistoryDetailResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CacheManager;
 
 /**
  * @author yinhui
@@ -52,7 +53,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
     private String mMaleLabel;
     private String mFemaleLabel;
 
-    private SparseArray<String> mAgeList;
+    private SparseArray<FaceAge> mAgeList;
     private CommonAdapter<Item> mAdapter;
 
     private ProfileAnalysisCard(Presenter presenter, int source) {
@@ -95,23 +96,26 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
     }
 
     private void loadAgeList(int companyId, int shopId, String start, String end, CardCallback callback) {
+        mAgeList = CacheManager.get().get(CacheManager.CACHE_AGE_NAME);
+        if (mAgeList != null) {
+            loadDetail(companyId, shopId, start, end, callback);
+            return;
+        }
         IpcCloudApi.getInstance().getFaceAgeRange(companyId, shopId, new RetrofitCallback<FaceAgeRangeResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
-                if (data == null) {
-                    onFail(code, msg, null);
-                    return;
-                }
-                List<FaceAge> list = data.getAgeRangeList();
-                if (list == null) {
+                if (data == null || data.getAgeRangeList() == null) {
                     onFail(code, msg, data);
                     return;
                 }
-                Collections.sort(list, (o1, o2) -> (o1.getCode() - o2.getCode()));
+                List<FaceAge> list = data.getAgeRangeList();
                 mAgeList = new SparseArray<>(list.size());
+                int size = 4;
                 for (FaceAge age : list) {
-                    mAgeList.put(age.getCode(), age.getName());
+                    mAgeList.put(age.getCode(), age);
+                    size += age.getName().length() * 2 + 8;
                 }
+                CacheManager.get().put(CacheManager.CACHE_AGE_NAME, mAgeList, size);
                 loadDetail(companyId, shopId, start, end, callback);
             }
 
@@ -170,7 +174,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
                 if (item.getMaleCount() == 0 && item.getFemaleCount() == 0) {
                     continue;
                 }
-                String ageName = mAgeList.get(item.getAgeRangeCode());
+                String ageName = mAgeList.get(item.getAgeRangeCode()).getName();
                 String maleName = String.format("%s  |  %s%s", mMaleLabel, ageName, mAgeLabel);
                 String femaleName = String.format("%s  |  %s%s", mFemaleLabel, ageName, mAgeLabel);
                 result.add(new Item(model.period, item.getAgeRangeCode(), 1, maleName,
