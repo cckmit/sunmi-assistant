@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -60,6 +61,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.FileUtils;
+import sunmi.common.utils.NumberValueFilter;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -174,6 +176,7 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
                 }
             }
         });
+        selSquare.getEditText().setFilters(new InputFilter[]{new NumberValueFilter(6)});
         updateCompleteBtn();
     }
 

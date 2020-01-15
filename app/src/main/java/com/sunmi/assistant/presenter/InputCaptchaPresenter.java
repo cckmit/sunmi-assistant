@@ -59,14 +59,13 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
     }
 
     @Override
-    public void checkSmsCode(Context context,String mobile, String captcha) {
-        if (isViewAttached()){
-            mView.showDarkLoading(context.getString(R.string.str_verification_code));
-        }
+    public void checkSmsCode(Context context, String mobile, String captcha) {
+        mView.showDarkLoading(context.getString(R.string.str_verification_code));
         SSOApi.checkSmsCode(mobile, captcha, new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.captchaCheckSuccess(code, msg, data);
                 }
             }
@@ -74,6 +73,7 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
             @Override
             public void onFail(int code, String msg, String data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     if (code == 208) {
                         mView.shortTip(R.string.sms_invalid);
                     } else if (code == 2003) {
@@ -88,12 +88,13 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
 
     //验证码登录
     @Override
-    public void captchaLogin(Context context,String mobile, String captcha) {
+    public void captchaLogin(Context context, String mobile, String captcha) {
         mView.showDarkLoading(context.getString(R.string.str_verification_code));
         SunmiStoreApi.getInstance().quickLogin(mobile, captcha, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     SpUtils.setStoreToken(data.toString());
                     SunmiStoreRetrofitClient.createInstance();//初始化retrofit
                     mView.captchaLoginSuccess();
@@ -102,13 +103,14 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
 
             @Override
             public void onFail(int code, String msg, Object data) {
-              if (isViewAttached()){
-                  if (code == 208) {
-                      mView.shortTip(R.string.sms_invalid);
-                  }else {
-                      mView.shortTip(R.string.login_error);
-                  }
-              }
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    if (code == 208) {
+                        mView.shortTip(R.string.sms_invalid);
+                    } else {
+                        mView.shortTip(R.string.login_error);
+                    }
+                }
             }
         });
 
