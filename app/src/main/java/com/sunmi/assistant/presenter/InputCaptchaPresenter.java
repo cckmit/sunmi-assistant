@@ -1,5 +1,7 @@
 package com.sunmi.assistant.presenter;
 
+import android.content.Context;
+
 import com.sunmi.apmanager.rpc.sso.SSOApi;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.InputCaptchaContract;
@@ -57,8 +59,11 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
     }
 
     @Override
-    public void checkSmsCode(String mobile, String captcha) {
-        SSOApi.checkSmsCode(mobile, captcha, new HttpCallback<String>(mView) {
+    public void checkSmsCode(Context context,String mobile, String captcha) {
+        if (isViewAttached()){
+            mView.showDarkLoading(context.getString(R.string.str_verification_code));
+        }
+        SSOApi.checkSmsCode(mobile, captcha, new HttpCallback<String>(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
                 if (isViewAttached()) {
@@ -83,8 +88,8 @@ public class InputCaptchaPresenter extends BasePresenter<InputCaptchaContract.Vi
 
     //验证码登录
     @Override
-    public void captchaLogin(String mobile, String captcha) {
-        mView.showDarkLoading();
+    public void captchaLogin(Context context,String mobile, String captcha) {
+        mView.showDarkLoading(context.getString(R.string.str_verification_code));
         SunmiStoreApi.getInstance().quickLogin(mobile, captcha, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {

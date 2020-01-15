@@ -1,5 +1,8 @@
 package com.sunmi.assistant.ui.activity.presenter;
 
+import android.content.Context;
+
+import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.contract.SetPasswordContract;
 
 import sunmi.common.base.BasePresenter;
@@ -19,7 +22,9 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
 
     @Override
     public void register(String username, String password, String code) {
-        mView.showDarkLoading();
+        if (isViewAttached()) {
+            mView.showDarkLoading();
+        }
         SunmiStoreApi.getInstance().register(username, password, code, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
@@ -43,11 +48,15 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
     }
 
     @Override
-    public void resetPassword(String username, String password, String code) {
+    public void resetPassword(Context context,String username, String password, String code) {
+        if (isViewAttached()){
+            mView.showDarkLoading(context.getString(R.string.str_now_reset_psw));
+        }
         SunmiStoreApi.getInstance().resetPassword(username, password, code, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.resetPasswordSuccess();
                 }
             }
@@ -55,6 +64,7 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
             @Override
             public void onFail(int code, String msg, Object data) {
                 if (isViewAttached()) {
+                    mView.hideLoadingDialog();
                     mView.reSetPasswordFail(code, msg);
                 }
             }
@@ -63,7 +73,9 @@ public class SetPasswordPresenter extends BasePresenter<SetPasswordContract.View
 
     @Override
     public void getCompanyList() {
-        mView.showDarkLoading();
+        if (isViewAttached()) {
+            mView.showDarkLoading();
+        }
         SunmiStoreApi.getInstance().getCompanyList(new RetrofitCallback<CompanyListResp>() {
             @Override
             public void onSuccess(int code, String msg, CompanyListResp data) {

@@ -218,7 +218,7 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
 
     //账号合并
     private void userMerge(final String password) {
-        showDarkLoading();
+        showDarkLoading(getString(R.string.str_logging_in));
         mPresenter.userMerge(mobile, mobile, password);
     }
 

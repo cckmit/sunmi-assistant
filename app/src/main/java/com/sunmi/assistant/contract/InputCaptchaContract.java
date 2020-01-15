@@ -1,6 +1,6 @@
 package com.sunmi.assistant.contract;
 
-import com.sunmi.apmanager.model.LoginDataBean;
+import android.content.Context;
 
 import sunmi.common.base.BaseView;
 
@@ -26,10 +26,10 @@ public interface InputCaptchaContract {
     interface Presenter {
         void getCaptcha(int type, String mobile, String imgCode, String key);
 
-        void captchaLogin(String mobile, String captcha);
+        void captchaLogin(Context context, String mobile, String captcha);
 
         void getImgCaptcha();
 
-        void checkSmsCode(String mobile, String captcha);
+        void checkSmsCode(Context context, String mobile, String captcha);
     }
 }

@@ -1,5 +1,7 @@
 package com.sunmi.assistant.ui.activity.contract;
 
+import android.content.Context;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -29,7 +31,7 @@ public interface SetPasswordContract {
     interface Presenter {
         void register(String username, String password, String code);
 
-        void resetPassword(String username, String password, String code);
+        void resetPassword(Context context,String username, String password, String code);
 
         void getCompanyList();
     }
