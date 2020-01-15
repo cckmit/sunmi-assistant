@@ -330,8 +330,8 @@ public class CreateShopNewActivity extends BaseMvpActivity<ShopCreatePresenter>
         if (SpUtils.isLoginSuccess()) {
             BaseNotification.newInstance().postNotificationName(CommonNotifications.shopCreate);
             if (isLoginSuccessSwitchCompany) {
-                BaseNotification.newInstance().postNotificationName(CommonNotifications.companySwitch);
                 CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, resp.getShop_id(), resp.getShop_name());
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.companySwitch);
                 Router.withApi(AppApi.class).goToMainClearTask(context);
             } else {
                 setResult(RESULT_OK);
