@@ -26,7 +26,7 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.ui.PieChartMarkerView;
+import com.sunmi.assistant.dashboard.ui.chart.PieChartMarkerView;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;

@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.ui;
+package com.sunmi.assistant.dashboard.ui.chart;
 
 import android.content.Context;
 

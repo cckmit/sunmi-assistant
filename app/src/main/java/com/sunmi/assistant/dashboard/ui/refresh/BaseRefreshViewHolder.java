@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sunmi.assistant.dashboard.ui;
+package com.sunmi.assistant.dashboard.ui.refresh;
 
 import android.content.Context;
 import android.graphics.Color;

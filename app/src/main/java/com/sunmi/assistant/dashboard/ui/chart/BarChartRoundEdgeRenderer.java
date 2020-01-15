@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.ui;
+package com.sunmi.assistant.dashboard.ui.chart;
 
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
@@ -19,16 +19,16 @@ import com.github.mikephil.charting.utils.Transformer;
  * @author yinhui
  * @since 2019-07-01
  */
-public class RoundEdgeBarChartRenderer extends BarChartRenderer {
+public class BarChartRoundEdgeRenderer extends BarChartRenderer {
     private RectF mBarShadowRectBuffer = new RectF();
 
     private float mRadius;
 
-    public RoundEdgeBarChartRenderer(BarChart chart) {
+    public BarChartRoundEdgeRenderer(BarChart chart) {
         super(chart, chart.getAnimator(), chart.getViewPortHandler());
     }
 
-    public RoundEdgeBarChartRenderer(BarChart chart, float radius) {
+    public BarChartRoundEdgeRenderer(BarChart chart, float radius) {
         super(chart, chart.getAnimator(), chart.getViewPortHandler());
         this.mRadius = radius;
     }

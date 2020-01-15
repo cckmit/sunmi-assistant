@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.ui;
+package com.sunmi.assistant.dashboard.ui.chart;
 
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.ValueFormatter;
@@ -9,7 +9,7 @@ import java.util.Locale;
  * @author yinhui
  * @since 2019-07-01
  */
-public class LineYAxisLabelFormatter extends ValueFormatter {
+public class YAxisRateLabelFormatter extends ValueFormatter {
 
     @Override
     public String getAxisLabel(float value, AxisBase axis) {

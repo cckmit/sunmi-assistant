@@ -11,8 +11,8 @@ import android.view.View;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.DashboardContract;
-import com.sunmi.assistant.dashboard.ui.RefreshLayout;
-import com.sunmi.assistant.dashboard.ui.RefreshViewHolder;
+import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
+import com.sunmi.assistant.dashboard.ui.refresh.RefreshViewHolder;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;

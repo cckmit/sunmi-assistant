@@ -17,13 +17,13 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.ui.ChartEntry;
-import com.sunmi.assistant.dashboard.ui.LineChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.LineYAxisLabelFormatter;
-import com.sunmi.assistant.dashboard.ui.MarkerFormatter;
-import com.sunmi.assistant.dashboard.ui.RateYAxisLabelsRenderer;
-import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
-import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
+import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
+import com.sunmi.assistant.dashboard.ui.chart.MarkerFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelRenderer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,8 +48,8 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
 
     private static CustomerEnterRateCard sInstance;
 
-    private XAxisLabelsRenderer lineXAxisRenderer;
-    private RateYAxisLabelsRenderer lineYAxisRenderer;
+    private XAxisLabelRenderer lineXAxisRenderer;
+    private YAxisRateLabelRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private MarkerFormatter mMarkerFormatter;
 
@@ -91,8 +91,8 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         LineChart chart = holder.getView(R.id.view_dashboard_line_chart);
 
         // 设置图表坐标Label格式
-        lineXAxisRenderer = new XAxisLabelsRenderer(chart);
-        lineYAxisRenderer = new RateYAxisLabelsRenderer(chart);
+        lineXAxisRenderer = new XAxisLabelRenderer(chart);
+        lineYAxisRenderer = new YAxisRateLabelRenderer(chart);
         chart.setXAxisRenderer(lineXAxisRenderer);
         chart.setRendererLeftYAxis(lineYAxisRenderer);
 
@@ -126,7 +126,7 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         lineYAxis.setAxisMaximum(1f);
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
-        lineYAxis.setValueFormatter(new LineYAxisLabelFormatter());
+        lineYAxis.setValueFormatter(new YAxisRateLabelFormatter());
         lineYAxis.setMinWidth(36f);
 
         // 设置Line图

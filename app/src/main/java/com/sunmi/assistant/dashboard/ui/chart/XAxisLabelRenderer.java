@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.ui;
+package com.sunmi.assistant.dashboard.ui.chart;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.components.YAxis;
@@ -9,12 +9,12 @@ import com.sunmi.assistant.dashboard.Constants;
  * @author yinhui
  * @since 2019-07-03
  */
-public class XAxisLabelsRenderer extends XAxisRenderer {
+public class XAxisLabelRenderer extends XAxisRenderer {
 
     private float[] labels;
     private boolean adjustLabelCountToChartWidth;
 
-    public XAxisLabelsRenderer(BarLineChartBase chart) {
+    public XAxisLabelRenderer(BarLineChartBase chart) {
         super(chart.getViewPortHandler(), chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT));
     }
 

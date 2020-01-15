@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.ui;
+package com.sunmi.assistant.dashboard.ui.chart;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.components.YAxis;
@@ -8,11 +8,11 @@ import com.github.mikephil.charting.renderer.YAxisRenderer;
  * @author yinhui
  * @since 2019-07-03
  */
-public class VolumeYAxisLabelsRenderer extends YAxisRenderer {
+public class YAxisVolumeLabelsRenderer extends YAxisRenderer {
 
     private float[] labels;
 
-    public VolumeYAxisLabelsRenderer(BarLineChartBase chart) {
+    public YAxisVolumeLabelsRenderer(BarLineChartBase chart) {
         super(chart.getViewPortHandler(), chart.getAxisLeft(), chart.getTransformer(YAxis.AxisDependency.LEFT));
     }
 

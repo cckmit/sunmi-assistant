@@ -24,16 +24,16 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.ui.BarChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.ChartEntry;
-import com.sunmi.assistant.dashboard.ui.LineChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.LineYAxisLabelFormatter;
-import com.sunmi.assistant.dashboard.ui.MarkerFormatter;
-import com.sunmi.assistant.dashboard.ui.RateYAxisLabelsRenderer;
-import com.sunmi.assistant.dashboard.ui.RoundEdgeBarChartRenderer;
-import com.sunmi.assistant.dashboard.ui.VolumeYAxisLabelsRenderer;
-import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
-import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
+import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
+import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
+import com.sunmi.assistant.dashboard.ui.chart.MarkerFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,13 +58,13 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
 
     private static RealtimeTrendCard sInstance;
 
-    private XAxisLabelsRenderer lineXAxisRenderer;
-    private RateYAxisLabelsRenderer lineYAxisRenderer;
+    private XAxisLabelRenderer lineXAxisRenderer;
+    private YAxisRateLabelRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private MarkerFormatter lineMarkerFormatter;
 
-    private XAxisLabelsRenderer barXAxisRenderer;
-    private VolumeYAxisLabelsRenderer barYAxisRenderer;
+    private XAxisLabelRenderer barXAxisRenderer;
+    private YAxisVolumeLabelsRenderer barYAxisRenderer;
     private BarChartMarkerView mBarChartMarker;
     private MarkerFormatter barMarkerFormatter;
 
@@ -116,8 +116,8 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
 
     private void setupLineChart(Context context, LineChart chart) {
         // 设置图表坐标Label格式
-        lineXAxisRenderer = new XAxisLabelsRenderer(chart);
-        lineYAxisRenderer = new RateYAxisLabelsRenderer(chart);
+        lineXAxisRenderer = new XAxisLabelRenderer(chart);
+        lineYAxisRenderer = new YAxisRateLabelRenderer(chart);
         chart.setXAxisRenderer(lineXAxisRenderer);
         chart.setRendererLeftYAxis(lineYAxisRenderer);
 
@@ -151,7 +151,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         lineYAxis.setAxisMaximum(1f);
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
-        lineYAxis.setValueFormatter(new LineYAxisLabelFormatter());
+        lineYAxis.setValueFormatter(new YAxisRateLabelFormatter());
         lineYAxis.setMinWidth(36f);
 
         // 设置Marker
@@ -166,8 +166,8 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
     private void setupBarChart(Context context, BarChart chart) {
 
         // 设置图表坐标Label格式
-        barXAxisRenderer = new XAxisLabelsRenderer(chart);
-        barYAxisRenderer = new VolumeYAxisLabelsRenderer(chart);
+        barXAxisRenderer = new XAxisLabelRenderer(chart);
+        barYAxisRenderer = new YAxisVolumeLabelsRenderer(chart);
         chart.setXAxisRenderer(barXAxisRenderer);
         chart.setRendererLeftYAxis(barYAxisRenderer);
 
@@ -205,7 +205,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
 
         // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 1f);
-        RoundEdgeBarChartRenderer renderer = new RoundEdgeBarChartRenderer(chart, barRadius);
+        BarChartRoundEdgeRenderer renderer = new BarChartRoundEdgeRenderer(chart, barRadius);
         chart.setRenderer(renderer);
         chart.setFitBars(true);
         chart.setDrawBarShadow(false);

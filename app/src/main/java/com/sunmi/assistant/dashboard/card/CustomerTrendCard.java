@@ -19,13 +19,13 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.ui.ChartEntry;
-import com.sunmi.assistant.dashboard.ui.CustomerLineMarkerView;
-import com.sunmi.assistant.dashboard.ui.LineChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.MarkerFormatter;
-import com.sunmi.assistant.dashboard.ui.VolumeYAxisLabelsRenderer;
-import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
-import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
+import com.sunmi.assistant.dashboard.ui.chart.CustomerLineMarkerView;
+import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
+import com.sunmi.assistant.dashboard.ui.chart.MarkerFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -61,8 +61,8 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     private static final int COLOR_NEW = 0xFF5A97FC;
     private static final int COLOR_OLD = 0xFFFF8000;
 
-    private XAxisLabelsRenderer lineXAxisRenderer;
-    private VolumeYAxisLabelsRenderer lineYAxisRenderer;
+    private XAxisLabelRenderer lineXAxisRenderer;
+    private YAxisVolumeLabelsRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private CustomerLineMarkerView mLineComplexMarker;
     private MarkerFormatter mMarkerFormatter;
@@ -121,8 +121,8 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
 
         // 设置图表坐标Label格式
-        lineXAxisRenderer = new XAxisLabelsRenderer(lineChart);
-        lineYAxisRenderer = new VolumeYAxisLabelsRenderer(lineChart);
+        lineXAxisRenderer = new XAxisLabelRenderer(lineChart);
+        lineYAxisRenderer = new YAxisVolumeLabelsRenderer(lineChart);
         lineChart.setXAxisRenderer(lineXAxisRenderer);
         lineChart.setRendererLeftYAxis(lineYAxisRenderer);
 

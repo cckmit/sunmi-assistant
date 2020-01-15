@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.ui;
+package com.sunmi.assistant.dashboard.ui.chart;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.data.BarData;
@@ -10,7 +10,7 @@ import java.util.List;
  * @author yinhui
  * @since 2019-07-01
  */
-public class BarChartDataUpdateAnim extends ChartDataChangeAnimation<BarEntry, BarData> {
+public class BarChartDataUpdateAnim extends ChartDataChangeAnim<BarEntry, BarData> {
 
     public BarChartDataUpdateAnim(int duration, Chart<BarData> chart,
                                   List<BarEntry> oldData, List<BarEntry> newData) {

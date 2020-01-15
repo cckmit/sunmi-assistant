@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.ui;
+package com.sunmi.assistant.dashboard.ui.chart;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.data.PieData;
@@ -10,7 +10,7 @@ import java.util.List;
  * @author yinhui
  * @since 2019-07-02
  */
-public class PieChartDataUpdateAnim extends ChartDataChangeAnimation<PieEntry, PieData> {
+public class PieChartDataUpdateAnim extends ChartDataChangeAnim<PieEntry, PieData> {
 
     public PieChartDataUpdateAnim(int duration, Chart<PieData> chart,
                                   List<PieEntry> oldData, List<PieEntry> newData) {

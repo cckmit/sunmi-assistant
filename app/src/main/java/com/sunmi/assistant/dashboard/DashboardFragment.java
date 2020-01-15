@@ -23,8 +23,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.ui.RefreshLayout;
 import com.sunmi.assistant.dashboard.ui.ScrollableViewPager;
+import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.xiaojinzi.component.impl.Router;

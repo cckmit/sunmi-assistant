@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.ui;
+package com.sunmi.assistant.dashboard.ui.chart;
 
 import android.os.Handler;
 import android.view.animation.DecelerateInterpolator;
@@ -13,7 +13,7 @@ import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ChartDataChangeAnimation<T extends Entry, C extends ChartData<? extends IDataSet<T>>> {
+public abstract class ChartDataChangeAnim<T extends Entry, C extends ChartData<? extends IDataSet<T>>> {
     private static final String TAG = "ChartDataChangeAnim";
     private int duration;
     private long startTime;
@@ -24,7 +24,7 @@ public abstract class ChartDataChangeAnimation<T extends Entry, C extends ChartD
     private List<T> newData;
     private Interpolator interpolator;
 
-    public ChartDataChangeAnimation(int duration, Chart<C> chart, List<T> oldData, List<T> newData) {
+    public ChartDataChangeAnim(int duration, Chart<C> chart, List<T> oldData, List<T> newData) {
         this.duration = duration;
         this.chart = chart;
         this.oldData = new ArrayList<>(oldData);
