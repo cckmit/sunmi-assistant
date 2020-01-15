@@ -95,7 +95,7 @@
             android:id="@+id/btn_upgrade"
             style="@style/BtnBigOrange"
             android:text="@string/ipc_setting_version_get_new"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </LinearLayout>
 
