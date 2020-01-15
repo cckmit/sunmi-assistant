@@ -42,7 +42,7 @@ import sunmi.common.view.webview.SsConstants;
 @EActivity(resName = "activity_printer_manage")
 public class PrinterManageActivity extends BaseActivity implements SMWebChromeClient.Callback {
 
-    private static final int timeout = 20_000;
+    private static final int timeout = 15_000;
 
     @ViewById(resName = "webView")
     SMWebView webView;
@@ -179,7 +179,7 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-//                loadError();
+                loadError();
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
