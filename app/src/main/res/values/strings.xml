@@ -51,6 +51,8 @@
     <string name="dashboard_page_overview">实时数据</string>
     <string name="dashboard_page_customer">客流分析</string>
     <string name="dashboard_page_profile">客群画像</string>
+    <string name="dashboard_card_customer_pass">路过客流</string>
+    <string name="dashboard_card_customer_all">全部客流</string>
     <string name="dashboard_card_customer_tip">按照人数占比进行排列</string>
     <string name="dashboard_card_customer_count">进店人数</string>
     <string name="dashboard_card_customer_ratio">总人数占比</string>

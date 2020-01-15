@@ -6,9 +6,9 @@ import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.ProfileAnalysisCard;
-import com.sunmi.assistant.dashboard.card.ProfileDataCard;
 import com.sunmi.assistant.dashboard.card.ProfileNoDataCard;
 import com.sunmi.assistant.dashboard.card.ProfileNoFsCard;
+import com.sunmi.assistant.dashboard.card.ProfileOverviewCard;
 import com.sunmi.assistant.dashboard.card.ProfilePeriodCard;
 import com.sunmi.assistant.dashboard.card.ProfileWaitDataCard;
 
@@ -128,7 +128,7 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
         mList.clear();
         mList.add(ProfilePeriodCard.get(this, source));
         if (Utils.hasCustomer(source)) {
-            mList.add(ProfileDataCard.get(this, source));
+            mList.add(ProfileOverviewCard.get(this, source));
             mList.add(ProfileAnalysisCard.get(this, source));
         } else if (Utils.hasFs(source)) {
             mList.add(ProfileWaitDataCard.get(this, source));

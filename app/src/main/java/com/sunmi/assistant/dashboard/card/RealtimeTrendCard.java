@@ -241,7 +241,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
 
     @Override
     protected Model createModel() {
-        return new Model("");
+        return new Model();
     }
 
     @Override
@@ -278,6 +278,53 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         }
     }
 
+    @Override
+    protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        // setup card background
+        View root = holder.getView(R.id.layout_dashboard_root);
+        if (hasFs()) {
+            root.setBackgroundResource(R.color.common_fill);
+        } else {
+            root.setBackgroundResource(R.drawable.bg_top_gray_radius);
+        }
+
+        // setup label selected
+        setupLabelState(holder, model);
+
+        LineChart line = holder.getView(R.id.view_dashboard_line_chart);
+        BarChart bar = holder.getView(R.id.view_dashboard_bar_chart);
+
+        // Get data set from model
+        List<ChartEntry> dataSet = model.dataSets.get(model.type);
+        if (dataSet == null) {
+            dataSet = new ArrayList<>();
+            model.dataSets.put(model.type, dataSet);
+        }
+
+        // Calculate min & max of axis value.
+        Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(model.period);
+        int max = 0;
+        float lastX = 0;
+        for (ChartEntry entry : dataSet) {
+            if (model.type == Constants.DATA_TYPE_RATE && entry.getY() > 1) {
+                entry.setY(1f);
+            }
+            if (entry.getX() > lastX) {
+                lastX = entry.getX();
+            }
+            if (entry.getY() > max) {
+                max = (int) Math.ceil(entry.getY());
+            }
+        }
+
+        // Refresh data set
+        if (model.type == Constants.DATA_TYPE_RATE) {
+            setupLineData(line, model, xAxisRange, lastX);
+        } else {
+            setupBarData(bar, model, xAxisRange, max, lastX);
+        }
+    }
+
     private void setupLabelState(@NonNull BaseViewHolder<Model> holder, Model model) {
         // Get views
         TextView rate = holder.getView(R.id.tv_dashboard_rate);
@@ -300,8 +347,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         customer.setTypeface(null, model.type == Constants.DATA_TYPE_CUSTOMER ? Typeface.BOLD : Typeface.NORMAL);
     }
 
-    private void setupLineData(LineChart line, Model model,
-                               Pair<Integer, Integer> xAxisRange, int maxX, float lastX) {
+    private void setupLineData(LineChart line, Model model, Pair<Integer, Integer> xAxisRange, float lastX) {
         int maxDay = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
         lineXAxisRenderer.setPeriod(model.period, maxDay);
         line.getXAxis().setAxisMinimum(xAxisRange.first);
@@ -391,46 +437,6 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
     }
 
     @Override
-    protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        // Test data
-//        model.random();
-
-        setupLabelState(holder, model);
-        LineChart line = holder.getView(R.id.view_dashboard_line_chart);
-        BarChart bar = holder.getView(R.id.view_dashboard_bar_chart);
-
-        // Get data set from model
-        List<ChartEntry> dataSet = model.dataSets.get(model.type);
-        if (dataSet == null) {
-            dataSet = new ArrayList<>();
-            model.dataSets.put(model.type, dataSet);
-        }
-
-        // Calculate min & max of axis value.
-        Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(model.period);
-        int max = 0;
-        float lastX = 0;
-        for (ChartEntry entry : dataSet) {
-            if (model.type == Constants.DATA_TYPE_RATE && entry.getY() > 1) {
-                entry.setY(1f);
-            }
-            if (entry.getX() > lastX) {
-                lastX = entry.getX();
-            }
-            if (entry.getY() > max) {
-                max = (int) Math.ceil(entry.getY());
-            }
-        }
-
-        // Refresh data set
-        if (model.type == Constants.DATA_TYPE_RATE) {
-            setupLineData(line, model, xAxisRange, max, lastX);
-        } else {
-            setupBarData(bar, model, xAxisRange, max, lastX);
-        }
-    }
-
-    @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         model.period = mPeriod;
         model.dataSets.get(model.type).clear();
@@ -455,12 +461,10 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
-        private String title;
         private int type;
         private SparseArray<List<ChartEntry>> dataSets = new SparseArray<>(3);
 
-        public Model(String title) {
-            this.title = title;
+        public Model() {
             dataSets.put(Constants.DATA_TYPE_RATE, new ArrayList<>());
             dataSets.put(Constants.DATA_TYPE_VOLUME, new ArrayList<>());
             dataSets.put(Constants.DATA_TYPE_CUSTOMER, new ArrayList<>());
@@ -475,7 +479,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
             }
         }
 
-        public void updateType(int source) {
+        private void updateType(int source) {
             if ((source & Constants.DATA_SOURCE_FS) != 0 && (source & Constants.DATA_SOURCE_AUTH) != 0) {
                 type = Constants.DATA_TYPE_RATE;
             } else if ((source & Constants.DATA_SOURCE_AUTH) != 0) {
@@ -485,7 +489,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
             }
         }
 
-        public void random() {
+        private void random() {
             List<ChartEntry> rateList = dataSets.get(Constants.DATA_TYPE_RATE);
             List<ChartEntry> volumeList = dataSets.get(Constants.DATA_TYPE_VOLUME);
             List<ChartEntry> customerList = dataSets.get(Constants.DATA_TYPE_CUSTOMER);

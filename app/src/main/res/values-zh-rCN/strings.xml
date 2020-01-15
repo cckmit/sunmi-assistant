@@ -55,6 +55,9 @@
     <string name="dashboard_data_customer">进店客流</string>
     <string name="dashboard_data_transaction_rate">交易转化率</string>
 
+    <string name="dashboard_card_customer_pass">路过客流</string>
+    <string name="dashboard_card_customer_all">全部客流</string>
+
     <string name="dashboard_card_tab_rate">转化率</string>
     <string name="dashboard_card_tab_volume">交易笔数</string>
     <string name="dashboard_card_tab_customer">客流量</string>

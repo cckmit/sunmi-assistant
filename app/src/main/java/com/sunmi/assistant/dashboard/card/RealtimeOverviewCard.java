@@ -31,20 +31,20 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  * @author yinhui
  * @since 2019-07-01
  */
-public class RealtimeDataCard extends BaseRefreshCard<RealtimeDataCard.Model, Object> {
+public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.Model, Object> {
 
-    private static RealtimeDataCard sInstance;
+    private static RealtimeOverviewCard sInstance;
 
     private static final int NUM_100_MILLION = 100_000_000;
     private static final int NUM_10_THOUSANDS = 10_000;
 
-    private RealtimeDataCard(Presenter presenter, int source) {
+    private RealtimeOverviewCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static RealtimeDataCard get(Presenter presenter, int source) {
+    public static RealtimeOverviewCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new RealtimeDataCard(presenter, source);
+            sInstance = new RealtimeOverviewCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }

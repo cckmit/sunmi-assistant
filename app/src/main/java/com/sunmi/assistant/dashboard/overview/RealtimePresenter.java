@@ -5,7 +5,6 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.card.RealtimeDataCard;
 import com.sunmi.assistant.dashboard.card.RealtimeDistributionCard;
 import com.sunmi.assistant.dashboard.card.RealtimeEnterRateCard;
 import com.sunmi.assistant.dashboard.card.RealtimeGapCard;
@@ -13,6 +12,7 @@ import com.sunmi.assistant.dashboard.card.RealtimeNoDataCard;
 import com.sunmi.assistant.dashboard.card.RealtimeNoFsCard;
 import com.sunmi.assistant.dashboard.card.RealtimeNoOrderCard;
 import com.sunmi.assistant.dashboard.card.RealtimeOrderImportCard;
+import com.sunmi.assistant.dashboard.card.RealtimeOverviewCard;
 import com.sunmi.assistant.dashboard.card.RealtimePeriodCard;
 import com.sunmi.assistant.dashboard.card.RealtimeTrendCard;
 
@@ -154,19 +154,22 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
             return;
         }
 
-        // Shop entry rate card.
-        if (Utils.hasFs(source)) {
-            // TODO: 增加进店率进度条卡片
+        // Overview data card
+        if (Utils.hasAuth(source) || Utils.hasFs(source)) {
+            mList.add(RealtimeOverviewCard.get(this, source));
         }
 
-        // Time tab & data & trend card
-        if (Utils.hasAuth(source) || Utils.hasFs(source)) {
-            mList.add(RealtimeDataCard.get(this, source));
+        // Shop enter rate card.
+        if (Utils.hasFs(source)) {
             mList.add(RealtimeEnterRateCard.get(this, source));
+        }
+
+        // Realtime trend card (line & bar)
+        if (Utils.hasAuth(source) || Utils.hasFs(source)) {
             mList.add(RealtimeTrendCard.get(this, source));
         }
 
-        // Distribution card
+        // Distribution card (pie)
         if (Utils.hasFs(source)) {
             mList.add(RealtimeDistributionCard.get(this, source));
         }

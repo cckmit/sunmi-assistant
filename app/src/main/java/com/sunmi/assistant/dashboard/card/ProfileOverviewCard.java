@@ -24,9 +24,9 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class ProfileDataCard extends BaseRefreshCard<ProfileDataCard.Model, CustomerDataResp> {
+public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Model, CustomerDataResp> {
 
-    private static ProfileDataCard sInstance;
+    private static ProfileOverviewCard sInstance;
 
     private static final int NUM_100_MILLION = 100000000;
     private static final int NUM_10_THOUSANDS = 10000;
@@ -34,13 +34,13 @@ public class ProfileDataCard extends BaseRefreshCard<ProfileDataCard.Model, Cust
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DATE_FORMAT_PARAMS = new SimpleDateFormat("yyyy-MM-dd");
 
-    private ProfileDataCard(Presenter presenter, int source) {
+    private ProfileOverviewCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static ProfileDataCard get(Presenter presenter, int source) {
+    public static ProfileOverviewCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new ProfileDataCard(presenter, source);
+            sInstance = new ProfileOverviewCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -54,7 +54,7 @@ public class ProfileDataCard extends BaseRefreshCard<ProfileDataCard.Model, Cust
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_profile_data;
+        return R.layout.dashboard_item_profile_overview;
     }
 
     @Override

@@ -60,47 +60,80 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
 
     @Override
     protected void setupModel(Model model, CustomerCountResp response) {
-        model.latestPassCount = response.getLatestPassCount();
-        model.latestCount = response.getLatestCount();
+        model.passConsumer = response.getLatestPassCount();
+        model.consumer = response.getLatestCount();
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        TextView latestPassCount = holder.getView(R.id.tv_volume_pass_by);
-        TextView latestCount = holder.getView(R.id.tv_volume_enter);
-        TextView totals = holder.getView(R.id.tv_volume_totals);
+        TextView tvPassConsumer = holder.getView(R.id.tv_volume_pass_by);
+        TextView tvConsumer = holder.getView(R.id.tv_volume_enter);
+        TextView tvTotal = holder.getView(R.id.tv_volume_totals);
         TextView percentVolume = holder.getView(R.id.tv_customer_volume_percent);
         ProgressBar pbVolume = holder.getView(R.id.pb_volume);
-        latestPassCount.setText(model.passByVolume());
-        latestCount.setText(model.enterVolume());
-        totals.setText(model.totalsVolume());
-        percentVolume.setText(String.format(Locale.getDefault(), "%d%%", model.getPercent()));
-        pbVolume.setProgress(model.getPercent());
+
+        tvPassConsumer.setText(model.getPassConsumer());
+        tvConsumer.setText(model.getConsumer());
+        tvTotal.setText(model.getTotal());
+        percentVolume.setText(String.format(Locale.getDefault(), "%.2f%%", model.getEnterRate() * 100));
+        pbVolume.setProgress((int) (model.getEnterRate() * 100));
+    }
+
+    @Override
+    protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        super.showLoading(holder, model, position);
+    }
+
+    @Override
+    protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        TextView tvPassConsumer = holder.getView(R.id.tv_volume_pass_by);
+        TextView tvConsumer = holder.getView(R.id.tv_volume_enter);
+        TextView tvTotal = holder.getView(R.id.tv_volume_totals);
+        TextView percentVolume = holder.getView(R.id.tv_customer_volume_percent);
+        ProgressBar pbVolume = holder.getView(R.id.pb_volume);
+
+        tvPassConsumer.setText(DATA_NONE);
+        tvConsumer.setText(DATA_NONE);
+        tvTotal.setText(DATA_NONE);
+        percentVolume.setText(DATA_NONE);
+        pbVolume.setProgress(0);
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
         //路过
-        private int latestPassCount;
+        private int passConsumer;
         //进店
-        private int latestCount;
+        private int consumer;
 
-        private String passByVolume() {
-            return String.valueOf(latestPassCount);
-        }
-
-        private String enterVolume() {
-            return String.valueOf(latestCount);
-        }
-
-        private String totalsVolume() {
-            return String.valueOf(latestPassCount + latestCount);
-        }
-
-        private int getPercent() {
-            if (latestCount == 0 || latestPassCount + latestCount == 0) {
-                return 0;
+        private String getPassConsumer() {
+            if (passConsumer < 0) {
+                return DATA_NONE;
             } else {
-                return (int) ((float) latestCount * 100 / (latestPassCount + latestCount));
+                return String.valueOf(passConsumer);
+            }
+        }
+
+        private String getConsumer() {
+            if (consumer < 0) {
+                return DATA_NONE;
+            } else {
+                return String.valueOf(consumer);
+            }
+        }
+
+        private String getTotal() {
+            if (passConsumer < 0 || consumer < 0) {
+                return DATA_NONE;
+            } else {
+                return String.valueOf(passConsumer + consumer);
+            }
+        }
+
+        private float getEnterRate() {
+            if (consumer < 0 || passConsumer < 0 || consumer + passConsumer == 0) {
+                return 0f;
+            } else {
+                return (float) consumer / (passConsumer + consumer);
             }
         }
     }
