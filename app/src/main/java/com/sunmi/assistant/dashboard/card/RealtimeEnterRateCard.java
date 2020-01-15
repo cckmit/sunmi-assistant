@@ -60,20 +60,20 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
 
     @Override
     protected void setupModel(Model model, CustomerCountResp response) {
-        model.passConsumer = response.getLatestPassCount();
-        model.consumer = response.getLatestCount();
+        model.passCustomer = response.getLatestPassCount();
+        model.customer = response.getLatestCount();
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        TextView tvPassConsumer = holder.getView(R.id.tv_volume_pass_by);
-        TextView tvConsumer = holder.getView(R.id.tv_volume_enter);
+        TextView tvPassCustomer = holder.getView(R.id.tv_volume_pass_by);
+        TextView tvCustomer = holder.getView(R.id.tv_volume_enter);
         TextView tvTotal = holder.getView(R.id.tv_volume_totals);
         TextView percentVolume = holder.getView(R.id.tv_customer_volume_percent);
         ProgressBar pbVolume = holder.getView(R.id.pb_volume);
 
-        tvPassConsumer.setText(model.getPassConsumer());
-        tvConsumer.setText(model.getConsumer());
+        tvPassCustomer.setText(model.getPassCustomer());
+        tvCustomer.setText(model.getCustomer());
         tvTotal.setText(model.getTotal());
         percentVolume.setText(String.format(Locale.getDefault(), "%.2f%%", model.getEnterRate() * 100));
         pbVolume.setProgress((int) (model.getEnterRate() * 100));
@@ -86,14 +86,14 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        TextView tvPassConsumer = holder.getView(R.id.tv_volume_pass_by);
-        TextView tvConsumer = holder.getView(R.id.tv_volume_enter);
+        TextView tvPassCustomer = holder.getView(R.id.tv_volume_pass_by);
+        TextView tvCustomer = holder.getView(R.id.tv_volume_enter);
         TextView tvTotal = holder.getView(R.id.tv_volume_totals);
         TextView percentVolume = holder.getView(R.id.tv_customer_volume_percent);
         ProgressBar pbVolume = holder.getView(R.id.pb_volume);
 
-        tvPassConsumer.setText(DATA_NONE);
-        tvConsumer.setText(DATA_NONE);
+        tvPassCustomer.setText(DATA_NONE);
+        tvCustomer.setText(DATA_NONE);
         tvTotal.setText(DATA_NONE);
         percentVolume.setText(DATA_NONE);
         pbVolume.setProgress(0);
@@ -101,39 +101,39 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
 
     public static class Model extends BaseRefreshCard.BaseModel {
         //路过
-        private int passConsumer;
+        private int passCustomer;
         //进店
-        private int consumer;
+        private int customer;
 
-        private String getPassConsumer() {
-            if (passConsumer < 0) {
+        private String getPassCustomer() {
+            if (passCustomer < 0) {
                 return DATA_NONE;
             } else {
-                return String.valueOf(passConsumer);
+                return String.valueOf(passCustomer);
             }
         }
 
-        private String getConsumer() {
-            if (consumer < 0) {
+        private String getCustomer() {
+            if (customer < 0) {
                 return DATA_NONE;
             } else {
-                return String.valueOf(consumer);
+                return String.valueOf(customer);
             }
         }
 
         private String getTotal() {
-            if (passConsumer < 0 || consumer < 0) {
+            if (passCustomer < 0 || customer < 0) {
                 return DATA_NONE;
             } else {
-                return String.valueOf(passConsumer + consumer);
+                return String.valueOf(passCustomer + customer);
             }
         }
 
         private float getEnterRate() {
-            if (consumer < 0 || passConsumer < 0 || consumer + passConsumer == 0) {
+            if (customer < 0 || passCustomer < 0 || customer + passCustomer == 0) {
                 return 0f;
             } else {
-                return (float) consumer / (passConsumer + consumer);
+                return (float) customer / (passCustomer + customer);
             }
         }
     }
