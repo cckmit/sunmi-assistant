@@ -42,7 +42,7 @@ import sunmi.common.view.webview.SsConstants;
 @EActivity(resName = "activity_printer_manage")
 public class PrinterManageActivity extends BaseActivity implements SMWebChromeClient.Callback {
 
-    private static final int timeout = 15_000;
+    private static final int timeout = 20_000;
 
     @ViewById(resName = "webView")
     SMWebView webView;
@@ -139,6 +139,12 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
         webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
             public boolean shouldOverrideUrlLoading(final WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                if (url.contains(CommonConfig.SERVICE_H5_URL)) {
+                    titleBar.setVisibility(View.GONE);
+                } else {
+                    titleBar.setVisibility(View.VISIBLE);
+                }
                 return false;
             }
 
@@ -173,7 +179,7 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                loadError();
+//                loadError();
                 LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
 
@@ -198,6 +204,15 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (webView != null && !titleBar.isShown() && webView.canGoBack()) {
+            webView.goBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     //销毁Webview 防止内存溢出
     @Override
     protected void onDestroy() {
@@ -216,15 +231,19 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
     void refreshClick() {
         networkError.setVisibility(View.GONE);
         titleBar.setVisibility(View.GONE);
-        webView.setVisibility(View.VISIBLE);
-        webView.reload();
+        if (webView != null) {
+            webView.setVisibility(View.VISIBLE);
+            webView.reload();
+        }
         startTimer();
     }
 
     @UiThread
     protected void loadError() {
         closeTimer();
-        webView.setVisibility(View.GONE);
+        if (webView != null) {
+            webView.setVisibility(View.GONE);
+        }
         networkError.setVisibility(View.VISIBLE);
         titleBar.setVisibility(View.VISIBLE);
         hideLoadingDialog();
