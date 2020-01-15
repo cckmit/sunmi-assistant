@@ -8,8 +8,8 @@ import android.util.SparseArray;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
-import com.sunmi.assistant.dashboard.overview.OverviewFragment;
-import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
+import com.sunmi.assistant.dashboard.overview.RealtimeFragment;
+import com.sunmi.assistant.dashboard.overview.RealtimeFragment_;
 import com.sunmi.assistant.dashboard.profile.ProfileFragment;
 import com.sunmi.assistant.dashboard.profile.ProfileFragment_;
 import com.sunmi.bean.BundleServiceMsg;
@@ -119,8 +119,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         // TODO: 可以优化，采用工厂模式
         List<PageHost> pages = new ArrayList<>();
 
-        OverviewFragment overviewFragment = new OverviewFragment_();
-        pages.add(new PageHost(R.string.dashboard_page_overview, 0, overviewFragment, Constants.PAGE_OVERVIEW));
+        RealtimeFragment realtimeFragment = new RealtimeFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_overview, 0, realtimeFragment, Constants.PAGE_OVERVIEW));
 
         CustomerFragment customerFragment = new CustomerFragment_();
         pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment, Constants.PAGE_CUSTOMER));

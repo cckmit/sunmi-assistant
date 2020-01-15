@@ -20,21 +20,21 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewNoOrderCard extends BaseRefreshCard<OverviewNoOrderCard.Model, Object> {
+public class RealtimeNoOrderCard extends BaseRefreshCard<RealtimeNoOrderCard.Model, Object> {
 
-    private static OverviewNoOrderCard sInstance;
+    private static RealtimeNoOrderCard sInstance;
 
     private int mColorGray;
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    private OverviewNoOrderCard(Presenter presenter, int source) {
+    private RealtimeNoOrderCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewNoOrderCard get(Presenter presenter, int source) {
+    public static RealtimeNoOrderCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewNoOrderCard(presenter, source);
+            sInstance = new RealtimeNoOrderCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -47,7 +47,7 @@ public class OverviewNoOrderCard extends BaseRefreshCard<OverviewNoOrderCard.Mod
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_overview_no_order;
+        return R.layout.dashboard_item_realtime_no_order;
     }
 
     @Override

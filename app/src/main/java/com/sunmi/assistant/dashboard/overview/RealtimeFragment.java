@@ -30,8 +30,8 @@ import sunmi.common.utils.log.LogCat;
  * @date 2019-10-11
  */
 @EFragment(R.layout.dashboard_fragment_list)
-public class OverviewFragment extends BaseMvpFragment<OverviewPresenter>
-        implements OverviewContract.View, RefreshLayout.RefreshLayoutDelegate {
+public class RealtimeFragment extends BaseMvpFragment<RealtimePresenter>
+        implements RealtimeContract.View, RefreshLayout.RefreshLayoutDelegate {
 
     @ViewById(R.id.layout_dashboard_refresh)
     RefreshLayout mRefreshLayout;
@@ -53,11 +53,11 @@ public class OverviewFragment extends BaseMvpFragment<OverviewPresenter>
         }
         Fragment parent = getParentFragment();
         if (!(parent instanceof DashboardContract.View)) {
-            LogCat.e(TAG, "Parent is not DashboardFragment. OverviewFragment must be used in dashboard.");
+            LogCat.e(TAG, "Parent is not DashboardFragment. RealtimeFragment must be used in dashboard.");
             return;
         }
         mParent = (DashboardContract.View) parent;
-        mPresenter = new OverviewPresenter(mParent.getPresenter());
+        mPresenter = new RealtimePresenter(mParent.getPresenter());
         mPresenter.attachView(this);
         initRefreshLayout(context);
         initRecycler(context);

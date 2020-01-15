@@ -5,16 +5,16 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.card.OverviewCustomerVolumeCard;
-import com.sunmi.assistant.dashboard.card.OverviewDataCard;
-import com.sunmi.assistant.dashboard.card.OverviewDistributionCard;
-import com.sunmi.assistant.dashboard.card.OverviewGapCard;
-import com.sunmi.assistant.dashboard.card.OverviewNoDataCard;
-import com.sunmi.assistant.dashboard.card.OverviewNoFsCard;
-import com.sunmi.assistant.dashboard.card.OverviewNoOrderCard;
-import com.sunmi.assistant.dashboard.card.OverviewOrderImportCard;
-import com.sunmi.assistant.dashboard.card.OverviewPeriodCard;
-import com.sunmi.assistant.dashboard.card.OverviewTrendCard;
+import com.sunmi.assistant.dashboard.card.RealtimeDataCard;
+import com.sunmi.assistant.dashboard.card.RealtimeDistributionCard;
+import com.sunmi.assistant.dashboard.card.RealtimeEnterRateCard;
+import com.sunmi.assistant.dashboard.card.RealtimeGapCard;
+import com.sunmi.assistant.dashboard.card.RealtimeNoDataCard;
+import com.sunmi.assistant.dashboard.card.RealtimeNoFsCard;
+import com.sunmi.assistant.dashboard.card.RealtimeNoOrderCard;
+import com.sunmi.assistant.dashboard.card.RealtimeOrderImportCard;
+import com.sunmi.assistant.dashboard.card.RealtimePeriodCard;
+import com.sunmi.assistant.dashboard.card.RealtimeTrendCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +25,11 @@ import sunmi.common.base.BasePresenter;
  * @author yinhui
  * @date 2019-10-14
  */
-public class  OverviewPresenter extends BasePresenter<OverviewContract.View>
-        implements OverviewContract.Presenter, BaseRefreshCard.Presenter,
-        OverviewOrderImportCard.OnImportStateChangeListener {
+public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
+        implements RealtimeContract.Presenter, BaseRefreshCard.Presenter,
+        RealtimeOrderImportCard.OnImportStateChangeListener {
 
-    private static final String TAG = OverviewPresenter.class.getSimpleName();
+    private static final String TAG = RealtimePresenter.class.getSimpleName();
 
     private static final int IMPORT_STATE_SHOW = 0;
     private static final int IMPORT_STATE_DISMISS = 1;
@@ -42,7 +42,7 @@ public class  OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
-    OverviewPresenter(PageContract.ParentPresenter parent) {
+    RealtimePresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
         this.mParent.onChildCreate(getType(), this);
     }
@@ -144,13 +144,13 @@ public class  OverviewPresenter extends BasePresenter<OverviewContract.View>
 
     private void initList(int source) {
         mList.clear();
-        mList.add(OverviewPeriodCard.get(this, source));
+        mList.add(RealtimePeriodCard.get(this, source));
         // No any data
         if (!Utils.hasAuth(source) && !Utils.hasFs(source)) {
-            mList.add(OverviewNoDataCard.get(this, source));
-            mList.add(OverviewNoOrderCard.get(this, source));
-            mList.add(OverviewNoFsCard.get(this, source));
-            mList.add(OverviewGapCard.get(this, source));
+            mList.add(RealtimeNoDataCard.get(this, source));
+            mList.add(RealtimeNoOrderCard.get(this, source));
+            mList.add(RealtimeNoFsCard.get(this, source));
+            mList.add(RealtimeGapCard.get(this, source));
             return;
         }
 
@@ -161,30 +161,30 @@ public class  OverviewPresenter extends BasePresenter<OverviewContract.View>
 
         // Time tab & data & trend card
         if (Utils.hasAuth(source) || Utils.hasFs(source)) {
-            mList.add(OverviewDataCard.get(this, source));
-            mList.add(OverviewCustomerVolumeCard.get(this, source));
-            mList.add(OverviewTrendCard.get(this, source));
+            mList.add(RealtimeDataCard.get(this, source));
+            mList.add(RealtimeEnterRateCard.get(this, source));
+            mList.add(RealtimeTrendCard.get(this, source));
         }
 
         // Distribution card
         if (Utils.hasFs(source)) {
-            mList.add(OverviewDistributionCard.get(this, source));
+            mList.add(RealtimeDistributionCard.get(this, source));
         }
 
         // No order card or import card
         if (!Utils.hasAuth(source)) {
-            mList.add(OverviewNoOrderCard.get(this, source));
+            mList.add(RealtimeNoOrderCard.get(this, source));
         } else if (!Utils.hasImport(source) || mImportState == IMPORT_STATE_SHOW) {
-            OverviewOrderImportCard card = OverviewOrderImportCard.get(this, source);
+            RealtimeOrderImportCard card = RealtimeOrderImportCard.get(this, source);
             card.setListener(this);
             mList.add(card);
         }
 
         // No fs card
         if (!Utils.hasFs(source)) {
-            mList.add(OverviewNoFsCard.get(this, source));
+            mList.add(RealtimeNoFsCard.get(this, source));
         }
-        mList.add(OverviewGapCard.get(this, source));
+        mList.add(RealtimeGapCard.get(this, source));
     }
 
     @Override

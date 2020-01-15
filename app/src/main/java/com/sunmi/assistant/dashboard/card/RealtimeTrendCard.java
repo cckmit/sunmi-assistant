@@ -54,9 +54,9 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, CustomerRateResp> {
+public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, CustomerRateResp> {
 
-    private static OverviewTrendCard sInstance;
+    private static RealtimeTrendCard sInstance;
 
     private XAxisLabelsRenderer lineXAxisRenderer;
     private RateYAxisLabelsRenderer lineYAxisRenderer;
@@ -71,13 +71,13 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
     private float mDashLength;
     private float mDashSpaceLength;
 
-    private OverviewTrendCard(Presenter presenter, int source) {
+    private RealtimeTrendCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewTrendCard get(Presenter presenter, int source) {
+    public static RealtimeTrendCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewTrendCard(presenter, source);
+            sInstance = new RealtimeTrendCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -90,7 +90,7 @@ public class OverviewTrendCard extends BaseRefreshCard<OverviewTrendCard.Model, 
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_overview_trend;
+        return R.layout.dashboard_item_realtime_trend;
     }
 
     private void setupClick(BaseViewHolder<Model> holder) {

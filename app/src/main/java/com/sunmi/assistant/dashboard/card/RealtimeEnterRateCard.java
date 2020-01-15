@@ -20,18 +20,18 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewCustomerVolumeCard extends BaseRefreshCard<OverviewCustomerVolumeCard.Model, CustomerCountResp> {
+public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard.Model, CustomerCountResp> {
 
-    private static OverviewCustomerVolumeCard sInstance;
+    private static RealtimeEnterRateCard sInstance;
 
 
-    private OverviewCustomerVolumeCard(Presenter presenter, int source) {
+    private RealtimeEnterRateCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewCustomerVolumeCard get(Presenter presenter, int source) {
+    public static RealtimeEnterRateCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewCustomerVolumeCard(presenter, source);
+            sInstance = new RealtimeEnterRateCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -44,7 +44,7 @@ public class OverviewCustomerVolumeCard extends BaseRefreshCard<OverviewCustomer
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_overview_customer_volume;
+        return R.layout.dashboard_item_realtime_enter_rate;
     }
 
     @Override

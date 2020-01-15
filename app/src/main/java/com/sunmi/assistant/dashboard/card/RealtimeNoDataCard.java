@@ -14,17 +14,17 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewNoDataCard extends BaseRefreshCard<OverviewNoDataCard.Model, Object> {
+public class RealtimeNoDataCard extends BaseRefreshCard<RealtimeNoDataCard.Model, Object> {
 
-    private static OverviewNoDataCard sInstance;
+    private static RealtimeNoDataCard sInstance;
 
-    private OverviewNoDataCard(Presenter presenter, int source) {
+    private RealtimeNoDataCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewNoDataCard get(Presenter presenter, int source) {
+    public static RealtimeNoDataCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewNoDataCard(presenter, source);
+            sInstance = new RealtimeNoDataCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }

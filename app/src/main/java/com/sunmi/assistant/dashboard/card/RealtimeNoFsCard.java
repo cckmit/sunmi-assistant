@@ -21,21 +21,21 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewNoFsCard extends BaseRefreshCard<OverviewNoFsCard.Model, Object> {
+public class RealtimeNoFsCard extends BaseRefreshCard<RealtimeNoFsCard.Model, Object> {
 
-    private static OverviewNoFsCard sInstance;
+    private static RealtimeNoFsCard sInstance;
 
     private int mColorGray;
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    private OverviewNoFsCard(Presenter presenter, int source) {
+    private RealtimeNoFsCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewNoFsCard get(Presenter presenter, int source) {
+    public static RealtimeNoFsCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewNoFsCard(presenter, source);
+            sInstance = new RealtimeNoFsCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }

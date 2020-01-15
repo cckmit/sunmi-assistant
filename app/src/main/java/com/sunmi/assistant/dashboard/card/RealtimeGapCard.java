@@ -17,17 +17,17 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewGapCard extends BaseRefreshCard<OverviewGapCard.Model, Object> {
+public class RealtimeGapCard extends BaseRefreshCard<RealtimeGapCard.Model, Object> {
 
-    private static OverviewGapCard sInstance;
+    private static RealtimeGapCard sInstance;
 
-    private OverviewGapCard(Presenter presenter, int source) {
+    private RealtimeGapCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewGapCard get(Presenter presenter, int source) {
+    public static RealtimeGapCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewGapCard(presenter, source);
+            sInstance = new RealtimeGapCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -40,7 +40,7 @@ public class OverviewGapCard extends BaseRefreshCard<OverviewGapCard.Model, Obje
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_overview_gap;
+        return R.layout.dashboard_item_realtime_gap;
     }
 
     @Override

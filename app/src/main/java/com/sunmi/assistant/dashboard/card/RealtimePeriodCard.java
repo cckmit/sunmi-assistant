@@ -19,17 +19,17 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewPeriodCard extends BaseRefreshCard<OverviewPeriodCard.Model, Object> {
+public class RealtimePeriodCard extends BaseRefreshCard<RealtimePeriodCard.Model, Object> {
 
-    private static OverviewPeriodCard sInstance;
+    private static RealtimePeriodCard sInstance;
 
-    private OverviewPeriodCard(Presenter presenter, int source) {
+    private RealtimePeriodCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewPeriodCard get(Presenter presenter, int source) {
+    public static RealtimePeriodCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewPeriodCard(presenter, source);
+            sInstance = new RealtimePeriodCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }

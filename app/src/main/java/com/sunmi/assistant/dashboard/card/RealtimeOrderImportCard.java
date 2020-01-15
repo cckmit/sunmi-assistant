@@ -28,9 +28,9 @@ import sunmi.common.utils.SpUtils;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImportCard.Model, ShopAuthorizeInfoResp> {
+public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImportCard.Model, ShopAuthorizeInfoResp> {
 
-    private static OverviewOrderImportCard sInstance;
+    private static RealtimeOrderImportCard sInstance;
 
     private OnImportStateChangeListener mListener;
 
@@ -41,13 +41,13 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
     private int mRequestCount;
     private int mFailedCount;
 
-    private OverviewOrderImportCard(Presenter presenter, int source) {
+    private RealtimeOrderImportCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewOrderImportCard get(Presenter presenter, int source) {
+    public static RealtimeOrderImportCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewOrderImportCard(presenter, source);
+            sInstance = new RealtimeOrderImportCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -67,7 +67,7 @@ public class OverviewOrderImportCard extends BaseRefreshCard<OverviewOrderImport
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_overview_order_import;
+        return R.layout.dashboard_item_realtime_order_import;
     }
 
     @Override

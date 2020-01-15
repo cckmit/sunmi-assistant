@@ -31,20 +31,20 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Object> {
+public class RealtimeDataCard extends BaseRefreshCard<RealtimeDataCard.Model, Object> {
 
-    private static OverviewDataCard sInstance;
+    private static RealtimeDataCard sInstance;
 
     private static final int NUM_100_MILLION = 100_000_000;
     private static final int NUM_10_THOUSANDS = 10_000;
 
-    private OverviewDataCard(Presenter presenter, int source) {
+    private RealtimeDataCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewDataCard get(Presenter presenter, int source) {
+    public static RealtimeDataCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewDataCard(presenter, source);
+            sInstance = new RealtimeDataCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -58,7 +58,7 @@ public class OverviewDataCard extends BaseRefreshCard<OverviewDataCard.Model, Ob
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_overview_data;
+        return R.layout.dashboard_item_realtime_overview;
     }
 
     @Override

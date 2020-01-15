@@ -49,7 +49,7 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @since 2019-07-01
  */
-public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributionCard.Model, Object> {
+public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributionCard.Model, Object> {
 
     private static final int NUM_10_THOUSANDS = 10000;
 
@@ -58,7 +58,7 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
     private static final int[] PIE_COLORS_AGE = {0xFFFADD4B, 0xFF45E6B0, 0xFF4BC0FA, 0xFF4B85FA, 0xFF7A62F5, 0xFFB87AF5, 0xFFFF6680, 0xFFFF884D};
     private static final int[] PIE_COLORS_EMPTY = {0xFFCED2D9};
 
-    private static OverviewDistributionCard sInstance;
+    private static RealtimeDistributionCard sInstance;
 
     private String mAgeLabel;
     private String mNewLabel;
@@ -70,13 +70,13 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
     private SparseArray<String> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
 
-    private OverviewDistributionCard(Presenter presenter, int source) {
+    private RealtimeDistributionCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static OverviewDistributionCard get(Presenter presenter, int source) {
+    public static RealtimeDistributionCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new OverviewDistributionCard(presenter, source);
+            sInstance = new RealtimeDistributionCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -94,7 +94,7 @@ public class OverviewDistributionCard extends BaseRefreshCard<OverviewDistributi
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_overview_distribution;
+        return R.layout.dashboard_item_realtime_distribution;
     }
 
     @Override
