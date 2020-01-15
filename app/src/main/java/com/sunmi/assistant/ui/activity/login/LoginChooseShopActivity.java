@@ -30,10 +30,12 @@ import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
@@ -155,6 +157,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         //切换商户保存信息直接跳转MainActivity
         if (isLoginSuccessSwitchCompany) {
             CommonHelper.saveCompanyShopInfo(companyId, companyName, saasExist, shopId, shopName);
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.companySwitch);
             Router.withApi(AppApi.class).goToMainClearTask(context);
             return;
         }
