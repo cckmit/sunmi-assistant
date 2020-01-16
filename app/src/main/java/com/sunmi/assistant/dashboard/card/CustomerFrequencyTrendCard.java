@@ -257,7 +257,6 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
         line.animateX(300);
     }
 
-
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         model.period = mPeriod;

@@ -53,6 +53,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
             card.init(mView.getContext());
         }
         mView.setCards(mList);
+        mPeriod = Constants.TIME_PERIOD_YESTERDAY;
         setPeriod(Constants.TIME_PERIOD_YESTERDAY);
     }
 
@@ -71,6 +72,17 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setPeriod(int period) {
+        if (mPeriod == Constants.TIME_PERIOD_YESTERDAY && mPeriod != period) {
+            // 从昨日变为本周或本月，增加卡片
+            mList.add(CustomerFrequencyTrendCard.get(this, mSource));
+            mList.add(CustomerFrequencyAvgCard.get(this, mSource));
+            mView.setCards(mList);
+        } else if (period == Constants.TIME_PERIOD_YESTERDAY && mPeriod != period) {
+            // 从本周本月变为昨日，删除卡片
+            mList.remove(mList.size() - 1);
+            mList.remove(mList.size() - 1);
+            mView.setCards(mList);
+        }
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);
@@ -136,8 +148,6 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
             mList.add(CustomerTrendCard.get(this, source));
             mList.add(CustomerEnterRateCard.get(this, source));
             mList.add(CustomerFrequencyDistributionCard.get(this, source));
-            mList.add(CustomerFrequencyTrendCard.get(this, source));
-            mList.add(CustomerFrequencyAvgCard.get(this, source));
         } else if (Utils.hasFs(source)) {
             mList.add(CustomerWaitDataCard.get(this, source));
         } else {
