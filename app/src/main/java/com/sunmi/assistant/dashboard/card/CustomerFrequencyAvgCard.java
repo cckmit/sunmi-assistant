@@ -37,20 +37,20 @@ import sunmi.common.utils.CacheManager;
  * @author yinhui
  * @date 2020-01-15
  */
-public class CustomerFrequencyAvg extends BaseRefreshCard<CustomerFrequencyAvg.Model, CustomerFrequencyAvgResp> {
+public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyAvgCard.Model, CustomerFrequencyAvgResp> {
 
-    private static CustomerFrequencyAvg sInstance;
+    private static CustomerFrequencyAvgCard sInstance;
 
     private SparseArray<FaceAge> mAgeMap;
     private CommonAdapter<Item> mAdapter;
 
-    private CustomerFrequencyAvg(Presenter presenter, int source) {
+    private CustomerFrequencyAvgCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static CustomerFrequencyAvg get(Presenter presenter, int source) {
+    public static CustomerFrequencyAvgCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new CustomerFrequencyAvg(presenter, source);
+            sInstance = new CustomerFrequencyAvgCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -128,10 +128,7 @@ public class CustomerFrequencyAvg extends BaseRefreshCard<CustomerFrequencyAvg.M
             }
         } else {
             for (int i = 0, size = model.ageMap.size(); i < size; i++) {
-                Item item = model.ageMap.valueAt(i);
-                item.max = 0f;
-                item.maleFrequency = 0f;
-                item.femaleFrequency = 0f;
+                model.ageMap.valueAt(i).clear();
             }
         }
         // Check response
@@ -163,10 +160,25 @@ public class CustomerFrequencyAvg extends BaseRefreshCard<CustomerFrequencyAvg.M
                 femaleUniqueTotal += bean.getUniqPassengerCount();
             }
         }
+        // Update items max & is highlight flag.
+        float maleMax = 0f;
+        int maleMaxIndex = 0;
+        float femaleMax = 0f;
+        int femaleIndex = 0;
         for (int i = 0, size = model.ageMap.size(); i < size; i++) {
             Item item = model.ageMap.valueAt(i);
             item.max = max;
+            if (item.maleFrequency > maleMax) {
+                maleMax = item.maleFrequency;
+                maleMaxIndex = i;
+            }
+            if (item.femaleFrequency > femaleMax) {
+                femaleMax = item.femaleFrequency;
+                femaleIndex = i;
+            }
         }
+        model.ageMap.valueAt(maleMaxIndex).isMaleHighlight = true;
+        model.ageMap.valueAt(femaleIndex).isFemaleHighlight = true;
         model.maleAvg = maleUniqueTotal == 0 ? 0f : (float) maleTotal / maleUniqueTotal;
         model.femaleAvg = femaleUniqueTotal == 0 ? 0f : (float) femaleTotal / femaleUniqueTotal;
     }
@@ -253,6 +265,14 @@ public class CustomerFrequencyAvg extends BaseRefreshCard<CustomerFrequencyAvg.M
 
         private Item(String name) {
             this.name = name;
+        }
+
+        private void clear() {
+            max = 0f;
+            maleFrequency = 0f;
+            femaleFrequency = 0f;
+            isMaleHighlight = false;
+            isFemaleHighlight = false;
         }
     }
 
