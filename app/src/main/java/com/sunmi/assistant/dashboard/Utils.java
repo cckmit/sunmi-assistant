@@ -2,10 +2,13 @@ package com.sunmi.assistant.dashboard;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Pair;
 
 import com.sunmi.assistant.R;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,6 +25,8 @@ public class Utils {
     private static final SimpleDateFormat DATE_FORMAT_HOUR_MINUTE = new SimpleDateFormat("HH:mm");
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DATE_FORMAT_DATE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+
+    private static final DecimalFormat FORMAT_MAX_SINGLE_DECIMAL = new DecimalFormat("#.#");
 
     private static final Object LOCK = new Object();
 
@@ -158,24 +163,6 @@ public class Utils {
         }
     }
 
-    public static String convertXToMarkerName(Context context, int period, long time) {
-        if (sWeekName == null) {
-            sWeekName = context.getResources().getStringArray(R.array.week_name);
-        }
-        temp.setTimeInMillis(time);
-        if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
-            int hour = temp.get(Calendar.HOUR_OF_DAY);
-            return String.format(Locale.getDefault(), "%02d:00-%02d:00", hour, hour + 1);
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            temp.setFirstDayOfWeek(Calendar.MONDAY);
-            return sWeekName[temp.get(Calendar.DAY_OF_WEEK) - 1];
-        } else {
-            int month = temp.get(Calendar.MONTH) + 1;
-            int day = temp.get(Calendar.DATE);
-            return String.format(Locale.getDefault(), "%02d-%02d", month, day);
-        }
-    }
-
     public static String getHourMinute(long timestamp) {
         synchronized (DATE_FORMAT_HOUR_MINUTE) {
             return DATE_FORMAT_HOUR_MINUTE.format(new Date(timestamp));
@@ -209,6 +196,29 @@ public class Utils {
         }
     }
 
+    public static CharSequence createFrequencyText(Context context, int period, float value, boolean highlight) {
+        String base;
+        if (period == Constants.TIME_PERIOD_MONTH) {
+            base = context.getString(R.string.dashboard_card_customer_frequency_data_month);
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
+            base = context.getString(R.string.dashboard_card_customer_frequency_data_week);
+        } else {
+            base = context.getString(R.string.dashboard_card_customer_frequency_data_day);
+        }
+        String result = String.format(Locale.getDefault(), base, FORMAT_MAX_SINGLE_DECIMAL.format(value));
+        if (!highlight) {
+            return result;
+        }
+
+        int startLen = base.indexOf("%s");
+        int endLen = base.length() - startLen - 2;
+        SpannableString s = new SpannableString(result);
+
+        s.setSpan(new RelativeSizeSpan(0.6f), 0, startLen, 0);
+        s.setSpan(new RelativeSizeSpan(0.6f), s.length() - endLen, s.length(), 0);
+        return s;
+    }
+
     public static boolean hasAuth(int source) {
         return (source & Constants.DATA_SOURCE_AUTH) != 0;
     }
@@ -225,7 +235,7 @@ public class Utils {
         return (source & Constants.DATA_SOURCE_CUSTOMER) != 0;
     }
 
-    public static boolean hasFloating(int source){
+    public static boolean hasFloating(int source) {
         return (source & Constants.DATA_SOURCE_FLOATING) != 0;
     }
 

@@ -249,16 +249,10 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
     private static class DetailListAdapter extends CommonAdapter<Item> {
 
         private String mNum10Thousands;
-        private String mFrequencyDay;
-        private String mFrequencyWeek;
-        private String mFrequencyMonth;
 
         private DetailListAdapter(Context context) {
             super(context, R.layout.dashboard_item_profile_analysis_item);
             mNum10Thousands = context.getString(R.string.str_num_10_thousands);
-            mFrequencyDay = context.getString(R.string.dashboard_card_customer_frequency_data_day);
-            mFrequencyWeek = context.getString(R.string.dashboard_card_customer_frequency_data_week);
-            mFrequencyMonth = context.getString(R.string.dashboard_card_customer_frequency_data_month);
         }
 
         @Override
@@ -292,16 +286,9 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
                         (float) item.count * 100 / item.total));
                 oldRatio.setText(String.format(Locale.getDefault(), "%.0f%%",
                         (float) item.oldCount * 100 / item.count));
-                if (item.period == Constants.TIME_PERIOD_MONTH) {
-                    frequency.setText(String.format(Locale.getDefault(), mFrequencyMonth, item.uniqueCount > 0 ?
-                            (float) item.count * 100 / item.uniqueCount : 0f));
-                } else if (item.period == Constants.TIME_PERIOD_WEEK) {
-                    frequency.setText(String.format(Locale.getDefault(), mFrequencyWeek, item.uniqueCount > 0 ?
-                            (float) item.count * 100 / item.uniqueCount : 0f));
-                } else {
-                    frequency.setText(String.format(Locale.getDefault(), mFrequencyDay, item.uniqueCount > 0 ?
-                            (float) item.count * 100 / item.uniqueCount : 0f));
-                }
+
+                float value = item.uniqueCount > 0 ? (float) item.count * 100 / item.uniqueCount : 0f;
+                frequency.setText(Utils.createFrequencyText(mContext, item.period, value, true));
             }
         }
 

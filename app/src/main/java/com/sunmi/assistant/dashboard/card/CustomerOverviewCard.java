@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.Utils;
 
 import java.util.Locale;
 
@@ -106,28 +107,10 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         TextView subData = holder.getView(R.id.tv_dashboard_subdata);
         TextView enterRate = holder.getView(R.id.tv_enter_rate);
         TextView enterRateSubData = holder.getView(R.id.tv_enter_rate_subdata);
-        switch (model.period) {
-            case Constants.TIME_PERIOD_WEEK:
-                enterFrequency.setText(context.getString(R.string.dashboard_card_customer_frequency_data_week,
-                        model.getLatestEnterFrequency()));
-                enterFrequencySubData.setText(context.getString(R.string.dashboard_card_customer_frequency_data_week,
-                        model.getEalyEnterFrequency()));
-                break;
-            case Constants.TIME_PERIOD_MONTH:
-                enterFrequency.setText(context.getString(R.string.dashboard_card_customer_frequency_data_month,
-                        model.getLatestEnterFrequency()));
-                enterFrequencySubData.setText(context.getString(R.string.dashboard_card_customer_frequency_data_month,
-                        model.getEalyEnterFrequency()));
-                break;
-            case Constants.TIME_PERIOD_YESTERDAY:
-                enterFrequency.setText(context.getString(R.string.dashboard_card_customer_frequency_data_day,
-                        model.getLatestEnterFrequency()));
-                enterFrequencySubData.setText(context.getString(R.string.dashboard_card_customer_frequency_data_day,
-                        model.getEalyEnterFrequency()));
-                break;
-            default:
-                break;
-        }
+
+        enterFrequency.setText(Utils.createFrequencyText(context, model.period, model.getLatestEnterFrequency(), true));
+        enterFrequencySubData.setText(Utils.createFrequencyText(context, model.period, model.getEalyEnterFrequency(), false));
+
         value.setText(model.getLatestCount());
         subData.setText(model.getEarlyCount());
         enterRate.setText(model.getLatestEnterRate());
