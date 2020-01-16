@@ -214,15 +214,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         boolean isLoading = (mState == STATE_INIT || mState == STATE_LOADING);
         int[] margin = model.margin;
         int[] padding = model.padding;
-        if (margin != null && margin.length >= VIEW_BOUNDARY_SIZE) {
-            ((ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams())
-                    .setMargins(margin[0], margin[1], margin[2], margin[3]);
-            model.margin = null;
-        }
-        if (padding != null && padding.length >= VIEW_BOUNDARY_SIZE) {
-            holder.itemView.setPadding(padding[0], padding[1], padding[2], padding[3]);
-            model.padding = null;
-        }
         if (model.valid) {
             setupView(holder, model, position);
         } else {
@@ -233,6 +224,15 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
                 LogCat.e(TAG, "Load data Failed.");
                 showError(holder, model, position);
             }
+        }
+        if (margin != null && margin.length >= VIEW_BOUNDARY_SIZE) {
+            ((ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams())
+                    .setMargins(margin[0], margin[1], margin[2], margin[3]);
+            model.margin = null;
+        }
+        if (padding != null && padding.length >= VIEW_BOUNDARY_SIZE) {
+            holder.itemView.setPadding(padding[0], padding[1], padding[2], padding[3]);
+            model.padding = null;
         }
     }
 
