@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_28">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_normal"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="18岁以下" />
+
+    <TextView
+        android:id="@+id/tvMaleValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:textColor="@color/text_disable"
+        android:textSize="@dimen/sp_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="5.4" />
+
+    <ProgressBar
+        android:id="@+id/barMale"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:indeterminate="false"
+        android:indeterminateOnly="false"
+        android:maxHeight="@dimen/dp_4"
+        android:minHeight="@dimen/dp_4"
+        android:mirrorForRtl="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvName"
+        app:layout_constraintStart_toEndOf="@+id/tvMaleValue"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:max="100"
+        tools:progress="80"
+        tools:progressDrawable="@drawable/dashboard_bar_bg_avg_frequency_male" />
+
+    <TextView
+        android:id="@+id/tvFemaleValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:textColor="@color/text_disable"
+        android:textSize="@dimen/sp_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="5.4" />
+
+    <ProgressBar
+        android:id="@+id/barFemale"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:indeterminate="false"
+        android:indeterminateOnly="false"
+        android:maxHeight="@dimen/dp_4"
+        android:minHeight="@dimen/dp_4"
+        android:mirrorForRtl="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvFemaleValue"
+        app:layout_constraintStart_toEndOf="@+id/tvName"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:max="100"
+        tools:progress="80"
+        tools:progressDrawable="@drawable/dashboard_bar_bg_avg_frequency_female" />
+
+</android.support.constraint.ConstraintLayout>
