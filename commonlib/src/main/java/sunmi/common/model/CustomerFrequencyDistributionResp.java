@@ -31,7 +31,7 @@ public class CustomerFrequencyDistributionResp {
         @SerializedName("frequency")
         private int frequency;
         @SerializedName("uniq_passenger_count")
-        private String uniqPassengerCount;
+        private int uniqPassengerCount;
 
         public int getFrequency() {
             return frequency;
@@ -41,11 +41,11 @@ public class CustomerFrequencyDistributionResp {
             this.frequency = frequency;
         }
 
-        public String getUniqPassengerCount() {
+        public int getUniqPassengerCount() {
             return uniqPassengerCount;
         }
 
-        public void setUniqPassengerCount(String uniqPassengerCount) {
+        public void setUniqPassengerCount(int uniqPassengerCount) {
             this.uniqPassengerCount = uniqPassengerCount;
         }
     }

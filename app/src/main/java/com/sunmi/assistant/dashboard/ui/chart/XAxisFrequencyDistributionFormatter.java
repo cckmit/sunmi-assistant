@@ -15,7 +15,6 @@ import com.sunmi.assistant.dashboard.Constants;
 public class XAxisFrequencyDistributionFormatter extends ValueFormatter {
 
     private Context context;
-    private int period;
     private int max;
 
     public XAxisFrequencyDistributionFormatter(Context context) {
@@ -23,9 +22,8 @@ public class XAxisFrequencyDistributionFormatter extends ValueFormatter {
     }
 
     public void setPeriod(int period) {
-        this.period = period;
         if (period == Constants.TIME_PERIOD_YESTERDAY) {
-            max = 5;
+            max = 4;
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             max = 10;
         } else {
