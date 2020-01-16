@@ -86,6 +86,12 @@
     <string name="dashboard_card_customer_last_week">上周</string>
     <string name="dashboard_card_customer_last_month">上月</string>
     <string name="dashboard_card_customer_none">暂无客流数据</string>
+    <string name="dashboard_card_customer_group_frequency">客群到店频率</string>
+    <string name="dashboard_card_customer_avg_enter">时间段内顾客的平均到店次数</string>
+    <string name="dashboard_card_customer_frequency_distribution">到店频率分布</string>
+    <string name="dashborad_card_customer_week_frequency_trend">周到店频率趋势</string>
+    <string name="dashborad_card_customer_month_frequency_trend">月到店频率趋势</string>
+    <string name="dashborad_card_customer_frequency_above">%d以上</string>
 
     <string name="dashboard_card_import_title">导入历史订单</string>
     <string name="dashboard_card_import_tip_import">支持%s前2个月的订单</string>
