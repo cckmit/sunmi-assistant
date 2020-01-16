@@ -42,6 +42,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
     private static CustomerFrequencyDistributionCard sInstance;
     private YAxisVolumeLabelsRenderer barYAxisRenderer;
     private XAxisFrequencyDistributionFormatter barXAxisFormatter;
+    private int paddingBottom;
 
 
     private CustomerFrequencyDistributionCard(Presenter presenter, int source) {
@@ -64,7 +65,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
 
     @Override
     public void init(Context context) {
-
+        paddingBottom = (int) context.getResources().getDimension(R.dimen.dp_24);
     }
 
     @Override
@@ -164,8 +165,10 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         ConstraintLayout layout = holder.getView(R.id.layout_frequency_chart);
         if (model.period == Constants.TIME_PERIOD_YESTERDAY) {
             layout.setBackgroundResource(R.drawable.dashboard_bg_white_radius);
+            model.setPadding(0, 0, 0, paddingBottom);
         } else {
             layout.setBackgroundResource(R.drawable.dashboard_bg_top_white_radius);
+            model.setPadding(0, 0, 0, 0);
         }
         List<BarEntry> dataSet = model.dataSet;
         int maxValue = 0;
