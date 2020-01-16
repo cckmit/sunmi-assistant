@@ -18,10 +18,6 @@ public class CustomerFrequencyTrendResp {
         return frequencyList;
     }
 
-    public void setFrequencyList(List<Item> frequencyList) {
-        this.frequencyList = frequencyList;
-    }
-
     public static class Item {
         /**
          * time : 2019-09-11 00:00
@@ -40,24 +36,13 @@ public class CustomerFrequencyTrendResp {
             return time;
         }
 
-        public void setTime(String time) {
-            this.time = time;
-        }
-
         public int getPassengerCount() {
             return passengerCount;
-        }
-
-        public void setPassengerCount(int passengerCount) {
-            this.passengerCount = passengerCount;
         }
 
         public int getUniqPassengerCount() {
             return uniqPassengerCount;
         }
 
-        public void setUniqPassengerCount(int uniqPassengerCount) {
-            this.uniqPassengerCount = uniqPassengerCount;
-        }
     }
 }

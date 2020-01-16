@@ -22,6 +22,7 @@ public class MarkerFormatter implements IMarkerFormatter {
     public static final int TIME_TYPE_HOUR_SPAN = 2;
     public static final int TIME_TYPE_WEEK = 3;
     public static final int TIME_TYPE_DATE = 4;
+    public static final int TIME_TYPE_DATE_SPAN = 5;
 
     private final String[] weekName;
 
@@ -95,6 +96,14 @@ public class MarkerFormatter implements IMarkerFormatter {
             int month = temp.get(Calendar.MONTH) + 1;
             int day = temp.get(Calendar.DATE);
             valueStr = String.format(Locale.getDefault(), "%02d.%02d", month, day);
+        } else if (timeType == TIME_TYPE_DATE_SPAN) {
+            int month = temp.get(Calendar.MONTH) + 1;
+            int day = temp.get(Calendar.DATE);
+            int offset = (8 - temp.get(Calendar.DAY_OF_WEEK)) % 7;
+            temp.add(Calendar.DATE, offset);
+            int nextMonth = temp.get(Calendar.MONTH) + 1;
+            int nextDay = temp.get(Calendar.DATE);
+            valueStr = String.format(Locale.getDefault(), "%02d.%02d-%02d.%02d", month, day, nextMonth, nextDay);
         }
 
         return String.format(Locale.getDefault(), timeFormat, valueStr);

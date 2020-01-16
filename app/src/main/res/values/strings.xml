@@ -35,6 +35,9 @@
     <string name="dashboard_card_title_customer_trend">客流趋势</string>
     <string name="dashboard_card_title_customer_enter_rate">进店率</string>
     <string name="dashboard_card_title_customer_analysis">客流分析</string>
+    <string name="dashboard_card_title_customer_frequency_trend_week">周到店频率趋势</string>
+    <string name="dashboard_card_title_customer_frequency_trend_month">月到店频率趋势</string>
+    <string name="dashboard_card_title_customer_frequency_avg">客群平均到店频率</string>
     <string name="dashboard_card_tab_all">All</string>
     <string name="dashboard_period_today">Today</string>
     <string name="dashboard_period_week">Week</string>
@@ -62,6 +65,7 @@
     <string name="dashboard_card_customer_frequency_data_day">每日%s次</string>
     <string name="dashboard_card_customer_frequency_data_week">每周%s次</string>
     <string name="dashboard_card_customer_frequency_data_month">每月%s次</string>
+    <string name="dashboard_card_customer_week_count">第%d周</string>
     <string name="dashboard_card_customer_last_day">上日</string>
     <string name="dashboard_card_customer_last_week">上周</string>
     <string name="dashboard_card_customer_last_month">上月</string>

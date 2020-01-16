@@ -20,9 +20,10 @@
 
     <TextView
         android:id="@+id/tvMaleValue"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_22"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_12"
+        android:gravity="start"
         android:textColor="@color/text_disable"
         android:textSize="@dimen/sp_10"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,8 +35,8 @@
         android:id="@+id/barMale"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_2"
+        android:layout_marginEnd="@dimen/dp_2"
         android:indeterminate="false"
         android:indeterminateOnly="false"
         android:maxHeight="@dimen/dp_4"
@@ -51,22 +52,23 @@
 
     <TextView
         android:id="@+id/tvFemaleValue"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_22"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_12"
+        android:gravity="end"
         android:textColor="@color/text_disable"
         android:textSize="@dimen/sp_10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="5.4" />
+        tools:text="15.4" />
 
     <ProgressBar
         android:id="@+id/barFemale"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_2"
+        android:layout_marginEnd="@dimen/dp_2"
         android:indeterminate="false"
         android:indeterminateOnly="false"
         android:maxHeight="@dimen/dp_4"
