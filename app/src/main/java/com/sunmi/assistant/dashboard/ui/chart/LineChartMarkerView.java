@@ -49,37 +49,6 @@ public class LineChartMarkerView extends MarkerView {
 
     public void setTitle(@StringRes int titleId) {
         this.mTvTitle.setText(titleId);
-//
-//        switch (type) {
-//            case Constants.DATA_TYPE_RATE:
-//                mTvTitle.setText(R.string.dashboard_card_tab_rate);
-//                break;
-//            case Constants.DATA_TYPE_VOLUME:
-//                mTvTitle.setText(R.string.dashboard_card_tab_volume);
-//                break;
-//            case Constants.DATA_TYPE_CUSTOMER:
-//                mTvTitle.setText(R.string.dashboard_card_tab_customer);
-//                break;
-//            case Constants.DATA_TYPE_NEW_OLD:
-//                mTvTitle.setText(R.string.dashboard_card_tab_new_old);
-//                break;
-//            case Constants.DATA_TYPE_GENDER:
-//                mTvTitle.setText(R.string.dashboard_card_tab_gender);
-//                break;
-//            case Constants.DATA_TYPE_AGE:
-//                mTvTitle.setText(R.string.str_common_age);
-//                break;
-//            case Constants.DATA_TYPE_ALL:
-//                mTvTitle.setText(R.string.dashboard_card_tab_all);
-//                break;
-//            case Constants.DATA_TYPE_NEW:
-//                mTvTitle.setText(R.string.dashboard_card_tab_new);
-//                break;
-//            case Constants.DATA_TYPE_OLD:
-//                mTvTitle.setText(R.string.dashboard_card_tab_old);
-//                break;
-//            default:
-//        }
     }
 
     public void setPointColor(int color) {

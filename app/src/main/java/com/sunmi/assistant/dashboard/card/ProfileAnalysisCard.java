@@ -177,9 +177,9 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
                 String ageName = mAgeList.get(item.getAgeRangeCode()).getName();
                 String maleName = String.format("%s  |  %s%s", mMaleLabel, ageName, mAgeLabel);
                 String femaleName = String.format("%s  |  %s%s", mFemaleLabel, ageName, mAgeLabel);
-                result.add(new Item(model.period, item.getAgeRangeCode(), 1, maleName,
+                result.add(new Item(model.period, item.getAgeRangeCode(), Constants.GENDER_MALE, maleName,
                         item.getMaleCount(), item.getMaleRegularCount(), item.getMaleUniqCount()));
-                result.add(new Item(model.period, item.getAgeRangeCode(), 2, femaleName,
+                result.add(new Item(model.period, item.getAgeRangeCode(), Constants.GENDER_FEMALE, femaleName,
                         item.getFemaleCount(), item.getFemaleRegularCount(), item.getFemaleUniqCount()));
                 total = total + item.getFemaleCount() + item.getMaleCount();
             }

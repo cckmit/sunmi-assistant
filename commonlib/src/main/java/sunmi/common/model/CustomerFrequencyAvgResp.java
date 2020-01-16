@@ -17,10 +17,6 @@ public class CustomerFrequencyAvgResp {
         return frequencyList;
     }
 
-    public void setFrequencyList(List<Item> frequencyList) {
-        this.frequencyList = frequencyList;
-    }
-
     public static class Item {
         /**
          * age_range_code : 0
@@ -42,32 +38,16 @@ public class CustomerFrequencyAvgResp {
             return ageRangeCode;
         }
 
-        public void setAgeRangeCode(int ageRangeCode) {
-            this.ageRangeCode = ageRangeCode;
-        }
-
         public int getGender() {
             return gender;
-        }
-
-        public void setGender(int gender) {
-            this.gender = gender;
         }
 
         public int getPassengerCount() {
             return passengerCount;
         }
 
-        public void setPassengerCount(int passengerCount) {
-            this.passengerCount = passengerCount;
-        }
-
         public int getUniqPassengerCount() {
             return uniqPassengerCount;
-        }
-
-        public void setUniqPassengerCount(int uniqPassengerCount) {
-            this.uniqPassengerCount = uniqPassengerCount;
         }
     }
 }

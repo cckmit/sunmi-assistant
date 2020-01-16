@@ -27,6 +27,9 @@ public class Constants {
     public static final int DATA_MODE_SALES = 0;
     public static final int DATA_MODE_ORDER = 1;
 
+    public static final int GENDER_MALE = 1;
+    public static final int GENDER_FEMALE = 2;
+
     public static final int DATA_TYPE_RATE = 0;
     public static final int DATA_TYPE_VOLUME = 1;
     public static final int DATA_TYPE_CUSTOMER = 2;
