@@ -121,8 +121,7 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
         // Reset model data
         model.maleAvg = 0;
         model.femaleAvg = 0;
-        if (model.ageMap == null) {
-            model.ageMap = new SparseArray<>(mAgeMap.size());
+        if (model.ageMap.size() == 0) {
             for (int i = 0, size = mAgeMap.size(); i < size; i++) {
                 model.ageMap.put(mAgeMap.keyAt(i), new Item(mAgeMap.valueAt(i).getName()));
             }
@@ -279,6 +278,6 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
     public static class Model extends BaseRefreshCard.BaseModel {
         private float maleAvg;
         private float femaleAvg;
-        private SparseArray<Item> ageMap;
+        private SparseArray<Item> ageMap = new SparseArray<>();
     }
 }
