@@ -41,6 +41,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
 
     private static CustomerFrequencyDistributionCard sInstance;
     private YAxisVolumeLabelsRenderer barYAxisRenderer;
+    private XAxisFrequencyDistributionFormatter barXAxisFormatter;
 
 
     private CustomerFrequencyDistributionCard(Presenter presenter, int source) {
@@ -78,7 +79,10 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         Context context = view.getContext();
         BarChart chart = holder.getView(R.id.view_dashboard_bar_chart);
+
+        // 设置图表坐标Label格式
         barYAxisRenderer = new YAxisVolumeLabelsRenderer(chart);
+        barXAxisFormatter = new XAxisFrequencyDistributionFormatter(context);
         chart.setRendererLeftYAxis(barYAxisRenderer);
 
         // 设置通用图表
@@ -98,7 +102,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         barXAxis.setDrawGridLines(false);
         barXAxis.setTextSize(10f);
         barXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
-        barXAxis.setValueFormatter(new XAxisFrequencyDistributionFormatter(context));
+        barXAxis.setValueFormatter(barXAxisFormatter);
         barXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         barXAxis.setAxisMinimum(0f);
 
@@ -175,10 +179,13 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
             }
         }
 
+        //更新横纵坐标
         float maxAxis = barYAxisRenderer.setMaxValue(maxValue);
         chart.getAxisLeft().setAxisMaximum(maxAxis);
         chart.getXAxis().setAxisMaximum(dataSet.size() + 1);
+        barXAxisFormatter.setPeriod(model.period);
 
+        //更新数据
         float barWidthRatio = calcBarWidth(model.period);
         BarDataSet set;
         BarData data = chart.getData();
