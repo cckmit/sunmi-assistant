@@ -11,6 +11,9 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
@@ -52,6 +55,9 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
     private float mDashLength;
     private float mDashSpaceLength;
 
+    private String markerWeekValue;
+    private String markerMonthValue;
+
     private CustomerFrequencyTrendCard(Presenter presenter, int source) {
         super(presenter, source);
     }
@@ -72,6 +78,8 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
     @Override
     public void init(Context context) {
+        markerWeekValue = context.getString(R.string.dashboard_card_customer_frequency_data_day);
+        markerMonthValue = context.getString(R.string.dashboard_card_customer_frequency_data_week);
     }
 
     @Override
@@ -154,6 +162,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
         lineXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         lineXAxis.setValueFormatter(lineXAxisFormatter);
         lineXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        lineXAxis.setAxisMinimum(0f);
 
         // 设置Y轴
         YAxis lineYAxis = lineChart.getAxisLeft();
@@ -169,7 +178,9 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
         // 设置Line图
         mMarkerFormatter = new MarkerFormatter(context);
+        mMarkerFormatter.setValueType(MarkerFormatter.VALUE_TYPE_DECIMAL_1);
         mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
+        mLineChartMarker.setTitle(R.string.dashboard_card_customer_frequency);
         mLineChartMarker.setChartView(lineChart);
         lineChart.setMarker(mLineChartMarker);
 
@@ -179,9 +190,71 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         TextView tvTitle = holder.getView(R.id.tv_dashboard_title);
-        LineChart chart = holder.getView(R.id.view_dashboard_line_chart);
+        LineChart line = holder.getView(R.id.view_dashboard_line_chart);
 
+        // 更新Title
+        tvTitle.setText(model.period == Constants.TIME_PERIOD_WEEK
+                ? R.string.dashboard_card_title_customer_frequency_trend_week
+                : R.string.dashboard_card_title_customer_frequency_trend_month);
 
+        List<ChartEntry> dataSet = model.dataSet;
+
+        // Calculate min & max of axis value.
+        line.getXAxis().setAxisMaximum(dataSet.size() + 1);
+        int max = 0;
+        float lastX = 0;
+        for (ChartEntry entry : dataSet) {
+            if (entry.getX() > lastX) {
+                lastX = entry.getX();
+            }
+            if (entry.getY() > max) {
+                max = (int) Math.ceil(entry.getY());
+            }
+        }
+
+        float maxAxis = lineYAxisRenderer.setMaxValue(max);
+        line.getAxisLeft().setAxisMaximum(maxAxis);
+
+        // Use correct chart marker & update it.
+        if (model.period == Constants.TIME_PERIOD_WEEK) {
+            mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_WEEK);
+            mMarkerFormatter.setValueFormat(markerWeekValue);
+        } else {
+            mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE_SPAN);
+            mMarkerFormatter.setValueFormat(markerMonthValue);
+        }
+        lineXAxisFormatter.setPeriod(model.period);
+
+        // Refresh data set
+        LineDataSet set;
+        LineData data = line.getData();
+        ArrayList<Entry> values = new ArrayList<>(dataSet);
+        if (data != null && data.getDataSetCount() > 0) {
+            set = (LineDataSet) data.getDataSetByIndex(0);
+            set.setValues(values);
+            data.notifyDataChanged();
+            line.notifyDataSetChanged();
+        } else {
+            set = new LineDataSet(values, "data");
+            int color = ContextCompat.getColor(holder.getContext(), R.color.common_orange);
+            mLineChartMarker.setPointColor(color);
+            set.setColor(color);
+            set.setCircleColor(color);
+            set.setHighLightColor(color);
+            set.setLineWidth(2f);
+            set.setDrawValues(false);
+            set.setDrawCircleHole(false);
+            set.setCircleRadius(1f);
+            set.setDrawHorizontalHighlightIndicator(false);
+            set.setHighlightLineWidth(1f);
+            set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
+            set.setLineContinuous(false);
+            set.setLinePhase(1f);
+            data = new LineData(set);
+            line.setData(data);
+        }
+        line.highlightValue(lastX, 0);
+        line.animateX(300);
     }
 
     private static class XAxisValueFormatter extends ValueFormatter {
@@ -190,9 +263,13 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
         private String weekCountName;
         private int period = Constants.TIME_PERIOD_WEEK;
 
-        public XAxisValueFormatter(Context context) {
+        private XAxisValueFormatter(Context context) {
             weekName = context.getResources().getStringArray(R.array.week_name);
             weekCountName = context.getString(R.string.dashboard_card_customer_week_count);
+        }
+
+        public void setPeriod(int period) {
+            this.period = period;
         }
 
         @Override
