@@ -122,7 +122,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         barYAxis.setAxisMinimum(0f);
         barYAxis.setDrawGridLines(true);
         barYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
-        barYAxis.setMinWidth(36f);
+        barYAxis.setMinWidth(30f);
 
         // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 1f);
@@ -240,10 +240,8 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         int max;
         if (period == Constants.TIME_PERIOD_YESTERDAY) {
             max = 4;
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            max = 10;
         } else {
-            max = 15;
+            max = 10;
         }
         return max;
     }
@@ -259,10 +257,8 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         public void setPeriod(int period) {
             if (period == Constants.TIME_PERIOD_YESTERDAY) {
                 labels = new float[]{1, 2, 3, 4, 5};
-            } else if (period == Constants.TIME_PERIOD_WEEK) {
-                labels = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
             } else {
-                labels = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+                labels = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
             }
         }
 

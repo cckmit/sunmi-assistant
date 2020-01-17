@@ -24,10 +24,8 @@ public class XAxisFrequencyDistributionFormatter extends ValueFormatter {
     public void setPeriod(int period) {
         if (period == Constants.TIME_PERIOD_YESTERDAY) {
             max = 4;
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            max = 10;
         } else {
-            max = 15;
+            max = 10;
         }
     }
 
