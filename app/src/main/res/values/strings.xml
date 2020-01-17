@@ -65,6 +65,9 @@
     <string name="dashboard_card_customer_frequency_data_day">%s次/日</string>
     <string name="dashboard_card_customer_frequency_data_week">%s次/周</string>
     <string name="dashboard_card_customer_frequency_data_month">%s次/月</string>
+    <string name="dashboard_card_customer_frequency_marker_title">到店人数</string>
+    <string name="dashboard_card_customer_frequency_marker_value">次数 %d次</string>
+    <string name="dashboard_card_customer_frequency_marker_count_above">次数 %d次以上</string>
     <string name="dashboard_card_customer_week_count">第%d周</string>
     <string name="dashboard_card_customer_last_day">上日</string>
     <string name="dashboard_card_customer_last_week">上周</string>

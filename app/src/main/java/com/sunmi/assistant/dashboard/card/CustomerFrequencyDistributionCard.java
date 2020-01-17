@@ -18,12 +18,15 @@ import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.IMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisFrequencyDistributionFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -46,6 +49,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
     private XAxisLabelRenderer barXAxisRenderer;
     private XAxisFrequencyDistributionFormatter barXAxisFormatter;
     private int paddingBottom;
+    private MarkerFormatter markerFormatter;
 
 
     private CustomerFrequencyDistributionCard(Presenter presenter, int source) {
@@ -101,6 +105,8 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         chart.setDrawGridBackground(false);
         chart.getLegend().setEnabled(false);
         chart.getAxisRight().setEnabled(false);
+        chart.setFitBars(true);
+        chart.setDrawBarShadow(false);
 
         // 设置X轴
         XAxis barXAxis = chart.getXAxis();
@@ -128,8 +134,10 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         float barRadius = CommonHelper.dp2px(context, 1f);
         BarChartRoundEdgeRenderer renderer = new BarChartRoundEdgeRenderer(chart, barRadius);
         chart.setRenderer(renderer);
-        chart.setFitBars(true);
-        chart.setDrawBarShadow(false);
+        markerFormatter = new MarkerFormatter(context);
+        BarChartMarkerView marker = new BarChartMarkerView(context, markerFormatter);
+        marker.setTitle(R.string.dashboard_card_customer_frequency_marker_title);
+        chart.setMarker(marker);
 
         return holder;
     }
@@ -184,9 +192,11 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         //更新横纵坐标
         float maxAxis = barYAxisRenderer.setMaxValue(maxValue);
         chart.getAxisLeft().setAxisMaximum(maxAxis);
-        chart.getXAxis().setAxisMaximum(getMax(model.period) + 2);
+        int max = getMax(model.period);
+        chart.getXAxis().setAxisMaximum(max + 2);
         barXAxisFormatter.setPeriod(model.period);
         barXAxisRenderer.setPeriod(model.period);
+        markerFormatter.setMax(max);
 
         //更新数据
         float barWidthRatio = calcBarWidth(model.period);
@@ -200,7 +210,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
             chart.notifyDataSetChanged();
         } else {
             set = new BarDataSet(dataSet, "data");
-            set.setDrawValues(true);
+            set.setDrawValues(false);
             set.setColor(ContextCompat.getColor(holder.getContext(), R.color.color_FFD0B3));
             set.setHighLightColor(ContextCompat.getColor(holder.getContext(), R.color.common_orange));
             data = new BarData(set);
@@ -244,15 +254,52 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         return max;
     }
 
-    public static class XAxisLabelRenderer extends XAxisRenderer {
+    private static class MarkerFormatter implements IMarkerFormatter {
+
+        private int max;
+        private String valueFormat;
+        private String labelFormat;
+        private String labelAboveFormat;
+
+        private MarkerFormatter(Context context) {
+            valueFormat = context.getString(R.string.str_num_people);
+            labelFormat = context.getString(R.string.dashboard_card_customer_frequency_marker_value);
+            labelAboveFormat = context.getString(R.string.dashboard_card_customer_frequency_marker_count_above);
+        }
+
+        private void setMax(int max) {
+            this.max = max;
+        }
+
+        @Override
+        public String valueFormat(float value) {
+            return String.format(Locale.getDefault(), valueFormat, (int) value);
+        }
+
+        @Override
+        public String xAxisFormat(float x) {
+            if (x <= max) {
+                return String.format(Locale.getDefault(), labelFormat, (int) x);
+            } else {
+                return String.format(Locale.getDefault(), labelAboveFormat, (int) x - 1);
+            }
+        }
+
+        @Override
+        public String timeFormat(long time) {
+            return "";
+        }
+    }
+
+    private static class XAxisLabelRenderer extends XAxisRenderer {
 
         private float[] labels;
 
-        public XAxisLabelRenderer(BarLineChartBase chart) {
+        private XAxisLabelRenderer(BarLineChartBase chart) {
             super(chart.getViewPortHandler(), chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT));
         }
 
-        public void setPeriod(int period) {
+        private void setPeriod(int period) {
             if (period == Constants.TIME_PERIOD_YESTERDAY) {
                 labels = new float[]{1, 2, 3, 4, 5};
             } else {

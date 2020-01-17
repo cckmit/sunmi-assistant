@@ -48,10 +48,12 @@ public class BarChartMarkerView extends MarkerView {
 
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
+        mTvValue.setText(formatter.valueFormat(e.getY()));
         if (e instanceof ChartEntry) {
             ChartEntry entry = (ChartEntry) e;
-            mTvValue.setText(formatter.valueFormat(entry.getY()));
             mTvLabel.setText(formatter.timeFormat(entry.getTime()));
+        } else {
+            mTvLabel.setText(formatter.xAxisFormat(e.getX()));
         }
         super.refreshContent(e, highlight);
     }
