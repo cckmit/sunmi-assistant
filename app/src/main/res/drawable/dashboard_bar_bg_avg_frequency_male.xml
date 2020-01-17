@@ -9,13 +9,13 @@
         </shape>
     </item>
     <item android:id="@android:id/progress">
-        <clip
-            android:clipOrientation="horizontal"
-            android:gravity="end">
-            <shape android:shape="rectangle">
+        <scale
+            android:scaleWidth="100%"
+            android:scaleGravity="right">
+            <shape>
                 <corners android:radius="@dimen/dp_2" />
                 <solid android:color="@color/color_C8D5FA" />
             </shape>
-        </clip>
+        </scale>
     </item>
 </layer-list>
