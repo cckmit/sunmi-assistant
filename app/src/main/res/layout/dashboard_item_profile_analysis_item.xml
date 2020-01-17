@@ -167,7 +167,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
             android:textColor="@color/text_normal"
-            android:textSize="@dimen/sp_14"
+            android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             tools:text="每日1.2次" />
 

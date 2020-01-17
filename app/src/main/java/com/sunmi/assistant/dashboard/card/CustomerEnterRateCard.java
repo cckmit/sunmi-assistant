@@ -123,7 +123,7 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         lineYAxis.setTextSize(10f);
         lineYAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         lineYAxis.setAxisMinimum(0f);
-        lineYAxis.setAxisMaximum(1.1f);
+        lineYAxis.setAxisMaximum(1.01f);
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         lineYAxis.setValueFormatter(new YAxisRateLabelFormatter());
