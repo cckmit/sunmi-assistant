@@ -171,8 +171,8 @@ public class WifiConfigActivity extends BaseActivity
             try {
                 JSONObject jsonObject = res.getResult().getJSONObject("wireless");
                 if (jsonObject.has("connect_status")) {//是否成功关联上前端AP(0:正在关联。1：关联成功。2：关联失败)
-                    int connectStatus = jsonObject.getInt("connect_status");
-                    if (1 == connectStatus) {//返回1，继续判断online状态
+                    String connectStatus = jsonObject.getString("connect_status");
+                    if (TextUtils.equals("1", connectStatus)) {//返回1，继续判断online状态
                         if (res.getResult().has("online")) {
                             int online = res.getResult().getInt("online");
                             if (1 == online) {
@@ -182,7 +182,7 @@ public class WifiConfigActivity extends BaseActivity
                                 startWaitCountTimer();
                             }
                         }
-                    } else if (2 == connectStatus) {
+                    } else if (TextUtils.equals("2", connectStatus)) {
                         stopTimer();
                         cancelWaitCountTimer();
                         hideLoadingDialog();
