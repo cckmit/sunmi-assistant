@@ -28,7 +28,7 @@ import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.chart.MarkerFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelFormatter;
@@ -61,12 +61,12 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
     private XAxisLabelRenderer lineXAxisRenderer;
     private YAxisRateLabelRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
-    private MarkerFormatter lineMarkerFormatter;
+    private TimeMarkerFormatter lineMarkerFormatter;
 
     private XAxisLabelRenderer barXAxisRenderer;
     private YAxisVolumeLabelsRenderer barYAxisRenderer;
     private BarChartMarkerView mBarChartMarker;
-    private MarkerFormatter barMarkerFormatter;
+    private TimeMarkerFormatter barMarkerFormatter;
 
     private float mDashLength;
     private float mDashSpaceLength;
@@ -155,8 +155,8 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         lineYAxis.setMinWidth(36f);
 
         // 设置Marker
-        lineMarkerFormatter = new MarkerFormatter(context);
-        lineMarkerFormatter.setValueType(MarkerFormatter.VALUE_TYPE_RATE);
+        lineMarkerFormatter = new TimeMarkerFormatter(context);
+        lineMarkerFormatter.setValueType(TimeMarkerFormatter.VALUE_TYPE_RATE);
         mLineChartMarker = new LineChartMarkerView(context, lineMarkerFormatter);
         mLineChartMarker.setChartView(chart);
         mLineChartMarker.setTitle(R.string.dashboard_card_tab_rate);
@@ -209,7 +209,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         chart.setRenderer(renderer);
         chart.setFitBars(true);
         chart.setDrawBarShadow(false);
-        barMarkerFormatter = new MarkerFormatter(context);
+        barMarkerFormatter = new TimeMarkerFormatter(context);
         mBarChartMarker = new BarChartMarkerView(context, barMarkerFormatter);
         mBarChartMarker.setChartView(chart);
         chart.setMarker(mBarChartMarker);
@@ -355,9 +355,9 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
 
         int color = ContextCompat.getColor(line.getContext(), R.color.common_orange);
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
-            lineMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_HOUR);
+            lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR);
         } else {
-            lineMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE);
+            lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
         }
 
         LineDataSet set;
@@ -399,9 +399,9 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         bar.getAxisLeft().setAxisMaximum(maxAxis);
 
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
-            barMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_HOUR);
+            barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR);
         } else {
-            barMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE);
+            barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
         }
 
         float barWidthRatio = calcBarWidth(model.period);

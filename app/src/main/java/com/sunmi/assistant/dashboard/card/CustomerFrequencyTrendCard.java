@@ -22,7 +22,7 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.chart.MarkerFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.text.ParseException;
@@ -52,7 +52,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
     private XAxisValueFormatter lineXAxisFormatter;
     private YAxisVolumeLabelsRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
-    private MarkerFormatter mMarkerFormatter;
+    private TimeMarkerFormatter mMarkerFormatter;
 
     private float mDashLength;
     private float mDashSpaceLength;
@@ -182,8 +182,8 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
         lineYAxis.setMinWidth(36f);
 
         // 设置Line图
-        mMarkerFormatter = new MarkerFormatter(context);
-        mMarkerFormatter.setValueType(MarkerFormatter.VALUE_TYPE_DECIMAL_1);
+        mMarkerFormatter = new TimeMarkerFormatter(context);
+        mMarkerFormatter.setValueType(TimeMarkerFormatter.VALUE_TYPE_DECIMAL_1);
         mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
         mLineChartMarker.setTitle(R.string.dashboard_card_customer_frequency);
         mLineChartMarker.setChartView(lineChart);
@@ -222,10 +222,10 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
         // Use correct chart marker & update it.
         if (model.period == Constants.TIME_PERIOD_WEEK) {
-            mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_WEEK);
+            mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_WEEK);
             mMarkerFormatter.setValueFormat(markerWeekValue);
         } else {
-            mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE_SPAN);
+            mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE_SPAN);
             mMarkerFormatter.setValueFormat(markerMonthValue);
         }
         lineXAxisRenderer.setPeriod(model.period);

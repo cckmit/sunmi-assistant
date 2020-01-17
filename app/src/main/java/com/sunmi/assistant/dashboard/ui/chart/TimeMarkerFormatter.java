@@ -11,7 +11,7 @@ import java.util.Locale;
  * @author yinhui
  * @date 2020-01-14
  */
-public class MarkerFormatter implements IMarkerFormatter {
+public class TimeMarkerFormatter implements IMarkerFormatter {
 
     public static final int VALUE_TYPE_INTEGER = 0;
     public static final int VALUE_TYPE_DECIMAL_1 = 1;
@@ -33,7 +33,7 @@ public class MarkerFormatter implements IMarkerFormatter {
 
     private Calendar temp = Calendar.getInstance();
 
-    public MarkerFormatter(Context context) {
+    public TimeMarkerFormatter(Context context) {
         timeFormat = context.getString(R.string.dashboard_card_marker_time) + " %s";
         weekName = context.getResources().getStringArray(R.array.week_name);
     }
@@ -74,6 +74,11 @@ public class MarkerFormatter implements IMarkerFormatter {
                 valueStr = "";
         }
         return String.format(Locale.getDefault(), valueFormat, valueStr);
+    }
+
+    @Override
+    public String xAxisFormat(float x) {
+        return "";
     }
 
     @Override

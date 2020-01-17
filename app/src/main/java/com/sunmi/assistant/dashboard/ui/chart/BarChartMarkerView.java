@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.ui.chart;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.Chart;
@@ -18,7 +17,6 @@ import com.sunmi.assistant.R;
  */
 public class BarChartMarkerView extends MarkerView {
 
-    private ImageView mIvPoint;
     private TextView mTvTitle;
     private TextView mTvValue;
     private TextView mTvLabel;
@@ -47,18 +45,6 @@ public class BarChartMarkerView extends MarkerView {
     public void setTitle(@StringRes int titleId) {
         this.mTvTitle.setText(titleId);
     }
-
-//    public void setType(int period, int type) {
-//        this.period = period;
-//        this.type = type;
-//        if (type == Constants.DATA_TYPE_RATE) {
-//            mTvTitle.setText(R.string.dashboard_card_tab_rate);
-//        } else if (type == Constants.DATA_TYPE_VOLUME) {
-//            mTvTitle.setText(R.string.dashboard_card_tab_volume);
-//        } else {
-//            mTvTitle.setText(R.string.dashboard_card_tab_customer);
-//        }
-//    }
 
     @Override
     public void refreshContent(Entry e, Highlight highlight) {

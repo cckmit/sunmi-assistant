@@ -19,7 +19,7 @@ import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.chart.MarkerFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelFormatter;
@@ -51,7 +51,7 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
     private XAxisLabelRenderer lineXAxisRenderer;
     private YAxisRateLabelRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
-    private MarkerFormatter mMarkerFormatter;
+    private TimeMarkerFormatter mMarkerFormatter;
 
     private float mDashLength;
     private float mDashSpaceLength;
@@ -130,8 +130,8 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         lineYAxis.setMinWidth(36f);
 
         // 设置Line图
-        mMarkerFormatter = new MarkerFormatter(context);
-        mMarkerFormatter.setValueType(MarkerFormatter.VALUE_TYPE_RATE);
+        mMarkerFormatter = new TimeMarkerFormatter(context);
+        mMarkerFormatter.setValueType(TimeMarkerFormatter.VALUE_TYPE_RATE);
         mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
         mLineChartMarker.setChartView(chart);
         mLineChartMarker.setTitle(R.string.dashboard_card_title_customer_enter_rate);
@@ -214,9 +214,9 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
 
         // Use correct chart marker & update it.
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
-            mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_HOUR);
+            mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR);
         } else {
-            mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE);
+            mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
         }
 
         // Refresh data set

@@ -8,5 +8,7 @@ public interface IMarkerFormatter {
 
     String valueFormat(float value);
 
+    String xAxisFormat(float x);
+
     String timeFormat(long time);
 }

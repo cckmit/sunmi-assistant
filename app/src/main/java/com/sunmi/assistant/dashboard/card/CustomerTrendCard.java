@@ -22,7 +22,7 @@ import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.CustomerLineMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.chart.MarkerFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
@@ -65,7 +65,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     private YAxisVolumeLabelsRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private CustomerLineMarkerView mLineComplexMarker;
-    private MarkerFormatter mMarkerFormatter;
+    private TimeMarkerFormatter mMarkerFormatter;
     private float mDashLength;
     private float mDashSpaceLength;
 
@@ -158,7 +158,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         lineYAxis.setMinWidth(36f);
 
         // 设置Line图
-        mMarkerFormatter = new MarkerFormatter(context);
+        mMarkerFormatter = new TimeMarkerFormatter(context);
         mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
         mLineComplexMarker = new CustomerLineMarkerView(context);
         mLineChartMarker.setChartView(lineChart);
@@ -381,9 +381,9 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             mLineChartMarker.setTitle(markerTitle);
             mLineChartMarker.setPointColor(color);
             if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
-                mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_HOUR_SPAN);
+                mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
             } else {
-                mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE);
+                mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
             }
         }
 
