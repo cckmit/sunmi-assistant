@@ -1,12 +1,12 @@
 package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -23,10 +23,9 @@ import java.util.List;
 import java.util.Locale;
 
 import retrofit2.Call;
-import sunmi.common.base.adapter.CommonAdapter;
-import sunmi.common.base.adapter.ViewHolder;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.model.CustomerFrequencyAvgResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -42,7 +41,7 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
     private static CustomerFrequencyAvgCard sInstance;
 
     private SparseArray<FaceAge> mAgeMap;
-    private CommonAdapter<Item> mAdapter;
+    private AgeListAdapter mAdapter;
 
     private CustomerFrequencyAvgCard(Presenter presenter, int source) {
         super(presenter, source);
@@ -187,10 +186,10 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         Context context = view.getContext();
-        ListView lv = holder.getView(R.id.lv_dashboard_list);
-        mAdapter = new AgeListAdapter(context);
-        lv.setDividerHeight(0);
-        lv.setAdapter(mAdapter);
+        RecyclerView rv = holder.getView(R.id.lv_dashboard_list);
+        mAdapter = new AgeListAdapter();
+        rv.setLayoutManager(new LinearLayoutManager(context));
+        rv.setAdapter(mAdapter);
         return holder;
     }
 
@@ -207,7 +206,7 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
         for (int i = 0; i < size; i++) {
             list.add(model.ageMap.valueAt(i));
         }
-        mAdapter.setDatas(list);
+        mAdapter.setData(list);
         mAdapter.notifyDataSetChanged();
         holder.itemView.post(() -> {
             mAdapter.notifyDataSetChanged();
@@ -215,23 +214,15 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
         });
     }
 
-    private static class AgeListAdapter extends CommonAdapter<Item> {
+    private static class AgeListAdapter extends SimpleArrayAdapter<Item> {
 
-        private Drawable barMaleDrawable;
-        private Drawable barMaleHighlightDrawable;
-        private Drawable barFemaleDrawable;
-        private Drawable barFemaleHighlightDrawable;
-
-        private AgeListAdapter(Context context) {
-            super(context, R.layout.dashboard_item_customer_frequency_avg_item);
-            barMaleDrawable = ContextCompat.getDrawable(context, R.drawable.dashboard_bar_bg_avg_frequency_male);
-            barMaleHighlightDrawable = ContextCompat.getDrawable(context, R.drawable.dashboard_bar_bg_avg_frequency_male_highlight);
-            barFemaleDrawable = ContextCompat.getDrawable(context, R.drawable.dashboard_bar_bg_avg_frequency_female);
-            barFemaleHighlightDrawable = ContextCompat.getDrawable(context, R.drawable.dashboard_bar_bg_avg_frequency_female_highlight);
+        @Override
+        public int getLayoutId() {
+            return R.layout.dashboard_item_customer_frequency_avg_item;
         }
 
         @Override
-        public void convert(ViewHolder holder, Item item) {
+        public void setupView(@NonNull BaseViewHolder<Item> holder, Item item, int position) {
             TextView tvName = holder.getView(R.id.tvName);
             TextView tvMale = holder.getView(R.id.tvMaleValue);
             ProgressBar barMale = holder.getView(R.id.barMale);
@@ -242,13 +233,31 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
             tvMale.setText(String.format(Locale.getDefault(), FORMAT_FLOAT_SINGLE_DECIMAL, item.maleFrequency));
             tvFemale.setText(String.format(Locale.getDefault(), FORMAT_FLOAT_SINGLE_DECIMAL, item.femaleFrequency));
 
-            barMale.setProgressDrawableTiled(item.isMaleHighlight ? barMaleHighlightDrawable : barMaleDrawable);
-            barMale.setProgress((int) (item.maleFrequency * 100 / item.max));
+            Context context = holder.getContext();
+            if (isStyleChanged(barMale, item.isMaleHighlight)) {
+                barMale.setProgressDrawableTiled(item.isMaleHighlight
+                        ? ContextCompat.getDrawable(context, R.drawable.dashboard_bar_bg_avg_frequency_male_highlight)
+                        : ContextCompat.getDrawable(context, R.drawable.dashboard_bar_bg_avg_frequency_male));
+            }
+            barMale.setProgress(item.max <= 0 ? 0 : (int) (item.maleFrequency * 100 / item.max));
 
-            barFemale.setProgressDrawableTiled(item.isFemaleHighlight ? barFemaleHighlightDrawable : barFemaleDrawable);
-            barFemale.setProgress((int) (item.femaleFrequency * 100 / item.max));
+            if (isStyleChanged(barFemale, item.isFemaleHighlight)) {
+                barFemale.setProgressDrawableTiled(item.isFemaleHighlight
+                        ? ContextCompat.getDrawable(context, R.drawable.dashboard_bar_bg_avg_frequency_female_highlight)
+                        : ContextCompat.getDrawable(context, R.drawable.dashboard_bar_bg_avg_frequency_female));
+            }
+            barFemale.setProgress(item.max <= 0 ? 0 : (int) (item.femaleFrequency * 100 / item.max));
         }
 
+        private boolean isStyleChanged(ProgressBar bar, boolean isHighlight) {
+            Object tag = bar.getTag();
+            if (!(tag instanceof Boolean)) {
+                return true;
+            }
+            boolean old = (boolean) tag;
+            bar.setTag(isHighlight);
+            return old ^ isHighlight;
+        }
     }
 
     public static class Item {

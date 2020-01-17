@@ -6,9 +6,9 @@ package com.sunmi.assistant.dashboard.ui.chart;
  */
 public interface IMarkerFormatter {
 
-    String valueFormat(float value);
+    CharSequence valueFormat(float value);
 
-    String xAxisFormat(float x);
+    CharSequence xAxisFormat(float x);
 
-    String timeFormat(long time);
+    CharSequence timeFormat(long time);
 }

@@ -398,6 +398,12 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         bar.getXAxis().setAxisMaximum(xAxisRange.second);
         bar.getAxisLeft().setAxisMaximum(maxAxis);
 
+        if (model.type == Constants.DATA_TYPE_VOLUME) {
+            mBarChartMarker.setTitle(R.string.dashboard_card_tab_volume);
+        } else if (model.type == Constants.DATA_TYPE_CUSTOMER) {
+            mBarChartMarker.setTitle(R.string.dashboard_card_tab_customer);
+        }
+
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
             barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR);
         } else {

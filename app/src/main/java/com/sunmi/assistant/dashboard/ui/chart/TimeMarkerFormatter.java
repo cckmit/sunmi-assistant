@@ -55,7 +55,7 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
     }
 
     @Override
-    public String valueFormat(float value) {
+    public CharSequence valueFormat(float value) {
         String valueStr;
         switch (valueType) {
             case VALUE_TYPE_INTEGER:
@@ -77,12 +77,12 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
     }
 
     @Override
-    public String xAxisFormat(float x) {
+    public CharSequence xAxisFormat(float x) {
         return "";
     }
 
     @Override
-    public String timeFormat(long time) {
+    public CharSequence timeFormat(long time) {
         String valueStr = "";
         temp.setTimeInMillis(time);
 

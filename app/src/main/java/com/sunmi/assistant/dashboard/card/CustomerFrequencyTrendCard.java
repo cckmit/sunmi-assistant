@@ -222,7 +222,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
         // Use correct chart marker & update it.
         if (model.period == Constants.TIME_PERIOD_WEEK) {
-            mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_WEEK);
+            mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
             mMarkerFormatter.setValueFormat(markerWeekValue);
         } else {
             mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE_SPAN);

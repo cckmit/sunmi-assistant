@@ -74,7 +74,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_female_avg" />
 
-        <sunmi.common.view.NestedListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/lv_dashboard_list"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

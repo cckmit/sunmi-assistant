@@ -272,12 +272,12 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         }
 
         @Override
-        public String valueFormat(float value) {
+        public CharSequence valueFormat(float value) {
             return String.format(Locale.getDefault(), valueFormat, (int) value);
         }
 
         @Override
-        public String xAxisFormat(float x) {
+        public CharSequence xAxisFormat(float x) {
             if (x <= max) {
                 return String.format(Locale.getDefault(), labelFormat, (int) x);
             } else {
@@ -286,7 +286,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         }
 
         @Override
-        public String timeFormat(long time) {
+        public CharSequence timeFormat(long time) {
             return "";
         }
     }
