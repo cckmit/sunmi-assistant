@@ -242,14 +242,11 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
             tvMale.setText(String.format(Locale.getDefault(), FORMAT_FLOAT_SINGLE_DECIMAL, item.maleFrequency));
             tvFemale.setText(String.format(Locale.getDefault(), FORMAT_FLOAT_SINGLE_DECIMAL, item.femaleFrequency));
 
-            int max = (int) (item.max * 100);
-            barMale.setMax(max);
-            barMale.setProgressDrawable(item.isMaleHighlight ? barMaleHighlightDrawable : barMaleDrawable);
-            barMale.setProgress((int) (item.maleFrequency * 100));
+            barMale.setProgressDrawableTiled(item.isMaleHighlight ? barMaleHighlightDrawable : barMaleDrawable);
+            barMale.setProgress((int) (item.maleFrequency * 100 / item.max));
 
-            barFemale.setMax(max);
-            barFemale.setProgressDrawable(item.isFemaleHighlight ? barFemaleHighlightDrawable : barFemaleDrawable);
-            barFemale.setProgress((int) (item.femaleFrequency * 100));
+            barFemale.setProgressDrawableTiled(item.isFemaleHighlight ? barFemaleHighlightDrawable : barFemaleDrawable);
+            barFemale.setProgress((int) (item.femaleFrequency * 100 / item.max));
         }
 
     }

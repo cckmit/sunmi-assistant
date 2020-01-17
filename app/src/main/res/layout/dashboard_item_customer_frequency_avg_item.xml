@@ -39,6 +39,7 @@
         android:layout_marginEnd="@dimen/dp_2"
         android:indeterminate="false"
         android:indeterminateOnly="false"
+        android:max="100"
         android:maxHeight="@dimen/dp_4"
         android:minHeight="@dimen/dp_4"
         android:mirrorForRtl="true"
@@ -46,7 +47,6 @@
         app:layout_constraintEnd_toStartOf="@+id/tvName"
         app:layout_constraintStart_toEndOf="@+id/tvMaleValue"
         app:layout_constraintTop_toTopOf="parent"
-        tools:max="100"
         tools:progress="80"
         tools:progressDrawable="@drawable/dashboard_bar_bg_avg_frequency_male" />
 
@@ -71,6 +71,7 @@
         android:layout_marginEnd="@dimen/dp_2"
         android:indeterminate="false"
         android:indeterminateOnly="false"
+        android:max="100"
         android:maxHeight="@dimen/dp_4"
         android:minHeight="@dimen/dp_4"
         android:mirrorForRtl="true"
@@ -78,7 +79,6 @@
         app:layout_constraintEnd_toStartOf="@+id/tvFemaleValue"
         app:layout_constraintStart_toEndOf="@+id/tvName"
         app:layout_constraintTop_toTopOf="parent"
-        tools:max="100"
         tools:progress="80"
         tools:progressDrawable="@drawable/dashboard_bar_bg_avg_frequency_female" />
 
