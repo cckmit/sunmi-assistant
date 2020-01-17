@@ -229,8 +229,6 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
     private float calcBarWidth(int period) {
         if (period == Constants.TIME_PERIOD_YESTERDAY) {
             return 0.25f;
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            return 0.35f;
         } else {
             return 0.45f;
         }
