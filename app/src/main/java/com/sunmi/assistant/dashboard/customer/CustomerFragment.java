@@ -125,6 +125,30 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
         return false;
     }
 
+    @Override
+    public void removeFrequencyCard() {
+        List<Object> data = mAdapter.getData();
+        int from = data.size() - 2;
+        data.remove(from);
+        data.remove(from);
+        mAdapter.notifyItemRangeRemoved(from, 2);
+    }
+
+    @Override
+    public void addFrequencyCard(List<BaseRefreshCard> data) {
+        if (mAdapter == null || data == null || data.isEmpty()) {
+            return;
+        }
+        List<Object> list = new ArrayList<>(data.size());
+        int position = mAdapter.getItemCount();
+        for (BaseRefreshCard card : data) {
+            card.registerIntoAdapter(mAdapter, position);
+            list.add(card.getModel());
+            position++;
+        }
+        mAdapter.add(list);
+    }
+
     private class ItemStickyListener extends RecyclerView.OnScrollListener {
 
         private View topBar = null;
