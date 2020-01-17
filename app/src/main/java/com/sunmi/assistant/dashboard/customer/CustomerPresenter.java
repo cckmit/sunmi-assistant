@@ -71,7 +71,8 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setPeriod(int period) {
-        if (mPeriod == Constants.TIME_PERIOD_YESTERDAY && mPeriod != period) {
+        if (mPeriod != period && Utils.hasCustomer(mSource)
+                && mPeriod == Constants.TIME_PERIOD_YESTERDAY) {
             // 从昨日变为本周或本月，增加卡片
             List<BaseRefreshCard> list = new ArrayList<>(2);
             list.add(CustomerFrequencyTrendCard.get(this, mSource));
@@ -81,9 +82,9 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
             }
             mList.addAll(list);
             mView.addFrequencyCard(list);
-        } else if (mPeriod != Constants.TIME_PERIOD_INIT
-                && period == Constants.TIME_PERIOD_YESTERDAY
-                && mPeriod != period) {
+        } else if (mPeriod != period && Utils.hasCustomer(mSource)
+                && mPeriod != Constants.TIME_PERIOD_INIT
+                && period == Constants.TIME_PERIOD_YESTERDAY) {
             // 从本周本月变为昨日，删除卡片
             mView.removeFrequencyCard();
         }

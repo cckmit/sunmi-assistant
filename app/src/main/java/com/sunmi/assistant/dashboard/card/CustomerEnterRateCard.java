@@ -123,7 +123,7 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         lineYAxis.setTextSize(10f);
         lineYAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         lineYAxis.setAxisMinimum(0f);
-        lineYAxis.setAxisMaximum(1f);
+        lineYAxis.setAxisMaximum(1.1f);
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         lineYAxis.setValueFormatter(new YAxisRateLabelFormatter());
@@ -168,7 +168,8 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
             for (CustomerEnterRateTrendResp.Item item : list) {
                 long time = format.parse(item.getTime()).getTime();
                 float x = Utils.encodeChartXAxisFloat(model.period, time);
-                float y = (float) item.getPassengerCount() / (item.getPassPassengerCount() + item.getPassengerCount());
+                int total = item.getPassPassengerCount() + item.getPassengerCount();
+                float y = total <= 0 ? 0f : (float) item.getPassengerCount() / total;
                 model.dataSet.add(new ChartEntry(x, y, time));
             }
         } catch (ParseException e) {
@@ -239,27 +240,14 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
             set.setCircleRadius(1f);
             set.setHighlightLineWidth(1f);
             set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
+            set.setLineContinuous(false);
+            set.setLinePhase(1f);
             mLineChartMarker.setPointColor(color);
             data = new LineData(set);
             line.setData(data);
         }
         line.highlightValue(lastX, 0);
         line.animateX(300);
-    }
-
-    private void setupLineData(LineDataSet set, int color) {
-        set.setColor(color);
-        set.setCircleColor(color);
-        set.setHighLightColor(color);
-        set.setLineWidth(2f);
-        set.setDrawValues(false);
-        set.setDrawCircleHole(false);
-        set.setCircleRadius(1f);
-        set.setDrawHorizontalHighlightIndicator(false);
-        set.setHighlightLineWidth(1f);
-        set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
-        set.setLineContinuous(false);
-        set.setLinePhase(1f);
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
