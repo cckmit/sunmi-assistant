@@ -22,6 +22,7 @@ import org.androidannotations.annotations.ViewById;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 
 @EActivity(R.layout.viewpager_view)
@@ -45,6 +46,7 @@ public class LeadPagesActivity extends BaseActivity {
 
     @AfterViews
     protected void init() {
+        StatusBarUtils.setStatusBarFullTransparent(this);
         SpUtils.saveLead();//保存引导页值
         point1.setBackgroundResource(R.drawable.oval_gold);
         point2.setBackgroundResource(R.drawable.oval_black_light);
