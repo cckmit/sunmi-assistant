@@ -214,7 +214,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         titleBar.getLeftLayout().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
         rlBottomBar.setVisibility(View.VISIBLE);
-        initVideoAdjust();
         screenW = CommonHelper.getScreenWidth(context);
 
         llLoading.setOnTouchListener((v, event) -> true);
@@ -234,6 +233,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             ivCloudPlayback.setVisibility(View.VISIBLE);
         } else {
             if (IpcUtils.isNewVersion(device.getFirmware(), IpcConstants.IPC_VERSION_VIDEO_ADJUST)) {
+                initVideoAdjust();
                 isShowAdjust = true;
                 ivAdjust.setVisibility(View.VISIBLE);
             }
@@ -660,7 +660,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 || id == OpcodeConstants.fsAdjustFocusAdd
                 || id == OpcodeConstants.fsAdjustFocusMinus) {
             hideLoadingDialog();
-        }else if (id == CommonNotifications.cashPreventSubscribe){
+        } else if (id == CommonNotifications.cashPreventSubscribe) {
             mPresenter.getCashPreventService(device.getDeviceid());
         }
 
