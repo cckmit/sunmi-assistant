@@ -8,11 +8,13 @@ import android.view.View;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
@@ -41,6 +43,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
 
     private static CustomerFrequencyDistributionCard sInstance;
     private YAxisVolumeLabelsRenderer barYAxisRenderer;
+    private XAxisLabelRenderer barXAxisRenderer;
     private XAxisFrequencyDistributionFormatter barXAxisFormatter;
     private int paddingBottom;
 
@@ -83,8 +86,10 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
 
         // 设置图表坐标Label格式
         barYAxisRenderer = new YAxisVolumeLabelsRenderer(chart);
+        barXAxisRenderer = new XAxisLabelRenderer(chart);
         barXAxisFormatter = new XAxisFrequencyDistributionFormatter(context);
         chart.setRendererLeftYAxis(barYAxisRenderer);
+        chart.setXAxisRenderer(barXAxisRenderer);
 
         // 设置通用图表
         chart.setTouchEnabled(true);
@@ -140,14 +145,8 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         if (response == null || response.getFrequencyList() == null) {
             return;
         }
-        int max, count = 0;
-        if (model.period == Constants.TIME_PERIOD_YESTERDAY) {
-            max = 4;
-        } else if (model.period == Constants.TIME_PERIOD_WEEK) {
-            max = 10;
-        } else {
-            max = 15;
-        }
+        int count = 0;
+        int max = getMax(model.period);
         List<CustomerFrequencyDistributionResp.Item> items = response.getFrequencyList();
         for (CustomerFrequencyDistributionResp.Item item : items) {
             if (item.getFrequency() <= max) {
@@ -185,8 +184,9 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         //更新横纵坐标
         float maxAxis = barYAxisRenderer.setMaxValue(maxValue);
         chart.getAxisLeft().setAxisMaximum(maxAxis);
-        chart.getXAxis().setAxisMaximum(dataSet.size() + 1);
+        chart.getXAxis().setAxisMaximum(getMax(model.period) + 2);
         barXAxisFormatter.setPeriod(model.period);
+        barXAxisRenderer.setPeriod(model.period);
 
         //更新数据
         float barWidthRatio = calcBarWidth(model.period);
@@ -233,6 +233,50 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
             return 0.35f;
         } else {
             return 0.45f;
+        }
+    }
+
+    private int getMax(int period) {
+        int max;
+        if (period == Constants.TIME_PERIOD_YESTERDAY) {
+            max = 4;
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
+            max = 10;
+        } else {
+            max = 15;
+        }
+        return max;
+    }
+
+    public static class XAxisLabelRenderer extends XAxisRenderer {
+
+        private float[] labels;
+
+        public XAxisLabelRenderer(BarLineChartBase chart) {
+            super(chart.getViewPortHandler(), chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT));
+        }
+
+        public void setPeriod(int period) {
+            if (period == Constants.TIME_PERIOD_YESTERDAY) {
+                labels = new float[]{1, 2, 3, 4, 5};
+            } else if (period == Constants.TIME_PERIOD_WEEK) {
+                labels = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+            } else {
+                labels = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+            }
+        }
+
+        @Override
+        protected void computeAxisValues(float min, float max) {
+            if (labels == null) {
+                super.computeAxisValues(min, max);
+                return;
+            }
+            mAxis.mEntryCount = labels.length;
+            mAxis.mEntries = labels;
+            mAxis.setCenterAxisLabels(false);
+
+            computeSize();
         }
     }
 
