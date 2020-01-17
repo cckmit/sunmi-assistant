@@ -184,7 +184,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         //更新横纵坐标
         float maxAxis = barYAxisRenderer.setMaxValue(maxValue);
         chart.getAxisLeft().setAxisMaximum(maxAxis);
-        chart.getXAxis().setAxisMaximum(getMax(model.period));
+        chart.getXAxis().setAxisMaximum(getMax(model.period) + 2);
         barXAxisFormatter.setPeriod(model.period);
         barXAxisRenderer.setPeriod(model.period);
 
