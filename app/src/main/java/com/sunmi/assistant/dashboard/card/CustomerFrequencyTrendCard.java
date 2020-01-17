@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -15,6 +16,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
@@ -57,6 +59,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
     private String markerWeekValue;
     private String markerMonthValue;
+    private XAxisLabelRenderer lineXAxisRenderer;
 
     private CustomerFrequencyTrendCard(Presenter presenter, int source) {
         super(presenter, source);
@@ -141,8 +144,10 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
         // 设置图表坐标Label格式
         lineXAxisFormatter = new XAxisValueFormatter(context);
+        lineXAxisRenderer = new XAxisLabelRenderer(lineChart);
         lineYAxisRenderer = new YAxisVolumeLabelsRenderer(lineChart);
         lineChart.setRendererLeftYAxis(lineYAxisRenderer);
+        lineChart.setXAxisRenderer(lineXAxisRenderer);
 
         // 设置通用图表
         lineChart.setTouchEnabled(true);
@@ -200,7 +205,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
         List<ChartEntry> dataSet = model.dataSet;
 
         // Calculate min & max of axis value.
-        line.getXAxis().setAxisMaximum(dataSet.size() + 1);
+        line.getXAxis().setAxisMaximum(model.period == Constants.TIME_PERIOD_WEEK ? 8 : 6);
         int max = 0;
         float lastX = 0;
         for (ChartEntry entry : dataSet) {
@@ -223,6 +228,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
             mMarkerFormatter.setTimeType(MarkerFormatter.TIME_TYPE_DATE_SPAN);
             mMarkerFormatter.setValueFormat(markerMonthValue);
         }
+        lineXAxisRenderer.setPeriod(model.period);
         lineXAxisFormatter.setPeriod(model.period);
 
         // Refresh data set
@@ -269,6 +275,35 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
         model.period = mPeriod;
         model.dataSet.clear();
         setupView(holder, model, position);
+    }
+
+    public static class XAxisLabelRenderer extends XAxisRenderer {
+
+        private float[] labels;
+
+        public XAxisLabelRenderer(BarLineChartBase chart) {
+            super(chart.getViewPortHandler(), chart.getXAxis(), chart.getTransformer(YAxis.AxisDependency.LEFT));
+        }
+
+        public void setPeriod(int period) {
+            if (period == Constants.TIME_PERIOD_WEEK) {
+                labels = new float[]{1, 2, 3, 4, 5, 6, 7};
+            } else {
+                labels = new float[]{1, 2, 3, 4, 5};
+            }
+        }
+
+        @Override
+        protected void computeAxisValues(float min, float max) {
+            if (labels == null) {
+                super.computeAxisValues(min, max);
+                return;
+            }
+            mAxis.mEntryCount = labels.length;
+            mAxis.mEntries = labels;
+            mAxis.setCenterAxisLabels(false);
+            computeSize();
+        }
     }
 
     private static class XAxisValueFormatter extends ValueFormatter {
