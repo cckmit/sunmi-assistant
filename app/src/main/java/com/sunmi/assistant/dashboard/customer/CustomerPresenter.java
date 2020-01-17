@@ -76,6 +76,9 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
             List<BaseRefreshCard> list = new ArrayList<>(2);
             list.add(CustomerFrequencyTrendCard.get(this, mSource));
             list.add(CustomerFrequencyAvgCard.get(this, mSource));
+            for (BaseRefreshCard card : list) {
+                card.init(mView.getContext());
+            }
             mList.addAll(list);
             mView.addFrequencyCard(list);
         } else if (mPeriod != Constants.TIME_PERIOD_INIT

@@ -287,7 +287,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
                 oldRatio.setText(String.format(Locale.getDefault(), "%.0f%%",
                         (float) item.oldCount * 100 / item.count));
 
-                float value = item.uniqueCount > 0 ? (float) item.count * 100 / item.uniqueCount : 0f;
+                float value = item.uniqueCount > 0 ? (float) item.count / item.uniqueCount : 0f;
                 frequency.setText(Utils.createFrequencyText(mContext, item.period, value, true));
             }
         }
