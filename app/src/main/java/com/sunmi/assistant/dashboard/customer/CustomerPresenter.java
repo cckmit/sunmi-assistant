@@ -86,6 +86,8 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
                 && mPeriod != Constants.TIME_PERIOD_INIT
                 && period == Constants.TIME_PERIOD_YESTERDAY) {
             // 从本周本月变为昨日，删除卡片
+            mList.remove(mList.size() - 1);
+            mList.remove(mList.size() - 1);
             mView.removeFrequencyCard();
         }
         mPeriod = period;

@@ -904,17 +904,15 @@ public class SunmiStoreApi {
      *
      * @param companyId 是	number	商户ID
      * @param shopId    是	number	门店ID
-     * @param startTime 开始时间 “YYYY-MM-DD”
-     * @param endTime   结束时间 “YYYY-MM-DD” （如果需要查询某一天，开始和结束时间相同）
+     * @param type     2:本周 3:本月 4:昨日
      */
-    public void getHistoryCustomerDetail(int companyId, int shopId, String startTime, String endTime,
+    public void getHistoryCustomerDetail(int companyId, int shopId, int type,
                                          RetrofitCallback<CustomerHistoryDetailResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
-                    .put("start_time", startTime)
-                    .put("end_time", endTime)
+                    .put("type", type)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
                     .getHistoryCustomerDetail(new BaseRequest(params))

@@ -3,7 +3,6 @@ package com.sunmi.assistant.dashboard.card;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
-import android.text.format.DateFormat;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
@@ -84,21 +83,18 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
 
     @Override
     protected Call<BaseResponse<CustomerHistoryDetailResp>> load(int companyId, int shopId, int period, CardCallback callback) {
-        Pair<Long, Long> time = Utils.getPeriodTimestamp(period);
-        String start = DateFormat.format(DATE_FORMAT, time.first).toString();
-        String end = DateFormat.format(DATE_FORMAT, time.second - 1).toString();
         if (mAgeList == null) {
-            loadAgeList(companyId, shopId, start, end, callback);
+            loadAgeList(companyId, shopId, period, callback);
         } else {
-            loadDetail(companyId, shopId, start, end, callback);
+            loadDetail(companyId, shopId, period, callback);
         }
         return null;
     }
 
-    private void loadAgeList(int companyId, int shopId, String start, String end, CardCallback callback) {
+    private void loadAgeList(int companyId, int shopId, int period, CardCallback callback) {
         mAgeList = CacheManager.get().get(CacheManager.CACHE_AGE_NAME);
         if (mAgeList != null) {
-            loadDetail(companyId, shopId, start, end, callback);
+            loadDetail(companyId, shopId, period, callback);
             return;
         }
         IpcCloudApi.getInstance().getFaceAgeRange(companyId, shopId, new RetrofitCallback<FaceAgeRangeResp>() {
@@ -116,7 +112,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
                     size += age.getName().length() * 2 + 8;
                 }
                 CacheManager.get().put(CacheManager.CACHE_AGE_NAME, mAgeList, size);
-                loadDetail(companyId, shopId, start, end, callback);
+                loadDetail(companyId, shopId, period, callback);
             }
 
             @Override
@@ -126,8 +122,8 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
         });
     }
 
-    private void loadDetail(int companyId, int shopId, String start, String end, CardCallback callback) {
-        SunmiStoreApi.getInstance().getHistoryCustomerDetail(companyId, shopId, start, end,
+    private void loadDetail(int companyId, int shopId, int period, CardCallback callback) {
+        SunmiStoreApi.getInstance().getHistoryCustomerDetail(companyId, shopId, period,
                 new RetrofitCallback<CustomerHistoryDetailResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerHistoryDetailResp data) {

@@ -72,7 +72,7 @@ public interface CustomerInterface {
     /**
      * 获取客流变化趋势（今日、本周、本月，昨日）
      */
-    @POST(path + "age/getHistoryWithAgeAndGender")
+    @POST(path + "age/getHistoryByGender")
     Call<BaseResponse<CustomerHistoryDetailResp>> getHistoryCustomerDetail(@Body BaseRequest request);
 
     /**
