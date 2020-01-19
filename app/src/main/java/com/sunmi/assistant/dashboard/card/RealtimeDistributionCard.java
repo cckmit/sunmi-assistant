@@ -166,7 +166,7 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
                             newCount += bean.getStrangerCount();
                             oldCount += bean.getRegularCount();
                             int ageCount = bean.getRegularCount() + bean.getStrangerCount();
-                            ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode())));
+                            ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode()).getName() + mAgeLabel));
                         }
                         newOldList.add(new PieEntry(newCount, mNewLabel));
                         newOldList.add(new PieEntry(oldCount, mOldLabel));

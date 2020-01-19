@@ -40,6 +40,8 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
 
     private static CustomerFrequencyAvgCard sInstance;
 
+    private String mAgeLabel;
+
     private SparseArray<FaceAge> mAgeMap;
     private AgeListAdapter mAdapter;
 
@@ -63,6 +65,7 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
 
     @Override
     public void init(Context context) {
+        mAgeLabel = context.getString(R.string.dashboard_card_age_label);
     }
 
     @Override
@@ -122,7 +125,7 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
         model.femaleAvg = 0;
         if (model.ageMap.size() == 0) {
             for (int i = 0, size = mAgeMap.size(); i < size; i++) {
-                model.ageMap.put(mAgeMap.keyAt(i), new Item(mAgeMap.valueAt(i).getName()));
+                model.ageMap.put(mAgeMap.keyAt(i), new Item(mAgeMap.valueAt(i).getName() + mAgeLabel));
             }
         } else {
             for (int i = 0, size = model.ageMap.size(); i < size; i++) {
