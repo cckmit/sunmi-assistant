@@ -202,11 +202,14 @@ public class SMWebChromeClient extends WebChromeClient {
                     takePhoto();
                 } else {
                     mActivity.shortTip(R.string.str_please_open_camera);
+                    cancelCallback();
                 }
                 break;
             case PermissionUtils.REQ_PERMISSIONS_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openGallery();
+                } else {
+                    cancelCallback();
                 }
                 break;
             default:
