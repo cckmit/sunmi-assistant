@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -258,33 +257,35 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
                 return;
             }
             showContent(holder);
-            ImageView avatar = holder.getView(R.id.iv_dashboard_avatar);
-            TextView title = holder.getView(R.id.tv_dashboard_title);
-            TextView count = holder.getView(R.id.tv_dashboard_count);
-            TextView ratio = holder.getView(R.id.tv_dashboard_ratio);
-            TextView oldRatio = holder.getView(R.id.tv_dashboard_old_ratio);
-            TextView frequency = holder.getView(R.id.tv_dashboard_frequency);
+            ImageView ivAvatar = holder.getView(R.id.iv_dashboard_avatar);
+            TextView tvTitle = holder.getView(R.id.tv_dashboard_title);
+            TextView tvCount = holder.getView(R.id.tv_dashboard_count);
+            TextView tvRatio = holder.getView(R.id.tv_dashboard_ratio);
+            TextView tvOldRatio = holder.getView(R.id.tv_dashboard_old_ratio);
+            TextView tvFrequency = holder.getView(R.id.tv_dashboard_frequency);
             if (item.state == Item.STATE_ERROR) {
-                avatar.setImageResource(R.mipmap.dashboard_customer_avatar_error);
-                title.setText(R.string.dashboard_card_customer_none);
-                count.setText(DATA_ZERO);
-                ratio.setText(DATA_ZERO_RATIO);
-                oldRatio.setText(DATA_NONE);
-                frequency.setText(DATA_NONE);
+                ivAvatar.setImageResource(R.mipmap.dashboard_customer_avatar_error);
+                tvTitle.setText(R.string.dashboard_card_customer_none);
+                tvCount.setText(DATA_ZERO);
+                tvRatio.setText(DATA_ZERO_RATIO);
+                tvOldRatio.setText(DATA_NONE);
+                tvFrequency.setText(DATA_NONE);
             } else {
-                avatar.setImageResource(item.gender == 1 ?
+                float ratio = item.total > 0 ? (float) item.count / item.total : 0f;
+                float oldRatio = item.count > 0 ? (float) item.oldCount / item.count : 0f;
+                String count = item.count > NUM_10_THOUSANDS ?
+                        FORMAT_THOUSANDS_DOUBLE_DECIMAL.format((float) item.count / NUM_10_THOUSANDS)
+                                + mNum10Thousands : String.valueOf(item.count);
+
+                ivAvatar.setImageResource(item.gender == 1 ?
                         R.mipmap.dashboard_customer_avatar_male : R.mipmap.dashboard_customer_avatar_female);
-                title.setText(item.name);
-                count.setText(item.count > NUM_10_THOUSANDS ?
-                        FORMAT_THOUSANDS_DOUBLE_DECIMAL.format((float) item.count / NUM_10_THOUSANDS) + mNum10Thousands
-                        : String.valueOf(item.count));
-                ratio.setText(String.format(Locale.getDefault(), "%.0f%%",
-                        (float) item.count * 100 / item.total));
-                oldRatio.setText(String.format(Locale.getDefault(), "%.0f%%",
-                        (float) item.oldCount * 100 / item.count));
+                tvTitle.setText(item.name);
+                tvCount.setText(count);
+                tvRatio.setText(Utils.createPercentText(ratio, false, true));
+                tvOldRatio.setText(Utils.createPercentText(oldRatio, false, true));
 
                 float value = item.uniqueCount > 0 ? (float) item.count / item.uniqueCount : 0f;
-                frequency.setText(Utils.createFrequencyText(mContext, item.period, value, true));
+                tvFrequency.setText(Utils.createFrequencyText(mContext, item.period, value, true));
             }
         }
 
@@ -322,10 +323,10 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
         private int total;
         private int state;
 
-        public Item() {
+        private Item() {
         }
 
-        public Item(int period, int age, int gender, String name, int count, int oldCount, int uniqueCount) {
+        private Item(int period, int age, int gender, String name, int count, int oldCount, int uniqueCount) {
             this.period = period;
             this.age = age;
             this.gender = gender;
@@ -336,15 +337,15 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
             this.state = STATE_NORMAL;
         }
 
-        public void setTotal(int total) {
+        private void setTotal(int total) {
             this.total = total;
         }
 
-        public void setLoading() {
+        private void setLoading() {
             this.state = STATE_LOADING;
         }
 
-        public void setError() {
+        private void setError() {
             this.state = STATE_ERROR;
         }
 
@@ -366,6 +367,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
             list.clear();
         }
 
+        @SuppressWarnings({"unused", "AlibabaUndefineMagicConstant"})
         public void random(SparseArray<String> ageList, String ageLabel, String maleLabel, String femaleLabel) {
             Random random = new Random();
             List<Pair<Integer, Integer>> pool = new ArrayList<>();
