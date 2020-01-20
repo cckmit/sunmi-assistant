@@ -152,7 +152,8 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         lineYAxis.setValueFormatter(new YAxisRateLabelFormatter());
-        lineYAxis.setMinWidth(36f);
+        lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        lineYAxis.setYOffset(-5f);
 
         // 设置Marker
         lineMarkerFormatter = new TimeMarkerFormatter(context);
@@ -201,7 +202,8 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         barYAxis.setAxisMinimum(0f);
         barYAxis.setDrawGridLines(true);
         barYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
-        barYAxis.setMinWidth(36f);
+        barYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        barYAxis.setYOffset(-5f);
 
         // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 1f);

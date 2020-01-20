@@ -127,7 +127,8 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         lineYAxis.setValueFormatter(new YAxisRateLabelFormatter());
-        lineYAxis.setMinWidth(36f);
+        lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        lineYAxis.setYOffset(-5f);
 
         // 设置Line图
         mMarkerFormatter = new TimeMarkerFormatter(context);

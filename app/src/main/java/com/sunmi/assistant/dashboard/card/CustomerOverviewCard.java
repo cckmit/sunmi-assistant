@@ -76,22 +76,22 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         model.latestCount = latestCount;
         model.earlyCount = earlyCount;
         if (latestCount > 0) {
-            model.latestEnterRate = (latestCount / (latestCount + latestPassCount)) * 100;
+            model.latestEnterRate = (float) (latestCount / (latestCount + latestPassCount)) * 100;
         } else {
             model.latestEnterRate = 0;
         }
         if (earlyCount > 0) {
-            model.earlyEnterRate = (earlyCount / (earlyCount + earlyPassCont)) * 100;
+            model.earlyEnterRate = (float) (earlyCount / (earlyCount + earlyPassCont)) * 100;
         } else {
             model.earlyEnterRate = 0;
         }
         if (latestUniq > 0) {
-            model.latestEnterFrequency = latestCount / latestUniq;
+            model.latestEnterFrequency = (float) latestCount / latestUniq;
         } else {
             model.latestEnterFrequency = 0;
         }
         if (earlyUniq > 0) {
-            model.latestEnterFrequency = latestCount / earlyUniq;
+            model.latestEnterFrequency = (float) latestCount / earlyUniq;
         } else {
             model.earlyEnterRate = 0;
         }

@@ -116,7 +116,6 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         barXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
         barXAxis.setValueFormatter(barXAxisFormatter);
         barXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        barXAxis.setAxisMinimum(0f);
 
         // 设置Y轴
         YAxis barYAxis = chart.getAxisLeft();
@@ -128,7 +127,8 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         barYAxis.setAxisMinimum(0f);
         barYAxis.setDrawGridLines(true);
         barYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
-        barYAxis.setMinWidth(30f);
+        barYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        barYAxis.setYOffset(-5f);
 
         // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 1f);
@@ -137,8 +137,8 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         markerFormatter = new MarkerFormatter(context);
         BarChartMarkerView marker = new BarChartMarkerView(context, markerFormatter);
         marker.setTitle(R.string.dashboard_card_customer_frequency_marker_title);
+        marker.setChartView(chart);
         chart.setMarker(marker);
-
         return holder;
     }
 
@@ -173,9 +173,11 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         if (model.period == Constants.TIME_PERIOD_YESTERDAY) {
             layout.setBackgroundResource(R.drawable.dashboard_bg_white_radius);
             model.setPadding(0, 0, 0, paddingBottom);
+            chart.getXAxis().setAxisMinimum(0f);
         } else {
             layout.setBackgroundResource(R.drawable.dashboard_bg_top_white_radius);
             model.setPadding(0, 0, 0, 0);
+            chart.getXAxis().setAxisMinimum(-0.5f);
         }
         List<BarEntry> dataSet = model.dataSet;
         int maxValue = 0;

@@ -155,7 +155,8 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         lineYAxis.setAxisMinimum(0f);
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
-        lineYAxis.setMinWidth(36f);
+        lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        lineYAxis.setYOffset(-5f);
 
         // 设置Line图
         mMarkerFormatter = new TimeMarkerFormatter(context);

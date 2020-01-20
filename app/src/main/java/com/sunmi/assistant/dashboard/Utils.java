@@ -88,12 +88,12 @@ public class Utils {
      */
     public static Pair<Integer, Integer> calcChartXAxisRange(int period) {
         if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
-            return new Pair<>(0, 26);
+            return new Pair<>(-2, 26);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             return new Pair<>(100, 108);
         } else {
             temp.setTimeInMillis(System.currentTimeMillis());
-            return new Pair<>(10000, temp.getActualMaximum(Calendar.DAY_OF_MONTH) + 10001);
+            return new Pair<>(9997, temp.getActualMaximum(Calendar.DAY_OF_MONTH) + 10001);
         }
     }
 
