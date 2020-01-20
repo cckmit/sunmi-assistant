@@ -278,7 +278,7 @@
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:background="@drawable/btn_common_bg_golden"
-                android:text="@string/btn_protect_immediately"
+                android:text="@string/str_learn_more"
                 android:textColor="@color/c_white"
                 android:textSize="@dimen/sp_12" />
 

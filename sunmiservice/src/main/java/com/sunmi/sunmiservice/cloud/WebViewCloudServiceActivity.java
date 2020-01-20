@@ -269,7 +269,9 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
     @Override
     protected void onNewIntent(Intent intent) {
         hasSendDeviceInfo = false;
-        webView.reload();
+        if (webView != null) {
+            webView.reload();
+        }
         startTimer();
     }
 
@@ -277,14 +279,18 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
     void refreshClick() {
         networkError.setVisibility(View.GONE);
         titleBar.setVisibility(View.GONE);
-        webView.setVisibility(View.VISIBLE);
-        webView.reload();
+        if (webView != null) {
+            webView.setVisibility(View.VISIBLE);
+            webView.reload();
+        }
         startTimer();
     }
 
     @UiThread
     protected void loadError() {
-        webView.setVisibility(View.GONE);
+        if (webView != null) {
+            webView.setVisibility(View.GONE);
+        }
         networkError.setVisibility(View.VISIBLE);
         titleBar.setVisibility(View.VISIBLE);
         hasSendDeviceInfo = false;
@@ -315,7 +321,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
 
     @Override
     public void onBackPressed() {
-        if (webView.isShown() && progress >= 100) {
+        if (webView != null && webView.isShown() && progress >= 100) {
             webView.evaluateJavascript("javascript:emitPageBack()", value -> {
             });
             return;

@@ -156,8 +156,7 @@ public class InputMobileActivity extends BaseMvpActivity<InputMobilePresenter>
                 .setCancelButton(R.string.sm_cancel)
                 .setConfirmButton(R.string.str_register_now,
                         (dialog, which) -> {
-                            initRegister();
-                            checkSource = SOURCE_REGISTER;
+                            InputMobileActivity_.intent(context).checkSource(SOURCE_REGISTER).mobile(mobile).start();
                         }).create().show();
     }
 

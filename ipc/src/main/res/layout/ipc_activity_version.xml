@@ -89,13 +89,14 @@
         android:background="@drawable/bg_bottom_btn_top_divider"
         android:orientation="vertical"
         android:paddingTop="@dimen/dp_20"
-        android:paddingBottom="@dimen/dp_20">
+        android:paddingBottom="@dimen/dp_20"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/btn_upgrade"
             style="@style/BtnBigOrange"
             android:text="@string/ipc_setting_version_get_new"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </LinearLayout>
 

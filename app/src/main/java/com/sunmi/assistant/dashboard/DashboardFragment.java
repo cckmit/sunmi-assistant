@@ -127,7 +127,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mPresenter = new DashboardPresenter();
         mPresenter.attachView(this);
         showLoadingDialog();
-        mHandler.post(this::initView);
+        initView();
         mPresenter.init();
     }
 
@@ -143,11 +143,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private void initDimens(Context context) {
         mStatusBarHeight = sunmi.common.utils.Utils.getStatusBarHeight(context);
-        mTopStickyPeriodHeight = mTopStickyPeriodTab.getMeasuredHeight() + mStatusBarHeight;
-        mTopShopMenuHeight = mTopShopMenu.getMeasuredHeight() + mStatusBarHeight;
-        mTopPageTabHeight = mTopPageTab.getMeasuredHeight();
+        mTopStickyPeriodHeight = (int) context.getResources().getDimension(R.dimen.dp_44);
+        mTopShopMenuHeight = (int) context.getResources().getDimension(R.dimen.dp_54);
+        mTopPageTabHeight = (int) context.getResources().getDimension(R.dimen.dp_44);
         mTopRadiusHeight = (int) context.getResources().getDimension(R.dimen.dp_16);
-        mTopHeaderHeight = mTopShopMenuHeight + mTopPageTabHeight;
+        mTopHeaderHeight = mTopShopMenuHeight + mTopPageTabHeight + mStatusBarHeight;
     }
 
     private void initTopBar(Context context) {
@@ -158,9 +158,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
 
         // 初始化设置TopBar高度和Padding
-        mTopStickyPeriodTab.getLayoutParams().height = mTopStickyPeriodHeight;
+        mTopStickyPeriodTab.getLayoutParams().height = mTopStickyPeriodHeight + mStatusBarHeight;
         mTopStickyPeriodTab.setPadding(0, mStatusBarHeight, 0, 0);
-        mTopShopMenu.getLayoutParams().height = mTopShopMenuHeight;
+        mTopShopMenu.getLayoutParams().height = mTopShopMenuHeight + mStatusBarHeight;
         mTopShopMenu.setPadding(0, mStatusBarHeight, 0, 0);
 
         // 初始化设置顶部门店选择下拉列表
