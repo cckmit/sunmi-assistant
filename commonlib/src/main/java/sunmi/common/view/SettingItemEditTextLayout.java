@@ -78,7 +78,12 @@ public class SettingItemEditTextLayout extends RelativeLayout {
         }
 
         Drawable leftMark = a.getDrawable(R.styleable.SettingItemEditTextLayout_imageLeft);
-        ivMark.setImageDrawable(leftMark);
+        if (leftMark != null) {
+            ivMark.setVisibility(VISIBLE);
+            ivMark.setImageDrawable(leftMark);
+        } else {
+            ivMark.setVisibility(GONE);
+        }
 
         float leftImageSize = a.getDimension(R.styleable.SettingItemEditTextLayout_imageLeftSize, CommonHelper.dp2px(mContext, 0));
         if (leftImageSize > 0) {

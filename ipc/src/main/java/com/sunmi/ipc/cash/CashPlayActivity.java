@@ -186,6 +186,8 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     ImageView ivVideoChange;
     @ViewById(resName = "tv_empty")
     TextView tvEmpty;
+    @ViewById(resName = "iv_screen_play_pause")
+    ImageView ivScreenPlayPause;
 
     @ViewById(resName = "tv_abnormal_tip")
     TextView tvAbnormalTip;
@@ -268,6 +270,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     };
 
     private int playCashVideoStatus;
+    private Bitmap bitmap;
 
     @AfterViews
     void init() {
@@ -391,12 +394,22 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
     protected void onResume() {
         super.onResume();
 //        pausedVideo(false);
+        if (bitmap != null) {
+            ivScreenPlayPause.setVisibility(View.VISIBLE);
+            ivScreenPlayPause.setImageBitmap(bitmap);
+        } else {
+            ivScreenPlayPause.setVisibility(View.GONE);
+        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         pausedVideo(true);
+        if (ivpCash.getCurrentPosition() > 0 && retriever != null) {
+            bitmap = retriever.getFrameAtTime(ivpCash.getCurrentPosition() * 1000,
+                    FFmpegMediaMetadataRetriever.OPTION_CLOSEST);
+        }
     }
 
     /**
@@ -425,6 +438,9 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         volumeHelper.unregisterVolumeReceiver();
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
+        }
+        if (bitmap != null) {
+            bitmap.recycle();
         }
     }
 
@@ -536,6 +552,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
      */
     @Click(resName = "ib_play")
     void onPlayClick() {
+        ivScreenPlayPause.setVisibility(View.GONE);
         if (ivpCash == null || pBarLoading.isShown() || sbBar.getProgress() >= ivpCash.getDuration()) {
             return;
         }
@@ -691,6 +708,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (videoList == null) {
             return;
         }
+        ivScreenPlayPause.setVisibility(View.GONE);
         if (playCashVideoStatus != PLAY_TYPE_DROP_SELECT) {
             if (isPlayLoop && playIndex >= videoList.size() - 1 &&
                     playCashVideoStatus != PLAY_TYPE_LEFT_FLING) {
@@ -882,6 +900,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
         if (pBarLoading.isShown()) {
             return;
         }
+        ivScreenPlayPause.setVisibility(View.GONE);
         isDragging = true;
         mHandler.removeMessages(MESSAGE_SHOW_PROGRESS);
     }
