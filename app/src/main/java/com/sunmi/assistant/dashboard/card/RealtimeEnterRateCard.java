@@ -7,8 +7,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
-
-import java.util.Locale;
+import com.sunmi.assistant.dashboard.Utils;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -75,7 +74,7 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
         tvPassCustomer.setText(model.getPassCustomer());
         tvCustomer.setText(model.getCustomer());
         tvTotal.setText(model.getTotal());
-        percentVolume.setText(String.format(Locale.getDefault(), "%.2f%%", model.getEnterRate() * 100));
+        percentVolume.setText(Utils.createPercentText(model.getEnterRate(), true, true));
         pbVolume.setProgress((int) (model.getEnterRate() * 100));
     }
 

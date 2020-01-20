@@ -30,6 +30,14 @@ public class Utils {
 
     private static final Object LOCK = new Object();
 
+    private static final float THRESHOLD_ZERO = 1e-6f;
+    private static final float THRESHOLD_PERCENT = 0.01f;
+    private static final float THRESHOLD_TEN_THOUSAND = 0.0001f;
+    private static final int MULTIPLIER_HUNDRED = 100;
+    private static final int MULTIPLIER_THOUSAND = 1000;
+
+    private static final float SMALL_TEXT_SIZE = 0.6f;
+
     private static final int PERIOD_WEEK_OFFSET = 100;
     private static final int PERIOD_MONTH_OFFSET = 10000;
 
@@ -196,6 +204,39 @@ public class Utils {
         }
     }
 
+    /**
+     * 生成百分比标准化格式字符串
+     *
+     * @param value     值
+     * @param isRate    是否是比率数据。转化率，进店率等为True；人数占比为False。
+     * @param highlight 是否突出显示数据
+     * @return 格式化的字符串
+     */
+    public static CharSequence createPercentText(float value, boolean isRate, boolean highlight) {
+        String result;
+        if (isRate) {
+            if (value > THRESHOLD_ZERO && value < THRESHOLD_TEN_THOUSAND) {
+                result = String.format(Locale.getDefault(), "%.2f‰", value * MULTIPLIER_THOUSAND);
+            } else {
+                result = String.format(Locale.getDefault(), "%.2f%%", value * MULTIPLIER_HUNDRED);
+            }
+        } else {
+            if (value > THRESHOLD_ZERO && value < THRESHOLD_PERCENT) {
+                result = String.format(Locale.getDefault(), "%.2f%%", value * MULTIPLIER_HUNDRED);
+            } else {
+                result = String.format(Locale.getDefault(), "%.0f%%", value * MULTIPLIER_HUNDRED);
+            }
+        }
+        if (!highlight) {
+            return result;
+        }
+
+        int len = result.length();
+        SpannableString s = new SpannableString(result);
+        s.setSpan(new RelativeSizeSpan(SMALL_TEXT_SIZE), len - 1, len, 0);
+        return s;
+    }
+
     public static CharSequence createFrequencyText(Context context, int period, float value, boolean highlight) {
         String base;
         if (period == Constants.TIME_PERIOD_MONTH) {
@@ -214,8 +255,8 @@ public class Utils {
         int endLen = base.length() - startLen - 2;
         SpannableString s = new SpannableString(result);
 
-        s.setSpan(new RelativeSizeSpan(0.6f), 0, startLen, 0);
-        s.setSpan(new RelativeSizeSpan(0.6f), s.length() - endLen, s.length(), 0);
+        s.setSpan(new RelativeSizeSpan(SMALL_TEXT_SIZE), 0, startLen, 0);
+        s.setSpan(new RelativeSizeSpan(SMALL_TEXT_SIZE), s.length() - endLen, s.length(), 0);
         return s;
     }
 

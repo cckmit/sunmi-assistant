@@ -17,8 +17,6 @@ import com.sunmi.assistant.data.response.OrderTotalCountResp;
 import com.sunmi.assistant.order.OrderListActivity_;
 import com.sunmi.assistant.order.model.OrderInfo;
 
-import java.util.Locale;
-
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
@@ -404,12 +402,12 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             }
         }
 
-        private String getRate() {
-            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_PERCENT, rate * 100);
+        private CharSequence getRate() {
+            return Utils.createPercentText(rate, true, true);
         }
 
-        private String getLastRate() {
-            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_PERCENT, lastRate * 100);
+        private CharSequence getLastRate() {
+            return Utils.createPercentText(lastRate, true, false);
         }
 
     }

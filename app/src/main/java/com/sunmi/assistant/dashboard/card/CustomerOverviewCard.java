@@ -11,8 +11,6 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 
-import java.util.Locale;
-
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.model.CustomerDataResp;
@@ -76,12 +74,12 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         model.latestCount = latestCount;
         model.earlyCount = earlyCount;
         if (latestCount > 0) {
-            model.latestEnterRate = (float) (latestCount / (latestCount + latestPassCount)) * 100;
+            model.latestEnterRate = (float) latestCount / (latestCount + latestPassCount);
         } else {
             model.latestEnterRate = 0;
         }
         if (earlyCount > 0) {
-            model.earlyEnterRate = (float) (earlyCount / (earlyCount + earlyPassCont)) * 100;
+            model.earlyEnterRate = (float) earlyCount / (earlyCount + earlyPassCont);
         } else {
             model.earlyEnterRate = 0;
         }
@@ -109,7 +107,7 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         TextView enterRateSubData = holder.getView(R.id.tv_enter_rate_subdata);
 
         enterFrequency.setText(Utils.createFrequencyText(context, model.period, model.getLatestEnterFrequency(), true));
-        enterFrequencySubData.setText(Utils.createFrequencyText(context, model.period, model.getEalyEnterFrequency(), false));
+        enterFrequencySubData.setText(Utils.createFrequencyText(context, model.period, model.getEarlyEnterFrequency(), false));
 
         value.setText(model.getLatestCount());
         subData.setText(model.getEarlyCount());
@@ -190,14 +188,13 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         float latestEnterRate;
         float earlyEnterRate;
         float latestEnterFrequency;
-        float ealyEnterFrequency;
-
+        float earlyEnterFrequency;
 
         public void init(Context context) {
             mNum100Million = context.getString(R.string.str_num_100_million);
         }
 
-        public String getLatestCount() {
+        private String getLatestCount() {
             if (latestCount > NUM_100_MILLION) {
                 return FORMAT_THOUSANDS.format(latestCount / NUM_100_MILLION) + mNum100Million;
             } else {
@@ -205,7 +202,7 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
             }
         }
 
-        public String getEarlyCount() {
+        private String getEarlyCount() {
             if (earlyCount > NUM_100_MILLION) {
                 return FORMAT_THOUSANDS.format(earlyCount / NUM_100_MILLION) + mNum100Million;
             } else {
@@ -213,20 +210,20 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
             }
         }
 
-        public String getLatestEnterRate() {
-            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_PERCENT, latestEnterRate);
+        private CharSequence getLatestEnterRate() {
+            return Utils.createPercentText(latestEnterRate, true, true);
         }
 
-        public String getEarlyEnterRate() {
-            return String.format(Locale.getDefault(), FORMAT_FLOAT_DOUBLE_PERCENT, earlyEnterRate);
+        private CharSequence getEarlyEnterRate() {
+            return Utils.createPercentText(earlyEnterRate, true, false);
         }
 
-        public float getLatestEnterFrequency() {
+        private float getLatestEnterFrequency() {
             return latestEnterFrequency;
         }
 
-        public float getEalyEnterFrequency() {
-            return ealyEnterFrequency;
+        private float getEarlyEnterFrequency() {
+            return earlyEnterFrequency;
         }
     }
 }
