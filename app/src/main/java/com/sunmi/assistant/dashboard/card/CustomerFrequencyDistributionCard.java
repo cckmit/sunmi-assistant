@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.View;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -274,12 +276,15 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         }
 
         @Override
-        public CharSequence valueFormat(float value) {
-            return String.format(Locale.getDefault(), valueFormat, (int) value);
+        public CharSequence valueFormat(Context context, float value) {
+            String str = String.format(Locale.getDefault(), valueFormat, (int) value);
+            SpannableString s = new SpannableString(str);
+            s.setSpan(new RelativeSizeSpan(0.6f), s.length() - 1, s.length(), 0);
+            return s;
         }
 
         @Override
-        public CharSequence xAxisFormat(float x) {
+        public CharSequence xAxisFormat(Context context, float x) {
             if (x <= max) {
                 return String.format(Locale.getDefault(), labelFormat, (int) x);
             } else {
@@ -288,7 +293,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         }
 
         @Override
-        public CharSequence timeFormat(long time) {
+        public CharSequence timeFormat(Context context, long time) {
             return "";
         }
     }

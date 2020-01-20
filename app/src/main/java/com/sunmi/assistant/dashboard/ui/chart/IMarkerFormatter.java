@@ -1,14 +1,16 @@
 package com.sunmi.assistant.dashboard.ui.chart;
 
+import android.content.Context;
+
 /**
  * @author yinhui
  * @date 2020-01-14
  */
 public interface IMarkerFormatter {
 
-    CharSequence valueFormat(float value);
+    CharSequence valueFormat(Context context, float value);
 
-    CharSequence xAxisFormat(float x);
+    CharSequence xAxisFormat(Context context, float x);
 
-    CharSequence timeFormat(long time);
+    CharSequence timeFormat(Context context, long time);
 }

@@ -73,8 +73,8 @@ public class LineChartMarkerView extends MarkerView {
     public void refreshContent(Entry e, Highlight highlight) {
         if (e instanceof ChartEntry) {
             ChartEntry entry = (ChartEntry) e;
-            mTvValue.setText(formatter.valueFormat(entry.getY()));
-            mTvLabel.setText(formatter.timeFormat(entry.getTime()));
+            mTvValue.setText(formatter.valueFormat(getContext(), entry.getY()));
+            mTvLabel.setText(formatter.timeFormat(getContext(), entry.getTime()));
         }
         super.refreshContent(e, highlight);
     }
