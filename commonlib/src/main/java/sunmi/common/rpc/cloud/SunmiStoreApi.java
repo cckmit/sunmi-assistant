@@ -19,6 +19,11 @@ import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.CustomerAgeGenderResp;
 import sunmi.common.model.CustomerAgeNewOldResp;
 import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.CustomerDataResp;
+import sunmi.common.model.CustomerEnterRateTrendResp;
+import sunmi.common.model.CustomerFrequencyAvgResp;
+import sunmi.common.model.CustomerFrequencyDistributionResp;
+import sunmi.common.model.CustomerFrequencyTrendResp;
 import sunmi.common.model.CustomerHistoryDetailResp;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerHistoryTrendResp;
@@ -827,6 +832,7 @@ public class SunmiStoreApi {
      * @param shopId    是	number	门店ID
      * @param type      是	number	日: 1、周: 2、月: 3、昨日：4
      */
+    @Deprecated
     public void getHistoryCustomer(int companyId, int shopId, int type,
                                    RetrofitCallback<CustomerHistoryResp> callback) {
         try {
@@ -898,20 +904,131 @@ public class SunmiStoreApi {
      *
      * @param companyId 是	number	商户ID
      * @param shopId    是	number	门店ID
-     * @param startTime 开始时间 “YYYY-MM-DD”
-     * @param endTime   结束时间 “YYYY-MM-DD” （如果需要查询某一天，开始和结束时间相同）
+     * @param type     2:本周 3:本月 4:昨日
      */
-    public void getHistoryCustomerDetail(int companyId, int shopId, String startTime, String endTime,
+    public void getHistoryCustomerDetail(int companyId, int shopId, int type,
                                          RetrofitCallback<CustomerHistoryDetailResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
                     .put("shop_id", shopId)
-                    .put("start_time", startTime)
-                    .put("end_time", endTime)
+                    .put("type", type)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
                     .getHistoryCustomerDetail(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * T+1客流分析概览
+     *
+     * @param type     2:本周 3:本月 4:昨日
+     * @param callback
+     */
+    public void getCustomerData(int companyId, int shopId, int type, RetrofitCallback<CustomerDataResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerData(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * T+1客流分析-进店率趋势
+     *
+     * @param type     2:本周 3:本月 4:昨日
+     * @param groupBy  “hour”、”day”
+     * @param callback
+     */
+    public void getCustomerEnterRateTrend(int companyId, int shopId, int type, String groupBy,
+                                          RetrofitCallback<CustomerEnterRateTrendResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .put("group_by", groupBy)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerEnterRateTrend(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * T+1客流分析-客群到店频率分布
+     *
+     * @param type     2:本周 3:本月 4:昨日
+     * @param callback
+     */
+    public void getCustomerFrequencyDistribution(int companyId, int shopId, int type,
+                                                 RetrofitCallback<CustomerFrequencyDistributionResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerFrequencyDistribution(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * T+1客流分析-客群到店频率趋势
+     *
+     * @param type     2:本周 3:本月
+     * @param groupBy  “week”、”day”
+     * @param callback
+     */
+    public void getCustomerFrequencyTrend(int companyId, int shopId, int type, String groupBy,
+                                          RetrofitCallback<CustomerFrequencyTrendResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .put("group_by", groupBy)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerFrequencyTrend(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * T+1客流分析-客群平均到店频率
+     *
+     * @param type     2:本周 3:本月
+     * @param callback
+     */
+    public void getCustomerFrequencyAvg(int companyId, int shopId, int type,
+                                        RetrofitCallback<CustomerFrequencyAvgResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerFrequencyAvg(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

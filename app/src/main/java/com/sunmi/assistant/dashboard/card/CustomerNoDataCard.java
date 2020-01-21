@@ -41,7 +41,7 @@ public class CustomerNoDataCard extends BaseRefreshCard<CustomerNoDataCard.Model
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_empty;
+        return R.layout.dashboard_item_empty;
     }
 
     @Override
