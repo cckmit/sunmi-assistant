@@ -19,6 +19,8 @@
         <item>notif-model-device-esl-ota</item>
         <item>notif-model-device-esl-ap-on/offline</item>
         <item>notif-model-system-task-erp</item>
+        <item>notif-model-device-esl-image-push-status</item>
+
         <!--1个Tag 对应1个内容-->
         <item>notif-model-ipc</item>
         <item>notif-model-esl</item>
@@ -49,6 +51,7 @@
         <item>notif-system-task-reminder-setting</item>
         <item>notif-system-service-reminder-setting</item>
         <item>notif-system-promotion-reminder-setting</item>
+        <item>notif-device-esl-image-push-status-title</item>
     </string-array>
 
     <string-array name="msg_analysis_first">
@@ -60,6 +63,7 @@
         <item>@string/str_device_ota</item>
         <item>@string/str_esl_on_offline</item>
         <item>@string/str_task_erp</item>
+        <item>@string/str_esl_img_push</item>
 
         <item>@string/msg_ipc</item>
         <item>@string/msg_esl</item>
@@ -90,6 +94,7 @@
         <item>@string/str_task_msg</item>
         <item>@string/str_service_msg</item>
         <item>@string/str_promotion_msg</item>
+        <item>@string/msg_esl_img_push</item>
     </string-array>
 
     <string-array name="msg_analysis_second">
@@ -101,6 +106,7 @@
         <item>@string/tip_device_ota</item>
         <item>@string/tip_esl_offline</item>
         <item>@string/tip_task_erp</item>
+        <item>@string/tip_esl_img_push</item>
     </string-array>
 
 </resources>

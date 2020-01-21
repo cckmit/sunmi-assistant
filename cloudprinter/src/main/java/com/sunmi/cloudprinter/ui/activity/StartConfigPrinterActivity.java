@@ -100,20 +100,19 @@ public class StartConfigPrinterActivity extends BaseActivity {
 //        tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_2)));
 //        tvTip4.setVisibility(View.VISIBLE);
         ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, USER_PROTOCOL, USER_PRIVATE);
-        BluetoothClient mClient = new BluetoothClient(context);
-        btnStart.setEnabled(ctvPrivacy.isChecked());
+        /*btnStart.setEnabled(ctvPrivacy.isChecked());
         ctvPrivacy.setOnClickListener(v -> {
             ctvPrivacy.toggle();
             btnStart.setEnabled(ctvPrivacy.isChecked());
-        });
+        });*/
     }
 
     @Click(resName = "btn_start")
     public void nextClick(View v) {
-        if (!ctvPrivacy.isChecked()) {
+        /*if (!ctvPrivacy.isChecked()) {
             shortTip(R.string.tip_agree_protocol);
             return;
-        }
+        }*/
         if (PermissionUtils.getLocationPermission(this))
             checkBtStatus();
     }
