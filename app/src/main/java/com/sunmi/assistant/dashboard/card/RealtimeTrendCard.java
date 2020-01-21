@@ -376,13 +376,11 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         } else {
             set = new LineDataSet(values, "data");
             set.setDrawValues(false);
-            set.setDrawCircleHole(false);
+            set.setDrawCircles(false);
             set.setDrawHorizontalHighlightIndicator(false);
             set.setColor(color);
-            set.setCircleColor(color);
             set.setHighLightColor(color);
             set.setLineWidth(2f);
-            set.setCircleRadius(1f);
             set.setHighlightLineWidth(1f);
             set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
             mLineChartMarker.setPointColor(color);

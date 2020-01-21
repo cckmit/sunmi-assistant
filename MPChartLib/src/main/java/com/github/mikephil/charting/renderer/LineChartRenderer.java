@@ -110,6 +110,7 @@ public class LineChartRenderer extends LineRadarRenderer {
             return;
 
         mRenderPaint.setStrokeWidth(dataSet.getLineWidth());
+        mRenderPaint.setStrokeCap(Paint.Cap.ROUND);
         mRenderPaint.setPathEffect(dataSet.getDashPathEffect());
 
         switch (dataSet.getMode()) {

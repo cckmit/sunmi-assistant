@@ -243,12 +243,10 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
             int color = ContextCompat.getColor(holder.getContext(), R.color.common_orange);
             mLineChartMarker.setPointColor(color);
             set.setColor(color);
-            set.setCircleColor(color);
             set.setHighLightColor(color);
             set.setLineWidth(2f);
             set.setDrawValues(false);
-            set.setDrawCircleHole(false);
-            set.setCircleRadius(1f);
+            set.setDrawCircles(false);
             set.setDrawHorizontalHighlightIndicator(false);
             set.setHighlightLineWidth(1f);
             set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);

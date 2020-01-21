@@ -310,14 +310,12 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     }
 
     private void setupLineData(LineDataSet set, int color) {
+        set.setDrawValues(false);
+        set.setDrawCircles(false);
+        set.setDrawHorizontalHighlightIndicator(false);
         set.setColor(color);
-        set.setCircleColor(color);
         set.setHighLightColor(color);
         set.setLineWidth(2f);
-        set.setDrawValues(false);
-        set.setDrawCircleHole(false);
-        set.setCircleRadius(1f);
-        set.setDrawHorizontalHighlightIndicator(false);
         set.setHighlightLineWidth(1f);
         set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
         set.setLineContinuous(false);
@@ -396,7 +394,6 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         if (data != null && data.getDataSetCount() > 0) {
             set = (LineDataSet) data.getDataSetByIndex(0);
             set.setColor(color);
-            set.setCircleColor(color);
             set.setHighLightColor(color);
             set.setValues(values);
             data.notifyDataChanged();

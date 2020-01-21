@@ -134,7 +134,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         barYAxis.setXOffset(-1f);
 
         // 设置Marker和Bar样式
-        float barRadius = CommonHelper.dp2px(context, 1f);
+        float barRadius = CommonHelper.dp2px(context, 2f);
         BarChartRoundEdgeRenderer renderer = new BarChartRoundEdgeRenderer(chart, barRadius);
         chart.setRenderer(renderer);
         markerFormatter = new MarkerFormatter(context);
