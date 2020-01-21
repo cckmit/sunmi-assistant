@@ -40,8 +40,9 @@
     <string name="dashboard_period_week">本周</string>
     <string name="dashboard_period_month">本月</string>
     <string name="dashboard_period_yesterday">昨日</string>
+    <string name="dashboard_period_last_day">上日</string>
     <string name="dashboard_period_last_week">上周</string>
-    <string name="dashboard_period_last_month">上个月</string>
+    <string name="dashboard_period_last_month">上月</string>
     <string name="dashboard_period_last_month_avg">上月日均</string>
 
     <string name="dashboard_card_title_business_trend">经营趋势</string>
@@ -88,9 +89,6 @@
     <string name="dashboard_card_customer_frequency_marker_title">到店人数</string>
     <string name="dashboard_card_customer_frequency_marker_value">次数 %d次</string>
     <string name="dashboard_card_customer_frequency_marker_count_above">次数 %d次以上</string>
-    <string name="dashboard_card_customer_last_day">上日</string>
-    <string name="dashboard_card_customer_last_week">上周</string>
-    <string name="dashboard_card_customer_last_month">上月</string>
     <string name="dashboard_card_customer_week_count">第%d周</string>
     <string name="dashboard_card_customer_none">暂无客流数据</string>
     <string name="dashboard_card_customer_group_frequency">客群到店频次</string>

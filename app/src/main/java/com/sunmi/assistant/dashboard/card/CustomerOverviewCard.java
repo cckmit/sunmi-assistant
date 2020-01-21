@@ -147,9 +147,6 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
 
     /**
      * 设置不同Period 的文案显示
-     *
-     * @param holder
-     * @param period
      */
     private void setupPeriod(@NonNull BaseViewHolder<Model> holder, int period) {
         TextView subTitle = holder.getView(R.id.tv_dashboard_subtitle);
@@ -161,19 +158,19 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         holder.getView(R.id.layout_enter_frequency).setVisibility(View.VISIBLE);
         switch (period) {
             case Constants.TIME_PERIOD_WEEK:
-                subTitle.setText(R.string.dashboard_card_customer_last_week);
-                enterRateSubTitle.setText(R.string.dashboard_card_customer_last_week);
-                enterFrequencySubTitle.setText(R.string.dashboard_card_customer_last_week);
+                subTitle.setText(R.string.dashboard_period_last_week);
+                enterRateSubTitle.setText(R.string.dashboard_period_last_week);
+                enterFrequencySubTitle.setText(R.string.dashboard_period_last_week);
                 break;
             case Constants.TIME_PERIOD_MONTH:
-                subTitle.setText(R.string.dashboard_card_customer_last_month);
-                enterRateSubTitle.setText(R.string.dashboard_card_customer_last_month);
-                enterFrequencySubTitle.setText(R.string.dashboard_card_customer_last_month);
+                subTitle.setText(R.string.dashboard_period_last_month);
+                enterRateSubTitle.setText(R.string.dashboard_period_last_month);
+                enterFrequencySubTitle.setText(R.string.dashboard_period_last_month);
                 break;
             case Constants.TIME_PERIOD_YESTERDAY:
-                subTitle.setText(R.string.dashboard_card_customer_last_day);
-                enterRateSubTitle.setText(R.string.dashboard_card_customer_last_day);
-                enterFrequencySubTitle.setText(R.string.dashboard_card_customer_last_day);
+                subTitle.setText(R.string.dashboard_period_last_day);
+                enterRateSubTitle.setText(R.string.dashboard_period_last_day);
+                enterFrequencySubTitle.setText(R.string.dashboard_period_last_day);
                 break;
             default:
                 break;

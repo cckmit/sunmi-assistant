@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.Constants;
 
 import java.text.SimpleDateFormat;
 import java.util.Random;
@@ -90,14 +91,15 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        setLoadingVisible(holder, false);
+        setupPeriod(holder, model.period);
+
         ProgressBar pb = holder.getView(R.id.bar_dashboard_main);
         TextView value = holder.getView(R.id.tv_dashboard_value);
-        TextView subdata = holder.getView(R.id.tv_dashboard_subdata);
+        TextView subData = holder.getView(R.id.tv_dashboard_subdata);
         TextView newValue = holder.getView(R.id.tv_dashboard_new);
-        TextView newSubdata = holder.getView(R.id.tv_dashboard_new_subdata);
+        TextView newSubData = holder.getView(R.id.tv_dashboard_new_subdata);
         TextView oldValue = holder.getView(R.id.tv_dashboard_old);
-        TextView oldSubdata = holder.getView(R.id.tv_dashboard_old_subdata);
+        TextView oldSubData = holder.getView(R.id.tv_dashboard_old_subdata);
         if (model.getCustomer() > 0) {
             pb.setMax(model.getCustomer());
             pb.setSecondaryProgress(model.getCustomer());
@@ -108,45 +110,77 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
             pb.setSecondaryProgress(0);
         }
         value.setText(model.getCustomerString());
-        subdata.setText(model.getLastCustomerString());
+        subData.setText(model.getLastCustomerString());
         newValue.setText(model.getNewCustomerString());
-        newSubdata.setText(model.getLastNewCustomerString());
+        newSubData.setText(model.getLastNewCustomerString());
         oldValue.setText(model.getOldCustomerString());
-        oldSubdata.setText(model.getLastOldCustomerString());
+        oldSubData.setText(model.getLastOldCustomerString());
     }
 
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        setLoadingVisible(holder, true);
+        holder.getView(R.id.iv_dashboard_loading).setVisibility(View.VISIBLE);
+        holder.getView(R.id.bar_dashboard_main).setVisibility(View.INVISIBLE);
+        holder.getView(R.id.layout_dashboard_main).setVisibility(View.INVISIBLE);
+        holder.getView(R.id.layout_dashboard_new).setVisibility(View.INVISIBLE);
+        holder.getView(R.id.layout_dashboard_old).setVisibility(View.INVISIBLE);
     }
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        setLoadingVisible(holder, false);
+        setupPeriod(holder, model.period);
+
         ProgressBar pb = holder.getView(R.id.bar_dashboard_main);
         TextView value = holder.getView(R.id.tv_dashboard_value);
-        TextView subdata = holder.getView(R.id.tv_dashboard_subdata);
+        TextView subData = holder.getView(R.id.tv_dashboard_subdata);
         TextView newValue = holder.getView(R.id.tv_dashboard_new);
-        TextView newSubdata = holder.getView(R.id.tv_dashboard_new_subdata);
+        TextView newSubData = holder.getView(R.id.tv_dashboard_new_subdata);
         TextView oldValue = holder.getView(R.id.tv_dashboard_old);
-        TextView oldSubdata = holder.getView(R.id.tv_dashboard_old_subdata);
+        TextView oldSubData = holder.getView(R.id.tv_dashboard_old_subdata);
         value.setText(DATA_NONE);
-        subdata.setText(DATA_NONE);
+        subData.setText(DATA_NONE);
         newValue.setText(DATA_NONE);
-        newSubdata.setText(DATA_NONE);
+        newSubData.setText(DATA_NONE);
         oldValue.setText(DATA_NONE);
-        oldSubdata.setText(DATA_NONE);
+        oldSubData.setText(DATA_NONE);
         pb.setMax(1);
         pb.setProgress(0);
         pb.setSecondaryProgress(0);
     }
 
-    private void setLoadingVisible(@NonNull BaseViewHolder<Model> holder, boolean enable) {
-        holder.getView(R.id.bar_dashboard_main).setVisibility(enable ? View.INVISIBLE : View.VISIBLE);
-        holder.getView(R.id.layout_dashboard_main).setVisibility(enable ? View.INVISIBLE : View.VISIBLE);
-        holder.getView(R.id.layout_dashboard_new).setVisibility(enable ? View.INVISIBLE : View.VISIBLE);
-        holder.getView(R.id.layout_dashboard_old).setVisibility(enable ? View.INVISIBLE : View.VISIBLE);
-        holder.getView(R.id.iv_dashboard_loading).setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+    /**
+     * 设置不同Period 的文案显示
+     */
+    private void setupPeriod(@NonNull BaseViewHolder<Model> holder, int period) {
+        // 切换展示内容
+        holder.getView(R.id.iv_dashboard_loading).setVisibility(View.INVISIBLE);
+        holder.getView(R.id.bar_dashboard_main).setVisibility(View.VISIBLE);
+        holder.getView(R.id.layout_dashboard_main).setVisibility(View.VISIBLE);
+        holder.getView(R.id.layout_dashboard_new).setVisibility(View.VISIBLE);
+        holder.getView(R.id.layout_dashboard_old).setVisibility(View.VISIBLE);
+
+        TextView subTitle = holder.getView(R.id.tv_dashboard_subtitle);
+        TextView newCustomerSubTitle = holder.getView(R.id.tv_dashboard_new_subtitle);
+        TextView oldCustomerSubTitle = holder.getView(R.id.tv_dashboard_old_subtitle);
+        switch (period) {
+            case Constants.TIME_PERIOD_WEEK:
+                subTitle.setText(R.string.dashboard_period_last_week);
+                newCustomerSubTitle.setText(R.string.dashboard_period_last_week);
+                oldCustomerSubTitle.setText(R.string.dashboard_period_last_week);
+                break;
+            case Constants.TIME_PERIOD_MONTH:
+                subTitle.setText(R.string.dashboard_period_last_month);
+                newCustomerSubTitle.setText(R.string.dashboard_period_last_month);
+                oldCustomerSubTitle.setText(R.string.dashboard_period_last_month);
+                break;
+            case Constants.TIME_PERIOD_YESTERDAY:
+                subTitle.setText(R.string.dashboard_period_last_day);
+                newCustomerSubTitle.setText(R.string.dashboard_period_last_day);
+                oldCustomerSubTitle.setText(R.string.dashboard_period_last_day);
+                break;
+            default:
+                break;
+        }
     }
 
     private void goToCustomerList(Context context) {
