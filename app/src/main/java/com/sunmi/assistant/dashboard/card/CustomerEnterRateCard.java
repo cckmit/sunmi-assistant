@@ -129,6 +129,7 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         lineYAxis.setValueFormatter(new YAxisRateLabelFormatter());
         lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         lineYAxis.setYOffset(-5f);
+        lineYAxis.setXOffset(-1f);
 
         // 设置Line图
         mMarkerFormatter = new TimeMarkerFormatter(context);

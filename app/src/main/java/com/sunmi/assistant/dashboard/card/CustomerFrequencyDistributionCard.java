@@ -131,6 +131,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         barYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         barYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         barYAxis.setYOffset(-5f);
+        barYAxis.setXOffset(-1f);
 
         // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 1f);
