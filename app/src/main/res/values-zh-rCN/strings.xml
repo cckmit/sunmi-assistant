@@ -204,6 +204,9 @@
     <string name="tip_esl_offline">检测到基站离线</string>
     <string name="str_task_erp">ERP对接提醒</string>
     <string name="tip_task_erp">ERP对接完成</string>
+    <string name="str_esl_img_push">价签推图</string>
+    <string name="tip_esl_img_push">检测到价签推图失败</string>
+    
     <string name="company_shop_area">经营面积</string>
     <string name="company_shop_contact_tip">请输入联系人</string>
     <string name="company_shop_contact_tel_tip">请输入联系方式</string>
@@ -240,6 +243,8 @@
     <string name="msg_esl_ota">价签%s已发布新版固件%s，请更新</string>
     <string name="msg_task_erp_finish">已于%s完成与%s的对接，成功获取%s条商品信息</string>
     <string name="msg_task_erp_fail">未能完成与%s的对接，请重试</string>
+    <string name="msg_esl_img_push">与价签%s绑定的商品%s于%s推送失败</string>
+
     <string name="company_shop_create_success">门店创建成功</string>
     <string name="editetxt_max_length">超过字数限制，请重新输入</string>
     <string name="check_mobile_fixedphone_tip">请输入正确的手机号码或座机</string>
