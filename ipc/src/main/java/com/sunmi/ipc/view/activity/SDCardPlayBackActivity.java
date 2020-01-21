@@ -1,6 +1,5 @@
 package com.sunmi.ipc.view.activity;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -251,11 +250,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         if (!isPaused) {
@@ -280,7 +274,9 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
                 return;
             }
             stopPlay();
-            setResult(Activity.RESULT_OK);
+            if (p2pService != null) {
+                p2pService.setNeedReinitialize(true);
+            }
             finish();
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

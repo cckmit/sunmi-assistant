@@ -1,13 +1,18 @@
 package com.sunmi.ipc.view.activity.setting;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.IBinder;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -18,10 +23,12 @@ import android.widget.TextView;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.ScreenAdjustSettingContract;
 import com.sunmi.ipc.presenter.ScreenAdjustSettingPresenter;
+import com.sunmi.ipc.service.P2pService;
 import com.sunmi.ipc.view.DoorLineView;
 import com.sunmi.ipc.view.IpcVideoView;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
@@ -39,7 +46,8 @@ import sunmi.common.view.dialog.CommonDialog;
  */
 @EActivity(resName = "ipc_setting_screen_adjust_activity")
 public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSettingPresenter>
-        implements ScreenAdjustSettingContract.View {
+        implements ScreenAdjustSettingContract.View, SurfaceHolder.Callback,
+        P2pService.OnPlayStatusChangedListener {
 
     private static final int STANDARD_VIDEO_WIDTH = 1920;
     private static final int STANDARD_VIDEO_HEIGHT = 1080;
@@ -74,6 +82,8 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
     @Extra
     SunmiDevice mDevice;
     @Extra
+    boolean isFromLive;
+    @Extra
     float mVideoRatio;
 
     private int mStepIndex;
@@ -88,6 +98,24 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
     private Drawable mResFocusMinus;
     private String mResLoading;
 
+    private boolean isBind;
+    private P2pService p2pService;
+
+    private ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            isBind = true;
+            P2pService.MyBinder myBinder = (P2pService.MyBinder) binder;
+            p2pService = myBinder.getService();
+            p2pPrepare();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            isBind = false;
+        }
+    };
+
     @AfterViews
     void init() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
@@ -96,6 +124,8 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
         mPresenter = new ScreenAdjustSettingPresenter();
         mPresenter.attachView(this);
         mPresenter.init(mDevice);
+        bindService(new Intent(context, P2pService.class)
+                .putExtra("uid", mDevice.getUid()), conn, BIND_AUTO_CREATE);
         initViews();
         updateViewsStepTo(ScreenAdjustSettingContract.STEP_1_POSITION);
     }
@@ -105,7 +135,7 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
         if (mVideoRatio <= 0) {
             mVideoRatio = 16f / 9f;
         }
-        mVideoView.init(mDevice.getUid(), mVideoRatio);
+        mVideoView.init(mVideoRatio, this);
         mFaceCase.setOnTouchListener(new FaceCaseTouch());
         mLineView.setStateChangeListener(new DoorLineStateChangeListener());
         mResTitle.put(ScreenAdjustSettingContract.STEP_1_POSITION, getString(R.string.ipc_recognition_tip_position));
@@ -174,6 +204,7 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
     @Click(resName = "iv_setting_back")
     void onBack() {
         if (mStepIndex == ScreenAdjustSettingContract.STEP_1_POSITION) {
+            stopPlay();
             finish();
         } else {
             updateViewsStepTo(--mStepIndex);
@@ -245,6 +276,65 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
             mPresenter.focusReset();
         } else {
             LogCat.e(TAG, "Step of recognition ERROR when plus clicked.");
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pausePlay();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(conn);
+        stopPlay();
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        if (p2pService != null) {
+            p2pService.startDecode();
+        }
+    }
+
+    private void pausePlay() {
+        if (p2pService != null) {
+            p2pService.setNeedReinitialize(true);
+            p2pService.stopRunning();
+        }
+    }
+
+    private void stopPlay() {
+        if (!isFromLive && p2pService != null) {
+            p2pService.release();
+            p2pService = null;
+        }
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+    }
+
+    void p2pPrepare() {
+        p2pService.init(mVideoView.getHolder().getSurface(), this);
+        initP2pLive();
+    }
+
+    //开始直播
+    @Background
+    void initP2pLive() {
+        if (p2pService != null) {
+            if (isFromLive) {
+                p2pService.startPlay();
+            } else {
+                p2pService.initP2pLive();
+            }
         }
     }
 
@@ -376,6 +466,21 @@ public class ScreenAdjustSettingActivity extends BaseMvpActivity<ScreenAdjustSet
         } else {
             onBack();
         }
+    }
+
+    @Override
+    public void onPlayFail() {
+        showErrorDialog(R.string.network_error);
+    }
+
+    @Override
+    public void onPlayStarted() {
+        hideLoadingDialog();
+    }
+
+    @Override
+    public void onPlayFinished() {
+
     }
 
     private class FaceCaseTouch implements View.OnTouchListener {
