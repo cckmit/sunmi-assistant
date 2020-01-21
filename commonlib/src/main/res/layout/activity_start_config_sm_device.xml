@@ -76,7 +76,7 @@
         android:id="@+id/tv_config_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/ctv_privacy"
+        android:layout_above="@+id/view_divider_bottom"
         android:layout_marginTop="@dimen/dp_40"
         android:gravity="center_horizontal"
         android:text="@string/tip_has_ap_already"
@@ -88,7 +88,8 @@
         android:id="@+id/view_divider_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
-        android:layout_above="@+id/ctv_privacy"
+        android:layout_above="@id/btn_start"
+        android:layout_marginBottom="@dimen/dp_16"
         android:background="@color/c_divider"
         android:visibility="gone" />
 
@@ -106,7 +107,8 @@
         android:drawablePadding="@dimen/dp_3"
         android:text="@string/str_click_consent"
         android:textColor="@color/c_black"
-        android:textSize="@dimen/sp_10" />
+        android:textSize="@dimen/sp_10"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/btn_start"
