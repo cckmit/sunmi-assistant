@@ -19,12 +19,13 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.ui.ChartEntry;
-import com.sunmi.assistant.dashboard.ui.CustomerLineMarkerView;
-import com.sunmi.assistant.dashboard.ui.LineChartMarkerView;
-import com.sunmi.assistant.dashboard.ui.VolumeYAxisLabelsRenderer;
-import com.sunmi.assistant.dashboard.ui.XAxisLabelFormatter;
-import com.sunmi.assistant.dashboard.ui.XAxisLabelsRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
+import com.sunmi.assistant.dashboard.ui.chart.CustomerLineMarkerView;
+import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
+import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,10 +61,11 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     private static final int COLOR_NEW = 0xFF5A97FC;
     private static final int COLOR_OLD = 0xFFFF8000;
 
-    private XAxisLabelsRenderer lineXAxisRenderer;
-    private VolumeYAxisLabelsRenderer lineYAxisRenderer;
+    private XAxisLabelRenderer lineXAxisRenderer;
+    private YAxisVolumeLabelsRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private CustomerLineMarkerView mLineComplexMarker;
+    private TimeMarkerFormatter mMarkerFormatter;
     private float mDashLength;
     private float mDashSpaceLength;
 
@@ -86,7 +88,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_recycle_item_customer_trend;
+        return R.layout.dashboard_item_customer_trend;
     }
 
     @NonNull
@@ -119,8 +121,8 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         LineChart lineChart = holder.getView(R.id.view_dashboard_line_chart);
 
         // 设置图表坐标Label格式
-        lineXAxisRenderer = new XAxisLabelsRenderer(lineChart);
-        lineYAxisRenderer = new VolumeYAxisLabelsRenderer(lineChart);
+        lineXAxisRenderer = new XAxisLabelRenderer(lineChart);
+        lineYAxisRenderer = new YAxisVolumeLabelsRenderer(lineChart);
         lineChart.setXAxisRenderer(lineXAxisRenderer);
         lineChart.setRendererLeftYAxis(lineYAxisRenderer);
 
@@ -153,10 +155,13 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         lineYAxis.setAxisMinimum(0f);
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
-        lineYAxis.setMinWidth(36f);
+        lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        lineYAxis.setYOffset(-5f);
+        lineYAxis.setXOffset(-1f);
 
         // 设置Line图
-        mLineChartMarker = new LineChartMarkerView(context);
+        mMarkerFormatter = new TimeMarkerFormatter(context);
+        mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
         mLineComplexMarker = new CustomerLineMarkerView(context);
         mLineChartMarker.setChartView(lineChart);
         mLineComplexMarker.setChartView(lineChart);
@@ -305,14 +310,12 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     }
 
     private void setupLineData(LineDataSet set, int color) {
+        set.setDrawValues(false);
+        set.setDrawCircles(false);
+        set.setDrawHorizontalHighlightIndicator(false);
         set.setColor(color);
-        set.setCircleColor(color);
         set.setHighLightColor(color);
         set.setLineWidth(2f);
-        set.setDrawValues(false);
-        set.setDrawCircleHole(false);
-        set.setCircleRadius(1f);
-        set.setDrawHorizontalHighlightIndicator(false);
         set.setHighlightLineWidth(1f);
         set.enableDashedHighlightLine(mDashLength, mDashSpaceLength, 0);
         set.setLineContinuous(false);
@@ -356,12 +359,16 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
 
         // Get color of line
         int color;
+        int markerTitle;
         if (model.type == Constants.DATA_TYPE_NEW) {
             color = COLOR_NEW;
+            markerTitle = R.string.dashboard_card_tab_new;
         } else if (model.type == Constants.DATA_TYPE_OLD) {
             color = COLOR_OLD;
+            markerTitle = R.string.dashboard_card_tab_old;
         } else {
             color = COLOR_ALL;
+            markerTitle = R.string.dashboard_card_tab_all;
         }
 
         // Use correct chart marker & update it.
@@ -371,8 +378,13 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             mLineComplexMarker.setPeriod(model.period);
         } else {
             line.setMarker(mLineChartMarker);
-            mLineChartMarker.setType(model.period, model.type);
+            mLineChartMarker.setTitle(markerTitle);
             mLineChartMarker.setPointColor(color);
+            if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
+                mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
+            } else {
+                mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
+            }
         }
 
         // Refresh data set
@@ -382,7 +394,6 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         if (data != null && data.getDataSetCount() > 0) {
             set = (LineDataSet) data.getDataSetByIndex(0);
             set.setColor(color);
-            set.setCircleColor(color);
             set.setHighLightColor(color);
             set.setValues(values);
             data.notifyDataChanged();

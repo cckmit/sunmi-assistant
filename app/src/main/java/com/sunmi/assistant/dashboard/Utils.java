@@ -2,10 +2,13 @@ package com.sunmi.assistant.dashboard;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Pair;
 
 import com.sunmi.assistant.R;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,7 +26,17 @@ public class Utils {
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DATE_FORMAT_DATE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
+    private static final DecimalFormat FORMAT_MAX_SINGLE_DECIMAL = new DecimalFormat("#.#");
+
     private static final Object LOCK = new Object();
+
+    private static final float THRESHOLD_ZERO = 1e-6f;
+    private static final float THRESHOLD_PERCENT = 0.01f;
+    private static final float THRESHOLD_TEN_THOUSAND = 0.0001f;
+    private static final int MULTIPLIER_HUNDRED = 100;
+    private static final int MULTIPLIER_THOUSAND = 1000;
+
+    private static final float SMALL_TEXT_SIZE = 0.6f;
 
     private static final int PERIOD_WEEK_OFFSET = 100;
     private static final int PERIOD_MONTH_OFFSET = 10000;
@@ -83,12 +96,12 @@ public class Utils {
      */
     public static Pair<Integer, Integer> calcChartXAxisRange(int period) {
         if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
-            return new Pair<>(0, 26);
+            return new Pair<>(-2, 26);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             return new Pair<>(100, 108);
         } else {
             temp.setTimeInMillis(System.currentTimeMillis());
-            return new Pair<>(10000, temp.getActualMaximum(Calendar.DAY_OF_MONTH) + 10001);
+            return new Pair<>(9997, temp.getActualMaximum(Calendar.DAY_OF_MONTH) + 10001);
         }
     }
 
@@ -158,24 +171,6 @@ public class Utils {
         }
     }
 
-    public static String convertXToMarkerName(Context context, int period, long time) {
-        if (sWeekName == null) {
-            sWeekName = context.getResources().getStringArray(R.array.week_name);
-        }
-        temp.setTimeInMillis(time);
-        if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
-            int hour = temp.get(Calendar.HOUR_OF_DAY);
-            return String.format(Locale.getDefault(), "%02d:00-%02d:00", hour, hour + 1);
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            temp.setFirstDayOfWeek(Calendar.MONDAY);
-            return sWeekName[temp.get(Calendar.DAY_OF_WEEK) - 1];
-        } else {
-            int month = temp.get(Calendar.MONTH) + 1;
-            int day = temp.get(Calendar.DATE);
-            return String.format(Locale.getDefault(), "%02d-%02d", month, day);
-        }
-    }
-
     public static String getHourMinute(long timestamp) {
         synchronized (DATE_FORMAT_HOUR_MINUTE) {
             return DATE_FORMAT_HOUR_MINUTE.format(new Date(timestamp));
@@ -209,6 +204,62 @@ public class Utils {
         }
     }
 
+    /**
+     * 生成百分比标准化格式字符串
+     *
+     * @param value     值
+     * @param isRate    是否是比率数据。转化率，进店率等为True；人数占比为False。
+     * @param highlight 是否突出显示数据
+     * @return 格式化的字符串
+     */
+    public static CharSequence createPercentText(float value, boolean isRate, boolean highlight) {
+        String result;
+        if (isRate) {
+            if (value > THRESHOLD_ZERO && value < THRESHOLD_TEN_THOUSAND) {
+                result = String.format(Locale.getDefault(), "%.2f‰", value * MULTIPLIER_THOUSAND);
+            } else {
+                result = String.format(Locale.getDefault(), "%.2f%%", value * MULTIPLIER_HUNDRED);
+            }
+        } else {
+            if (value > THRESHOLD_ZERO && value < THRESHOLD_PERCENT) {
+                result = String.format(Locale.getDefault(), "%.2f%%", value * MULTIPLIER_HUNDRED);
+            } else {
+                result = String.format(Locale.getDefault(), "%.0f%%", value * MULTIPLIER_HUNDRED);
+            }
+        }
+        if (!highlight) {
+            return result;
+        }
+
+        int len = result.length();
+        SpannableString s = new SpannableString(result);
+        s.setSpan(new RelativeSizeSpan(SMALL_TEXT_SIZE), len - 1, len, 0);
+        return s;
+    }
+
+    public static CharSequence createFrequencyText(Context context, int period, float value, boolean highlight) {
+        String base;
+        if (period == Constants.TIME_PERIOD_MONTH) {
+            base = context.getString(R.string.dashboard_card_customer_frequency_data_month);
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
+            base = context.getString(R.string.dashboard_card_customer_frequency_data_week);
+        } else {
+            base = context.getString(R.string.dashboard_card_customer_frequency_data_day);
+        }
+        String result = String.format(Locale.getDefault(), base, FORMAT_MAX_SINGLE_DECIMAL.format(value));
+        if (!highlight) {
+            return result;
+        }
+
+        int startLen = base.indexOf("%s");
+        int endLen = base.length() - startLen - 2;
+        SpannableString s = new SpannableString(result);
+
+        s.setSpan(new RelativeSizeSpan(SMALL_TEXT_SIZE), 0, startLen, 0);
+        s.setSpan(new RelativeSizeSpan(SMALL_TEXT_SIZE), s.length() - endLen, s.length(), 0);
+        return s;
+    }
+
     public static boolean hasAuth(int source) {
         return (source & Constants.DATA_SOURCE_AUTH) != 0;
     }
@@ -225,7 +276,7 @@ public class Utils {
         return (source & Constants.DATA_SOURCE_CUSTOMER) != 0;
     }
 
-    public static boolean hasFloating(int source){
+    public static boolean hasFloating(int source) {
         return (source & Constants.DATA_SOURCE_FLOATING) != 0;
     }
 

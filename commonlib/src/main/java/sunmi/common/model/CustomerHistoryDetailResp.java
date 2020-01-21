@@ -19,13 +19,15 @@ public class CustomerHistoryDetailResp {
 
     public static class Item {
         /**
-         * age_range_code : 1
-         * male_count : 0
-         * male_regular_count : 0
-         * female_count : 0
-         * female_regular_count : 0
-         * female_rush_hour : -1
-         * male_rush_hour : -1
+         * age_range_code : 0
+         * male_count : 12
+         * male_regular_count : 10
+         * male_rush_hour : 11
+         * male_uniq_count : 11
+         * female_count : 13
+         * female_regular_count : 10
+         * female_rush_hour : 11
+         * female_uniq_count : 11
          */
 
         @SerializedName("age_range_code")
@@ -34,14 +36,18 @@ public class CustomerHistoryDetailResp {
         private int maleCount;
         @SerializedName("male_regular_count")
         private int maleRegularCount;
+        @SerializedName("male_rush_hour")
+        private String maleRushHour;
+        @SerializedName("male_uniq_count")
+        private int maleUniqCount;
         @SerializedName("female_count")
         private int femaleCount;
         @SerializedName("female_regular_count")
         private int femaleRegularCount;
         @SerializedName("female_rush_hour")
-        private int femaleRushHour;
-        @SerializedName("male_rush_hour")
-        private int maleRushHour;
+        private String femaleRushHour;
+        @SerializedName("female_uniq_count")
+        private int femaleUniqCount;
 
         public int getAgeRangeCode() {
             return ageRangeCode;
@@ -55,6 +61,14 @@ public class CustomerHistoryDetailResp {
             return maleRegularCount;
         }
 
+        public String getMaleRushHour() {
+            return maleRushHour;
+        }
+
+        public int getMaleUniqCount() {
+            return maleUniqCount;
+        }
+
         public int getFemaleCount() {
             return femaleCount;
         }
@@ -63,12 +77,13 @@ public class CustomerHistoryDetailResp {
             return femaleRegularCount;
         }
 
-        public int getFemaleRushHour() {
+        public String getFemaleRushHour() {
             return femaleRushHour;
         }
 
-        public int getMaleRushHour() {
-            return maleRushHour;
+        public int getFemaleUniqCount() {
+            return femaleUniqCount;
         }
+
     }
 }

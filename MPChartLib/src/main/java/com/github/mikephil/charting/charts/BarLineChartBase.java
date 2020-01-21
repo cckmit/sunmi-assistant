@@ -232,7 +232,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         // make sure the data cannot be drawn outside the content-rect
         int clipRestoreCount = canvas.save();
-        canvas.clipRect(mViewPortHandler.getContentRect());
+//        canvas.clipRect(mViewPortHandler.getContentRect());
 
         mRenderer.drawData(canvas);
 
@@ -1564,9 +1564,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
     public boolean isAnyAxisInverted() {
         if (mAxisLeft.isInverted())
             return true;
-        if (mAxisRight.isInverted())
-            return true;
-        return false;
+        return mAxisRight.isInverted();
     }
 
     /**

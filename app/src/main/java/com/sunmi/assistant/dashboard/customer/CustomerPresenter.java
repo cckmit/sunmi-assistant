@@ -5,10 +5,13 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.card.CustomerAnalysisCard;
-import com.sunmi.assistant.dashboard.card.CustomerDataCard;
+import com.sunmi.assistant.dashboard.card.CustomerEnterRateCard;
+import com.sunmi.assistant.dashboard.card.CustomerFrequencyAvgCard;
+import com.sunmi.assistant.dashboard.card.CustomerFrequencyDistributionCard;
+import com.sunmi.assistant.dashboard.card.CustomerFrequencyTrendCard;
 import com.sunmi.assistant.dashboard.card.CustomerNoDataCard;
 import com.sunmi.assistant.dashboard.card.CustomerNoFsCard;
+import com.sunmi.assistant.dashboard.card.CustomerOverviewCard;
 import com.sunmi.assistant.dashboard.card.CustomerPeriodCard;
 import com.sunmi.assistant.dashboard.card.CustomerTrendCard;
 import com.sunmi.assistant.dashboard.card.CustomerWaitDataCard;
@@ -35,7 +38,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
-    public CustomerPresenter(PageContract.ParentPresenter parent) {
+    CustomerPresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
         this.mParent.onChildCreate(getType(), this);
     }
@@ -68,6 +71,25 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void setPeriod(int period) {
+        if (mPeriod != period && Utils.hasCustomer(mSource)
+                && mPeriod == Constants.TIME_PERIOD_YESTERDAY) {
+            // 从昨日变为本周或本月，增加卡片
+            List<BaseRefreshCard> list = new ArrayList<>(2);
+            list.add(CustomerFrequencyTrendCard.get(this, mSource));
+            list.add(CustomerFrequencyAvgCard.get(this, mSource));
+            for (BaseRefreshCard card : list) {
+                card.init(mView.getContext());
+            }
+            mList.addAll(list);
+            mView.addFrequencyCard(list);
+        } else if (mPeriod != period && Utils.hasCustomer(mSource)
+                && mPeriod != Constants.TIME_PERIOD_INIT
+                && period == Constants.TIME_PERIOD_YESTERDAY) {
+            // 从本周本月变为昨日，删除卡片
+            mList.remove(mList.size() - 1);
+            mList.remove(mList.size() - 1);
+            mView.removeFrequencyCard();
+        }
         mPeriod = period;
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, false);
@@ -129,9 +151,10 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
         mList.clear();
         mList.add(CustomerPeriodCard.get(this, source));
         if (Utils.hasCustomer(source)) {
-            mList.add(CustomerDataCard.get(this, source));
+            mList.add(CustomerOverviewCard.get(this, source));
             mList.add(CustomerTrendCard.get(this, source));
-            mList.add(CustomerAnalysisCard.get(this, source));
+            mList.add(CustomerEnterRateCard.get(this, source));
+            mList.add(CustomerFrequencyDistributionCard.get(this, source));
         } else if (Utils.hasFs(source)) {
             mList.add(CustomerWaitDataCard.get(this, source));
         } else {

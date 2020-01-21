@@ -9,6 +9,7 @@ public class Constants {
     public static final int PAGE_NONE = 0;
     public static final int PAGE_OVERVIEW = 1;
     public static final int PAGE_CUSTOMER = 2;
+    public static final int PAGE_PROFILE = 3;
 
     public static final int FLAG_SHOP = 0x1;
     public static final int FLAG_SAAS = 0x2;
@@ -25,6 +26,9 @@ public class Constants {
 
     public static final int DATA_MODE_SALES = 0;
     public static final int DATA_MODE_ORDER = 1;
+
+    public static final int GENDER_MALE = 1;
+    public static final int GENDER_FEMALE = 2;
 
     public static final int DATA_TYPE_RATE = 0;
     public static final int DATA_TYPE_VOLUME = 1;

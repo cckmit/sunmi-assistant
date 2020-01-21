@@ -1,7 +1,9 @@
 package com.sunmi.ipc.face.contract;
 
+import android.util.SparseArray;
+
+import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.face.model.FaceGroup;
-import com.sunmi.ipc.model.FaceAgeRangeResp;
 
 import java.io.File;
 import java.util.List;
@@ -27,7 +29,7 @@ public interface FaceDetailContract {
 
         void updateAgeSuccessView(int ageRangeCode);
 
-        void faceAgeRangeSuccessView(FaceAgeRangeResp data);
+        void faceAgeRangeSuccessView(SparseArray<FaceAge> ageMap);
 
         void loadGroupSuccessView(List<FaceGroup> list);
 

@@ -1,7 +1,6 @@
 package com.sunmi.assistant.dashboard;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.SparseArray;
@@ -9,8 +8,10 @@ import android.util.SparseArray;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
-import com.sunmi.assistant.dashboard.overview.OverviewFragment;
-import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
+import com.sunmi.assistant.dashboard.overview.RealtimeFragment;
+import com.sunmi.assistant.dashboard.overview.RealtimeFragment_;
+import com.sunmi.assistant.dashboard.profile.ProfileFragment;
+import com.sunmi.assistant.dashboard.profile.ProfileFragment_;
 import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.rpc.ServiceApi;
@@ -52,7 +53,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private static final int REFRESH_TIME_PERIOD = 120_000;
 
-    private Context mContext;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private SparseArray<PageContract.PagePresenter> mPages = new SparseArray<>(2);
 
@@ -119,13 +119,16 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         // TODO: 可以优化，采用工厂模式
         List<PageHost> pages = new ArrayList<>();
 
-        OverviewFragment overviewFragment = new OverviewFragment_();
-        pages.add(new PageHost(R.string.dashboard_page_overview, 0, overviewFragment, Constants.PAGE_OVERVIEW));
+        RealtimeFragment realtimeFragment = new RealtimeFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_overview, 0, realtimeFragment, Constants.PAGE_OVERVIEW));
 
         CustomerFragment customerFragment = new CustomerFragment_();
         pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment, Constants.PAGE_CUSTOMER));
-        mPageType = Constants.PAGE_OVERVIEW;
 
+        ProfileFragment profileFragment = new ProfileFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_profile, 0, profileFragment, Constants.PAGE_PROFILE));
+
+        mPageType = Constants.PAGE_OVERVIEW;
         return pages;
     }
 
@@ -431,7 +434,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     @Override
     public void detachView() {
         super.detachView();
-        mContext = null;
         stopAutoRefresh();
         for (int i = 0, size = mPages.size(); i < size; i++) {
             PageContract.PagePresenter page = mPages.valueAt(i);
