@@ -65,6 +65,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private final int SWITCH_UNCHECK = 0;
     private final int SWITCH_CHECK = 1;
     private final int WIFI_WIRE_DEFAULT = -1;
+
     @ViewById(resName = "sil_camera_name")
     SettingItemLayout mNameView;
     @ViewById(resName = "sil_camera_adjust")
@@ -85,7 +86,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     @Extra
     SunmiDevice mDevice;
     @Extra
-    boolean disableAdjustScreen;
+    boolean isFromLive;
 
     //夜视模式，指示灯，画面旋转
     private int nightMode, wdrMode, ledIndicator, rotation;
@@ -111,7 +112,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             setWifiUnknown();
         }
-        if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel()) || disableAdjustScreen) {
+        if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             mAdjustScreen.setVisibility(View.GONE);
         } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             mAdjustScreen.setEnabled(false);
@@ -299,9 +300,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     @Click(resName = "sil_camera_adjust")
     void cameraAdjust() {
-        if (disableAdjustScreen) {
-            return;
-        }
         if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             return;
         }
@@ -525,10 +523,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
-        ScreenAdjustSettingActivity_.intent(this)
-                .mDevice(device)
-                .mVideoRatio(16f / 9f)
-                .start();
+        ScreenAdjustSettingActivity_.intent(this).mDevice(device).isFromLive(isFromLive)
+                .mVideoRatio(16f / 9f).start();
     }
 
     /**

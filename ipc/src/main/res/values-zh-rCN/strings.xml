@@ -404,7 +404,7 @@
     <string name="str_saturation">饱和度</string>
     <string name="str_focus_adjust">对焦微调</string>
     <string name="dialog_title_input_ipc_name">请输入摄像机名称</string>
-    <string name="tip_input_len_36">请输入1-36位字符</string>
+    <string name="tip_input_len_36">请输入1–36位字符</string>
     <string name="tip_other_anomalies">今日门店内其他异常</string>
     <string name="str_abnormal_behavior_list">异常行为视频列表</string>
     <string name="str_tip_use_wired_network">请确认摄像机插入网线，并将手机连接至同一网络</string>
