@@ -87,8 +87,8 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
         mPresenter.attachView(this);
         if (!CommonHelper.isGooglePlay()) {
             mPresenter.getMessageCount();
-            ThreadPool.getCachedThreadPool().submit(() -> mPresenter.syncIpcDevice());
         }
+        ThreadPool.getCachedThreadPool().submit(() -> mPresenter.syncIpcDevice());
         registerNetworkReceiver();
         CrashReport.setUserId(SpUtils.getUID());
 
