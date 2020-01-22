@@ -1,8 +1,11 @@
 package com.sunmi.ipc.face.presenter;
 
+import android.util.SparseArray;
+
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.face.contract.FaceDetailContract;
 import com.sunmi.ipc.face.model.Face;
+import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.face.model.FaceGroup;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.model.FaceCheckResp;
@@ -16,6 +19,7 @@ import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CacheManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
@@ -180,12 +184,32 @@ public class FaceDetailPresenter extends BasePresenter<FaceDetailContract.View>
     @Override
     public void faceAgeRange() {
         mView.showLoadingDialog();
+        SparseArray<FaceAge> ageName = CacheManager.get().get(CacheManager.CACHE_AGE_NAME);
+        if (ageName != null) {
+            if (isViewAttached()) {
+                mView.hideLoadingDialog();
+                mView.faceAgeRangeSuccessView(ageName);
+            }
+            return;
+        }
         IpcCloudApi.getInstance().getFaceAgeRange(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
+                if (data == null || data.getAgeRangeList() == null) {
+                    onFail(code, msg, data);
+                    return;
+                }
+                List<FaceAge> list = data.getAgeRangeList();
+                SparseArray<FaceAge> ageMap = new SparseArray<>(list.size());
+                int size = 4;
+                for (FaceAge age : list) {
+                    ageMap.put(age.getCode(), age);
+                    size += age.getName().length() * 2 + 8;
+                }
+                CacheManager.get().put(CacheManager.CACHE_AGE_NAME, ageMap, size);
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    mView.faceAgeRangeSuccessView(data);
+                    mView.faceAgeRangeSuccessView(ageMap);
                 }
             }
 

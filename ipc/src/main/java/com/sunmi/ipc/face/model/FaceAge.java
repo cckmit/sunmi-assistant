@@ -13,16 +13,16 @@ public class FaceAge {
      * age_range_code : 1
      */
 
-    @SerializedName("age_range")
-    private String name;
     @SerializedName("age_range_code")
     private int code;
-
-    public String getName() {
-        return name;
-    }
+    @SerializedName("age_range")
+    private String name;
 
     public int getCode() {
         return code;
+    }
+
+    public String getName() {
+        return name;
     }
 }
