@@ -224,7 +224,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         initSurfaceView();
         initManageList();
-        if (isSS1()) {
+        if (!CommonHelper.isGooglePlay() && isSS1()) {
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
             mPresenter.getCashVideoService(device.getId());
             ivCloudPlayback.setVisibility(View.VISIBLE);
