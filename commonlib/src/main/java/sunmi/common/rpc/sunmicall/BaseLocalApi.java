@@ -40,7 +40,11 @@ public abstract class BaseLocalApi extends BaseApi {
 
     @Override
     public void post(Context context, String sn, String msgId, int opCode, String json) {
-        postRouter(sn, opCode, json);
+        postRouterTimeout(sn, opCode, json, 10);
+    }
+
+    public void post(Context context, String sn, String msgId, int opCode, String json, int timeout) {
+        postRouterTimeout(sn, opCode, json, timeout);
     }
 
     public abstract String getBaseUrl();
@@ -54,13 +58,6 @@ public abstract class BaseLocalApi extends BaseApi {
     public abstract void onFail(ResponseBean res);
 
     public abstract void onSuccess(String result, String sn);
-
-    /**
-     * ap路由器接口
-     */
-    public void postRouter(final String sn, final int opCode, final String strJson) {
-        postRouterTimeout(sn, opCode, strJson, 10);
-    }
 
     /**
      * ap路由器接口

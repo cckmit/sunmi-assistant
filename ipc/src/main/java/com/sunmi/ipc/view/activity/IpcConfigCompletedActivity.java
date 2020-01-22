@@ -417,10 +417,6 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     private void startFsAdjust(SunmiDevice device) {
         hideLoadingDialog();
-        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(device.getDeviceid())) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
-            return;
-        }
         ScreenAdjustSettingActivity_.intent(this)
                 .mDevice(device)
                 .mVideoRatio(16f / 9f)
