@@ -5,6 +5,7 @@
     <string name="str_delete">删除</string>
     <string name="str_update">更新</string>
     <string name="str_version_update">版本更新</string>
+    <string name="str_new_version_update">版本更新</string>
     <string name="str_ignore">忽略</string>
     <string name="str_refresh">刷新</string>
     <string name="str_complete">完成</string>

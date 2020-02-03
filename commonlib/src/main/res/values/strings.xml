@@ -4,7 +4,8 @@
     <string name="sm_cancel">Cancel</string>
     <string name="str_delete">Delete</string>
     <string name="str_update">Update</string>
-    <string name="str_version_update">Version Update</string>
+    <string name="str_version_update">Version Upgrade</string>
+    <string name="str_new_version_update">New Version</string>
     <string name="str_ignore">Ignore</string>
     <string name="str_refresh">Refresh</string>
     <string name="str_complete">Complete</string>
@@ -20,7 +21,7 @@
     <string name="str_gender_female">女</string>
     <string name="str_common_age">年龄</string>
     <string name="str_click_consent">By clicking the button of "Start Configuration", you agree</string>
-    <string name="sunmi_user_protocol">《商米用户注册协议》</string>
+    <string name="sunmi_user_protocol">《SUNMI User Registration Agreement》</string>
     <string name="str_privacy">《Privacy Policy》</string>
     <string name="str_and"> and </string>
     <string name="network_disconnect">Network disconnected</string>

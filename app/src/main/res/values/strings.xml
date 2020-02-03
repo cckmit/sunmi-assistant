@@ -24,7 +24,7 @@
     <string name="str_my_store">My store</string>
     <string name="btn_add_store">Add store</string>
     <string name="str_store_info">Store Information</string>
-    <string name="str_order_management">订单管理</string>
+    <string name="str_order_management">Order Management</string>
     <string name="str_tab_dashboard">Data</string>
     <string name="str_help_feedback">Help and feedback</string>
     <string name="str_me">me</string>
@@ -178,8 +178,8 @@
     <string name="str_system_msg">System Message</string>
     <string name="tip_no_msg">No Message</string>
     <string name="str_msg_count">(%s)</string>
-    <string name="msg_ipc">网络摄像机</string>
-    <string name="msg_esl">电子价签</string>
+    <string name="msg_ipc">IPC</string>
+    <string name="msg_esl">ESL</string>
     <string name="msg_task">任务</string>
     <string name="msg_promotion">推广</string>
     <string name="str_tf_detect">存储卡提醒</string>
@@ -278,7 +278,7 @@
     <string name="import_order_data_service">订单数据分析服务</string>
     <string name="import_order_access_already_auth">该门店收银系统已被授权，无法再次授权</string>
     <string name="import_order_access_no_auth_more">已授权过门店收银系统，无法授权更多</string>
-    <string name="company_shop_region_hint">必选</string>
+    <string name="company_shop_region_hint">Required</string>
     <string name="shop_create_new">Create new store</string>
     <string name="str_free_half_year">首次免半年</string>
     <string name="pos_handle_sunmi_dev_manager">收银设备管理</string>
@@ -315,10 +315,15 @@
     <string name="pos_desktop_product">台式收银设备</string>
     <string name="pos_text_empty">--</string>
     <string name="pos_wire">有线网络</string>
-    <string name="str_agreement_manager">协议管理</string>
+    <string name="str_agreement_manager">Agreement Management</string>
     <string name="tip_device_unbound_already">当前设备已解绑</string>
     <string name="ap_no_device_list">暂无设备，请添加</string>
     <string name="str_logging_in">正在登录…</string>
     <string name="str_verification_code">校验验证码…</string>
     <string name="str_now_reset_psw">正在重置密码…</string>
+    <string name="dialog_protocol_title">商米用户协议及隐私政策</string>
+    <string name="dialog_protocol_msg_1">我们将通过</string>
+    <string name="dialog_protocol_msg_2">帮助您了解我们收集、使用、存储和共享个人信息的情况，以及您所享有的相关权利。您可在相关页面访问、更正、删除个人信息并管理您的权利。如您同意，请点击“同意”开始接受我们的服务。</string>
+    <string name="dialog_protocol_cancel">暂不使用</string>
+    <string name="dialog_protocol_confirm">同意</string>
 </resources>

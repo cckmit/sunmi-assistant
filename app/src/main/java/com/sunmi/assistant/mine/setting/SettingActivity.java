@@ -8,6 +8,7 @@ import com.sunmi.apmanager.constant.Constants;
 import com.sunmi.apmanager.utils.CommonUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
+import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -18,6 +19,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import sunmi.common.base.BaseActivity;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
@@ -46,7 +48,7 @@ public class SettingActivity extends BaseActivity {
                 CommonHelper.getAppVersionName(context)));
     }
 
-    @Click({R.id.sil_account, R.id.sil_about, R.id.btnLogout})
+    @Click({R.id.sil_account, R.id.sil_about, R.id.btnLogout,R.id.sil_agreement})
     public void click(View v) {
         switch (v.getId()) {
             case R.id.sil_account:
@@ -59,6 +61,9 @@ public class SettingActivity extends BaseActivity {
                 CommonUtils.trackCommonEvent(context, "settingLogout",
                         "主页_设置_退出登录", Constants.EVENT_MY_INFO);
                 showChoosePhoto();
+                break;
+            case R.id.sil_agreement:
+                WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_AGREEMENT).start();
                 break;
             default:
                 break;
