@@ -55,11 +55,6 @@ public class AboutActivity extends BaseActivity {
         checkUpdate();
     }
 
-    @Click(R.id.sil_agreement)
-    public void agreementClick(View v) {
-        WebViewCloudServiceActivity_.intent(context).mUrl(CommonConstants.H5_AGREEMENT).start();
-    }
-
     private void checkUpdate() {
         CloudApi.checkUpgrade(new StringCallback() {
             @Override

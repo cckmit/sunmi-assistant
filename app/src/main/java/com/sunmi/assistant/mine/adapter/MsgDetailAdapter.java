@@ -113,9 +113,9 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         if (disconnectTime != null) {
             try {
                 String time = DateTimeUtils.secondToDate(Long.parseLong(disconnectTime), "yyyy-MM-dd HH:mm:ss");
-                detail = String.format(string, "", time);
+                detail = String.format(string, time);
             } catch (NumberFormatException e) {
-                detail = String.format(string, "", disconnectTime);
+                detail = String.format(string, disconnectTime);
             }
         } else if (timestamp != null && saasName != null && totalCount != null) {
             try {
@@ -126,7 +126,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             }
         } else if (binVersion != null) {
             try {
-                detail = String.format(string, "", binVersion);
+                detail = String.format(string, binVersion);
             } catch (Exception e) {
                 detail = "";
             }
@@ -138,11 +138,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
                 detail = String.format(string, eslCode, productName, pushTime);
             }
         } else {
-            try {
-                detail = String.format(string, "");
-            } catch (Exception e) {
-                detail = "";
-            }
+            detail = string;
         }
         helper.setText(R.id.tv_msg_device_name, context.getString(R.string.ipc_device_name, eslCode != null ? eslCode : deviceName));
         helper.setText(R.id.tv_msg_detail, context.getString(R.string.ipc_device_msg_content, detail));

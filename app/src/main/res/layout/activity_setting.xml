@@ -34,6 +34,17 @@
         app:title="@string/str_about"
         app:type="arrow" />
 
+    <sunmi.common.view.SettingItemLayout
+        android:id="@+id/sil_agreement"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:layout_marginTop="@dimen/dp_12"
+        app:showDivider="both"
+        app:title="@string/str_agreement_manager"
+        app:type="arrow"
+        app:layout_constraintTop_toBottomOf="@id/sil_about" />
+
     <Button
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"

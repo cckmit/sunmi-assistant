@@ -1,8 +1,18 @@
 package com.sunmi.assistant.ui.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sunmi.assistant.MyApplication;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.login.LoginActivity_;
 
@@ -24,6 +35,11 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.activity.ProtocolActivity_;
+import sunmi.common.view.dialog.CommonDialog;
+
+import static sunmi.common.view.activity.ProtocolActivity.USER_PRIVATE;
+import static sunmi.common.view.activity.ProtocolActivity.USER_PROTOCOL;
 
 @EActivity(R.layout.viewpager_view)
 public class LeadPagesActivity extends BaseActivity {
@@ -47,7 +63,7 @@ public class LeadPagesActivity extends BaseActivity {
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarFullTransparent(this);
-        SpUtils.saveLead();//保存引导页值
+        getProtocolDialog().showWithOutTouchable(false);
         point1.setBackgroundResource(R.drawable.oval_gold);
         point2.setBackgroundResource(R.drawable.oval_black_light);
         point3.setBackgroundResource(R.drawable.oval_black_light);
@@ -150,6 +166,63 @@ public class LeadPagesActivity extends BaseActivity {
         if (isFastClick(1000)) return;
         LoginActivity_.intent(context).start();
         finish();
+    }
+
+    private CommonDialog getProtocolDialog() {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        CommonDialog.Builder dialogBuilder = new CommonDialog.Builder(context)
+                .setTitle(R.string.dialog_protocol_title);
+        int len1, len2;
+        builder.append(getText(R.string.dialog_protocol_msg_1));
+        String protocol = getString(R.string.sunmi_user_protocol);
+        String privacy = getString(R.string.str_privacy);
+        len1 = builder.length();
+        builder.append(protocol);
+        ClickableSpan csProtocol = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                ProtocolActivity_.intent(context)
+                        .protocolType(USER_PROTOCOL).start();
+                overridePendingTransition(R.anim.activity_open_down_up, 0);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                ds.setUnderlineText(false);
+                ds.setColor(ContextCompat.getColor(context,R.color.common_orange));
+            }
+        };
+        builder.setSpan(csProtocol, len1, len1 + protocol.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.append(getText(R.string.str_and));
+        len2 = builder.length();
+        builder.append(privacy);
+        ClickableSpan csPrivacy = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                ProtocolActivity_.intent(context)
+                        .protocolType(USER_PRIVATE).start();
+                overridePendingTransition(R.anim.activity_open_down_up, 0);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                ds.setUnderlineText(false);
+                ds.setColor(ContextCompat.getColor(context,R.color.common_orange));
+            }
+        };
+        builder.setSpan(csPrivacy, len2, builder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.append(getText(R.string.dialog_protocol_msg_2));
+        dialogBuilder.setMessage(builder);
+        dialogBuilder.setMessageMovementMethod(LinkMovementMethod.getInstance());
+        dialogBuilder.setCancelButton(R.string.dialog_protocol_cancel, (dialog, which) -> {
+            MyApplication.getInstance().finishActivities();
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
+        });
+        dialogBuilder.setConfirmButton(R.string.dialog_protocol_confirm, (dialog, which) -> {
+            SpUtils.saveLead();//保存引导页值
+        });
+        return dialogBuilder.create();
     }
 
     private class OnViewPageChangeListener implements ViewPager.OnPageChangeListener {

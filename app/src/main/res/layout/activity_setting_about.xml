@@ -44,16 +44,6 @@
         app:title="@string/str_version_update"
         app:type="arrow" />
 
-    <sunmi.common.view.SettingItemLayout
-        android:id="@+id/sil_agreement"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/sil_version"
-        android:visibility="visible"
-        app:showDivider="both"
-        app:title="@string/str_agreement_manager"
-        app:type="arrow" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

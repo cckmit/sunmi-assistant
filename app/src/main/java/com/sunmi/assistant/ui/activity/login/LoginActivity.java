@@ -9,6 +9,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckedTextView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -40,8 +41,12 @@ import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.PermissionUtils;
 import sunmi.common.utils.RegexUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.ClearableEditText;
 import sunmi.common.view.dialog.CommonDialog;
+
+import static sunmi.common.view.activity.ProtocolActivity.USER_PRIVATE;
+import static sunmi.common.view.activity.ProtocolActivity.USER_PROTOCOL;
 
 /**
  * 登录
@@ -65,6 +70,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
     Button btnRegister;
     @ViewById(R.id.tvLogo)
     TextView tvLogo;
+    @ViewById(R.id.ctv_privacy)
+    CheckedTextView ctvPrivacy;
 
     @Extra
     String reason;
@@ -94,6 +101,8 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
             etUser.setHint(R.string.hint_input_email);
             tvLogo.setBackgroundResource(R.mipmap.ic_sunmi_logo_en);
         }
+        //初始化
+        ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, USER_PROTOCOL, USER_PRIVATE);
         etUser.setClearIcon(R.mipmap.ic_edit_delete_white);
         etPassword.setClearIcon(R.mipmap.ic_edit_delete_white);
         if (TextUtils.isEmpty(mobile)) {
@@ -164,6 +173,10 @@ public class LoginActivity extends BaseMvpActivity<LoginPresenter> implements Lo
         switch (v.getId()) {
             case R.id.btnLogin: //密码登录
                 if (isFastClick(1500)) {
+                    return;
+                }
+                if (!ctvPrivacy.isChecked()) {
+                    shortTip(R.string.tip_agree_protocol);
                     return;
                 }
                 if (!RegexUtils.isCorrectAccount(mobile)) {
