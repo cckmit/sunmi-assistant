@@ -222,7 +222,9 @@ public class LeadPagesActivity extends BaseActivity {
         dialogBuilder.setConfirmButton(R.string.dialog_protocol_confirm, (dialog, which) -> {
             SpUtils.saveLead();//保存引导页值
         });
-        return dialogBuilder.create();
+        CommonDialog dialog = dialogBuilder.create();
+        dialog.setCancelable(false);
+        return dialog;
     }
 
     private class OnViewPageChangeListener implements ViewPager.OnPageChangeListener {
