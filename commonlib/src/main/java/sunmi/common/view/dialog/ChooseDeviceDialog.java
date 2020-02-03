@@ -61,7 +61,8 @@ public class ChooseDeviceDialog extends Dialog {
     private SimpleRecyclerViewAdapter getAdapter() {
         int[] imageIds;
         if (CommonHelper.isGooglePlay()) {
-            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_more};
+            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_ss,
+                    R.mipmap.ic_add_sunmi_fs, R.mipmap.ic_add_more};
         } else {
             imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_ss,
                     R.mipmap.ic_add_sunmi_fs, R.mipmap.ic_add_sunmi_printer, R.mipmap.ic_add_more};
@@ -70,23 +71,21 @@ public class ChooseDeviceDialog extends Dialog {
                 CommonHelper.isGooglePlay() ? R.array.sunmi_devices_google_play : R.array.sunmi_devices);
         SimpleRecyclerViewAdapter adapter = new SimpleRecyclerViewAdapter(
                 R.layout.item_choose_device, imageIds, names);
-        adapter.setOnItemClickListener(new SimpleRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int pos) {
-                if (pos == names.length - 1) {
-                    return;
-                }
-                dismiss();
-                if (pos == CommonConstants.TYPE_PRINTER) {
-                    Router.withApi(CloudPrinterApi.class).goToSartConfigPrinter(getContext(), shopId);
-                } else if (pos == CommonConstants.TYPE_IPC_FS || pos == CommonConstants.TYPE_IPC_SS) {
-                    Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), pos, CommonConstants.CONFIG_IPC_FROM_COMMON);
-                } else {
-                    StartConfigSMDeviceActivity_.intent(getContext())
-                            .deviceType(pos).shopId(shopId + "").start();
-                }
+        adapter.setOnItemClickListener(pos -> {
+            if (pos == names.length - 1) {
+                return;
+            }
+            dismiss();
+            if (pos == CommonConstants.TYPE_PRINTER) {
+                Router.withApi(CloudPrinterApi.class).goToSartConfigPrinter(getContext(), shopId);
+            } else if (pos == CommonConstants.TYPE_IPC_FS || pos == CommonConstants.TYPE_IPC_SS) {
+                Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), pos, CommonConstants.CONFIG_IPC_FROM_COMMON);
+            } else {
+                StartConfigSMDeviceActivity_.intent(getContext())
+                        .deviceType(pos).shopId(shopId + "").start();
             }
         });
         return adapter;
     }
+
 }

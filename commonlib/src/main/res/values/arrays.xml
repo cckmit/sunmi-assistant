@@ -10,6 +10,8 @@
 
     <string-array name="sunmi_devices_google_play">
         <item>@string/sunmi_device_w1</item>
+        <item>@string/sunmi_device_ss</item>
+        <item>@string/sunmi_device_fs</item>
         <item>@string/sunmi_device_more</item>
     </string-array>
 
