@@ -80,7 +80,7 @@ public class RelaunchStartSettingActivity extends BaseActivity {
             successDialog.dismiss();
         }
         successDialog = new CommonDialog.Builder(this)
-                .setTitle(getString(R.string.ipc_setting_online_success))
+                .setTitle(getString(R.string.ipc_dialog_online_success))
                 .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
                     finish();
                 }).create();

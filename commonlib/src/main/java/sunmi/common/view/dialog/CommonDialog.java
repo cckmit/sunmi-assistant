@@ -8,6 +8,7 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.text.method.MovementMethod;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,7 @@ public class CommonDialog extends Dialog {
         private Context context;
         private String title;
         private CharSequence message; // 对话框内容
+        private MovementMethod mMovement = null;
         private int msgGravity = Gravity.CENTER;
         private Drawable[] messageDrawable = new Drawable[4];
         private int[] messageDrawableRes = {0, 0, 0, 0};
@@ -89,6 +91,11 @@ public class CommonDialog extends Dialog {
          */
         public Builder setMesageGravity(int gravity) {
             this.msgGravity = gravity;
+            return this;
+        }
+
+        public Builder setMessageMovementMethod(MovementMethod movement) {
+            this.mMovement = movement;
             return this;
         }
 
@@ -253,6 +260,9 @@ public class CommonDialog extends Dialog {
                 tvMessage.setVisibility(View.VISIBLE);
                 tvMessage.setText(message);
                 tvMessage.setGravity(msgGravity);
+                if (mMovement != null) {
+                    tvMessage.setMovementMethod(mMovement);
+                }
                 if (messageDrawable[0] != null || messageDrawable[1] != null
                         || messageDrawable[2] != null || messageDrawable[3] != null) {
                     tvMessage.setCompoundDrawablesRelativeWithIntrinsicBounds(messageDrawable[0],
