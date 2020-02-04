@@ -38,6 +38,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.log.LogCat;
@@ -68,8 +69,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private RefreshTask mTask;
 
     private ShopBundledCloudInfo info;
-
-    private boolean mShowFloating;
 
     @Override
     public void init() {
@@ -257,6 +256,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void loadSaas() {
+        // 海外版暂无SaaS绑定服务
+        if (CommonHelper.isGooglePlay()) {
+            mSource &= ~Constants.DATA_SOURCE_AUTH;
+            mSource &= ~Constants.DATA_SOURCE_IMPORT;
+            mLoadFlag &= ~Constants.FLAG_SAAS;
+            loadComplete();
+            return;
+        }
         SunmiStoreApi.getInstance().getAuthorizeInfo(mCompanyId, mShopId,
                 new RetrofitCallback<ShopAuthorizeInfoResp>() {
                     @Override
@@ -365,14 +372,24 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void loadBundledList() {
+        // 海外版暂无云服务
+        if (CommonHelper.isGooglePlay()) {
+            mSource &= ~Constants.DATA_SOURCE_FLOATING;
+            mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
+            if (isViewAttached()) {
+                mView.updateFloating(false);
+            }
+            loadComplete();
+            return;
+        }
         info = DataSupport.where("shopId=?", String.valueOf(mShopId)).findFirst(ShopBundledCloudInfo.class);
         if (info == null) {
             info = new ShopBundledCloudInfo(mShopId);
         }
-        mShowFloating = info.isFloatingShow();
         ServiceApi.getInstance().getBundledList(new RetrofitCallback<BundleServiceMsg>() {
             @Override
             public void onSuccess(int code, String msg, BundleServiceMsg data) {
+                boolean showFloating = info.isFloatingShow();
                 List<BundleServiceMsg.SubscriptionListBean> beans = data.getSubscriptionList();
                 Set<String> oldSet = info.getSnSet();
                 Set<String> newSet = new HashSet<>();
@@ -381,22 +398,22 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                         if (bean.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED) {
                             newSet.add(bean.getDeviceSn());
                             if (!oldSet.contains(bean.getDeviceSn())) {
-                                mShowFloating = true;
+                                showFloating = true;
                             }
                         }
                     }
                     if (newSet.size() == 0) {
-                        mShowFloating = false;
+                        showFloating = false;
                     }
                 } else {
-                    mShowFloating = false;
+                    showFloating = false;
                 }
                 info.setSnSet(newSet);
                 mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
-                saveShopBundledCloudInfo(mShowFloating);
+                saveShopBundledCloudInfo(showFloating);
                 loadComplete();
                 if (isViewAttached()) {
-                    mView.updateFloating(mShowFloating);
+                    mView.updateFloating(showFloating);
                 }
             }
 
@@ -405,7 +422,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
                 loadComplete();
                 if (isViewAttached()) {
-                    mView.updateFloating(mShowFloating);
+                    mView.updateFloating(info.isFloatingShow());
                 }
             }
         });

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.utils.CommonHelper;
 
 /**
  * @author yinhui
@@ -148,7 +149,9 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
         // No any data
         if (!Utils.hasAuth(source) && !Utils.hasFs(source)) {
             mList.add(RealtimeNoDataCard.get(this, source));
-            mList.add(RealtimeNoOrderCard.get(this, source));
+            if (!CommonHelper.isGooglePlay()) {
+                mList.add(RealtimeNoOrderCard.get(this, source));
+            }
             mList.add(RealtimeNoFsCard.get(this, source));
             mList.add(RealtimeGapCard.get(this, source));
             return;
@@ -175,12 +178,14 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
         }
 
         // No order card or import card
-        if (!Utils.hasAuth(source)) {
-            mList.add(RealtimeNoOrderCard.get(this, source));
-        } else if (!Utils.hasImport(source) || mImportState == IMPORT_STATE_SHOW) {
-            RealtimeOrderImportCard card = RealtimeOrderImportCard.get(this, source);
-            card.setListener(this);
-            mList.add(card);
+        if (!CommonHelper.isGooglePlay()) {
+            if (!Utils.hasAuth(source)) {
+                mList.add(RealtimeNoOrderCard.get(this, source));
+            } else if (!Utils.hasImport(source) || mImportState == IMPORT_STATE_SHOW) {
+                RealtimeOrderImportCard card = RealtimeOrderImportCard.get(this, source);
+                card.setListener(this);
+                mList.add(card);
+            }
         }
 
         // No fs card
