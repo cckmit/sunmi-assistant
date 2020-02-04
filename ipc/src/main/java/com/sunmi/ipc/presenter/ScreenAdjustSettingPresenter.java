@@ -8,7 +8,6 @@ import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -100,13 +99,8 @@ public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSett
 
     @Override
     public void line(int[] start, int[] end) {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            LogCat.d(TAG, "Line set: [" + start[0] + ", " + start[1] + "] -> [" + end[0] + ", " + end[1] + "]");
-            IPCCall.getInstance().fsLine(mDevice.getModel(), mDevice.getDeviceid(), start, end);
-        } else if (isViewAttached()) {
-            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
-        }
+        LogCat.d(TAG, "Line set: [" + start[0] + ", " + start[1] + "] -> [" + end[0] + ", " + end[1] + "]");
+        IPCCall.getInstance().fsLine(mDevice.getModel(), mDevice.getDeviceid(), start, end);
     }
 
     @Override
