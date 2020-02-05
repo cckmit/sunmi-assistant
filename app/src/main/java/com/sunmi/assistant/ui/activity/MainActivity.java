@@ -308,9 +308,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
     }
 
     private boolean isHideTab(int tabNameRes) {
-        return CommonHelper.isGooglePlay() &&
-                (TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_dashboard))
-                        || TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_support)));
+        return CommonHelper.isGooglePlay() && TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_support));
     }
 
 }
