@@ -115,9 +115,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
         initViews();
         loadData();
-        if (!CommonHelper.isGooglePlay()) {
-            startTimer();
-        }
+        startTimer();
     }
 
     private void initDimens(Context context) {
@@ -158,8 +156,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     private void loadData() {
         mPresenter.getRouterList();
+        mPresenter.getIpcList();
         if (!CommonHelper.isGooglePlay()) {
-            mPresenter.getIpcList();
             mPresenter.getPrinterList();
             mPresenter.getPosList();
         }
@@ -168,10 +166,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void startTimer() {
         service = Executors.newScheduledThreadPool(1);
         service.scheduleAtFixedRate(() -> {
-            mPresenter.getIpcList();
-            mPresenter.getRouterList();
-            mPresenter.getPrinterList();
-            mPresenter.getPosList();
+            loadData();
         }, 30000, 120000, TimeUnit.MILLISECONDS);
     }
 

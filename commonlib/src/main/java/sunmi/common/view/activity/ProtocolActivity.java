@@ -3,6 +3,7 @@ package sunmi.common.view.activity;
 import android.annotation.SuppressLint;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -55,7 +56,7 @@ public class ProtocolActivity extends BaseActivity {
     int protocolType;
 
     private CountDownTimer countDownTimer;
-    private long timeout = 10000;//超时时间
+    private long timeout = 15000;//超时时间
 
     @AfterViews
     protected void init() {
@@ -163,20 +164,57 @@ public class ProtocolActivity extends BaseActivity {
         });
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.onResume();
+            webView.resumeTimers();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (webView != null) {
+            webView.onPause();
+            webView.pauseTimers();
+        }
+    }
+
     @Click(resName = "btn_refresh")
     void refreshClick() {
         networkError.setVisibility(View.GONE);
-        webView.setVisibility(View.VISIBLE);
-        webView.reload();
+        if (webView != null) {
+            webView.setVisibility(View.VISIBLE);
+            webView.reload();
+        }
         startTimer();
     }
 
     @UiThread
     protected void loadError() {
-        webView.setVisibility(View.GONE);
+        if (webView != null) {
+            webView.setVisibility(View.GONE);
+        }
         networkError.setVisibility(View.VISIBLE);
         hideLoadingDialog();
         closeTimer();
+    }
+
+    //销毁Webview 防止内存溢出
+    @Override
+    protected void onDestroy() {
+        if (webView != null) {
+            webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            webView.clearHistory();
+
+            ((ViewGroup) webView.getParent()).removeView(webView);
+            webView.destroy();
+            webView = null;
+        }
+        super.onDestroy();
     }
 
 }

@@ -868,7 +868,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
      */
     private void newVersionDialog() {
         CommonDialog commonDialog = new CommonDialog.Builder(this)
-                .setTitle(R.string.str_version_update)
+                .setTitle(R.string.str_new_version_update)
                 .setMessage(getString(R.string.ipc_setting_version_current, mDevice.getFirmware()) + "\n" +
                         getString(DeviceTypeUtils.getInstance().isSS1(mDevice.getModel()) ?
                                 R.string.ipc_setting_dialog_upgrade_download_time_ss :
