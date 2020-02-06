@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 public class SharedManager {
 
@@ -38,6 +41,10 @@ public class SharedManager {
         return getSharedPreference(context).getBoolean(key, false);
     }
 
+    public static HashSet<String> getStringSetValue(Context context, String key) {
+        return new HashSet<>(getSharedPreference(context).getStringSet(key, new HashSet<>()));
+    }
+
     /**
      * 设置SharedPreference 值
      */
@@ -60,6 +67,12 @@ public class SharedManager {
     public static void putValue(Context context, String key, int value) {
         SharedPreferences.Editor edit = getSharedPreference(context).edit();
         edit.putInt(key, value);
+        edit.apply();
+    }
+
+    public static void putValue(Context context, String key, Set<String> value) {
+        SharedPreferences.Editor edit = getSharedPreference(context).edit();
+        edit.putStringSet(key, value);
         edit.apply();
     }
 

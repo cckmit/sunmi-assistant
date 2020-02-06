@@ -26,6 +26,7 @@ import com.sunmi.assistant.mine.MineFragment_;
 import com.sunmi.assistant.mine.contract.MainContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.mine.presenter.MainPresenter;
+import com.sunmi.assistant.ui.AdLoanDialog;
 import com.sunmi.assistant.utils.MainTab;
 import com.sunmi.sunmiservice.SupportFragment;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -38,6 +39,8 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.Set;
 
 import cn.bingoogolapple.badgeview.BGABadgeTextView;
 import me.leolin.shortcutbadger.ShortcutBadger;
@@ -90,7 +93,8 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
             ThreadPool.getCachedThreadPool().submit(() -> mPresenter.syncIpcDevice());
         }
         registerNetworkReceiver();
-        CrashReport.setUserId(SpUtils.getUID());
+        String uid = SpUtils.getUID();
+        CrashReport.setUserId(uid);
 
         if (MyApplication.isCheckedToken) {
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
@@ -104,6 +108,18 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
             initTabs();
             initMessageBadge();
             ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg()); //for 1.1.4+
+        }
+
+        // 弹出贷款广告对话框
+        Set<String> uids = SpUtils.getAdLoanUids();
+        if (!uids.contains(uid)) {
+            new AdLoanDialog.Builder(this)
+                    .setListener((dialog, which) -> {
+                        // TODO: 跳转抗击疫情贷款
+                    })
+                    .create()
+                    .show();
+            SpUtils.addShowAdLoanUid(uid);
         }
     }
 
