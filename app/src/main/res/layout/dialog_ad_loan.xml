@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <FrameLayout
@@ -20,12 +21,15 @@
 
     </FrameLayout>
 
+    <View
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="@dimen/dp_24"
+        android:background="@color/c_white" />
+
     <ImageView
         android:id="@+id/iv_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_24"
         android:src="@drawable/ad_loan_dialog_close" />
 
 </LinearLayout>
