@@ -75,7 +75,6 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_KEY = "5611813137146";
 
         SERVICE_H5_URL = "https://wifi.cdn.sunmi.com/H5/Sunmi-Assistant/index.html#/";
-
         SUNMI_H5_URL = "https://h5.sunmi.com/";
     }
 
