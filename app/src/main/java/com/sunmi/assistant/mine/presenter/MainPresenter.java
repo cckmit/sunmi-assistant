@@ -7,9 +7,14 @@ import com.sunmi.assistant.rpc.MessageCenterApi;
 import com.sunmi.assistant.utils.PushUtils;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 
+import java.util.List;
+
 import sunmi.common.base.BasePresenter;
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.model.IpcListResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.FileHelper;
@@ -68,6 +73,37 @@ public class MainPresenter extends BasePresenter<MainContract.View>
 
                     }
                 });
+    }
+
+    @Override
+    public void getServiceList() {
+        SunmiStoreApi.getInstance().getServiceList(new RetrofitCallback<ServiceListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, ServiceListResp data) {
+                boolean status = false;
+                List<ServiceListResp.ServiceListBean> beans = data.getServiceList();
+                if (beans!=null && beans.size()>0){
+                    for (ServiceListResp.ServiceListBean bean : beans) {
+                        if (bean.getServiceType()== CommonConstants.SERVICE_TYPE_LOAN
+                        &&bean.getActiveStatus() ==CommonConstants.SERVICE_STATUS_ABLE){
+                            status = true;
+                            break;
+                        }
+                    }
+                }
+                SpUtils.setLoanStatus(status);
+                if (isViewAttached()){
+                    mView.getLoanStatus(status);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, ServiceListResp data) {
+                if (isViewAttached()){
+                    mView.getLoanStatus(false);
+                }
+            }
+        });
     }
 
     private void getIpcDevice(IpcListResp.SsListBean bean) {

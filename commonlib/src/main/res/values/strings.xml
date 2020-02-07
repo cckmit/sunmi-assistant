@@ -135,11 +135,11 @@
     <string name="ipc_device_name">Device Name：%s</string>
     <string name="str_dev_sn">SN：%s</string>
     <string name="str_dev_mac">MAC：%s</string>
-    <string name="str_period">%d天%d小时</string>
-    <string name="str_cloud_storage">云存储</string>
-    <string name="str_cloud_storage_service">云存储服务</string>
+    <string name="str_period">%d days%d hours</string>
+    <string name="str_cloud_storage">Cloud Storage</string>
+    <string name="str_cloud_storage_service">Cloud Storage Service</string>
     <string name="str_expired">已过期</string>
-    <string name="str_use_free">免费领取</string>
+    <string name="str_use_free">Get For Free</string>
     <string name="str_subscribe_free">订阅云存储套餐</string>
     <string name="tip_cloud_storage_error">云存储服务数据无响应，请稍后重试</string>
     <string name="str_subscribe_now">立即订阅</string>
