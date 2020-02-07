@@ -107,9 +107,6 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         if (SpUtils.getLoanStatus()){
             tvLoan.setVisibility(View.VISIBLE);
             llLoan.setVisibility(View.VISIBLE);
-        }else {
-            tvLoan.setVisibility(View.GONE);
-            llLoan.setVisibility(View.GONE);
         }
         mPresenter.load();
     }
