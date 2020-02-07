@@ -305,7 +305,7 @@
     <string name="import_order_access_no_auth_more">已授权过门店收银系统，无法授权更多</string>
     <string name="company_shop_region_hint">Required</string>
     <string name="shop_create_new">Create new store</string>
-    <string name="str_free_half_year">首次免半年</string>
+    <string name="str_free_half_year">First 6 mo. Free</string>
     <string name="pos_handle_sunmi_dev_manager">收银设备管理</string>
     <string name="pos_text_0_0">0.0</string>
     <string name="pos_ghz">GHZ</string>

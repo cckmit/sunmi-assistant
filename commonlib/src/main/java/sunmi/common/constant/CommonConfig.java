@@ -31,6 +31,8 @@ public class CommonConfig extends BaseConfig {
 
     public static String SERVICE_H5_URL = "";
 
+    public static String SUNMI_H5_URL = "";
+
     @Override
     protected void initDev(Context context, String env) {
         SUNMI_STORE_URL = "https://store.dev.sunmi.com/";
@@ -43,6 +45,7 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_KEY = "5601813178246";
 
         SERVICE_H5_URL = "http://172.16.1.137:8080/index.html#/";
+        SUNMI_H5_URL = "http://test.h5.sunmi.com/";
     }
 
     @Override
@@ -57,6 +60,7 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_KEY = "5601813178246";
 
         SERVICE_H5_URL = "https://sunmi-test.oss-cn-hangzhou.aliyuncs.com/h5/sunmi-assistant/index.html#/";
+        SUNMI_H5_URL = "http://test.h5.sunmi.com/";
     }
 
     @Override
@@ -71,6 +75,8 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_KEY = "5611813137146";
 
         SERVICE_H5_URL = "https://wifi.cdn.sunmi.com/H5/Sunmi-Assistant/index.html#/";
+        //TODO
+        SUNMI_H5_URL = "";
     }
 
     @Override
@@ -85,6 +91,7 @@ public class CommonConfig extends BaseConfig {
         MI_PUSH_APP_KEY = "5611813137146";
 
         SERVICE_H5_URL = "https://wifi.cdn.sunmi.com/UAT/H5/Sunmi-Assistant/index.html#/";
+        SUNMI_H5_URL = "http://test.h5.sunmi.com/";
     }
 
 }
