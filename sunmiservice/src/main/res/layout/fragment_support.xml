@@ -35,6 +35,54 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_loan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginEnd="@dimen/dp_15"
+                android:text="@string/str_commerce_bank"
+                android:textColor="@color/text_caption"
+                android:textSize="@dimen/sp_16"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/ll_loan"
+                android:layout_width="@dimen/dp_345"
+                android:layout_height="@dimen/dp_156"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@mipmap/ic_commerce_bank"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/dp_25"
+                android:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_loan_service"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_24"
+                    android:text="@string/str_fight_outbreak"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/sp_24" />
+
+                <TextView
+                    android:id="@+id/tv_tip_loan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/str_tip_commerce_bank"
+                    android:textColor="@color/c_white"
+                    android:textSize="@dimen/sp_14" />
+
+                <TextView
+                    style="@style/BtnSolidWhite"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:clickable="false"
+                    android:text="@string/str_borrow_money" />
+
+            </LinearLayout>
+
+            <TextView
                 android:id="@+id/tv_cash_prevent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -254,7 +302,7 @@
                     android:text="@string/str_apply_repair" />
             </LinearLayout>
 
-            <TextView
+            <!--<TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_15"
@@ -271,7 +319,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/dp_20"
-                android:background="@mipmap/ic_we_bank" />
+                android:background="@mipmap/ic_we_bank" />-->
 
         </LinearLayout>
 

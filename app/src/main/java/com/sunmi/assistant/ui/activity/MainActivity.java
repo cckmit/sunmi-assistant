@@ -29,6 +29,8 @@ import com.sunmi.assistant.mine.presenter.MainPresenter;
 import com.sunmi.assistant.ui.AdLoanDialog;
 import com.sunmi.assistant.utils.MainTab;
 import com.sunmi.sunmiservice.SupportFragment;
+import com.sunmi.sunmiservice.WebViewActivity_;
+import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
@@ -46,6 +48,7 @@ import cn.bingoogolapple.badgeview.BGABadgeTextView;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
@@ -57,6 +60,7 @@ import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ThreadPool;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.MyFragmentTabHost;
 
 /**
@@ -74,6 +78,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
     int currentTabIndex;// 要显示的fragment的index
     private long mExitTime;
     private BGABadgeTextView mineTitle;
+    private String uid;
 
     @RouterAnno(
             path = RouterConfig.App.MAIN
@@ -91,9 +96,10 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
         if (!CommonHelper.isGooglePlay()) {
             mPresenter.getMessageCount();
             ThreadPool.getCachedThreadPool().submit(() -> mPresenter.syncIpcDevice());
+            mPresenter.getServiceList();
         }
         registerNetworkReceiver();
-        String uid = SpUtils.getUID();
+        uid = SpUtils.getUID();
         CrashReport.setUserId(uid);
 
         if (MyApplication.isCheckedToken) {
@@ -110,17 +116,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
             ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg()); //for 1.1.4+
         }
 
-        // 弹出贷款广告对话框
-        Set<String> uids = SpUtils.getAdLoanUids();
-        if (!uids.contains(uid)) {
-            new AdLoanDialog.Builder(this)
-                    .setListener((dialog, which) -> {
-                        // TODO: 跳转抗击疫情贷款
-                    })
-                    .create()
-                    .show();
-            SpUtils.addShowAdLoanUid(uid);
-        }
     }
 
     @Override
@@ -227,6 +222,21 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
     @Override
     public void getMessageCountFail(int code, String msg) {
 
+    }
+
+    @Override
+    public void getLoanStatus(boolean status) {
+        // 弹出贷款广告对话框
+        Set<String> uids = SpUtils.getAdLoanUids();
+        if (!uids.contains(uid) && status) {
+            new AdLoanDialog.Builder(this)
+                    .setListener((dialog, which) -> {
+                        WebViewActivity_.intent(context).url(CommonConstants.H5_LOAN).start();
+                    })
+                    .create()
+                    .show();
+            SpUtils.addShowAdLoanUid(uid);
+        }
     }
 
     //ipc初始化

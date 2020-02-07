@@ -15,9 +15,13 @@ public interface MainContract {
         void getMessageCountSuccess(MessageCountBean data);
 
         void getMessageCountFail(int code, String msg);
+
+        void getLoanStatus(boolean status);
     }
 
     interface Presenter {
         void getMessageCount();
+
+        void getServiceList();
     }
 }
