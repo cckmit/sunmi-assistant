@@ -3,6 +3,8 @@ package sunmi.common.utils;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import java.util.Set;
+
 import sunmi.common.base.BaseApplication;
 
 public class SpUtils {
@@ -32,6 +34,8 @@ public class SpUtils {
     private static final String REMIND_UNREAD_MSG = "remind_unread_msg";
     private static final String UNREAD_DEVICE_MSG = "unread_device_msg";
     private static final String UNREAD_SYSTEM_MSG = "unread_system_msg";
+    private static final String AD_LOAN_UIDS = "ad_loan_uids";
+    private static final String LOAN_STATUS = "loan_status";
 
     SpUtils() {
     }
@@ -272,5 +276,23 @@ public class SpUtils {
 
     public static int getUnreadSystemMsg() {
         return SharedManager.getIntValue(BaseApplication.getContext(), UNREAD_SYSTEM_MSG);
+    }
+
+    public static void addShowAdLoanUid(String uid) {
+        Set<String> uids = getAdLoanUids();
+        uids.add(uid);
+        SharedManager.putValue(BaseApplication.getContext(), AD_LOAN_UIDS, uids);
+    }
+
+    public static Set<String> getAdLoanUids() {
+        return SharedManager.getStringSetValue(BaseApplication.getContext(), AD_LOAN_UIDS);
+    }
+
+    public static void setLoanStatus(boolean status){
+        SharedManager.putValue(BaseApplication.getContext(),LOAN_STATUS,status);
+    }
+
+    public static boolean getLoanStatus(){
+        return SharedManager.getBooleanValue(BaseApplication.getContext(),LOAN_STATUS);
     }
 }

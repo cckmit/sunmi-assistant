@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashServiceInfo;
@@ -68,6 +69,10 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     LinearLayout llCashPrevent;
     @ViewById(resName = "ll_cash_video")
     LinearLayout llCashVideo;
+    @ViewById(resName = "tv_loan")
+    TextView tvLoan;
+    @ViewById(resName = "ll_loan")
+    LinearLayout llLoan;
 
     /**
      * 第三方app和微信通信的openApi接口
@@ -99,6 +104,13 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         initTitleBar();
         initCloudCard();
         initCashPreventCardVisibility(false);
+        if (SpUtils.getLoanStatus()){
+            tvLoan.setVisibility(View.VISIBLE);
+            llLoan.setVisibility(View.VISIBLE);
+        }else {
+            tvLoan.setVisibility(View.GONE);
+            llLoan.setVisibility(View.GONE);
+        }
         mPresenter.load();
     }
 
@@ -161,6 +173,14 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         mPresenter.load();
     }
 
+    @Click(resName = "ll_loan")
+    void commerceBankClick(){
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
+            return;
+        }
+        WebViewActivity_.intent(mActivity).url(CommonConstants.H5_LOAN).start();
+    }
+
     @Click(resName = "ll_cash_prevent")
     void cashPreventClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
@@ -213,13 +233,13 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
                 SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
-    @Click(resName = "tv_weBank")
+   /* @Click(resName = "tv_weBank")
     void weBankClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
         WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
-    }
+    }*/
 
     @Click(resName = "tv_recruit")
     void recruitClick() {

@@ -27,6 +27,7 @@ import sunmi.common.model.HealthInfoBean;
 import sunmi.common.model.NetEventListBean;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ServiceEnableResp;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
@@ -113,6 +114,12 @@ public class SunmiStoreApi {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getServiceList(RetrofitCallback<ServiceListResp> callback) {
+        SunmiStoreRetrofitClient.getInstance().create(AdInterface.class)
+                .getServiceList(new BaseRequest(""))
+                .enqueue(callback);
     }
 
     /**
