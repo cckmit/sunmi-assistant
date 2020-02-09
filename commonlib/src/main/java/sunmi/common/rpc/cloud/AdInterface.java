@@ -4,6 +4,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import sunmi.common.model.AdListResp;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -19,5 +20,8 @@ public interface AdInterface {
      */
     @POST(path + "getList")
     Call<BaseResponse<AdListResp>> getAdList(@Body BaseRequest request);
+
+    @POST(path + "service/getList")
+    Call<BaseResponse<ServiceListResp>> getServiceList(@Body BaseRequest request);
 
 }

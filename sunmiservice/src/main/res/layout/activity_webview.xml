@@ -10,9 +10,8 @@
         android:layout_height="wrap_content"
         android:background="@color/c_white"
         app:dividerShow="true"
-        app:leftDefaultClickEnable="true"
+        app:leftDefaultClickEnable="false"
         app:leftIcon="@drawable/ic_back_dark"
-        app:rightIcon="@mipmap/ic_share"
         app:titleTextColor="@color/text_main" />
 
     <sunmi.common.view.webview.SMWebView
@@ -30,41 +29,11 @@
         android:max="100"
         android:progressDrawable="@drawable/pb_webview" />
 
-    <RelativeLayout
-        android:id="@+id/rlNetException"
+    <include
+        android:id="@+id/layout_network_error"
+        layout="@layout/include_network_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/c_divider"
-        android:gravity="center"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/ivNoNet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:background="@mipmap/ic_support_exception" />
-
-        <TextView
-            android:id="@+id/tvNetTip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ivNoNet"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_15"
-            android:text="@string/str_net_exception"
-            android:textColor="@color/text_caption"
-            android:textSize="@dimen/sp_14" />
-
-        <Button
-            android:id="@+id/btnTryAgain"
-            style="@style/BtnBigOrange"
-            android:layout_width="@dimen/dp_200"
-            android:layout_height="@dimen/dp_40"
-            android:layout_below="@id/tvNetTip"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/dp_20"
-            android:text="@string/str_btn_try_again" />
-    </RelativeLayout>
+        android:layout_below="@id/title_bar" />
 
 </RelativeLayout>
