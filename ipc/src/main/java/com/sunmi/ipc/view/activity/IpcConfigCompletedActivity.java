@@ -355,17 +355,12 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     }
 
     /**
-     * FS画面调整的准备，包括网络判断，局域网判断，获取FS直播UID。
+     * FS画面调整的准备，包括网络判断，获取FS直播UID。
      * 注：绑定完的MQTT消息未给UID，后续MQTT消息携带UID后，可以免去接口调用
      */
     private void fsAdjustPrepare(SunmiDevice device) {
         if (!NetworkUtils.isNetworkAvailable(context)) {
             shortTip(R.string.str_net_exception);
-            return;
-        }
-        SunmiDevice sunmiDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
-        if (sunmiDevice == null) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
         showLoadingDialog();
