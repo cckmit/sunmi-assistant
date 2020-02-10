@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"
@@ -22,12 +22,13 @@
         android:id="@+id/layoutContent"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:overScrollMode="never"
         android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar">
+        app:layout_constraintTop_toBottomOf="@+id/title_bar"
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,7 +93,7 @@
                 android:text="@string/str_cash_loss_prevent"
                 android:textColor="@color/text_caption"
                 android:textSize="@dimen/sp_16"
-                android:visibility="visible"/>
+                android:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/ll_cash_prevent"

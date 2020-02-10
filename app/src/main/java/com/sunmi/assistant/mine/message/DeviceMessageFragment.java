@@ -138,8 +138,8 @@ public class DeviceMessageFragment extends BaseFragment
         Collections.sort(showData);
         if (msgContentAdapter == null) {
             msgContentAdapter = new MsgContentAdapter(showData, mActivity);
-            msgContentAdapter.setOnMsgClickListener((modelId, modolName) ->
-                    MsgDetailActivity_.intent(mActivity).modelId(modelId).modelName(modolName).start());
+            msgContentAdapter.setOnMsgClickListener((modelId, modelName) ->
+                    MsgDetailActivity_.intent(mActivity).modelId(modelId).modelName(modelName).start());
             rvMsg.setAdapter(msgContentAdapter);
         } else {
             msgContentAdapter.notifyDataSetChanged();

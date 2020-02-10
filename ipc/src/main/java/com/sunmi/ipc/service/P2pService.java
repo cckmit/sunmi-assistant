@@ -28,19 +28,13 @@ public class P2pService extends Service
     private OnPlayStatusChangedListener statusChangedListener;
     private OnPlayingListener onPlayingListener;
 
+    private boolean needReinitialize;
     private boolean isPlaying;//是否正在播放
     private long endTime;
 
     private String uid;
 
     private long currentVideoTime;//回放的当前时间
-
-    @Override
-    public void initFail() {
-        if (statusChangedListener != null) {
-            statusChangedListener.onPlayFail();
-        }
-    }
 
     public class MyBinder extends Binder {
         public P2pService getService() {
@@ -50,10 +44,6 @@ public class P2pService extends Service
 
     //通过binder实现调用者client与Service之间的通信
     private MyBinder binder = new MyBinder();
-
-    public void setEndTime(long endTime) {
-        this.endTime = endTime;
-    }
 
     @Override
     public void onCreate() {
@@ -120,6 +110,25 @@ public class P2pService extends Service
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void initFail() {
+        if (statusChangedListener != null) {
+            statusChangedListener.onPlayFail();
+        }
+    }
+
+    public boolean isNeedReinitialize() {
+        return needReinitialize;
+    }
+
+    public void setNeedReinitialize(boolean needReinitialize) {
+        this.needReinitialize = needReinitialize;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 
     /**
@@ -224,6 +233,36 @@ public class P2pService extends Service
         if (audioDecoder != null) {
             audioDecoder.stopRunning();
         }
+    }
+
+    /**
+     * TODO 待实现
+     */
+    public void getScreenshot() {
+//        if (videoDecoder != null && videoDecoder.getOutputBuffer() != null) {
+//            byte[] frameByte = videoDecoder.getOutputBuffer().array();
+//            try {
+//                File file = new File(FileHelper.IMG_SAVE_PATH + System.currentTimeMillis() + ".jpeg");
+//                FileOutputStream fos = new FileOutputStream(file);
+//                fos.write(frameByte, 0, frameByte.length);
+//                fos.flush();
+//                fos.close();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//            ByteArrayInputStream in = new ByteArrayInputStream(b);
+//            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//            Buffer image = ImageIO.read(in);
+//
+//            videoDecoder.getOutputBuffer().compressToJpeg(new Rect(0, 0, width, height), 80, stream);
+//            bitmap = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
+//            try {
+//                stream.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     public void setCallback(IOTCClient.StatusCallback statusCallback) {

@@ -1,7 +1,6 @@
 package com.sunmi.assistant.dashboard;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.SparseArray;
@@ -9,8 +8,10 @@ import android.util.SparseArray;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment;
 import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
-import com.sunmi.assistant.dashboard.overview.OverviewFragment;
-import com.sunmi.assistant.dashboard.overview.OverviewFragment_;
+import com.sunmi.assistant.dashboard.overview.RealtimeFragment;
+import com.sunmi.assistant.dashboard.overview.RealtimeFragment_;
+import com.sunmi.assistant.dashboard.profile.ProfileFragment;
+import com.sunmi.assistant.dashboard.profile.ProfileFragment_;
 import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.rpc.ServiceApi;
@@ -37,6 +38,7 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.log.LogCat;
@@ -52,7 +54,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private static final int REFRESH_TIME_PERIOD = 120_000;
 
-    private Context mContext;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private SparseArray<PageContract.PagePresenter> mPages = new SparseArray<>(2);
 
@@ -68,8 +69,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private RefreshTask mTask;
 
     private ShopBundledCloudInfo info;
-
-    private boolean mShowFloating;
 
     @Override
     public void init() {
@@ -119,13 +118,16 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         // TODO: 可以优化，采用工厂模式
         List<PageHost> pages = new ArrayList<>();
 
-        OverviewFragment overviewFragment = new OverviewFragment_();
-        pages.add(new PageHost(R.string.dashboard_page_overview, 0, overviewFragment, Constants.PAGE_OVERVIEW));
+        RealtimeFragment realtimeFragment = new RealtimeFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_overview, 0, realtimeFragment, Constants.PAGE_OVERVIEW));
 
         CustomerFragment customerFragment = new CustomerFragment_();
         pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment, Constants.PAGE_CUSTOMER));
-        mPageType = Constants.PAGE_OVERVIEW;
 
+        ProfileFragment profileFragment = new ProfileFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_profile, 0, profileFragment, Constants.PAGE_PROFILE));
+
+        mPageType = Constants.PAGE_OVERVIEW;
         return pages;
     }
 
@@ -254,6 +256,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void loadSaas() {
+        // 海外版暂无SaaS绑定服务
+        if (CommonHelper.isGooglePlay()) {
+            mSource &= ~Constants.DATA_SOURCE_AUTH;
+            mSource &= ~Constants.DATA_SOURCE_IMPORT;
+            mLoadFlag &= ~Constants.FLAG_SAAS;
+            loadComplete();
+            return;
+        }
         SunmiStoreApi.getInstance().getAuthorizeInfo(mCompanyId, mShopId,
                 new RetrofitCallback<ShopAuthorizeInfoResp>() {
                     @Override
@@ -362,14 +372,24 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void loadBundledList() {
+        // 海外版暂无云服务
+        if (CommonHelper.isGooglePlay()) {
+            mSource &= ~Constants.DATA_SOURCE_FLOATING;
+            mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
+            if (isViewAttached()) {
+                mView.updateFloating(false);
+            }
+            loadComplete();
+            return;
+        }
         info = DataSupport.where("shopId=?", String.valueOf(mShopId)).findFirst(ShopBundledCloudInfo.class);
         if (info == null) {
             info = new ShopBundledCloudInfo(mShopId);
         }
-        mShowFloating = info.isFloatingShow();
         ServiceApi.getInstance().getBundledList(new RetrofitCallback<BundleServiceMsg>() {
             @Override
             public void onSuccess(int code, String msg, BundleServiceMsg data) {
+                boolean showFloating = info.isFloatingShow();
                 List<BundleServiceMsg.SubscriptionListBean> beans = data.getSubscriptionList();
                 Set<String> oldSet = info.getSnSet();
                 Set<String> newSet = new HashSet<>();
@@ -378,22 +398,22 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                         if (bean.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED) {
                             newSet.add(bean.getDeviceSn());
                             if (!oldSet.contains(bean.getDeviceSn())) {
-                                mShowFloating = true;
+                                showFloating = true;
                             }
                         }
                     }
                     if (newSet.size() == 0) {
-                        mShowFloating = false;
+                        showFloating = false;
                     }
                 } else {
-                    mShowFloating = false;
+                    showFloating = false;
                 }
                 info.setSnSet(newSet);
                 mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
-                saveShopBundledCloudInfo(mShowFloating);
+                saveShopBundledCloudInfo(showFloating);
                 loadComplete();
                 if (isViewAttached()) {
-                    mView.updateFloating(mShowFloating);
+                    mView.updateFloating(showFloating);
                 }
             }
 
@@ -402,7 +422,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 mLoadFlag &= ~Constants.FLAG_BUNDLED_LIST;
                 loadComplete();
                 if (isViewAttached()) {
-                    mView.updateFloating(mShowFloating);
+                    mView.updateFloating(info.isFloatingShow());
                 }
             }
         });
@@ -431,7 +451,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     @Override
     public void detachView() {
         super.detachView();
-        mContext = null;
         stopAutoRefresh();
         for (int i = 0, size = mPages.size(); i < size; i++) {
             PageContract.PagePresenter page = mPages.valueAt(i);
