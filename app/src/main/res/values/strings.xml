@@ -33,7 +33,7 @@
     <string name="str_selected">Please select</string>
     <string name="tip_addr_empty">Please enter the detailed address</string>
     <string name="dashboard_card_title_customer_trend">客流趋势</string>
-    <string name="dashboard_card_title_customer_enter_rate">进店率</string>
+    <string name="dashboard_card_title_customer_enter_rate">Entering Rate</string>
     <string name="dashboard_card_title_customer_analysis">客流分析</string>
     <string name="dashboard_card_title_customer_frequency_trend_week">周到店频次趋势</string>
     <string name="dashboard_card_title_customer_frequency_trend_month">月到店频次趋势</string>
@@ -54,9 +54,9 @@
     <string name="dashboard_data_transaction_rate">Conversion Rate</string>
     <string name="dashboard_page_overview">Real-Time Data</string>
     <string name="dashboard_page_customer">Traffic Analysis</string>
-    <string name="dashboard_page_profile">客群画像</string>
-    <string name="dashboard_card_customer_pass">路过客流</string>
-    <string name="dashboard_card_customer_all">全部客流</string>
+    <string name="dashboard_page_profile">Persona</string>
+    <string name="dashboard_card_customer_pass">Passing Customers</string>
+    <string name="dashboard_card_customer_all">All the Customers</string>
     <string name="dashboard_card_customer_tip">Rank per proportion</string>
     <string name="dashboard_card_customer_count">Customer Visits</string>
     <string name="dashboard_card_customer_ratio">Of the Total</string>
@@ -106,7 +106,7 @@
     <string name="dashboard_no_order_subtitle">随时展示门店经营动态，提供多维度经营分析</string>
     <string name="dashboard_no_order_dock">接入</string>
     <string name="dashboard_no_customer_data_tip">暂无客流数据，您可以尝试：</string>
-    <string name="dashboard_no_customer_wait_tip">客流数据会在次日01:00~02:00更新</string>
+    <string name="dashboard_no_customer_wait_tip">Data will be updated from 1:00 to 2:00 the next day</string>
     <string name="dashboard_no_customer_fs_tip">您已解绑了门店中的摄像机设备</string>
     <string name="dashboard_no_customer_fs_add_btn">添加设备</string>
     <string name="str_platform_list">Platform list</string>
@@ -346,10 +346,11 @@
     <string name="str_logging_in">正在登录…</string>
     <string name="str_verification_code">校验验证码…</string>
     <string name="str_now_reset_psw">正在重置密码…</string>
-    <string name="dialog_protocol_title">商米用户协议及隐私政策</string>
-    <string name="dialog_protocol_msg_1">我们将通过</string>
-    <string name="dialog_protocol_msg_2">帮助您了解我们收集、使用、存储和共享个人信息的情况，以及您所享有的相关权利。您可在相关页面访问、更正、删除个人信息并管理您的权利。如您同意，请点击“同意”开始接受我们的服务。</string>
-    <string name="dialog_protocol_cancel">暂不使用</string>
-    <string name="dialog_protocol_confirm">同意</string>
-    <string name="sunmi_login_agree">登录即表示您同意遵守</string>
+    <string name="dialog_protocol_and">&amp;</string>
+    <string name="dialog_protocol_title">SUNMI User Agreement &amp; Privacy Policy</string>
+    <string name="dialog_protocol_msg_1">We will help you understand how we collect, use, store and share personal information, and what rights you have, through</string>
+    <string name="dialog_protocol_msg_2">.You can access the relevant page to correct the deletion of personal information and manage your rights.If you agree, please click "Agree" to  accept our services.</string>
+    <string name="dialog_protocol_cancel">Don\'t Agree</string>
+    <string name="dialog_protocol_confirm">Agree</string>
+    <string name="sunmi_login_agree">Login means you\'ve agree to terms</string>
 </resources>
