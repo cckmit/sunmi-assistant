@@ -400,19 +400,10 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         deviceChoose = device;
         String versionName = device.getFirmware();
         if (IpcUtils.isNewVersion(versionName, IpcConstants.IPC_VERSION_NO_SDCARD_CHECK)) {
-            getSdCardStatus(device);
-        } else {
             startFsAdjust(device);
+        } else {
+            IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
         }
-    }
-
-    private void getSdCardStatus(SunmiDevice device) {
-        SunmiDevice sunmiDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
-        if (sunmiDevice == null) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
-            return;
-        }
-        IPCCall.getInstance().getSdState(context, sunmiDevice.getModel(), sunmiDevice.getDeviceid());
     }
 
     private void startFsAdjust(SunmiDevice device) {
