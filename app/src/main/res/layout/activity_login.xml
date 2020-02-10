@@ -139,7 +139,7 @@
         android:checked="true"
         android:drawableStart="@drawable/selector_privacy"
         android:drawablePadding="@dimen/dp_3"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:text="@string/sunmi_login_agree"
         android:textColor="@color/white_40a"
         android:textSize="@dimen/sp_10" />
