@@ -1,5 +1,8 @@
 package com.sunmi.ipc.presenter;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.google.gson.Gson;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.ScreenAdjustSettingContract;
@@ -19,16 +22,18 @@ public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSett
 
     private static final String TAG = ScreenAdjustSettingPresenter.class.getSimpleName();
 
-    private static final int SD_STATUS_NONE = 0;
-    private static final int SD_STATUS_UNINITIALIZED = 1;
-    private static final int SD_STATUS_FINE = 2;
-    private static final int SD_STATUS_UNKNOWN = 3;
+    private static final int TIMEOUT_8S = 8_000;
+    private static final int TIMEOUT_13S = 13_000;
+    private static final int TIMEOUT_18S = 18_000;
 
     private SunmiDevice mDevice;
     private CameraConfig mConfig;
 
     private int mZoomGap;
     private int mBaseFocus;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Runnable mTimeoutTask = new TimeoutTask();
 
     @Override
     public void init(SunmiDevice device) {
@@ -53,12 +58,14 @@ public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSett
     @Override
     public void updateState() {
         LogCat.d(TAG, "Get status.");
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_8S);
         IPCCall.getInstance().fsGetStatus(mDevice.getModel(), mDevice.getDeviceid());
     }
 
     @Override
     public void face(int x, int y) {
         LogCat.d(TAG, "Move face case, auto focus: x=" + x + "; y=" + y);
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_13S);
         IPCCall.getInstance().fsAutoFocus(mDevice.getModel(), mDevice.getDeviceid(), x, y);
     }
 
@@ -74,12 +81,14 @@ public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSett
             zoom = Math.max(mZoomGap * gear, 0);
         }
         LogCat.d(TAG, "Zoom: " + zoom);
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_18S);
         IPCCall.getInstance().fsZoom(mDevice.getModel(), mDevice.getDeviceid(), zoom);
     }
 
     @Override
     public void zoomReset() {
         LogCat.d(TAG, "Zoom reset.");
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_18S);
         IPCCall.getInstance().fsReset(mDevice.getModel(), mDevice.getDeviceid(), 1);
     }
 
@@ -88,24 +97,28 @@ public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSett
         int focus = mConfig.getCurrentFocus();
         focus = isPlus ? Math.min(focus + 2, mConfig.getMaxFocus()) : Math.max(focus - 2, 0);
         LogCat.d(TAG, "Focus: " + focus + "; Base=" + mBaseFocus);
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_13S);
         IPCCall.getInstance().fsFocus(mDevice.getModel(), mDevice.getDeviceid(), focus);
     }
 
     @Override
     public void focusReset() {
         LogCat.d(TAG, "Focus reset: " + mBaseFocus);
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_13S);
         IPCCall.getInstance().fsFocus(mDevice.getModel(), mDevice.getDeviceid(), mBaseFocus);
     }
 
     @Override
     public void line(int[] start, int[] end) {
         LogCat.d(TAG, "Line set: [" + start[0] + ", " + start[1] + "] -> [" + end[0] + ", " + end[1] + "]");
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_8S);
         IPCCall.getInstance().fsLine(mDevice.getModel(), mDevice.getDeviceid(), start, end);
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         LogCat.d(TAG, "Request back. id=" + id);
+        mHandler.removeCallbacks(mTimeoutTask);
         if (isViewAttached()) {
             mView.hideLoadingDialog();
         }
@@ -175,6 +188,18 @@ public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSett
         BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsFocus);
         BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsReset);
         BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsSetLine);
+        mHandler.removeCallbacks(mTimeoutTask);
+    }
+
+    private class TimeoutTask implements Runnable {
+
+        @Override
+        public void run() {
+            LogCat.d(TAG, "Request timeout.");
+            if (isViewAttached()) {
+                mView.hideLoadingDialog();
+            }
+        }
     }
 
 }
