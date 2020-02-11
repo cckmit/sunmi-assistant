@@ -31,8 +31,11 @@ public class Utils {
     private static final Object LOCK = new Object();
 
     private static final float THRESHOLD_ZERO = 1e-6f;
+    private static final float THRESHOLD_10THOUSAND = 1_0000;
+    private static final float THRESHOLD_100MILLION = 1_0000_0000;
     private static final float THRESHOLD_PERCENT = 0.01f;
-    private static final float THRESHOLD_TEN_THOUSAND = 0.0001f;
+    private static final float THRESHOLD_THOUSANDTH = 0.0001f;
+
     private static final int MULTIPLIER_HUNDRED = 100;
     private static final int MULTIPLIER_THOUSAND = 1000;
 
@@ -205,17 +208,46 @@ public class Utils {
     }
 
     /**
-     * 生成百分比标准化格式字符串
+     * 格式化销售额数据
+     *
+     * @param context   上下文
+     * @param value     值
+     * @param isFloat   是否为浮点型，例：销售额为True，人数为False。
+     * @param highlight 是否突出显示数据
+     * @return 格式化的字符串
+     */
+    public static CharSequence formatNumber(Context context, double value, boolean isFloat, boolean highlight) {
+        String result;
+        if (value > THRESHOLD_100MILLION) {
+            result = context.getString(R.string.str_num_100_million, value / THRESHOLD_100MILLION);
+        } else if (value > THRESHOLD_10THOUSAND) {
+            result = context.getString(R.string.str_num_10_thousands, value / THRESHOLD_10THOUSAND);
+        } else {
+            result = String.format(Locale.getDefault(), isFloat ? "%.2f" : "%.0f", value);
+        }
+
+        if (!highlight || value <= THRESHOLD_10THOUSAND) {
+            return result;
+        }
+
+        int len = result.length();
+        SpannableString s = new SpannableString(result);
+        s.setSpan(new RelativeSizeSpan(SMALL_TEXT_SIZE), len - 1, len, 0);
+        return s;
+    }
+
+    /**
+     * 格式化标准百分比数据
      *
      * @param value     值
      * @param isRate    是否是比率数据。转化率，进店率等为True；人数占比为False。
      * @param highlight 是否突出显示数据
      * @return 格式化的字符串
      */
-    public static CharSequence createPercentText(float value, boolean isRate, boolean highlight) {
+    public static CharSequence formatPercent(float value, boolean isRate, boolean highlight) {
         String result;
         if (isRate) {
-            if (value > THRESHOLD_ZERO && value < THRESHOLD_TEN_THOUSAND) {
+            if (value > THRESHOLD_ZERO && value < THRESHOLD_THOUSANDTH) {
                 result = String.format(Locale.getDefault(), "%.2f‰", value * MULTIPLIER_THOUSAND);
             } else {
                 result = String.format(Locale.getDefault(), "%.2f%%", value * MULTIPLIER_HUNDRED);
@@ -237,7 +269,7 @@ public class Utils {
         return s;
     }
 
-    public static CharSequence createFrequencyText(Context context, int period, float value, boolean highlight) {
+    public static CharSequence formatFrequency(Context context, int period, float value, boolean highlight) {
         String base;
         if (period == Constants.TIME_PERIOD_MONTH) {
             base = context.getString(R.string.dashboard_card_customer_frequency_data_month);

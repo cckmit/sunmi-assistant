@@ -287,7 +287,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
         @Override
         public CharSequence valueFormat(Context context, float value) {
-            return Utils.createFrequencyText(context, period, value, true);
+            return Utils.formatFrequency(context, period, value, true);
         }
     }
 

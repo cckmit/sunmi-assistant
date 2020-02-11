@@ -52,7 +52,7 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
                 result = String.format(Locale.getDefault(), "%.0f", value);
                 break;
             case VALUE_TYPE_RATE:
-                result = Utils.createPercentText(value, true, true);
+                result = Utils.formatPercent(value, true, true);
                 break;
             default:
                 result = "";
