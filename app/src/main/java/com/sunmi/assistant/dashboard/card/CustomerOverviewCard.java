@@ -26,8 +26,6 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
 
     private static CustomerOverviewCard sInstance;
 
-    private static final int NUM_100_MILLION = 100_000_000;
-
     private CustomerOverviewCard(Presenter presenter, int source) {
         super(presenter, source);
     }
@@ -44,7 +42,6 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
 
     @Override
     public void init(Context context) {
-        getModel().init(context);
     }
 
     @Override
@@ -106,11 +103,11 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         TextView enterRate = holder.getView(R.id.tv_enter_rate);
         TextView enterRateSubData = holder.getView(R.id.tv_enter_rate_subdata);
 
-        enterFrequency.setText(Utils.createFrequencyText(context, model.period, model.getLatestEnterFrequency(), true));
-        enterFrequencySubData.setText(Utils.createFrequencyText(context, model.period, model.getEarlyEnterFrequency(), false));
+        enterFrequency.setText(Utils.formatFrequency(context, model.period, model.getLatestEnterFrequency(), true));
+        enterFrequencySubData.setText(Utils.formatFrequency(context, model.period, model.getEarlyEnterFrequency(), false));
 
-        value.setText(model.getLatestCount());
-        subData.setText(model.getEarlyCount());
+        value.setText(model.getLatestCount(context));
+        subData.setText(model.getEarlyCount(context));
         enterRate.setText(model.getLatestEnterRate());
         enterRateSubData.setText(model.getEarlyEnterRate());
     }
@@ -178,7 +175,6 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
-        private String mNum100Million;
 
         int latestCount;
         int earlyCount;
@@ -187,32 +183,20 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         float latestEnterFrequency;
         float earlyEnterFrequency;
 
-        public void init(Context context) {
-            mNum100Million = context.getString(R.string.str_num_100_million);
+        private CharSequence getLatestCount(Context context) {
+            return Utils.formatNumber(context, latestCount, false, true);
         }
 
-        private String getLatestCount() {
-            if (latestCount > NUM_100_MILLION) {
-                return FORMAT_THOUSANDS.format(latestCount / NUM_100_MILLION) + mNum100Million;
-            } else {
-                return FORMAT_THOUSANDS.format(latestCount);
-            }
-        }
-
-        private String getEarlyCount() {
-            if (earlyCount > NUM_100_MILLION) {
-                return FORMAT_THOUSANDS.format(earlyCount / NUM_100_MILLION) + mNum100Million;
-            } else {
-                return FORMAT_THOUSANDS.format(earlyCount);
-            }
+        private CharSequence getEarlyCount(Context context) {
+            return Utils.formatNumber(context, earlyCount, false, false);
         }
 
         private CharSequence getLatestEnterRate() {
-            return Utils.createPercentText(latestEnterRate, true, true);
+            return Utils.formatPercent(latestEnterRate, true, true);
         }
 
         private CharSequence getEarlyEnterRate() {
-            return Utils.createPercentText(earlyEnterRate, true, false);
+            return Utils.formatPercent(earlyEnterRate, true, false);
         }
 
         private float getLatestEnterFrequency() {

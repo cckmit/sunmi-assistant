@@ -322,7 +322,7 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
 
         // Handle empty data set
         if (isEmpty) {
-            pie.setCenterText(Utils.createPercentText(0f, false, true));
+            pie.setCenterText(Utils.formatPercent(0f, false, true));
             pie.setHighlightPerTapEnabled(false);
             mChart.setCenterTextOffset(0, 0);
         } else {
@@ -467,7 +467,7 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
             if (name == null) {
                 return new SpannableString("");
             }
-            CharSequence percent = Utils.createPercentText(total > 0 ? value / total : 0f, false, true);
+            CharSequence percent = Utils.formatPercent(total > 0 ? value / total : 0f, false, true);
             SpannableString s = new SpannableString(
                     new StringBuilder(name).append("\n").append(percent));
 
