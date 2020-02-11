@@ -179,4 +179,11 @@
     <string name="tip_device_offline_check_content">1、设备是否开机\n2、设备是否休眠\n3、设备连接的网络是否保持通畅</string>
     <string name="tip_device_offline_management">当您的设备离线时，离线管理操作：</string>
     <string name="tip_device_offline_management_content">1、若手机与设备处于同一局域网（即手机连接设备Wi-Fi）手机可通过局域网，管理离线设备绝大部分功能\n\n2、若手机与设备处于不同网络环境（即手机未连接设备Wi-Fi），只能管理离线设备部分功能</string>
+    <string name="calendar_day_sunday">Sun</string>
+    <string name="calendar_day_monday">Mon</string>
+    <string name="calendar_day_tuesday">Tues</string>
+    <string name="calendar_day_wednesday">Wed</string>
+    <string name="calendar_day_thursday">Thurs</string>
+    <string name="calendar_day_friday">Fri</string>
+    <string name="calendar_day_saturday">Sat</string>
 </resources>
