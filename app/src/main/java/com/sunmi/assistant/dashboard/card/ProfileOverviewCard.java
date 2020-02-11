@@ -1,6 +1,5 @@
 package com.sunmi.assistant.dashboard.card;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -10,8 +9,8 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.Utils;
 
-import java.text.SimpleDateFormat;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -29,12 +28,6 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     private static ProfileOverviewCard sInstance;
 
-    private static final int NUM_100_MILLION = 100000000;
-    private static final int NUM_10_THOUSANDS = 10000;
-
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat DATE_FORMAT_PARAMS = new SimpleDateFormat("yyyy-MM-dd");
-
     private ProfileOverviewCard(Presenter presenter, int source) {
         super(presenter, source);
     }
@@ -50,7 +43,6 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     @Override
     public void init(Context context) {
-        getModel().init(context);
     }
 
     @Override
@@ -92,6 +84,7 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         setupPeriod(holder, model.period);
+        Context context = holder.getContext();
 
         ProgressBar pb = holder.getView(R.id.bar_dashboard_main);
         TextView value = holder.getView(R.id.tv_dashboard_value);
@@ -109,12 +102,12 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
             pb.setProgress(0);
             pb.setSecondaryProgress(0);
         }
-        value.setText(model.getCustomerString());
-        subData.setText(model.getLastCustomerString());
-        newValue.setText(model.getNewCustomerString());
-        newSubData.setText(model.getLastNewCustomerString());
-        oldValue.setText(model.getOldCustomerString());
-        oldSubData.setText(model.getLastOldCustomerString());
+        value.setText(model.getCustomerString(context));
+        subData.setText(model.getLastCustomerString(context));
+        newValue.setText(model.getNewCustomerString(context));
+        newSubData.setText(model.getLastNewCustomerString(context));
+        oldValue.setText(model.getOldCustomerString(context));
+        oldSubData.setText(model.getLastOldCustomerString(context));
     }
 
     @Override
@@ -189,9 +182,6 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     public static class Model extends BaseRefreshCard.BaseModel {
 
-        private String mNum100Million;
-        private String mNum10Thousands;
-
         int customer;
         int lastCustomer;
         int newCustomer;
@@ -199,90 +189,67 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         int oldCustomer;
         int lastOldCustomer;
 
-        public void init(Context context) {
-            mNum10Thousands = context.getString(R.string.str_num_10_thousands);
-            mNum100Million = context.getString(R.string.str_num_100_million);
-        }
-
-        public int getCustomer() {
+        private int getCustomer() {
             return customer;
         }
 
-        public int getNewCustomer() {
+        private int getNewCustomer() {
             return newCustomer;
         }
 
-        public int getOldCustomer() {
+        private int getOldCustomer() {
             return oldCustomer;
         }
 
-        public String getCustomerString() {
+        private CharSequence getCustomerString(Context context) {
             if (customer < 0) {
                 return DATA_NONE;
-            } else if (customer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) customer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
-                return FORMAT_THOUSANDS.format(customer);
+                return Utils.formatNumber(context, customer, false, true);
             }
         }
 
-        public String getLastCustomerString() {
+        private CharSequence getLastCustomerString(Context context) {
             if (lastCustomer < 0) {
                 return DATA_NONE;
-            } else if (lastCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) lastCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
-                return FORMAT_THOUSANDS.format(lastCustomer);
+                return Utils.formatNumber(context, lastCustomer, false, false);
             }
         }
 
-        public String getNewCustomerString() {
+        private CharSequence getNewCustomerString(Context context) {
             if (newCustomer < 0) {
                 return DATA_NONE;
-            } else if (newCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) newCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
-                return FORMAT_THOUSANDS.format(newCustomer);
+                return Utils.formatNumber(context, newCustomer, false, true);
             }
         }
 
-        public String getLastNewCustomerString() {
+        private CharSequence getLastNewCustomerString(Context context) {
             if (lastNewCustomer < 0) {
                 return DATA_NONE;
-            } else if (lastNewCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) lastNewCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
-                return FORMAT_THOUSANDS.format(lastNewCustomer);
+                return Utils.formatNumber(context, lastNewCustomer, false, false);
             }
         }
 
-        public String getOldCustomerString() {
+        private CharSequence getOldCustomerString(Context context) {
             if (oldCustomer < 0) {
                 return DATA_NONE;
-            } else if (oldCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) oldCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
-                return FORMAT_THOUSANDS.format(oldCustomer);
+                return Utils.formatNumber(context, oldCustomer, false, true);
             }
         }
 
-        public String getLastOldCustomerString() {
+        private CharSequence getLastOldCustomerString(Context context) {
             if (lastOldCustomer < 0) {
                 return DATA_NONE;
-            } else if (lastOldCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) lastOldCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
             } else {
-                return FORMAT_THOUSANDS.format(lastOldCustomer);
+                return Utils.formatNumber(context, lastOldCustomer, false, false);
             }
         }
 
-        public void random() {
+        private void random() {
             Random r = new Random(System.currentTimeMillis());
             newCustomer = r.nextInt(100000000);
             lastNewCustomer = r.nextInt(100000);
