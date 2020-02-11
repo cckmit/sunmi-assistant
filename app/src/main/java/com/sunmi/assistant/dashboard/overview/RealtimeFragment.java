@@ -66,6 +66,9 @@ public class RealtimeFragment extends BaseMvpFragment<RealtimePresenter>
 
     private void initRefreshLayout(Context context) {
         mRefreshHeaderHolder = new RefreshViewHolder(getContext(), false);
+        mRefreshHeaderHolder.setRefreshingText(getString(R.string.str_refresh_loading));
+        mRefreshHeaderHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
+        mRefreshHeaderHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
         mRefreshLayout.setDelegate(this);
         mRefreshLayout.setRefreshViewHolder(mRefreshHeaderHolder, mParent.getHeaderHeight());
         mRefreshLayout.setPullDownRefreshEnable(true);
