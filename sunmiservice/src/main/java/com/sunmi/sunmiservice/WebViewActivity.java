@@ -1,5 +1,6 @@
 package com.sunmi.sunmiservice;
 
+import android.annotation.SuppressLint;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -12,10 +13,9 @@ import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
 import com.umeng.socialize.ShareAction;
 import com.umeng.socialize.UMShareAPI;
@@ -35,7 +35,6 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
@@ -97,7 +96,27 @@ public class WebViewActivity extends BaseActivity
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void initWebView() {
+        final WebSettings webSettings = webView.getSettings();
+        webSettings.setDomStorageEnabled(true);//设置DOM Storage缓存
+        webSettings.setDatabaseEnabled(true);//设置可使用数据库
+        webSettings.setJavaScriptEnabled(true);//支持js脚本
+        webSettings.setUseWideViewPort(true);//将图片调整到适合webview的大小
+        webSettings.setSupportZoom(false);//支持缩放
+        webSettings.setBuiltInZoomControls(false);//支持缩放
+        webSettings.setSupportMultipleWindows(false);//多窗口
+        webSettings.setAllowFileAccess(true);//设置可以访问文件
+        webSettings.setNeedInitialFocus(true);//当webview调用requestFocus时为webview设置节点
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);//支持通过JS打开新窗口
+        webSettings.setLoadsImagesAutomatically(true);//支持自动加载图片N
+        webSettings.setGeolocationEnabled(true);//启用地理定位
+        webSettings.setAllowFileAccessFromFileURLs(true);//使用允许访问文件的urls
+        webSettings.setAllowUniversalAccessFromFileURLs(true);//使用允许访问文件的urls
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);//关闭webview中缓存
+        String ua = webSettings.getUserAgentString();
+        webSettings.setUserAgentString(ua + ";sunmi");
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
         webView.setDownloadListener(new DownloadListener() {
@@ -111,8 +130,6 @@ public class WebViewActivity extends BaseActivity
 
         SMWebChromeClient smWebChromeClient = new SMWebChromeClient(this);
         smWebChromeClient.setCallback(this);
-        String ua = webView.getSettings().getUserAgentString();
-        webView.getSettings().setUserAgentString(ua + ";sunmi");
         webView.setWebChromeClient(smWebChromeClient);
         webView.setWebViewClient(new SMWebViewClient(this) {
 
@@ -142,8 +159,10 @@ public class WebViewActivity extends BaseActivity
             }
 
             @Override
-            protected void receiverError(final WebView view, WebResourceRequest request, WebResourceError error) {
-               loadError();
+            protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request.isForMainFrame()) {
+                    loadError();
+                }
             }
         });
     }
