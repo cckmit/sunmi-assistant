@@ -185,12 +185,12 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         List<BarEntry> dataSet = model.dataSet;
         int maxValue = 0;
         float lastX = 0;
+        int index = 0;
         for (BarEntry entry : dataSet) {
-            if (entry.getX() > lastX) {
-                lastX = entry.getX();
-            }
             if (entry.getY() > maxValue) {
                 maxValue = (int) Math.ceil(entry.getY());
+                lastX = entry.getX();
+                index = dataSet.indexOf(entry);
             }
         }
 
@@ -222,7 +222,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
             data.setBarWidth(barWidthRatio);
             chart.setData(data);
         }
-        chart.highlightValue(lastX, 0);
+        chart.highlightValue(lastX, index);
         chart.animateY(300, Easing.EaseOutCubic);
 
     }
