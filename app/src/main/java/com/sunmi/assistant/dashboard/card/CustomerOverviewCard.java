@@ -70,12 +70,12 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         int earlyUniq = response.getEarlyUniqPassengerCount();
         model.latestCount = latestCount;
         model.earlyCount = earlyCount;
-        if (latestCount > 0 && latestPassCount > 0) {
+        if (latestCount > 0 && latestPassCount >= 0) {
             model.latestEnterRate = (float) latestCount / (latestCount + latestPassCount);
         } else {
             model.latestEnterRate = 0;
         }
-        if (earlyCount > 0 && earlyPassCont > 0) {
+        if (earlyCount > 0 && earlyPassCont >= 0) {
             model.earlyEnterRate = (float) earlyCount / (earlyCount + earlyPassCont);
         } else {
             model.earlyEnterRate = 0;
