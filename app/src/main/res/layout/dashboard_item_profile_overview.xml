@@ -99,7 +99,7 @@
 
         <TextView
             android:id="@+id/tv_dashboard_new_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
@@ -111,7 +111,7 @@
 
         <TextView
             android:id="@+id/tv_dashboard_new"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/text_main"
@@ -160,7 +160,7 @@
 
         <TextView
             android:id="@+id/tv_dashboard_old_title"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:gravity="center"
@@ -172,7 +172,7 @@
 
         <TextView
             android:id="@+id/tv_dashboard_old"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/text_main"
