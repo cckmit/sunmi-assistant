@@ -193,7 +193,7 @@ public class LeadPagesActivity extends BaseActivity {
             }
         };
         builder.setSpan(csProtocol, len1, len1 + protocol.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        builder.append(getText(R.string.str_and));
+        builder.append(getText(R.string.dialog_protocol_and));
         len2 = builder.length();
         builder.append(privacy);
         ClickableSpan csPrivacy = new ClickableSpan() {

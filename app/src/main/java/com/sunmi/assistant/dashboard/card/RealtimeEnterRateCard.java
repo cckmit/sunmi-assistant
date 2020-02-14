@@ -74,7 +74,7 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
         tvPassCustomer.setText(model.getPassCustomer());
         tvCustomer.setText(model.getCustomer());
         tvTotal.setText(model.getTotal());
-        percentVolume.setText(Utils.createPercentText(model.getEnterRate(), true, true));
+        percentVolume.setText(Utils.formatPercent(model.getEnterRate(), true, true));
         pbVolume.setProgress((int) (model.getEnterRate() * 100));
     }
 
@@ -129,10 +129,10 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
         }
 
         private float getEnterRate() {
-            if (customer < 0 || passCustomer < 0 || customer + passCustomer == 0) {
-                return 0f;
-            } else {
+            if (customer > 0 && passCustomer >= 0) {
                 return (float) customer / (passCustomer + customer);
+            } else {
+                return 0f;
             }
         }
     }

@@ -49,6 +49,13 @@ public class CashDropdownTimeAdapter extends DropdownMenuNew.Adapter<DropdownTim
         super(context, R.layout.dropdown_title_new, R.layout.cash_video_dropdown_time_item);
     }
 
+    /**
+     * 通过当前查看的日期，自定义选定的时间段，计算并更新Model的Unix时间戳
+     *
+     * @param model     目标Model
+     * @param timestamp 当前查看的日期（天）时间戳
+     * @return 时间筛选器状态
+     */
     public int checkAndUpdateTime(DropdownTime model, long timestamp) {
         if (!customStartReady && !customEndReady) {
             return STATE_BOTH_EMPTY;
