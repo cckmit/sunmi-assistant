@@ -359,7 +359,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
 
         int color = ContextCompat.getColor(line.getContext(), R.color.common_orange);
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
-            lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR);
+            lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
         } else {
             lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
         }
@@ -407,7 +407,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         }
 
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
-            barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR);
+            barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
         } else {
             barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
         }
