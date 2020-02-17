@@ -130,12 +130,12 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         TextView newSubData = holder.getView(R.id.tv_dashboard_new_subdata);
         TextView oldValue = holder.getView(R.id.tv_dashboard_old);
         TextView oldSubData = holder.getView(R.id.tv_dashboard_old_subdata);
-        value.setText(DATA_NONE);
-        subData.setText(DATA_NONE);
-        newValue.setText(DATA_NONE);
-        newSubData.setText(DATA_NONE);
-        oldValue.setText(DATA_NONE);
-        oldSubData.setText(DATA_NONE);
+        value.setText(Utils.DATA_NONE);
+        subData.setText(Utils.DATA_NONE);
+        newValue.setText(Utils.DATA_NONE);
+        newSubData.setText(Utils.DATA_NONE);
+        oldValue.setText(Utils.DATA_NONE);
+        oldSubData.setText(Utils.DATA_NONE);
         pb.setMax(1);
         pb.setProgress(0);
         pb.setSecondaryProgress(0);
@@ -202,51 +202,27 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         }
 
         private CharSequence getCustomerString(Context context) {
-            if (customer < 0) {
-                return DATA_NONE;
-            } else {
-                return Utils.formatNumber(context, customer, false, true);
-            }
+            return Utils.formatNumber(context, customer, false, true);
         }
 
         private CharSequence getLastCustomerString(Context context) {
-            if (lastCustomer < 0) {
-                return DATA_NONE;
-            } else {
-                return Utils.formatNumber(context, lastCustomer, false, false);
-            }
+            return Utils.formatNumber(context, lastCustomer, false, false);
         }
 
         private CharSequence getNewCustomerString(Context context) {
-            if (newCustomer < 0) {
-                return DATA_NONE;
-            } else {
-                return Utils.formatNumber(context, newCustomer, false, true);
-            }
+            return Utils.formatNumber(context, newCustomer, false, true);
         }
 
         private CharSequence getLastNewCustomerString(Context context) {
-            if (lastNewCustomer < 0) {
-                return DATA_NONE;
-            } else {
-                return Utils.formatNumber(context, lastNewCustomer, false, false);
-            }
+            return Utils.formatNumber(context, lastNewCustomer, false, false);
         }
 
         private CharSequence getOldCustomerString(Context context) {
-            if (oldCustomer < 0) {
-                return DATA_NONE;
-            } else {
-                return Utils.formatNumber(context, oldCustomer, false, true);
-            }
+            return Utils.formatNumber(context, oldCustomer, false, true);
         }
 
         private CharSequence getLastOldCustomerString(Context context) {
-            if (lastOldCustomer < 0) {
-                return DATA_NONE;
-            } else {
-                return Utils.formatNumber(context, lastOldCustomer, false, false);
-            }
+            return Utils.formatNumber(context, lastOldCustomer, false, false);
         }
 
         private void random() {

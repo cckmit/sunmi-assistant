@@ -24,6 +24,7 @@ import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.text.ParseException;
@@ -179,6 +180,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
         lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         lineYAxis.setYOffset(-5f);
         lineYAxis.setXOffset(-1f);
+        lineYAxis.setValueFormatter(new YAxisVolumeLabelFormatter(context));
 
         // 设置Line图
         mMarkerFormatter = new MarkerFormatter(context);
@@ -287,7 +289,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
         @Override
         public CharSequence valueFormat(Context context, float value) {
-            return Utils.formatFrequency(context, period, value, true);
+            return Utils.formatFrequency(context, value, period, true);
         }
     }
 

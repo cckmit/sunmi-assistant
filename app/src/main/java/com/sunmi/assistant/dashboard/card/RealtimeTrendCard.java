@@ -33,6 +33,7 @@ import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
@@ -206,6 +207,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         barYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         barYAxis.setYOffset(-5f);
         barYAxis.setXOffset(-1f);
+        barYAxis.setValueFormatter(new YAxisVolumeLabelFormatter(context));
 
         // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 1f);

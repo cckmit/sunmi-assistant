@@ -262,10 +262,10 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
             if (item.state == Item.STATE_ERROR) {
                 ivAvatar.setImageResource(R.mipmap.dashboard_customer_avatar_error);
                 tvTitle.setText(R.string.dashboard_card_customer_none);
-                tvCount.setText(DATA_ZERO);
-                tvRatio.setText(DATA_ZERO_RATIO);
-                tvOldRatio.setText(DATA_ZERO_RATIO);
-                tvFrequency.setText(DATA_ZERO);
+                tvCount.setText(Utils.DATA_ZERO);
+                tvRatio.setText(Utils.DATA_ZERO_RATIO);
+                tvOldRatio.setText(Utils.DATA_ZERO_RATIO);
+                tvFrequency.setText(Utils.DATA_ZERO);
             } else {
                 float ratio = item.total > 0 ? (float) item.count / item.total : 0f;
                 float oldRatio = item.count > 0 ? (float) item.oldCount / item.count : 0f;
@@ -278,7 +278,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
                 tvOldRatio.setText(Utils.formatPercent(oldRatio, false, true));
 
                 float value = item.uniqueCount > 0 ? (float) item.count / item.uniqueCount : 0f;
-                tvFrequency.setText(Utils.formatFrequency(mContext, item.period, value, true));
+                tvFrequency.setText(Utils.formatFrequency(mContext, value, item.period, true));
             }
         }
 
