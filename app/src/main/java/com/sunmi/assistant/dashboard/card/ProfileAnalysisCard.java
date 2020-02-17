@@ -264,8 +264,8 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
                 tvTitle.setText(R.string.dashboard_card_customer_none);
                 tvCount.setText(DATA_ZERO);
                 tvRatio.setText(DATA_ZERO_RATIO);
-                tvOldRatio.setText(DATA_NONE);
-                tvFrequency.setText(DATA_NONE);
+                tvOldRatio.setText(DATA_ZERO_RATIO);
+                tvFrequency.setText(DATA_ZERO);
             } else {
                 float ratio = item.total > 0 ? (float) item.count / item.total : 0f;
                 float oldRatio = item.count > 0 ? (float) item.oldCount / item.count : 0f;
