@@ -24,6 +24,7 @@ import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.IMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisFrequencyDistributionFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
@@ -132,6 +133,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         barYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         barYAxis.setYOffset(-5f);
         barYAxis.setXOffset(-1f);
+        barYAxis.setValueFormatter(new YAxisVolumeLabelFormatter(context));
 
         // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 2f);

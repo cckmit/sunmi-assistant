@@ -21,6 +21,10 @@ import java.util.Locale;
  */
 public class Utils {
 
+    public static final String DATA_NONE = "--";
+    public static final String DATA_ZERO = "0";
+    public static final String DATA_ZERO_RATIO = "0%";
+
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat DATE_FORMAT_HOUR_MINUTE = new SimpleDateFormat("HH:mm");
     @SuppressLint("SimpleDateFormat")
@@ -30,11 +34,12 @@ public class Utils {
 
     private static final Object LOCK = new Object();
 
-    private static final float THRESHOLD_ZERO = 1e-6f;
     private static final float THRESHOLD_10THOUSAND = 1_0000;
     private static final float THRESHOLD_100MILLION = 1_0000_0000;
     private static final float THRESHOLD_PERCENT = 0.01f;
+    private static final float THRESHOLD_PERCENT_MIN = 0.00005f;
     private static final float THRESHOLD_THOUSANDTH = 0.0001f;
+    private static final float THRESHOLD_THOUSANDTH_MIN = 0.000005f;
 
     private static final int MULTIPLIER_HUNDRED = 100;
     private static final int MULTIPLIER_THOUSAND = 1000;
@@ -218,7 +223,9 @@ public class Utils {
      */
     public static CharSequence formatNumber(Context context, double value, boolean isFloat, boolean highlight) {
         String result;
-        if (value > THRESHOLD_100MILLION) {
+        if (value < 0) {
+            result = DATA_NONE;
+        } else if (value > THRESHOLD_100MILLION) {
             result = context.getString(R.string.str_num_100_million, value / THRESHOLD_100MILLION);
         } else if (value > THRESHOLD_10THOUSAND) {
             result = context.getString(R.string.str_num_10_thousands, value / THRESHOLD_10THOUSAND);
@@ -246,14 +253,16 @@ public class Utils {
      */
     public static CharSequence formatPercent(float value, boolean isRate, boolean highlight) {
         String result;
-        if (isRate) {
-            if (value > THRESHOLD_ZERO && value < THRESHOLD_THOUSANDTH) {
+        if (value < 0) {
+            result = DATA_NONE;
+        } else if (isRate) {
+            if (value >= THRESHOLD_THOUSANDTH_MIN && value < THRESHOLD_THOUSANDTH) {
                 result = String.format(Locale.getDefault(), "%.2f‰", value * MULTIPLIER_THOUSAND);
             } else {
                 result = String.format(Locale.getDefault(), "%.2f%%", value * MULTIPLIER_HUNDRED);
             }
         } else {
-            if (value > THRESHOLD_ZERO && value < THRESHOLD_PERCENT) {
+            if (value >= THRESHOLD_PERCENT_MIN && value < THRESHOLD_PERCENT) {
                 result = String.format(Locale.getDefault(), "%.2f%%", value * MULTIPLIER_HUNDRED);
             } else {
                 result = String.format(Locale.getDefault(), "%.0f%%", value * MULTIPLIER_HUNDRED);
@@ -269,7 +278,7 @@ public class Utils {
         return s;
     }
 
-    public static CharSequence formatFrequency(Context context, int period, float value, boolean highlight) {
+    public static CharSequence formatFrequency(Context context, float value, int period, boolean highlight) {
         String base;
         if (period == Constants.TIME_PERIOD_MONTH) {
             base = context.getString(R.string.dashboard_card_customer_frequency_data_month);
@@ -278,7 +287,13 @@ public class Utils {
         } else {
             base = context.getString(R.string.dashboard_card_customer_frequency_data_day);
         }
-        String result = String.format(Locale.getDefault(), base, FORMAT_MAX_SINGLE_DECIMAL.format(value));
+
+        String result;
+        if (value < 0) {
+            result = DATA_NONE;
+        } else {
+            result = String.format(Locale.getDefault(), base, FORMAT_MAX_SINGLE_DECIMAL.format(value));
+        }
         if (!highlight) {
             return result;
         }
