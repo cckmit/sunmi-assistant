@@ -103,8 +103,8 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         TextView enterRate = holder.getView(R.id.tv_enter_rate);
         TextView enterRateSubData = holder.getView(R.id.tv_enter_rate_subdata);
 
-        enterFrequency.setText(Utils.formatFrequency(context, model.period, model.getLatestEnterFrequency(), true));
-        enterFrequencySubData.setText(Utils.formatFrequency(context, model.period, model.getEarlyEnterFrequency(), false));
+        enterFrequency.setText(model.getLatestEnterFrequency(context));
+        enterFrequencySubData.setText(model.getEarlyEnterFrequency(context));
 
         value.setText(model.getLatestCount(context));
         subData.setText(model.getEarlyCount(context));
@@ -134,12 +134,12 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         TextView subData = holder.getView(R.id.tv_dashboard_subdata);
         TextView enterRate = holder.getView(R.id.tv_enter_rate);
         TextView enterRateSubData = holder.getView(R.id.tv_enter_rate_subdata);
-        enterFrequency.setText(DATA_NONE);
-        enterFrequencySubData.setText(DATA_NONE);
-        value.setText(DATA_NONE);
-        subData.setText(DATA_NONE);
-        enterRate.setText(DATA_NONE);
-        enterRateSubData.setText(DATA_NONE);
+        enterFrequency.setText(Utils.DATA_NONE);
+        enterFrequencySubData.setText(Utils.DATA_NONE);
+        value.setText(Utils.DATA_NONE);
+        subData.setText(Utils.DATA_NONE);
+        enterRate.setText(Utils.DATA_NONE);
+        enterRateSubData.setText(Utils.DATA_NONE);
     }
 
     /**
@@ -199,12 +199,12 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
             return Utils.formatPercent(earlyEnterRate, true, false);
         }
 
-        private float getLatestEnterFrequency() {
-            return latestEnterFrequency;
+        private CharSequence getLatestEnterFrequency(Context context) {
+            return Utils.formatFrequency(context, latestEnterFrequency, period, true);
         }
 
-        private float getEarlyEnterFrequency() {
-            return earlyEnterFrequency;
+        private CharSequence getEarlyEnterFrequency(Context context) {
+            return Utils.formatFrequency(context, earlyEnterFrequency, period, false);
         }
     }
 }
