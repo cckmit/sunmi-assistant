@@ -34,15 +34,17 @@ import sunmi.common.view.webview.SsConstants;
 public class ProtocolActivity extends BaseActivity {
 
     //用户协议 https://wifi.cdn.sunmi.com/Privacy/user_sunmi.html
-    public final static String PROTOCOL_USER = CommonConfig.SERVICE_H5_URL + "privacy/:zh-cn/user?topPadding=";
+    public final static String PROTOCOL_USER = CommonConfig.SERVICE_H5_URL + "privacy/zh/user?topPadding=";
     //用户协议英文
-    public final static String PROTOCOL_USER_ENGLISH = "https://wifi.cdn.sunmi.com/Privacy/user_sunmi_english.html";
+    public final static String PROTOCOL_USER_ENGLISH = CommonConfig.SERVICE_H5_URL + "privacy/en/user?topPadding=";
     //隐私协议
-    public final static String PROTOCOL_PRIVATE = CommonConfig.SERVICE_H5_URL + "privacy/:zh-cn/private?topPadding=";
+    public final static String PROTOCOL_PRIVATE = CommonConfig.SERVICE_H5_URL + "privacy/zh/private?topPadding=";
     //隐私协议英文
-    public final static String PROTOCOL_PRIVATE_ENGLISH = "https://wifi.cdn.sunmi.com/Privacy/private_sunmi_english.html";
+    public final static String PROTOCOL_PRIVATE_ENGLISH = CommonConfig.SERVICE_H5_URL + "privacy/en/private?topPadding=";
     //商米智能摄像机隐私政策
-    public final static String PROTOCOL_IPC = CommonConfig.SERVICE_H5_URL + "privacy/:zh-cn/ipcPrivacy?topPadding=";
+    public final static String PROTOCOL_IPC = CommonConfig.SERVICE_H5_URL + "privacy/zh/ipcPrivacy?topPadding=";
+
+    public final static String PROTOCOL_IPC_ENGLISH = CommonConfig.SERVICE_H5_URL + "privacy/en/ipcPrivacy?topPadding=";
 
     public static final int USER_PROTOCOL = 0;
     public static final int USER_PRIVATE = 1;
@@ -87,13 +89,13 @@ public class ProtocolActivity extends BaseActivity {
     private void initNormal() {
         switch (protocolType) {
             case USER_PROTOCOL:
-                loadWebView(CommonHelper.isChinese() ? (PROTOCOL_USER + Utils.getWebViewStatusBarHeight(context)) : PROTOCOL_USER_ENGLISH);
+                loadWebView(CommonHelper.isChinese() ? PROTOCOL_USER : PROTOCOL_USER_ENGLISH);
                 break;
             case USER_PRIVATE:
-                loadWebView(CommonHelper.isChinese() ? PROTOCOL_PRIVATE + Utils.getWebViewStatusBarHeight(context) : PROTOCOL_PRIVATE_ENGLISH);
+                loadWebView(CommonHelper.isChinese() ? PROTOCOL_PRIVATE : PROTOCOL_PRIVATE_ENGLISH);
                 break;
             case USER_IPC_PROTOCOL:
-                loadWebView(PROTOCOL_IPC + Utils.getWebViewStatusBarHeight(context));
+                loadWebView(CommonHelper.isChinese() ? PROTOCOL_IPC : PROTOCOL_IPC_ENGLISH);
                 break;
             default:
                 break;
@@ -128,7 +130,7 @@ public class ProtocolActivity extends BaseActivity {
     @SuppressLint("SetJavaScriptEnabled")
     private void loadWebView(String url) {
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.loadUrl(url);
+        webView.loadUrl(url+Utils.getWebViewStatusBarHeight(context));
         startTimer();
         // 可以运行JavaScript
         WebSettings webSetting = webView.getSettings();

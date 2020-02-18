@@ -12,7 +12,7 @@
     <string name="str_skip">Skip</string>
     <string name="str_continue">Continue</string>
     <string name="str_exit">Exit</string>
-    <string name="str_return">返回</string>
+    <string name="str_return">Return</string>
     <string name="str_next">Next</string>
     <string name="str_close">Disable</string>
     <string name="str_setting">Settings</string>
@@ -20,7 +20,7 @@
     <string name="str_gender_male">Male</string>
     <string name="str_gender_female">Female</string>
     <string name="str_common_age">Age</string>
-    <string name="str_click_consent">By clicking the button of "Start Configuration", you agree</string>
+    <string name="str_click_consent">By clicking the button of "Start Configuration", you agrMIe</string>
     <string name="sunmi_user_protocol">《SUNMI User Registration Agreement》</string>
     <string name="str_privacy">《Privacy Policy》</string>
     <string name="str_and"> and </string>
@@ -186,4 +186,7 @@
     <string name="calendar_day_thursday">Thurs</string>
     <string name="calendar_day_friday">Fri</string>
     <string name="calendar_day_saturday">Sat</string>
+    <string name="str_refresh_pull">Pull down to refresh</string>
+    <string name="str_refresh_release">Release to refresh</string>
+    <string name="str_refresh_loading">Loading…</string>
 </resources>

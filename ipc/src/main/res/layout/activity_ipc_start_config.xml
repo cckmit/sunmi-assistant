@@ -28,7 +28,8 @@
         android:text="@string/str_turn_on_ipc_power"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_28"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:gravity="center"/>
 
     <TextView
         android:id="@+id/tv_config_tip"

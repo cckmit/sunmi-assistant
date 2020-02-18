@@ -26,7 +26,8 @@
         android:text="@string/str_chose_network"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_28"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:gravity="center"/>
 
     <android.support.v7.widget.CardView
         android:id="@+id/cv_wired"

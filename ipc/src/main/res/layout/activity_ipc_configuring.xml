@@ -57,6 +57,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_8"
         android:textColor="@color/text_caption"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_14"
+        android:gravity="center"/>
 
 </RelativeLayout>
