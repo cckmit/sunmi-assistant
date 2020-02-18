@@ -201,8 +201,8 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
         // Setup total avg value
         TextView maleTotal = holder.getView(R.id.tv_dashboard_male_avg);
         TextView femaleTotal = holder.getView(R.id.tv_dashboard_female_avg);
-        maleTotal.setText(Utils.formatFrequency(holder.getContext(), model.period, model.maleAvg, true));
-        femaleTotal.setText(Utils.formatFrequency(holder.getContext(), model.period, model.femaleAvg, true));
+        maleTotal.setText(Utils.formatFrequency(holder.getContext(), model.maleAvg, model.period, true));
+        femaleTotal.setText(Utils.formatFrequency(holder.getContext(), model.femaleAvg, model.period, true));
 
         int size = model.ageMap.size();
         List<Item> list = new ArrayList<>(size);

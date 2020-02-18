@@ -256,14 +256,14 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
         TextView customerSubdata = holder.getView(R.id.tv_dashboard_customer_subdata);
         TextView rateValue = holder.getView(R.id.tv_dashboard_rate);
         TextView rateSubdata = holder.getView(R.id.tv_dashboard_rate_subdata);
-        value.setText(DATA_NONE);
-        subdata.setText(DATA_NONE);
-        volumeValue.setText(DATA_NONE);
-        volumeSubdata.setText(DATA_NONE);
-        customerValue.setText(DATA_NONE);
-        customerSubdata.setText(DATA_NONE);
-        rateValue.setText(DATA_NONE);
-        rateSubdata.setText(DATA_NONE);
+        value.setText(Utils.DATA_NONE);
+        subdata.setText(Utils.DATA_NONE);
+        volumeValue.setText(Utils.DATA_NONE);
+        volumeSubdata.setText(Utils.DATA_NONE);
+        customerValue.setText(Utils.DATA_NONE);
+        customerSubdata.setText(Utils.DATA_NONE);
+        rateValue.setText(Utils.DATA_NONE);
+        rateSubdata.setText(Utils.DATA_NONE);
     }
 
     private void setupVisible(@NonNull BaseViewHolder<Model> holder, int period) {
