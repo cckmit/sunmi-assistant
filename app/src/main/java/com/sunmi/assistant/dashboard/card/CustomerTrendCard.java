@@ -25,6 +25,7 @@ import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
@@ -158,6 +159,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         lineYAxis.setYOffset(-5f);
         lineYAxis.setXOffset(-1f);
+        lineYAxis.setValueFormatter(new YAxisVolumeLabelFormatter(context));
 
         // 设置Line图
         mMarkerFormatter = new TimeMarkerFormatter(context);
