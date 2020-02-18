@@ -1,14 +1,16 @@
 package com.sunmi.ipc.presenter;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.google.gson.Gson;
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.contract.ScreenAdjustSettingContract;
+import com.sunmi.ipc.model.CameraConfig;
 import com.sunmi.ipc.rpc.IPCCall;
 import com.sunmi.ipc.rpc.OpcodeConstants;
-import com.sunmi.ipc.model.CameraConfig;
 
 import sunmi.common.base.BasePresenter;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -20,16 +22,18 @@ public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSett
 
     private static final String TAG = ScreenAdjustSettingPresenter.class.getSimpleName();
 
-    private static final int SD_STATUS_NONE = 0;
-    private static final int SD_STATUS_UNINITIALIZED = 1;
-    private static final int SD_STATUS_FINE = 2;
-    private static final int SD_STATUS_UNKNOWN = 3;
+    private static final int TIMEOUT_8S = 8_000;
+    private static final int TIMEOUT_13S = 13_000;
+    private static final int TIMEOUT_18S = 18_000;
 
     private SunmiDevice mDevice;
     private CameraConfig mConfig;
 
     private int mZoomGap;
     private int mBaseFocus;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Runnable mTimeoutTask = new TimeoutTask();
 
     @Override
     public void init(SunmiDevice device) {
@@ -53,95 +57,68 @@ public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSett
 
     @Override
     public void updateState() {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            LogCat.d(TAG, "Get status: " + device.getIp());
-            IPCCall.getInstance().fsGetStatus(device.getIp());
-        } else if (isViewAttached()) {
-            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
-        }
+        LogCat.d(TAG, "Get status.");
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_8S);
+        IPCCall.getInstance().fsGetStatus(mDevice.getModel(), mDevice.getDeviceid());
     }
 
     @Override
     public void face(int x, int y) {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            LogCat.d(TAG, "Move face case, auto focus: x=" + x + "; y=" + y);
-            IPCCall.getInstance().fsAutoFocus(device.getIp(), x, y);
-        } else if (isViewAttached()) {
-            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
-        }
+        LogCat.d(TAG, "Move face case, auto focus: x=" + x + "; y=" + y);
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_13S);
+        IPCCall.getInstance().fsAutoFocus(mDevice.getModel(), mDevice.getDeviceid(), x, y);
     }
 
     @Override
     public void zoom(boolean isZoomIn) {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            int gear;
-            int zoom;
-            if (isZoomIn) {
-                gear = mConfig.getCurrentZoom() / mZoomGap + 1;
-                zoom = Math.min(mZoomGap * gear, mConfig.getMaxZoom());
-            } else {
-                gear = (int) Math.ceil((double) mConfig.getCurrentZoom() / mZoomGap) - 1;
-                zoom = Math.max(mZoomGap * gear, 0);
-            }
-            LogCat.d(TAG, "Zoom: " + zoom);
-            IPCCall.getInstance().fsZoom(device.getIp(), zoom);
-        } else if (isViewAttached()) {
-            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
+        int gear;
+        int zoom;
+        if (isZoomIn) {
+            gear = mConfig.getCurrentZoom() / mZoomGap + 1;
+            zoom = Math.min(mZoomGap * gear, mConfig.getMaxZoom());
+        } else {
+            gear = (int) Math.ceil((double) mConfig.getCurrentZoom() / mZoomGap) - 1;
+            zoom = Math.max(mZoomGap * gear, 0);
         }
+        LogCat.d(TAG, "Zoom: " + zoom);
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_18S);
+        IPCCall.getInstance().fsZoom(mDevice.getModel(), mDevice.getDeviceid(), zoom);
     }
 
     @Override
     public void zoomReset() {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            LogCat.d(TAG, "Zoom reset.");
-            IPCCall.getInstance().fsReset(device.getIp(), 1);
-        } else if (isViewAttached()) {
-            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
-        }
+        LogCat.d(TAG, "Zoom reset.");
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_18S);
+        IPCCall.getInstance().fsReset(mDevice.getModel(), mDevice.getDeviceid(), 1);
     }
 
     @Override
     public void focus(boolean isPlus) {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            int focus = mConfig.getCurrentFocus();
-            focus = isPlus ? Math.min(focus + 2, mConfig.getMaxFocus()) : Math.max(focus - 2, 0);
-            LogCat.d(TAG, "Focus: " + focus + "; Base=" + mBaseFocus);
-            IPCCall.getInstance().fsFocus(device.getIp(), focus);
-        } else if (isViewAttached()) {
-            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
-        }
+        int focus = mConfig.getCurrentFocus();
+        focus = isPlus ? Math.min(focus + 2, mConfig.getMaxFocus()) : Math.max(focus - 2, 0);
+        LogCat.d(TAG, "Focus: " + focus + "; Base=" + mBaseFocus);
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_13S);
+        IPCCall.getInstance().fsFocus(mDevice.getModel(), mDevice.getDeviceid(), focus);
     }
 
     @Override
     public void focusReset() {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            LogCat.d(TAG, "Focus reset: " + mBaseFocus);
-            IPCCall.getInstance().fsFocus(device.getIp(), mBaseFocus);
-        } else if (isViewAttached()) {
-            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
-        }
+        LogCat.d(TAG, "Focus reset: " + mBaseFocus);
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_13S);
+        IPCCall.getInstance().fsFocus(mDevice.getModel(), mDevice.getDeviceid(), mBaseFocus);
     }
 
     @Override
     public void line(int[] start, int[] end) {
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device != null) {
-            LogCat.d(TAG, "Line set: [" + start[0] + ", " + start[1] + "] -> [" + end[0] + ", " + end[1] + "]");
-            IPCCall.getInstance().fsLine(device.getIp(), start, end);
-        } else if (isViewAttached()) {
-            mView.showErrorDialog(R.string.ipc_setting_tip_network_dismatch);
-        }
+        LogCat.d(TAG, "Line set: [" + start[0] + ", " + start[1] + "] -> [" + end[0] + ", " + end[1] + "]");
+        mHandler.postDelayed(mTimeoutTask, TIMEOUT_8S);
+        IPCCall.getInstance().fsLine(mDevice.getModel(), mDevice.getDeviceid(), start, end);
     }
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
         LogCat.d(TAG, "Request back. id=" + id);
+        mHandler.removeCallbacks(mTimeoutTask);
         if (isViewAttached()) {
             mView.hideLoadingDialog();
         }
@@ -211,6 +188,18 @@ public class ScreenAdjustSettingPresenter extends BasePresenter<ScreenAdjustSett
         BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsFocus);
         BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsReset);
         BaseNotification.newInstance().removeObserver(this, OpcodeConstants.fsSetLine);
+        mHandler.removeCallbacks(mTimeoutTask);
+    }
+
+    private class TimeoutTask implements Runnable {
+
+        @Override
+        public void run() {
+            LogCat.d(TAG, "Request timeout.");
+            if (isViewAttached()) {
+                mView.hideLoadingDialog();
+            }
+        }
     }
 
 }

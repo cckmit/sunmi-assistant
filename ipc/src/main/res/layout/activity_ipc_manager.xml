@@ -82,27 +82,6 @@
                     android:scaleType="center"
                     android:src="@drawable/ic_sdcard" />
 
-                <LinearLayout
-                    android:id="@+id/ll_calender_portrait"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_weight="1"
-                    android:background="@drawable/bg_round_corner_black_15"
-                    android:gravity="center"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/tv_calendar_portrait"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_gravity="center"
-                        android:background="@drawable/ic_calendar"
-                        android:gravity="center"
-                        android:textColor="@color/text_common_white"
-                        android:textSize="@dimen/sp_10" />
-                </LinearLayout>
-
                 <ImageView
                     android:id="@+id/iv_screenshot_portrait"
                     android:layout_width="@dimen/dp_0"
@@ -110,7 +89,6 @@
                     android:layout_marginStart="@dimen/dp_8"
                     android:layout_weight="1"
                     android:background="@drawable/bg_round_corner_black_15"
-                    android:clickable="false"
                     android:scaleType="center"
                     android:src="@mipmap/ic_screenshot_disable" />
 

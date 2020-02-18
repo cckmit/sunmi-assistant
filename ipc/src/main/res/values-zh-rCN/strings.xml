@@ -299,6 +299,7 @@
     <string name="tip_config_ipc_dialog3"><![CDATA[长按<font color= \'#FF6000\'>RESET键</font>5秒重置摄像机，等待设备重启]]></string>
     <string name="ipc_setting_relaunch">设备重启</string>
     <string name="ipc_setting_online_success">上线成功</string>
+    <string name="ipc_dialog_online_success">上线成功</string>
     <string name="ipc_setting_dev_rebooting">重启时设备处于离线状态，\t\n 此过程无法存储视频，请勿断电！</string>
     <string name="ipc_setting_right_now_reboot">立即重启</string>
     <string name="ipc_setting_reboot_tip">重启后摄像机会重新上线，且配置保持不变</string>
@@ -331,7 +332,7 @@
     <string name="cash_trade_amount">交易金额：</string>
     <string name="cash_order_num">订单号：</string>
     <string name="cash_goods_quality">商品总数：</string>
-    <string name="cash_trade_type">交易类型：</string>
+    <string name="cash_trade_type">Transaction:</string>
     <string name="str_order_video">订单视频</string>
     <string name="str_abnormal_oder">异常订单</string>
     <string name="cash_pos_device">摄像机：</string>
@@ -404,7 +405,7 @@
     <string name="str_saturation">饱和度</string>
     <string name="str_focus_adjust">对焦微调</string>
     <string name="dialog_title_input_ipc_name">请输入摄像机名称</string>
-    <string name="tip_input_len_36">请输入1-36位字符</string>
+    <string name="tip_input_len_36">请输入1–36位字符</string>
     <string name="tip_other_anomalies">今日门店内其他异常</string>
     <string name="str_abnormal_behavior_list">异常行为视频列表</string>
     <string name="str_tip_use_wired_network">请确认摄像机插入网线，并将手机连接至同一网络</string>

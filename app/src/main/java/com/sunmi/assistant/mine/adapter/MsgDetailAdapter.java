@@ -12,8 +12,8 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.model.MessageListBean;
 import com.sunmi.assistant.mine.model.MsgTag;
 import com.sunmi.assistant.utils.MessageUtils;
-import com.sunmi.ipc.view.activity.DynamicVideoActivity_;
 import com.sunmi.ipc.rpc.IpcCloudApi;
+import com.sunmi.ipc.view.activity.DynamicVideoActivity_;
 import com.sunmi.ipc.view.activity.setting.IpcSettingSdcardActivity_;
 
 import java.util.List;
@@ -106,13 +106,16 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
         String timestamp = detailMap.get("timestamp");
         String saasName = detailMap.get("saas_name");
         String totalCount = detailMap.get("total_count");
+        String eslCode = detailMap.get("esl_code");
+        String productName = detailMap.get("product_name");
+        String pushTime = detailMap.get("push_time");
         String detail;
         if (disconnectTime != null) {
             try {
                 String time = DateTimeUtils.secondToDate(Long.parseLong(disconnectTime), "yyyy-MM-dd HH:mm:ss");
-                detail = String.format(string, "", time);
+                detail = String.format(string, time);
             } catch (NumberFormatException e) {
-                detail = String.format(string, "", disconnectTime);
+                detail = String.format(string, disconnectTime);
             }
         } else if (timestamp != null && saasName != null && totalCount != null) {
             try {
@@ -123,18 +126,21 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
             }
         } else if (binVersion != null) {
             try {
-                detail = String.format(string, "", binVersion);
+                detail = String.format(string, binVersion);
             } catch (Exception e) {
                 detail = "";
+            }
+        } else if (eslCode != null && pushTime != null) {
+            try {
+                String time = DateTimeUtils.secondToDate(Long.parseLong(pushTime), "yyyy-MM-dd HH:mm:ss");
+                detail = String.format(string, eslCode, productName, time);
+            } catch (NumberFormatException e) {
+                detail = String.format(string, eslCode, productName, pushTime);
             }
         } else {
-            try {
-                detail = String.format(string, "");
-            } catch (Exception e) {
-                detail = "";
-            }
+            detail = string;
         }
-        helper.setText(R.id.tv_msg_device_name, context.getString(R.string.ipc_device_name, deviceName));
+        helper.setText(R.id.tv_msg_device_name, context.getString(R.string.ipc_device_name, eslCode != null ? eslCode : deviceName));
         helper.setText(R.id.tv_msg_detail, context.getString(R.string.ipc_device_msg_content, detail));
     }
 

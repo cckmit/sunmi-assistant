@@ -1,6 +1,5 @@
 package com.sunmi.ipc.view.activity;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -153,7 +152,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     private boolean isStartRecord;//是否开始录制
     private boolean isControlPanelShow = true;//是否点击屏幕
 
-    private boolean switchSuccess;//是否切换到新的时间开始播放
+    private boolean switchSuccess = true;//是否切换到新的时间开始播放
 
     //当前时间，已选日期的开始和结束时间  in seconds
     private long presentTime, startTimeCurrentDate, endTimeCurrentDate;
@@ -251,11 +250,6 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         if (!isPaused) {
@@ -280,7 +274,9 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
                 return;
             }
             stopPlay();
-            setResult(Activity.RESULT_OK);
+            if (p2pService != null) {
+                p2pService.setNeedReinitialize(true);
+            }
             finish();
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -399,7 +395,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     //点击屏幕
     @Click(resName = "rl_video")
     void screenClick() {
-        if (llPlayFail != null && llPlayFail.isShown()) {
+        if (isPlayFailShown()) {
             return;
         }
         if (isControlPanelShow) {
@@ -468,7 +464,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     private void switchDay(long currentDay) {
-        switchSuccess = false;
+        switchSuccess = isPlayFailShown() || //播放失败或播放完成后重置状态
+                timeSlotsInDay == null || timeSlotsInDay.isEmpty();//无视频切到有视频的天重置状态
         startTimeCurrentDate = currentDay;
         hidePlayFail();
         endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
@@ -608,7 +605,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
 
     @Override
     public void onPlaying(long time, int flag) {
-        if (flag == 10) {
+        if (flag == 10) {//切换成功的返回
             switchSuccess = true;
             moveToTime(time);
         } else {
@@ -655,9 +652,9 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         if (PLAY_FAIL_STATUS_OFFLINE == type) {
             showGotoCloudPlayback(isSS1() ? tipResId : R.string.tip_device_offline);
         } else if (PLAY_FAIL_STATUS_NO_SD == type) {
-            showGotoCloudPlayback(isSS1() ? tipResId : R.string.tip_no_sd_to_cloud_playback_fs);
+            showGotoCloudPlayback(!CommonHelper.isGooglePlay() && isSS1() ? tipResId : R.string.tip_no_sd_to_cloud_playback_fs);
         } else if (PLAY_FAIL_STATUS_SD_EXCEPTION == type) {
-            showGotoCloudPlayback(isSS1() ? tipResId : R.string.tip_sd_exception_to_cloud_playback_fs);
+            showGotoCloudPlayback(!CommonHelper.isGooglePlay() && isSS1() ? tipResId : R.string.tip_sd_exception_to_cloud_playback_fs);
         } else {
             btnRetry.setVisibility(PLAY_FAIL_STATUS_NET_EXCEPTION == type ? View.VISIBLE : View.GONE);
             tvPlayFail.setText(tipResId);
@@ -666,7 +663,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     private void showGotoCloudPlayback(@StringRes int tipResId) {
-        if (isSS1()) {
+        if (!CommonHelper.isGooglePlay() && isSS1()) {
             btnGotoCloudPlayback.setVisibility(View.VISIBLE);
             btnGotoCloudPlayback.setText(isServiceUnopened()
                     ? R.string.str_open_cloud_storage : R.string.str_view_cloup_playback);
@@ -904,8 +901,12 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         }
     }
 
+    private boolean isPlayFailShown() {
+        return llPlayFail != null && llPlayFail.isShown();
+    }
+
     private void playOver() {
-        if (llPlayFail != null && llPlayFail.isShown()) {
+        if (isPlayFailShown()) {
             return;
         }
         showPlayFail(PLAY_FAIL_STATUS_COMMON, R.string.tip_video_played_over);

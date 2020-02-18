@@ -355,17 +355,12 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     }
 
     /**
-     * FS画面调整的准备，包括网络判断，局域网判断，获取FS直播UID。
+     * FS画面调整的准备，包括网络判断，获取FS直播UID。
      * 注：绑定完的MQTT消息未给UID，后续MQTT消息携带UID后，可以免去接口调用
      */
     private void fsAdjustPrepare(SunmiDevice device) {
         if (!NetworkUtils.isNetworkAvailable(context)) {
             shortTip(R.string.str_net_exception);
-            return;
-        }
-        SunmiDevice sunmiDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
-        if (sunmiDevice == null) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
         showLoadingDialog();
@@ -400,27 +395,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         deviceChoose = device;
         String versionName = device.getFirmware();
         if (IpcUtils.isNewVersion(versionName, IpcConstants.IPC_VERSION_NO_SDCARD_CHECK)) {
-            getSdCardStatus(device);
-        } else {
             startFsAdjust(device);
+        } else {
+            IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
         }
-    }
-
-    private void getSdCardStatus(SunmiDevice device) {
-        SunmiDevice sunmiDevice = CommonConstants.SUNMI_DEVICE_MAP.get(device.getDeviceid());
-        if (sunmiDevice == null) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
-            return;
-        }
-        IPCCall.getInstance().getSdState(context, sunmiDevice.getModel(), sunmiDevice.getDeviceid());
     }
 
     private void startFsAdjust(SunmiDevice device) {
         hideLoadingDialog();
-        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(device.getDeviceid())) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
-            return;
-        }
         ScreenAdjustSettingActivity_.intent(this)
                 .mDevice(device)
                 .mVideoRatio(16f / 9f)

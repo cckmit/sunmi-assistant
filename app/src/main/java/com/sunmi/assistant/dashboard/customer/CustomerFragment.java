@@ -11,8 +11,8 @@ import android.view.View;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.DashboardContract;
-import com.sunmi.assistant.dashboard.ui.RefreshLayout;
-import com.sunmi.assistant.dashboard.ui.RefreshViewHolder;
+import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
+import com.sunmi.assistant.dashboard.ui.refresh.RefreshViewHolder;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -29,7 +29,7 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @date 2019-10-11
  */
-@EFragment(R.layout.dashboard_fragment_customer)
+@EFragment(R.layout.dashboard_fragment_list)
 public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
         implements CustomerContract.View, RefreshLayout.RefreshLayoutDelegate {
 
@@ -59,7 +59,6 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
         mParent = (DashboardContract.View) parent;
         mPresenter = new CustomerPresenter(mParent.getPresenter());
         mPresenter.attachView(this);
-        showLoadingDialog();
         initRefreshLayout(context);
         initRecycler(context);
         mPresenter.load();
@@ -67,6 +66,9 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
 
     private void initRefreshLayout(Context context) {
         mRefreshHeaderHolder = new RefreshViewHolder(getContext(), false);
+        mRefreshHeaderHolder.setRefreshingText(getString(R.string.str_refresh_loading));
+        mRefreshHeaderHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
+        mRefreshHeaderHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
         mRefreshLayout.setDelegate(this);
         mRefreshLayout.setRefreshViewHolder(mRefreshHeaderHolder, mParent.getHeaderHeight());
         mRefreshLayout.setPullDownRefreshEnable(true);
@@ -124,6 +126,30 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
     @Override
     public boolean onRefreshLayoutBeginLoadingMore(RefreshLayout refreshLayout) {
         return false;
+    }
+
+    @Override
+    public void removeFrequencyCard() {
+        List<Object> data = mAdapter.getData();
+        int from = data.size() - 2;
+        data.remove(from);
+        data.remove(from);
+        mAdapter.notifyItemRangeRemoved(from, 2);
+    }
+
+    @Override
+    public void addFrequencyCard(List<BaseRefreshCard> data) {
+        if (mAdapter == null || data == null || data.isEmpty()) {
+            return;
+        }
+        List<Object> list = new ArrayList<>(data.size());
+        int position = mAdapter.getItemCount();
+        for (BaseRefreshCard card : data) {
+            card.registerIntoAdapter(mAdapter, position);
+            list.add(card.getModel());
+            position++;
+        }
+        mAdapter.add(list);
     }
 
     private class ItemStickyListener extends RecyclerView.OnScrollListener {

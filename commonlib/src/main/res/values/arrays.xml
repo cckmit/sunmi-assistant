@@ -10,6 +10,8 @@
 
     <string-array name="sunmi_devices_google_play">
         <item>@string/sunmi_device_w1</item>
+        <item>@string/sunmi_device_ss</item>
+        <item>@string/sunmi_device_fs</item>
         <item>@string/sunmi_device_more</item>
     </string-array>
 
@@ -23,12 +25,12 @@
         <item>@string/ipc_setting_detection_day_saturday</item>
     </string-array>
     <string-array name="week_name_abbr">
-        <item>日</item>
-        <item>一</item>
-        <item>二</item>
-        <item>三</item>
-        <item>四</item>
-        <item>五</item>
-        <item>六</item>
+        <item>@string/calendar_day_sunday</item>
+        <item>@string/calendar_day_monday</item>
+        <item>@string/calendar_day_tuesday</item>
+        <item>@string/calendar_day_wednesday</item>
+        <item>@string/calendar_day_thursday</item>
+        <item>@string/calendar_day_friday</item>
+        <item>@string/calendar_day_saturday</item>
     </string-array>
 </resources>

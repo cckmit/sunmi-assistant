@@ -46,7 +46,6 @@ import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
-import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -88,8 +87,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         implements IpcManagerContract.View, SurfaceHolder.Callback, View.OnClickListener,
         VolumeHelper.VolumeChangeListener, P2pService.OnPlayStatusChangedListener,
         SeekBar.OnSeekBarChangeListener {
-
-    private final static int REQ_SDCARD_PLAYBACK = 10;
 
     private final static int PLAY_FAIL_OFFLINE = 1;
     private final static int PLAY_FAIL_NET_ERROR = 2;
@@ -214,7 +211,6 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         titleBar.getLeftLayout().setOnClickListener(this);
         titleBar.getRightTextView().setOnClickListener(this);
         rlBottomBar.setVisibility(View.VISIBLE);
-        initVideoAdjust();
         screenW = CommonHelper.getScreenWidth(context);
 
         llLoading.setOnTouchListener((v, event) -> true);
@@ -228,12 +224,13 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         initSurfaceView();
         initManageList();
-        if (isSS1()) {
+        if (!CommonHelper.isGooglePlay() && isSS1()) {
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
             mPresenter.getCashVideoService(device.getId());
             ivCloudPlayback.setVisibility(View.VISIBLE);
         } else {
             if (IpcUtils.isNewVersion(device.getFirmware(), IpcConstants.IPC_VERSION_VIDEO_ADJUST)) {
+                initVideoAdjust();
                 isShowAdjust = true;
                 ivAdjust.setVisibility(View.VISIBLE);
             }
@@ -331,7 +328,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             onBackPressed();
         } else if (v.getId() == R.id.txt_right) {
             if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
-                IpcSettingActivity_.intent(context).mDevice(device).disableAdjustScreen(true).start();
+                IpcSettingActivity_.intent(context).mDevice(device).isFromLive(true).start();
             } else {
                 new CommonDialog.Builder(this)
                         .setTitle(R.string.str_device_offline)
@@ -498,14 +495,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         SDCardPlayBackActivity_.intent(context).device(device)
                 .cloudStorageServiceStatus(cloudStorageServiceStatus)
-                .startForResult(REQ_SDCARD_PLAYBACK).withAnimation(R.anim.slide_in_right, 0);
-    }
-
-    @OnActivityResult(REQ_SDCARD_PLAYBACK)
-    void onCreateResult(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            p2pService.init(videoView.getHolder().getSurface(), this);
-        }
+                .start().withAnimation(R.anim.slide_in_right, 0);
     }
 
     //点击屏幕
@@ -546,8 +536,14 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         if (isDeviceOffline()) {
             return;
         }
-        p2pService.init(videoView.getHolder().getSurface(), this);
+        p2pServiceInit();
         initP2pLive();
+    }
+
+    private void p2pServiceInit() {
+        if (p2pService != null)
+            p2pService.init(videoView.getHolder().getSurface(), this);
+
     }
 
     @Override
@@ -660,7 +656,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 || id == OpcodeConstants.fsAdjustFocusAdd
                 || id == OpcodeConstants.fsAdjustFocusMinus) {
             hideLoadingDialog();
-        }else if (id == CommonNotifications.cashPreventSubscribe){
+        } else if (id == CommonNotifications.cashPreventSubscribe) {
             mPresenter.getCashPreventService(device.getDeviceid());
         }
 
@@ -672,6 +668,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     private void resumePlay() {
         if (p2pService == null) {
             return;
+        }
+        if (p2pService.isNeedReinitialize()) {
+            p2pServiceInit();
         }
         if (isPlayFailShown) {
             hideVideoLoading();

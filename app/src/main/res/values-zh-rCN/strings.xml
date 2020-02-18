@@ -34,24 +34,33 @@
 
     <string name="dashboard_page_overview">实时数据</string>
     <string name="dashboard_page_customer">客流分析</string>
+    <string name="dashboard_page_profile">客群画像</string>
 
     <string name="dashboard_period_today">今日</string>
     <string name="dashboard_period_week">本周</string>
     <string name="dashboard_period_month">本月</string>
     <string name="dashboard_period_yesterday">昨日</string>
+    <string name="dashboard_period_last_day">上日</string>
     <string name="dashboard_period_last_week">上周</string>
-    <string name="dashboard_period_last_month">上个月</string>
+    <string name="dashboard_period_last_month">上月</string>
     <string name="dashboard_period_last_month_avg">上月日均</string>
 
     <string name="dashboard_card_title_business_trend">经营趋势</string>
     <string name="dashboard_card_title_distribution">客群分布</string>
     <string name="dashboard_card_title_customer_trend">客流趋势</string>
+    <string name="dashboard_card_title_customer_frequency_trend_week">周到店频次趋势</string>
+    <string name="dashboard_card_title_customer_frequency_trend_month">月到店频次趋势</string>
+    <string name="dashboard_card_title_customer_frequency_avg">客群平均到店频次</string>
+    <string name="dashboard_card_title_customer_enter_rate">进店率</string>
     <string name="dashboard_card_title_customer_analysis">客流分析</string>
 
     <string name="dashboard_data_sales_amount">总销售额</string>
     <string name="dashboard_data_sales_volume">交易笔数</string>
     <string name="dashboard_data_customer">进店客流</string>
     <string name="dashboard_data_transaction_rate">交易转化率</string>
+
+    <string name="dashboard_card_customer_pass">路过客流</string>
+    <string name="dashboard_card_customer_all">全部客流</string>
 
     <string name="dashboard_card_tab_rate">转化率</string>
     <string name="dashboard_card_tab_volume">交易笔数</string>
@@ -73,7 +82,21 @@
     <string name="dashboard_card_customer_ratio">总人数占比</string>
     <string name="dashboard_card_customer_old_ratio">熟客占比</string>
     <string name="dashboard_card_customer_peak">到店高峰</string>
+    <string name="dashboard_card_customer_frequency">到店频次</string>
+    <string name="dashboard_card_customer_frequency_data_day">%s次/日</string>
+    <string name="dashboard_card_customer_frequency_data_week">%s次/周</string>
+    <string name="dashboard_card_customer_frequency_data_month">%s次/月</string>
+    <string name="dashboard_card_customer_frequency_marker_title">到店人数</string>
+    <string name="dashboard_card_customer_frequency_marker_value">次数 %d次</string>
+    <string name="dashboard_card_customer_frequency_marker_count_above">次数 %d次以上</string>
+    <string name="dashboard_card_customer_week_count">第%d周</string>
     <string name="dashboard_card_customer_none">暂无客流数据</string>
+    <string name="dashboard_card_customer_group_frequency">客群到店频次</string>
+    <string name="dashboard_card_customer_avg_enter">时间段内顾客的平均到店次数</string>
+    <string name="dashboard_card_customer_frequency_distribution">到店次数分布</string>
+    <string name="dashborad_card_customer_week_frequency_trend">周到店频次趋势</string>
+    <string name="dashborad_card_customer_month_frequency_trend">月到店频次趋势</string>
+    <string name="dashborad_card_customer_frequency_above">%d以上</string>
 
     <string name="dashboard_card_import_title">导入历史订单</string>
     <string name="dashboard_card_import_tip_import">支持%s前2个月的订单</string>
@@ -204,6 +227,9 @@
     <string name="tip_esl_offline">检测到基站离线</string>
     <string name="str_task_erp">ERP对接提醒</string>
     <string name="tip_task_erp">ERP对接完成</string>
+    <string name="str_esl_img_push">价签推图</string>
+    <string name="tip_esl_img_push">检测到价签推图失败</string>
+    
     <string name="company_shop_area">经营面积</string>
     <string name="company_shop_contact_tip">请输入联系人</string>
     <string name="company_shop_contact_tel_tip">请输入联系方式</string>
@@ -228,18 +254,20 @@
     <string name="company_shop_face_group">人脸分组</string>
     <string name="company_shop_to_create">门店是商户下的店铺经营场所。\t\n在门店里，您可以进行添加智能设备、查看经营状态等工作</string>
     <string name="shop_create">创建门店</string>
-    <string name="msg_ipc_tf_non_exist">网络摄像机%s的存储卡未插入或被拔出，请检查</string>
-    <string name="msg_ipc_tf_exist">网络摄像机%s检测到有新存储卡插入，建议格式化，用于本地存储监控视频</string>
-    <string name="msg_ipc_tf_capable">网络摄像机%s检测到可用的存储卡，可用于本地存储监控视频</string>
-    <string name="msg_ipc_tf_non_capable">网络摄像机%s检测到插入的存储卡可能已损坏，请更换存储卡</string>
-    <string name="msg_ipc_ota">网络摄像机%s已发布新版固件%s，请更新</string>
-    <string name="msg_ipc_pic_detect">网络摄像机%s侦测到异常画面，请即刻查看</string>
-    <string name="msg_ipc_audio_detect">网络摄像机%s侦测到异常声音，请即刻查看</string>
-    <string name="msg_ipc_offline">网络摄像机%s于%s离线，请检查设备状态</string>
-    <string name="msg_esl_offline">基站%s于%s离线，请检查设备状态</string>
-    <string name="msg_esl_ota">价签%s已发布新版固件%s，请更新</string>
+    <string name="msg_ipc_tf_non_exist">网络摄像机的存储卡未插入或被拔出，请检查</string>
+    <string name="msg_ipc_tf_exist">网络摄像机检测到有新存储卡插入，建议格式化，用于本地存储监控视频</string>
+    <string name="msg_ipc_tf_capable">网络摄像机检测到可用的存储卡，可用于本地存储监控视频</string>
+    <string name="msg_ipc_tf_non_capable">网络摄像机检测到插入的存储卡可能已损坏，请更换存储卡</string>
+    <string name="msg_ipc_ota">网络摄像机已发布新版固件%s，请更新</string>
+    <string name="msg_ipc_pic_detect">网络摄像机侦测到异常画面，请即刻查看</string>
+    <string name="msg_ipc_audio_detect">网络摄像机侦测到异常声音，请即刻查看</string>
+    <string name="msg_ipc_offline">网络摄像机于%s离线，请检查设备状态</string>
+    <string name="msg_esl_offline">基站于%s离线，请检查设备状态</string>
+    <string name="msg_esl_ota">价签%已发布新版固件%s，请更新</string>
     <string name="msg_task_erp_finish">已于%s完成与%s的对接，成功获取%s条商品信息</string>
     <string name="msg_task_erp_fail">未能完成与%s的对接，请重试</string>
+    <string name="msg_esl_img_push">与价签%s绑定的商品%s于%s推送失败</string>
+
     <string name="company_shop_create_success">门店创建成功</string>
     <string name="editetxt_max_length">超过字数限制，请重新输入</string>
     <string name="check_mobile_fixedphone_tip">请输入正确的手机号码或座机</string>
@@ -330,6 +358,7 @@
     <string name="str_logging_in">正在登录…</string>
     <string name="str_verification_code">校验验证码…</string>
     <string name="str_now_reset_psw">正在重置密码…</string>
+    <string name="dialog_protocol_and">和</string>
     <string name="dialog_protocol_title">商米用户协议及隐私政策</string>
     <string name="dialog_protocol_msg_1">我们将通过</string>
     <string name="dialog_protocol_msg_2">帮助您了解我们收集、使用、存储和共享个人信息的情况，以及您所享有的相关权利。您可在相关页面访问、更正、删除个人信息并管理您的权利。如您同意，请点击“同意”开始接受我们的服务。</string>
