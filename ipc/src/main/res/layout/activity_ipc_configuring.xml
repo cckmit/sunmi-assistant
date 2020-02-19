@@ -55,9 +55,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_1"
         android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:gravity="center"
         android:textColor="@color/text_caption"
-        android:textSize="@dimen/sp_14"
-        android:gravity="center"/>
+        android:textSize="@dimen/sp_14" />
 
 </RelativeLayout>
