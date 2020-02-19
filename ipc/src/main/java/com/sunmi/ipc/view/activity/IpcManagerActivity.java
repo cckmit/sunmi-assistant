@@ -224,10 +224,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         initSurfaceView();
         initManageList();
-        if (!CommonHelper.isGooglePlay() && isSS1()) {
+        if ( isSS1()) {
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
-            mPresenter.getCashVideoService(device.getId());
-            ivCloudPlayback.setVisibility(View.VISIBLE);
+            if (!CommonHelper.isGooglePlay()) {
+                mPresenter.getCashVideoService(device.getId());
+            }
         } else {
             if (IpcUtils.isNewVersion(device.getFirmware(), IpcConstants.IPC_VERSION_VIDEO_ADJUST)) {
                 initVideoAdjust();
@@ -950,7 +951,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private void initManageList() {
         rvManager.init(0);
-        if (isSS1()) {
+        if (isSS1() && !CommonHelper.isGooglePlay()) {
             cashVideoItem = new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_CASH, R.mipmap.ipc_manage_cashier, getString(R.string.cash_video),
                     getString(R.string.cash_video_item_content), getString(R.string.str_learn_more), true);
             list.add(cashVideoItem);

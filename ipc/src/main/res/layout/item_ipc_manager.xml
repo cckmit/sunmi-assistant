@@ -25,6 +25,8 @@
         android:layout_toEndOf="@+id/iv_icon"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
+        android:layout_toStartOf="@+id/btn_detail"
+        android:layout_marginEnd="@dimen/dp_6"
         android:textStyle="bold" />
 
     <ImageView
@@ -45,6 +47,8 @@
         android:layout_marginTop="@dimen/dp_4"
         android:layout_toEndOf="@+id/iv_icon"
         android:textColor="@color/text_caption"
+        android:layout_toStartOf="@+id/btn_detail"
+        android:layout_marginEnd="@dimen/dp_6"
         android:textSize="@dimen/sp_12" />
 
     <Button
