@@ -15,6 +15,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import sunmi.common.utils.CommonHelper;
+
 /**
  * @author yinhui
  * @since 2019-06-21
@@ -31,11 +33,16 @@ public class Utils {
     private static final SimpleDateFormat DATE_FORMAT_DATE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
     private static final DecimalFormat FORMAT_MAX_SINGLE_DECIMAL = new DecimalFormat("#.#");
+    private static final DecimalFormat FORMAT_THOUSANDS_DOUBLE_DECIMAL = new DecimalFormat(",###,##0.00");
+    private static final DecimalFormat FORMAT_THOUSANDS = new DecimalFormat(",###,###");
 
     private static final Object LOCK = new Object();
 
-    private static final float THRESHOLD_10THOUSAND = 1_0000;
-    private static final float THRESHOLD_100MILLION = 1_0000_0000;
+    private static final float THRESHOLD_MILLION = 1_000_000;
+
+    private static final float THRESHOLD_10THOUSAND = 10_000;
+    private static final float THRESHOLD_100MILLION = 100_000_000;
+
     private static final float THRESHOLD_PERCENT = 0.01f;
     private static final float THRESHOLD_PERCENT_MIN = 0.00005f;
     private static final float THRESHOLD_THOUSANDTH = 0.0001f;
@@ -225,15 +232,26 @@ public class Utils {
         String result;
         if (value < 0) {
             result = DATA_NONE;
-        } else if (value > THRESHOLD_100MILLION) {
-            result = context.getString(R.string.str_num_100_million, value / THRESHOLD_100MILLION);
-        } else if (value > THRESHOLD_10THOUSAND) {
-            result = context.getString(R.string.str_num_10_thousands, value / THRESHOLD_10THOUSAND);
+        } else if (!CommonHelper.isGooglePlay()) {
+            // 国内版数据展示规则
+            if (value > THRESHOLD_100MILLION) {
+                result = context.getString(R.string.str_num_100_million, value / THRESHOLD_100MILLION);
+            } else if (value > THRESHOLD_10THOUSAND) {
+                result = context.getString(R.string.str_num_10_thousands, value / THRESHOLD_10THOUSAND);
+            } else {
+                result = String.format(Locale.getDefault(), isFloat ? "%.2f" : "%.0f", value);
+            }
         } else {
-            result = String.format(Locale.getDefault(), isFloat ? "%.2f" : "%.0f", value);
+            // 海外版数据展示规则
+            if (value > THRESHOLD_MILLION) {
+                result = FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(value / THRESHOLD_MILLION) + "m";
+            } else {
+                result = isFloat ? FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(value)
+                        : FORMAT_THOUSANDS.format(value);
+            }
         }
 
-        if (!highlight || value <= THRESHOLD_10THOUSAND) {
+        if (!highlight || CommonHelper.isGooglePlay() || value <= THRESHOLD_10THOUSAND) {
             return result;
         }
 
