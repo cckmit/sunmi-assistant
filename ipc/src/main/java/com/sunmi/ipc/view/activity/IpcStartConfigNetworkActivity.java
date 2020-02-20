@@ -47,17 +47,17 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
             tvContent.setText(R.string.tip_use_wired_network);
             tvConfigTip.setText(R.string.str_config_tip_ipc_2);
             if (ipcType == CommonConstants.TYPE_IPC_FS) {
-                ivIpc.setBackgroundResource(R.drawable.ic_ipc_config_fs_wired);
+                ivIpc.setBackgroundResource(R.mipmap.ic_ipc_config_fs_wired);
             } else {
-                ivIpc.setBackgroundResource(R.drawable.ic_ipc_config_ss_wired);
+                ivIpc.setBackgroundResource(R.mipmap.ic_ipc_config_ss_wired);
             }
         } else {
             tvContent.setText(R.string.tip_use_wireless_network);
             tvConfigTip.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_3)));
             if (ipcType == CommonConstants.TYPE_IPC_FS) {
-                ivIpc.setBackgroundResource(R.drawable.ic_ipc_config_fs_wireless);
+                ivIpc.setBackgroundResource(R.mipmap.ic_ipc_config_fs_wireless);
             } else {
-                ivIpc.setBackgroundResource(R.drawable.ic_ipc_config_ss_wireless);
+                ivIpc.setBackgroundResource(R.mipmap.ic_ipc_config_ss_wireless);
             }
         }
     }
