@@ -38,10 +38,10 @@ public class Utils {
 
     private static final Object LOCK = new Object();
 
-    private static final float THRESHOLD_MILLION = 1_000_000;
+    public static final float THRESHOLD_MILLION = 1_000_000;
 
-    private static final float THRESHOLD_10THOUSAND = 10_000;
-    private static final float THRESHOLD_100MILLION = 100_000_000;
+    public static final float THRESHOLD_10THOUSAND = 10_000;
+    public static final float THRESHOLD_100MILLION = 100_000_000;
 
     private static final float THRESHOLD_PERCENT = 0.01f;
     private static final float THRESHOLD_PERCENT_MIN = 0.00005f;
