@@ -19,7 +19,10 @@
         android:id="@+id/tv_result"
         style="@style/ConfigTitleText"
         android:layout_below="@+id/title_bar"
-        android:text="@string/tip_ipc_config_complete" />
+        android:text="@string/tip_ipc_config_complete"
+        android:gravity="center"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"/>
 
     <TextView
         android:id="@+id/tv_tip"

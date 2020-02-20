@@ -61,9 +61,9 @@
         android:id="@+id/iv_ipc"
         android:layout_width="@dimen/dp_345"
         android:layout_height="@dimen/dp_294"
-        android:layout_below="@id/title_bar"
+        android:layout_below="@id/tv_config_tip"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_170"
+        android:layout_marginTop="@dimen/dp_32"
         android:background="@drawable/ipc_config_fs"
         tools:ignore="ContentDescription" />
 
