@@ -125,7 +125,7 @@
     <string name="str_num_100_million">%.2f亿</string>
     <string name="str_num_people">%d Customers</string>
     <string name="str_num_10_thousands_people">%s万人</string>
-    <string name="str_num_people_total">The total number of people</string>
+    <string name="str_num_people_total">Total people</string>
     <string name="str_cancel_setting">Are you sure to cancel the setting?</string>
     <string name="str_sunmi_link">SUNMI Link</string>
     <string name="str_tab_support">Service</string>
