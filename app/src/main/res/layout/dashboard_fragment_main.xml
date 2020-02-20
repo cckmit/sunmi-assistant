@@ -50,6 +50,8 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_28"
             android:layout_gravity="top|center_horizontal"
+            android:layout_marginStart="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_24"
             app:tl_indicator_bounce_enable="false"
             app:tl_indicator_corner_radius="@dimen/dp_1"
             app:tl_indicator_height="@dimen/dp_2"
@@ -58,7 +60,8 @@
             app:tl_textBold="SELECT"
             app:tl_textSelectColor="@color/c_white"
             app:tl_textUnselectColor="@color/white_60a"
-            app:tl_textsize="@dimen/sp_14" />
+            app:tl_textsize="@dimen/sp_14"
+            app:tl_tab_space_equal="false" />
 
     </FrameLayout>
 

@@ -152,6 +152,9 @@ public class MotionVideoListActivity extends BaseMvpActivity<MotionVideoListPres
                 new BGANormalRefreshViewHolder(this, true);
         refreshViewHolder.setLoadingMoreText(getString(R.string.str_loding_more));
         refreshViewHolder.setLoadMoreBackgroundColorRes(R.color.bg_common);
+        refreshViewHolder.setRefreshingText(getString(R.string.str_refresh_loading));
+        refreshViewHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
+        refreshViewHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
         refreshLayout.setRefreshViewHolder(refreshViewHolder);
         refreshLayout.setPullDownRefreshEnable(true);
         refreshLayout.setIsShowLoadingMoreView(true);

@@ -52,7 +52,7 @@
     <string name="dashboard_data_customer">Customer Visits</string>
     <string name="dashboard_period_last_month_avg">Daily Traffic Last Month</string>
     <string name="dashboard_data_transaction_rate">Conversion Rate</string>
-    <string name="dashboard_page_overview">Real-Time Data</string>
+    <string name="dashboard_page_overview">Monitor</string>
     <string name="dashboard_page_customer">Traffic Analysis</string>
     <string name="dashboard_page_profile">Persona</string>
     <string name="dashboard_card_customer_pass">Passing Customers</string>
