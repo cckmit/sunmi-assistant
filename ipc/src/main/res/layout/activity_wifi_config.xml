@@ -32,7 +32,8 @@
             android:text="@string/tip_choose_wifi_to_connect"
             android:textColor="@color/text_main"
             android:textSize="@dimen/sp_28"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:gravity="center"/>
 
         <TextView
             android:layout_width="wrap_content"

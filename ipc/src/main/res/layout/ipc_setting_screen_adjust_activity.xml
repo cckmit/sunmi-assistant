@@ -39,8 +39,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
-        android:gravity="center"
-        android:lines="1"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_17"
         app:layout_constraintBottom_toBottomOf="@+id/v_setting_top_mask"
@@ -87,6 +85,9 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_24"
         android:background="@mipmap/adjust_reset"
+        android:text="@string/str_reset"
+        android:textSize="@dimen/sp_10"
+        android:textColor="@color/c_white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_setting_btn_minus" />
@@ -113,8 +114,10 @@
 
     <TextView
         android:id="@+id/tv_setting_tip_content"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_60"
+        android:layout_marginEnd="@dimen/dp_60"
         android:background="@drawable/setting_bg_tip_text"
         android:gravity="center"
         android:paddingStart="@dimen/dp_8"
