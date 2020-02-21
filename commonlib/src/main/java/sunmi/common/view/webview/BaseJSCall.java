@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.StatusBarUtils;
 
 /**
@@ -75,5 +76,10 @@ public class BaseJSCall {
         Intent intent = new Intent();
         intent.putExtra("args",args);
         context.setResult(Activity.RESULT_OK,intent);
+    }
+
+    @JavascriptInterface
+    public String handleLanguage() {
+        return CommonHelper.getLanguage();
     }
 }
