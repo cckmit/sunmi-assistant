@@ -15,6 +15,7 @@ import java.util.List;
 
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.ServiceNameUtils;
 
 /**
  * Description:
@@ -41,7 +42,8 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
         Button btnRenewal = helper.getView(R.id.btn_renewal);
         TextView tvDeviceSn = helper.getView(R.id.tv_device_sn);
         TextView tvDeviceName = helper.getView(R.id.tv_device_name);
-        helper.setText(R.id.tv_service_name, item.getServiceName());
+        helper.setText(R.id.tv_service_name,
+                ServiceNameUtils.getInstance().getServiceName(item.getProductNo()));
         if (item.getStatus() != CommonConstants.SERVICE_EXPIRED) {
             helper.setText(R.id.tv_remaining, context.getString(R.string.str_remaining_validity_period,
                     DateTimeUtils.secondToPeriod(item.getValidTime())));

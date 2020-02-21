@@ -28,6 +28,7 @@ import sunmi.common.constant.RouterConfig;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.ServiceNameUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.WebViewParamsUtils;
 
@@ -107,7 +108,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             initNetworkNormal();
             this.bean = bean;
             String sn = bean.getDeviceSn();
-            tvServiceName.setText(bean.getServiceName());
+            tvServiceName.setText(ServiceNameUtils.getInstance().getServiceName(bean.getProductNo()));
             if (isBind) {
                 tvDeviceName.setText(deviceName);
             } else {
