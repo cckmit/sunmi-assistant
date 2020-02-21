@@ -10,7 +10,7 @@
     <string name="tip_ipc_config_complete">IPC Configuration Completed</string>
     <string name="tip_select_ipc">Select IPC to Configure</string>
     <string name="tip_choose_multi_ipc">More than one can be selected</string>
-    <string name="str_quit_config">Quit the configuration</string>
+    <string name="str_quit_config">Quit</string>
     <string name="dialog_msg_timeout_retry">Connection timeout, please check the network and retry</string>
     <string name="tip_connect_ipc_fail">Unable to connect the IP camera</string>
     <string name="str_HD">HD</string>
@@ -164,14 +164,14 @@
     <string name="ipc_face_group_old_desc">满足新客移到熟客条件的人脸信息将存在熟客分组中</string>
     <string name="ipc_face_group_staff_desc">员工库的人脸识别结果将不计入客流统计</string>
     <string name="ipc_face_group_black_desc">当黑名单的人员出现时，会向用户推送告警消息</string>
-    <string name="tip_ipc_config_fail">摄像机设置失败</string>
+    <string name="tip_ipc_config_fail">Configuration Failed</string>
     <string name="tip_error_company_or_shop_id">错误的商户id或者店铺id</string>
     <string name="tip_adjust_first">为了能正常使用人脸识别功能，请点击下方\n【调整画面】按钮</string>
-    <string name="str_choose_fs_adjust">选择要换面调整的摄像机</string>
+    <string name="str_choose_fs_adjust">Please select a camera</string>
     <string name="tip_no_tf_card">No Memory Card Inserted</string>
     <string name="tip_tf_uninitalized">未格式化</string>
-    <string name="tip_unrecognition_tf_card">存储卡无法识别</string>
-    <string name="tip_tf_card_removed_software">存储卡已被软件移除，请重新插入</string>
+    <string name="tip_unrecognition_tf_card">Unable to identify memory card</string>
+    <string name="tip_tf_card_removed_software">The memory card has been removed by the software, Please re-insert it</string>
     <string name="ipc_time_over_current_time">超过了当前时间</string>
     <string name="ipc_time_over_back_time">超过了日期回放时间</string>
 
@@ -241,7 +241,7 @@
     <string name="ipc_save_picture_tip">Saving, please wait…</string>
     <string name="str_face_history">进店日志</string>
     <string name="str_view_face_history">查看人脸记录</string>
-    <string name="str_motion_detection">Off-Time Storekeeping</string>
+    <string name="str_motion_detection">Store Keeping</string>
     <string name="str_md_exception">In-store anomaly detection</string>
     <string name="str_view_flow_video">查看交易流水视频</string>
     <string name="ipc_dynamic_request_external_storage">暂未授予存储权限，请授权后重试</string>
