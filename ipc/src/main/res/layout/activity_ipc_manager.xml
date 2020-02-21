@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/c_black">
 
-                <SurfaceView
+                <com.sunmi.ipc.view.ScaleTextureView
                     android:id="@+id/vv_ipc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

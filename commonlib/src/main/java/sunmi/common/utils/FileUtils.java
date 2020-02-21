@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -963,6 +964,27 @@ public class FileUtils {
             LogCat.e(CommonHelper.getCName(new Exception()), e.getMessage(), e);
         }
         return file;
+    }
+
+    /**
+     * bitmap保存图片
+     *
+     * @param bm
+     * @param name
+     */
+    public static void saveBitmap(Bitmap bm, String name) {
+        File f = new File(FileHelper.SDCARD_CACHE_IMAGE_PATH, name + ".png");
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
