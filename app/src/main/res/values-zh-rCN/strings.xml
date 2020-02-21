@@ -89,7 +89,14 @@
     <string name="dashboard_card_customer_frequency_marker_title">到店人数</string>
     <string name="dashboard_card_customer_frequency_marker_value">次数 %d次</string>
     <string name="dashboard_card_customer_frequency_marker_count_above">次数 %d次以上</string>
-    <string name="dashboard_card_customer_week_count">第%d周</string>
+
+    <string name="dashboard_card_customer_week_1">第1周</string>
+    <string name="dashboard_card_customer_week_2">第2周</string>
+    <string name="dashboard_card_customer_week_3">第3周</string>
+    <string name="dashboard_card_customer_week_4">第4周</string>
+    <string name="dashboard_card_customer_week_5">第5周</string>
+    <string name="dashboard_card_customer_week_6">第6周</string>
+
     <string name="dashboard_card_customer_none">暂无客流数据</string>
     <string name="dashboard_card_customer_group_frequency">客群到店频次</string>
     <string name="dashboard_card_customer_avg_enter">时间段内顾客的平均到店次数</string>
