@@ -62,7 +62,7 @@
     <string name="dashboard_card_customer_ratio">Of the Total</string>
     <string name="dashboard_card_customer_old_ratio">Repeat</string>
     <string name="dashboard_card_customer_peak">Rush Time</string>
-    <string name="dashboard_card_customer_frequency">Frequency of visits</string>
+    <string name="dashboard_card_customer_frequency">Frequency</string>
     <string name="dashboard_card_customer_frequency_data_day">%s/Day</string>
     <string name="dashboard_card_customer_frequency_data_week">%s/Week</string>
     <string name="dashboard_card_customer_frequency_data_month">%s/Month</string>
