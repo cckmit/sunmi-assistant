@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -325,12 +324,12 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
     private static class XAxisValueFormatter extends ValueFormatter {
 
         private String[] weekName;
-        private String weekCountName;
+        private String[] weekCountName;
         private int period = Constants.TIME_PERIOD_WEEK;
 
         private XAxisValueFormatter(Context context) {
             weekName = context.getResources().getStringArray(R.array.week_name);
-            weekCountName = context.getString(R.string.dashboard_card_customer_week_count);
+            weekCountName = context.getResources().getStringArray(R.array.dashboard_week_list);
         }
 
         public void setPeriod(int period) {
@@ -343,7 +342,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
                 value = value == 7 ? 0 : value;
                 return weekName[(int) value];
             } else {
-                return String.format(Locale.getDefault(), weekCountName, (int) value);
+                return weekCountName[(int) value - 1];
             }
         }
     }
