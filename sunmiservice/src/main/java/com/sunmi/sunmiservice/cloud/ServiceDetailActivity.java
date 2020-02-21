@@ -26,6 +26,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.rpc.RpcErrorCode;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.WebViewParamsUtils;
@@ -154,8 +155,10 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     private void initNetworkNormal() {
         rlService.setVisibility(View.VISIBLE);
         rlOrder.setVisibility(View.VISIBLE);
-        btnRenewal.setVisibility(View.VISIBLE);
         networkError.setVisibility(View.GONE);
+        if (!CommonHelper.isGooglePlay()){
+            btnRenewal.setVisibility(View.VISIBLE);
+        }
     }
 
 

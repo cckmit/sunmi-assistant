@@ -78,7 +78,7 @@
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
             android:gravity="center"
-            android:maxWidth="@dimen/dp_256"
+            android:maxWidth="@dimen/dp_230"
             android:singleLine="true"
             android:textAllCaps="true"
             android:textColor="@color/text_main"

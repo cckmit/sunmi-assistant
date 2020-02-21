@@ -135,7 +135,7 @@
     <string name="ipc_device_name">Device Name：%s</string>
     <string name="str_dev_sn">SN：%s</string>
     <string name="str_dev_mac">MAC：%s</string>
-    <string name="str_period">%d days%d hours</string>
+    <string name="str_period">%d D%d H</string>
     <string name="str_cloud_storage">Cloud Storage</string>
     <string name="str_cloud_storage_service">Cloud Storage Service</string>
     <string name="str_expired">Expired</string>
