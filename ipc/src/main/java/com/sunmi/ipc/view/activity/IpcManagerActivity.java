@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.SurfaceTexture;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.constraint.ConstraintLayout;
@@ -12,8 +13,10 @@ import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -38,6 +41,7 @@ import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.service.P2pService;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.sunmi.ipc.utils.IpcUtils;
+import com.sunmi.ipc.view.ScaleTextureView;
 import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
 import com.xiaojinzi.component.impl.Router;
 
@@ -66,9 +70,11 @@ import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DeviceTypeUtils;
+import sunmi.common.utils.FileUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.WebViewParamsUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -86,7 +92,7 @@ import sunmi.common.view.dialog.CommonDialog;
 public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         implements IpcManagerContract.View, SurfaceHolder.Callback, View.OnClickListener,
         VolumeHelper.VolumeChangeListener, P2pService.OnPlayStatusChangedListener,
-        SeekBar.OnSeekBarChangeListener {
+        SeekBar.OnSeekBarChangeListener, TextureView.SurfaceTextureListener {
 
     private final static int PLAY_FAIL_OFFLINE = 1;
     private final static int PLAY_FAIL_NET_ERROR = 2;
@@ -98,7 +104,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     @ViewById(resName = "title_bar")
     TitleBarView titleBar;
     @ViewById(resName = "vv_ipc")
-    SurfaceView videoView;
+    ScaleTextureView videoView;
     @ViewById(resName = "rl_top")
     RelativeLayout rlTopBar;
     @ViewById(resName = "rl_bottom")
@@ -263,9 +269,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         return device.getStatus() == DeviceStatus.OFFLINE.ordinal();
     }
 
+    Surface surface;
+
     private void initSurfaceView() {
         switchOrientation(Configuration.ORIENTATION_PORTRAIT);
-        videoView.getHolder().addCallback(this);
+//        videoView.getHolder().addCallback(this);
+        videoView.setSurfaceTextureListener(this);
     }
 
     @Override
@@ -419,6 +428,20 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    @Click(resName = "iv_screenshot_portrait")
+    void screenshotClick() {
+        //方法一 texureview
+        FileUtils.saveBitmap(videoView.getBitmap(), "444444");
+        //方法二 surfaceview
+        //api 24
+//        ScreenShotUtils.request(this, videoView, new ScreenShotUtils.OnScreenShotFinishedListener() {
+//            @Override
+//            public void onScreenShotFinished(int resultCode, Bitmap bitmap) {
+//                FileUtils.saveBitmap(videoView.getBitmap(), "444444");
+//            }
+//        });
+    }
+
 //    //视频录制
 //    @Click(resName = "iv_record")
 //    void recordClick() {
@@ -533,8 +556,20 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
     }
 
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+    }
+
     void p2pPrepare() {
         if (isDeviceOffline()) {
+            return;
+        }
+        if (surface == null) {
+            LogCat.e(TAG, "999999 surface is null");
             return;
         }
         p2pServiceInit();
@@ -543,17 +578,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private void p2pServiceInit() {
         if (p2pService != null)
-            p2pService.init(videoView.getHolder().getSurface(), this);
-
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+            p2pService.init(surface, this);
     }
 
     @Override
@@ -854,6 +879,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     //开始直播
     @Background
     void initP2pLive() {
+        if (surface == null) {
+            LogCat.e(TAG, "999999 surface is null");
+            return;
+        }
         if (p2pService != null) {
             p2pService.initP2pLive();
         }
@@ -1024,4 +1053,34 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         rvManager.setAdapter(adapter);
     }
 
+    private void initSurface(int width, int height) {
+        SurfaceTexture texture = videoView.getSurfaceTexture();
+        texture.setDefaultBufferSize(width, height);
+        surface = new Surface(texture);
+        p2pPrepare();
+
+        if (p2pService != null) {
+            resumePlay();
+        }
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
+        initSurface(i, i1);
+    }
+
+    @Override
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
+
+    }
+
+    @Override
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+
+    }
 }
