@@ -68,6 +68,8 @@ public class CommonConstants {
     public static final int RESULT_FAIL = 0;
 
     //服务类型
+    public static final int SERVICE_TYPE_CLOUD_7 =1;
+    public static final int SERVICE_TYPE_CLOUD_30 =2;
     public static final int SERVICE_TYPE_LOAN = 6;
 
     public static final int SERVICE_STATUS_UNABLE = 1;
