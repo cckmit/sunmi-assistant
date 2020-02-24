@@ -191,7 +191,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                     item.setTagImageResId(-1);
                 }
             } else if (data.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                if (data.getServiceTag() == 1){
+                if (data.getServiceType() == CommonConstants.SERVICE_TYPE_CLOUD_7){
                     item.setTitle(context.getString(R.string.service_cloud_7));
                 }else {
                     item.setTitle(context.getString(R.string.service_cloud_30));
