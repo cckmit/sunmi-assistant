@@ -189,4 +189,6 @@
     <string name="str_refresh_pull">下拉刷新</string>
     <string name="str_refresh_release">释放更新</string>
     <string name="str_refresh_loading">加载中…</string>
+    <string name="service_cloud_7">7天云存储服务</string>
+    <string name="service_cloud_30">30天云存储服务</string>
 </resources>
