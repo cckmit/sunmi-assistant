@@ -91,9 +91,9 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
 
     private void regToWx() {
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
-        api = WXAPIFactory.createWXAPI(mActivity, SunmiServiceConfig.WECHAT_APP_ID, true);
+        api = WXAPIFactory.createWXAPI(mActivity, CommonConfig.WECHAT_APP_ID, true);
         // 将应用的appId注册到微信
-        api.registerApp(SunmiServiceConfig.WECHAT_APP_ID);
+        api.registerApp(CommonConfig.WECHAT_APP_ID);
     }
 
     @AfterViews
