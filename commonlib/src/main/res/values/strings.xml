@@ -135,7 +135,7 @@
     <string name="ipc_device_name">Device Name：%s</string>
     <string name="str_dev_sn">SN：%s</string>
     <string name="str_dev_mac">MAC：%s</string>
-    <string name="str_period">%d days%d hours</string>
+    <string name="str_period">%d d%d h</string>
     <string name="str_cloud_storage">Cloud Storage</string>
     <string name="str_cloud_storage_service">Cloud Storage Service</string>
     <string name="str_expired">Expired</string>
@@ -189,4 +189,6 @@
     <string name="str_refresh_pull">Pull down to refresh</string>
     <string name="str_refresh_release">Release to refresh</string>
     <string name="str_refresh_loading">Loading…</string>
+    <string name="service_cloud_7">Cloud Storage(7-Days)</string>
+    <string name="service_cloud_30">Cloud Storage(30-Days)</string>
 </resources>

@@ -41,7 +41,11 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
         Button btnRenewal = helper.getView(R.id.btn_renewal);
         TextView tvDeviceSn = helper.getView(R.id.tv_device_sn);
         TextView tvDeviceName = helper.getView(R.id.tv_device_name);
-        helper.setText(R.id.tv_service_name, item.getServiceName());
+        if (item.getServiceType() == CommonConstants.SERVICE_TYPE_CLOUD_7) {
+            helper.setText(R.id.tv_service_name, R.string.service_cloud_7);
+        } else {
+            helper.setText(R.id.tv_service_name, R.string.service_cloud_30);
+        }
         if (item.getStatus() != CommonConstants.SERVICE_EXPIRED) {
             helper.setText(R.id.tv_remaining, context.getString(R.string.str_remaining_validity_period,
                     DateTimeUtils.secondToPeriod(item.getValidTime())));
