@@ -107,7 +107,11 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             initNetworkNormal();
             this.bean = bean;
             String sn = bean.getDeviceSn();
-            tvServiceName.setText(bean.getServiceName());
+            if (bean.getServiceType() == CommonConstants.SERVICE_TYPE_CLOUD_7) {
+                tvServiceName.setText(R.string.service_cloud_7);
+            } else {
+                tvServiceName.setText(R.string.service_cloud_30);
+            }
             if (isBind) {
                 tvDeviceName.setText(deviceName);
             } else {
@@ -156,7 +160,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         rlService.setVisibility(View.VISIBLE);
         rlOrder.setVisibility(View.VISIBLE);
         networkError.setVisibility(View.GONE);
-        if (!CommonHelper.isGooglePlay()){
+        if (!CommonHelper.isGooglePlay()) {
             btnRenewal.setVisibility(View.VISIBLE);
         }
     }
