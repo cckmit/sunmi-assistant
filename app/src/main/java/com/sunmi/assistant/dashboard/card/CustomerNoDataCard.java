@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;

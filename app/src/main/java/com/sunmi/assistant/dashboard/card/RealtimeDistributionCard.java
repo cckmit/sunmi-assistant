@@ -23,7 +23,6 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.PieChartMarkerView;

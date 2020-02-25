@@ -6,12 +6,12 @@ import android.os.Looper;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.customer.CustomerFragment;
-import com.sunmi.assistant.dashboard.customer.CustomerFragment_;
-import com.sunmi.assistant.dashboard.overview.RealtimeFragment;
-import com.sunmi.assistant.dashboard.overview.RealtimeFragment_;
-import com.sunmi.assistant.dashboard.profile.ProfileFragment;
-import com.sunmi.assistant.dashboard.profile.ProfileFragment_;
+import com.sunmi.assistant.dashboard.page.CustomerFragment;
+import com.sunmi.assistant.dashboard.page.CustomerFragment_;
+import com.sunmi.assistant.dashboard.page.ProfileFragment;
+import com.sunmi.assistant.dashboard.page.ProfileFragment_;
+import com.sunmi.assistant.dashboard.page.RealtimeFragment;
+import com.sunmi.assistant.dashboard.page.RealtimeFragment_;
 import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.rpc.ServiceApi;

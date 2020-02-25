@@ -18,7 +18,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;

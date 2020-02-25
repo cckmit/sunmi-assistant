@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.xiaojinzi.component.impl.Router;
 
 import retrofit2.Call;

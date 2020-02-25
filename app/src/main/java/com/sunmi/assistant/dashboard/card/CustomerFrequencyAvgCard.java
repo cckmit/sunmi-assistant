@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.ipc.face.model.FaceAge;

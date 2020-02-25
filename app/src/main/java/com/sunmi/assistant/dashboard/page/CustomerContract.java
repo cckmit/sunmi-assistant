@@ -1,7 +1,7 @@
-package com.sunmi.assistant.dashboard.customer;
+package com.sunmi.assistant.dashboard.page;
 
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.PageContract;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 
 import java.util.List;
 

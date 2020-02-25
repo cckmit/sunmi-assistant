@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.profile;
+package com.sunmi.assistant.dashboard.page;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,8 +9,8 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.DashboardContract;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshViewHolder;
 
@@ -30,8 +30,8 @@ import sunmi.common.utils.log.LogCat;
  * @date 2019-10-11
  */
 @EFragment(R.layout.dashboard_fragment_list)
-public class ProfileFragment extends BaseMvpFragment<ProfilePresenter>
-        implements ProfileContract.View, RefreshLayout.RefreshLayoutDelegate {
+public class RealtimeFragment extends BaseMvpFragment<RealtimePresenter>
+        implements RealtimeContract.View, RefreshLayout.RefreshLayoutDelegate {
 
     @ViewById(R.id.layout_dashboard_refresh)
     RefreshLayout mRefreshLayout;
@@ -53,11 +53,11 @@ public class ProfileFragment extends BaseMvpFragment<ProfilePresenter>
         }
         Fragment parent = getParentFragment();
         if (!(parent instanceof DashboardContract.View)) {
-            LogCat.e(TAG, "Parent is not DashboardFragment. ProfileFragment must be used in dashboard.");
+            LogCat.e(TAG, "Parent is not DashboardFragment. RealtimeFragment must be used in dashboard.");
             return;
         }
         mParent = (DashboardContract.View) parent;
-        mPresenter = new ProfilePresenter(mParent.getPresenter());
+        mPresenter = new RealtimePresenter(mParent.getPresenter());
         mPresenter.attachView(this);
         initRefreshLayout(context);
         initRecycler(context);

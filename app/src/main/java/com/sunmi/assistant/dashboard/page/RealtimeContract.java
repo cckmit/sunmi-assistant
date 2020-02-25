@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.profile;
+package com.sunmi.assistant.dashboard.page;
 
 import com.sunmi.assistant.dashboard.PageContract;
 
@@ -6,7 +6,7 @@ import com.sunmi.assistant.dashboard.PageContract;
  * @author yinhui
  * @date 2019-10-14
  */
-public interface ProfileContract {
+public interface RealtimeContract {
 
     interface View extends PageContract.PageView {
     }

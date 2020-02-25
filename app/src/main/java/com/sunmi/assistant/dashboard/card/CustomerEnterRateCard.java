@@ -14,7 +14,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;

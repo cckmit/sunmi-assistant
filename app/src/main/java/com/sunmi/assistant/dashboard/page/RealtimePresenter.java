@@ -1,10 +1,10 @@
-package com.sunmi.assistant.dashboard.overview;
+package com.sunmi.assistant.dashboard.page;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.card.RealtimeDistributionCard;
 import com.sunmi.assistant.dashboard.card.RealtimeEnterRateCard;
 import com.sunmi.assistant.dashboard.card.RealtimeGapCard;

@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard;
+package com.sunmi.assistant.dashboard.card;
 
 import android.content.Context;
 import android.os.Handler;
@@ -7,6 +7,9 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
+
+import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.Utils;
 
 import java.text.DecimalFormat;
 
