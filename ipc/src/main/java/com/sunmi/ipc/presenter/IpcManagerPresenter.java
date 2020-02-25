@@ -10,6 +10,7 @@ import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.tutk.IOTC.P2pCmdCallback;
+import com.xiaomi.clientreport.processor.IEventProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import sunmi.common.model.CashServiceInfo;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.DateTimeUtils;
 
@@ -183,9 +185,17 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
             if (data.getActiveStatus() == CommonConstants.SERVICE_INACTIVATED && data.getStatus() != CommonConstants.SERVICE_ALREADY_OPENED) {
                 item.setSummary(context.getString(R.string.str_subscribe_free));
                 item.setRightText(context.getString(R.string.str_use_free));
-                item.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
+                if (!CommonHelper.isGooglePlay()) {
+                    item.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
+                }else {
+                    item.setTagImageResId(-1);
+                }
             } else if (data.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                item.setTitle(data.getServiceName());
+                if (data.getServiceType() == CommonConstants.SERVICE_TYPE_CLOUD_7){
+                    item.setTitle(context.getString(R.string.service_cloud_7));
+                }else {
+                    item.setTitle(context.getString(R.string.service_cloud_30));
+                }
                 item.setSummary(context.getString(R.string.str_remaining_validity_period,
                         DateTimeUtils.secondToPeriod(data.getValidTime())));
                 item.setRightText(context.getString(R.string.str_setting_detail));

@@ -59,6 +59,8 @@ public class ServiceResp {
         private int activeTime;
         @SerializedName("active_expire_time")
         private int activeExpireTime;
+        @SerializedName("service_tag")
+        private int serviceTag;
         @SerializedName("status")
         private int status;
         @SerializedName("expire_time")
@@ -110,6 +112,10 @@ public class ServiceResp {
 
         public int getActiveExpireTime() {
             return activeExpireTime;
+        }
+
+        public int getServiceTag() {
+            return serviceTag;
         }
 
         public int getStatus() {
