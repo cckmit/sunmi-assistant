@@ -3,7 +3,7 @@ package com.sunmi.assistant.dashboard.ui.chart;
 import android.content.Context;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.Calendar;
 import java.util.Locale;

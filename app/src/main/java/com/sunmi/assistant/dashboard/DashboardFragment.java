@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.v4.app.Fragment;
@@ -13,18 +12,20 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.ui.DashboardShopAdapter;
+import com.sunmi.assistant.dashboard.ui.DashboardShopAnim;
 import com.sunmi.assistant.dashboard.ui.ScrollableViewPager;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.xiaojinzi.component.impl.Router;
@@ -48,7 +49,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.utils.log.LogCat;
-import sunmi.common.view.DropdownMenu;
+import sunmi.common.view.DropdownMenuNew;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
 import sunmi.common.view.tablayout.listener.OnTabSelectListener;
@@ -74,10 +75,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @ViewById(R.id.layout_dashboard_tab)
     FrameLayout mTopPageTab;
     @ViewById(R.id.layout_shop_title)
-    DropdownMenu mTopShopMenu;
-    private LinearLayout mShopMenuList;
-    @ViewById(R.id.view_dashboard_overlay)
-    View mOverlay;
+    DropdownMenuNew mTopShopMenu;
 
     @ViewById(R.id.layout_top_period_tab)
     ViewGroup mTopStickyPeriodTab;
@@ -104,11 +102,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private List<PageHost> mPages;
 
-    private ShopMenuAdapter mShopMenuAdapter;
-    private ShopMenuPopupHelper mShopMenuPopupHelper;
-    private TextView mShopMenuTitle;
-    private ImageView mShopMenuTitleArrow;
-    private FilterItem mShopMenuItem;
+    private DashboardShopAdapter mShopMenuAdapter;
+    private DashboardShopAnim mShopMenuAnim;
 
     private int mStatusBarHeight;
     private int mTopStickyPeriodHeight;
@@ -164,28 +159,38 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mTopShopMenu.setPadding(0, mStatusBarHeight, 0, 0);
 
         // 初始化设置顶部门店选择下拉列表
-        mShopMenuAdapter = new ShopMenuAdapter(context);
+        mShopMenuAdapter = new DashboardShopAdapter(context);
+        mShopMenuAnim = new DashboardShopAnim();
+        mTopShopMenu.setAdapter(mShopMenuAdapter);
+        mTopShopMenu.setAnim(mShopMenuAnim);
         mShopMenuAdapter.setOnItemClickListener((adapter, model, position) -> {
+            // 切换到门店视角
+            if (model.isChecked()) {
+                return;
+            }
+            mPresenter.setShop(model);
+            mShopMenuAdapter.selectShopPerspective();
+
+            // 当前门店放在列表的第一个位置
             if (position == 0) {
                 return;
             }
-            showLoadingDialog();
-            mPresenter.setShop(model);
-            mShopMenuItem.setChecked(false);
-            mShopMenuItem = model;
-            model.setChecked(true);
             List<FilterItem> data = adapter.getData();
             data.remove(position);
             data.add(0, model);
             adapter.notifyItemRangeChanged(0, position + 1);
         });
-        mTopShopMenu.setAdapter(mShopMenuAdapter);
-        mShopMenuTitle = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_title);
-        mShopMenuTitleArrow = mShopMenuAdapter.getTitle().getView(R.id.dropdown_item_arrow);
-        mShopMenuPopupHelper = new ShopMenuPopupHelper(context, mContent, mOverlay, mShopMenuTitleArrow);
-        mTopShopMenu.setLayoutManager(new ShopMenuLayoutManager(context));
-        mTopShopMenu.setPopupHelper(mShopMenuPopupHelper);
-        mOverlay.setOnClickListener(v -> mTopShopMenu.getPopup().dismiss(true));
+        DropdownMenuNew.ViewHolder<FilterItem> content = mShopMenuAdapter.getContent();
+        if (content != null) {
+            content.getView(R.id.sil_company).setOnClickListener(v -> {
+                mTopShopMenu.dismiss(true);
+                // 切换到总部视角
+                mShopMenuAdapter.selectTotalPerspective();
+                // TODO: 切换到总部视角
+            });
+        }
+        mShopMenuAdapter.init();
+
     }
 
     private void initViewPager(Context context) {
@@ -229,18 +234,17 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void updateStatusBar() {
         resetTop();
         mPresenter.scrollToTop();
-        if (mTopShopMenu.getPopup().isShowing()) {
-            mTopShopMenu.getPopup().dismiss(false);
+        if (mTopShopMenu.isShowing()) {
+            mTopShopMenu.dismiss(false);
         }
     }
 
     private void showContent() {
         updateStickyPeriodTab(getActivity(), mIsStickyPeriodTop, false);
         mContentGroup.setVisibility(View.VISIBLE);
-        mOverlay.setVisibility(View.GONE);
         mLayoutError.setVisibility(View.GONE);
-        if (mTopShopMenu.getPopup().isShowing()) {
-            mTopShopMenu.getPopup().dismiss(true);
+        if (mTopShopMenu.isShowing()) {
+            mTopShopMenu.dismiss(true);
         }
         hideLoadingDialog();
     }
@@ -248,7 +252,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private void showError() {
         StatusBarUtils.setStatusBarFullTransparent(getActivity());
         mContentGroup.setVisibility(View.INVISIBLE);
-        mOverlay.setVisibility(View.INVISIBLE);
         mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
         mLayoutError.setVisibility(View.VISIBLE);
         hideLoadingDialog();
@@ -332,12 +335,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void setShopList(List<FilterItem> list) {
-        for (FilterItem item : list) {
-            if (item.isChecked()) {
-                mShopMenuItem = item;
-                break;
-            }
-        }
         mShopMenuAdapter.setData(list);
     }
 
@@ -382,7 +379,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         int offset = Math.min(position - mTopHeaderHeight, 0);
         mTopShopMenu.setTranslationY(offset);
         mTopPageTab.setTranslationY(offset);
-        mShopMenuPopupHelper.setOffset(offset);
+        mShopMenuAnim.setOffset(offset);
 
         if (debugEnable) {
             LogCat.e(TAG, "position=" + position + "; offset=" + offset);
@@ -407,7 +404,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void resetTop() {
         mTopShopMenu.setTranslationY(0);
         mTopPageTab.setTranslationY(0);
-        mShopMenuPopupHelper.setOffset(0);
+        mShopMenuAnim.setOffset(0);
         updateStickyPeriodTab(getActivity(), false, false);
     }
 
@@ -474,10 +471,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mPresenter.reload(Constants.FLAG_ALL_MASK);
         } else if (id == CommonNotifications.companySwitch) {
             mHasInit = false;
-            mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
+            mShopMenuAdapter.setCompanyName(SpUtils.getCompanyName());
             mPresenter.reload(Constants.FLAG_ALL_MASK);
         } else if (id == CommonNotifications.companyNameChanged) {
-            mShopMenuPopupHelper.setCompanyName(SpUtils.getCompanyName());
+            mShopMenuAdapter.setCompanyName(SpUtils.getCompanyName());
         } else if (id == CommonNotifications.shopSwitched) {
             mHasInit = false;
             mPresenter.reload(Constants.FLAG_SAAS | Constants.FLAG_FS | Constants.FLAG_CUSTOMER | Constants.FLAG_BUNDLED_LIST);
@@ -542,23 +539,4 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
     }
 
-    private static class ShopMenuLayoutManager extends LinearLayoutManager {
-
-        private ShopMenuLayoutManager(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void onMeasure(@NonNull RecyclerView.Recycler recycler, @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
-            if (getChildCount() == 0) {
-                super.onMeasure(recycler, state, widthSpec, heightSpec);
-                return;
-            }
-            View firstChildView = recycler.getViewForPosition(0);
-            measureChild(firstChildView, widthSpec, heightSpec);
-            int itemHeight = firstChildView.getMeasuredHeight();
-            setMeasuredDimension(View.MeasureSpec.getSize(widthSpec),
-                    getChildCount() > 7 ? (int) (itemHeight * 7.5f) : itemHeight * getChildCount());
-        }
-    }
 }

@@ -8,8 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.text.DecimalFormat;
 

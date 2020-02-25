@@ -14,8 +14,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
@@ -23,6 +21,8 @@ import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelRenderer;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

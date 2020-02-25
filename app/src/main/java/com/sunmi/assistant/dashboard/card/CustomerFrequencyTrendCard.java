@@ -18,13 +18,13 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

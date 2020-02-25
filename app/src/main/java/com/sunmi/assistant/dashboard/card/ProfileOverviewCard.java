@@ -7,8 +7,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.Random;
 

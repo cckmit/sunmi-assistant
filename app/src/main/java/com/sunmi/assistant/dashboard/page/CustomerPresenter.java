@@ -1,9 +1,7 @@
 package com.sunmi.assistant.dashboard.page;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
-import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.card.CustomerEnterRateCard;
 import com.sunmi.assistant.dashboard.card.CustomerFrequencyAvgCard;
@@ -15,6 +13,8 @@ import com.sunmi.assistant.dashboard.card.CustomerOverviewCard;
 import com.sunmi.assistant.dashboard.card.CustomerPeriodCard;
 import com.sunmi.assistant.dashboard.card.CustomerTrendCard;
 import com.sunmi.assistant.dashboard.card.CustomerWaitDataCard;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

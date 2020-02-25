@@ -18,13 +18,13 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.IMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisFrequencyDistributionFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
+import com.sunmi.assistant.dashboard.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

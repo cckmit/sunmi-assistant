@@ -32,6 +32,7 @@
     <string name="str_selected">请选择</string>
     <string name="tip_addr_empty">请输入详细地址</string>
 
+    <string name="dashboard_dropdown_shop_tip">以下是该旗下的各门店</string>
     <string name="dashboard_page_overview">实时数据</string>
     <string name="dashboard_page_customer">客流分析</string>
     <string name="dashboard_page_profile">客群画像</string>

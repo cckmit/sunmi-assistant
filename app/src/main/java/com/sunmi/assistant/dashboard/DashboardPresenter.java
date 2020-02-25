@@ -12,6 +12,7 @@ import com.sunmi.assistant.dashboard.page.ProfileFragment;
 import com.sunmi.assistant.dashboard.page.ProfileFragment_;
 import com.sunmi.assistant.dashboard.page.RealtimeFragment;
 import com.sunmi.assistant.dashboard.page.RealtimeFragment_;
+import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.rpc.ServiceApi;

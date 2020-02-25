@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.assistant.order.model.OrderInfo;
 
 import sunmi.common.base.recycle.BaseViewHolder;

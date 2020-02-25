@@ -11,8 +11,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;

@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;

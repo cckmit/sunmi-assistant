@@ -16,8 +16,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.CustomerLineMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
@@ -26,6 +24,8 @@ import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;

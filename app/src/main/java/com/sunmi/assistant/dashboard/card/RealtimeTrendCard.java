@@ -21,8 +21,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
@@ -34,6 +32,8 @@ import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;

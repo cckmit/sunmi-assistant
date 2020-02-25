@@ -6,7 +6,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;

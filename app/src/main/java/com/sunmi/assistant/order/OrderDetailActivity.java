@@ -7,7 +7,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.assistant.data.response.OrderDetailListResp;
 import com.sunmi.assistant.order.model.OrderInfo;
 

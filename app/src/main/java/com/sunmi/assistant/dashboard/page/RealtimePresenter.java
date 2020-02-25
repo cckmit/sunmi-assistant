@@ -1,9 +1,7 @@
 package com.sunmi.assistant.dashboard.page;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
-import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.card.RealtimeDistributionCard;
 import com.sunmi.assistant.dashboard.card.RealtimeEnterRateCard;
@@ -15,6 +13,8 @@ import com.sunmi.assistant.dashboard.card.RealtimeOrderImportCard;
 import com.sunmi.assistant.dashboard.card.RealtimeOverviewCard;
 import com.sunmi.assistant.dashboard.card.RealtimePeriodCard;
 import com.sunmi.assistant.dashboard.card.RealtimeTrendCard;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;

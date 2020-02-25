@@ -5,7 +5,7 @@ import android.content.Context;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.util.Constants;
 
 /**
  * Description:

@@ -1,9 +1,7 @@
 package com.sunmi.assistant.dashboard.page;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.PageContract;
-import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.card.ProfileAnalysisCard;
 import com.sunmi.assistant.dashboard.card.ProfileNoDataCard;
@@ -11,6 +9,8 @@ import com.sunmi.assistant.dashboard.card.ProfileNoFsCard;
 import com.sunmi.assistant.dashboard.card.ProfileOverviewCard;
 import com.sunmi.assistant.dashboard.card.ProfilePeriodCard;
 import com.sunmi.assistant.dashboard.card.ProfileWaitDataCard;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
