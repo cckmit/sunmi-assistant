@@ -56,11 +56,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private static final int REFRESH_TIME_PERIOD = 120_000;
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    private SparseArray<PageContract.PagePresenter> mPages = new SparseArray<>(2);
 
     private int mCompanyId;
     private int mShopId;
     private int mSource = 0;
+    private boolean isTotalPerspective = true;
+
+    private SparseArray<PageContract.PagePresenter> mPages = new SparseArray<>(3);
     private int mPageType = Constants.PAGE_NONE;
 
     private int mLoadFlag;
@@ -86,37 +88,25 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void setShop(FilterItem shop) {
-        SpUtils.setShopId(shop.getId());
-        SpUtils.setShopName(shop.getItemName());
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
-    }
+    public void switchToTotalPerspective() {
+        isTotalPerspective = true;
+        mPages.clear();
 
-    @Override
-    public void setPeriod(int period) {
-        PageContract.PagePresenter current = getCurrent();
-        if (current != null) {
-            current.setPeriod(period);
+        List<PageHost> pages = new ArrayList<>();
+
+        // TODO: Add pages fragment
+
+        mPageType = Constants.PAGE_TOTAL_REALTIME;
+        if (isViewAttached()) {
+            mView.setPages(pages);
         }
     }
 
     @Override
-    public void setPage(int type) {
-        scrollToTop();
-        mPageType = type;
-    }
+    public void switchToShopPerspective() {
+        isTotalPerspective = false;
+        mPages.clear();
 
-    @Override
-    public void scrollToTop() {
-        PageContract.PagePresenter current = getCurrent();
-        if (current != null) {
-            current.scrollToTop();
-        }
-    }
-
-    @Override
-    public List<PageHost> createPages() {
-        // TODO: 可以优化，采用工厂模式
         List<PageHost> pages = new ArrayList<>();
 
         RealtimeFragment realtimeFragment = new RealtimeFragment_();
@@ -129,7 +119,38 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         pages.add(new PageHost(R.string.dashboard_page_profile, 0, profileFragment, Constants.PAGE_PROFILE));
 
         mPageType = Constants.PAGE_OVERVIEW;
-        return pages;
+        if (isViewAttached()) {
+            mView.setPages(pages);
+        }
+    }
+
+    @Override
+    public void switchShop(FilterItem shop) {
+        SpUtils.setShopId(shop.getId());
+        SpUtils.setShopName(shop.getItemName());
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
+    }
+
+    @Override
+    public void switchPeriod(int period) {
+        PageContract.PagePresenter current = getCurrent();
+        if (current != null) {
+            current.setPeriod(period);
+        }
+    }
+
+    @Override
+    public void switchPage(int type) {
+        scrollToTop();
+        mPageType = type;
+    }
+
+    @Override
+    public void scrollToTop() {
+        PageContract.PagePresenter current = getCurrent();
+        if (current != null) {
+            current.scrollToTop();
+        }
     }
 
     @Override

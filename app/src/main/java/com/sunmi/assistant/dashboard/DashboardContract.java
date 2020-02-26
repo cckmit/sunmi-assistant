@@ -15,6 +15,8 @@ public interface DashboardContract {
 
         void setShopList(List<FilterItem> list);
 
+        void setPages(List<PageHost> pages);
+
         void setSource(int source);
 
         void updateTab(int page, int period);
@@ -35,15 +37,17 @@ public interface DashboardContract {
 
         void reload(int flag);
 
-        void setShop(FilterItem shop);
+        void switchToTotalPerspective();
 
-        void setPeriod(int period);
+        void switchToShopPerspective();
 
-        void setPage(int type);
+        void switchShop(FilterItem shop);
+
+        void switchPeriod(int period);
+
+        void switchPage(int type);
 
         void scrollToTop();
-
-        List<PageHost> createPages();
 
         int getPageType();
 

@@ -13,14 +13,14 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.view.DropdownMenuNew;
 import sunmi.common.view.SettingItemLayout;
 
-public class DashboardShopAdapter extends DropdownMenuNew.Adapter<FilterItem> {
+public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
 
     private OnPerspectiveSwitchListener listener;
 
     private boolean isTotalPerspective = true;
     private FilterItem last;
 
-    public DashboardShopAdapter(Context context) {
+    public ShopMenuAdapter(Context context) {
         super(context, R.layout.dashboard_dropdown_shop_title, R.layout.dropdown_item_new);
     }
 
@@ -43,6 +43,10 @@ public class DashboardShopAdapter extends DropdownMenuNew.Adapter<FilterItem> {
             // 切换视角
             if (isTotalPerspective) {
                 switchToShopPerspective();
+            }
+            // 切换门店
+            if (listener != null) {
+                listener.onSwitchShop(model);
             }
 
             // 将选中的项移到第一个位置
@@ -111,12 +115,13 @@ public class DashboardShopAdapter extends DropdownMenuNew.Adapter<FilterItem> {
             silName.setChecked(true);
         }
         if (listener != null) {
-            listener.onSwitchToTotal();
+            listener.onSwitchToTotalPerspective();
         }
     }
 
     /**
      * 切换到门店视角
+     *
      */
     private void switchToShopPerspective() {
         isTotalPerspective = false;
@@ -126,7 +131,7 @@ public class DashboardShopAdapter extends DropdownMenuNew.Adapter<FilterItem> {
             silName.setChecked(false);
         }
         if (listener != null) {
-            listener.onSwitchToShop();
+            listener.onSwitchToShopPerspective();
         }
     }
 
@@ -136,9 +141,11 @@ public class DashboardShopAdapter extends DropdownMenuNew.Adapter<FilterItem> {
 
     public interface OnPerspectiveSwitchListener {
 
-        void onSwitchToTotal();
+        void onSwitchToTotalPerspective();
 
-        void onSwitchToShop();
+        void onSwitchToShopPerspective();
+
+        void onSwitchShop(FilterItem shop);
     }
 
 }

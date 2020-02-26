@@ -7,9 +7,13 @@ package com.sunmi.assistant.dashboard.util;
 public class Constants {
 
     public static final int PAGE_NONE = 0;
+
     public static final int PAGE_OVERVIEW = 1;
     public static final int PAGE_CUSTOMER = 2;
     public static final int PAGE_PROFILE = 3;
+
+    public static final int PAGE_TOTAL_REALTIME = 11;
+    public static final int PAGE_TOTAL_CUSTOMER = 12;
 
     public static final int FLAG_SHOP = 0x1;
     public static final int FLAG_SAAS = 0x2;

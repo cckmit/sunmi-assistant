@@ -11,11 +11,11 @@ import com.sunmi.assistant.R;
 
 import sunmi.common.view.DropdownMenuNew;
 
-public class DashboardShopAnim implements DropdownMenuNew.Anim {
+public class ShopMenuAnim implements DropdownMenuNew.Anim {
 
     private int offset = 0;
 
-    public DashboardShopAnim() {
+    public ShopMenuAnim() {
     }
 
     public void setOffset(int offset) {

@@ -20,9 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.ui.DashboardShopAdapter;
-import com.sunmi.assistant.dashboard.ui.DashboardShopAnim;
 import com.sunmi.assistant.dashboard.ui.ScrollableViewPager;
+import com.sunmi.assistant.dashboard.ui.ShopMenuAdapter;
+import com.sunmi.assistant.dashboard.ui.ShopMenuAnim;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
@@ -100,10 +100,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private List<PageHost> mPages;
-
-    private DashboardShopAdapter mShopMenuAdapter;
-    private DashboardShopAnim mShopMenuAnim;
+    private List<PageHost> mPages = new ArrayList<>();
+    private PageAdapter pageAdapter;
+    private ShopMenuAdapter mShopMenuAdapter;
+    private ShopMenuAnim mShopMenuAnim;
 
     private int mStatusBarHeight;
     private int mTopStickyPeriodHeight;
@@ -159,20 +159,28 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mTopShopMenu.setPadding(0, mStatusBarHeight, 0, 0);
 
         // 初始化设置顶部门店选择下拉列表
-        mShopMenuAdapter = new DashboardShopAdapter(context);
-        mShopMenuAdapter.setOnSwitchListener(new DashboardShopAdapter.OnPerspectiveSwitchListener() {
+        mShopMenuAdapter = new ShopMenuAdapter(context);
+        mShopMenuAdapter.setOnSwitchListener(new ShopMenuAdapter.OnPerspectiveSwitchListener() {
             @Override
-            public void onSwitchToTotal() {
+            public void onSwitchToTotalPerspective() {
+                // 切换到总部视角
                 mTopShopMenu.dismiss(true);
-                // TODO: 切换到总部视角
+                mPresenter.switchToTotalPerspective();
             }
 
             @Override
-            public void onSwitchToShop() {
-                // TODO: 切换到门店视角
+            public void onSwitchToShopPerspective() {
+                // 切换到门店视角
+                mPresenter.switchToShopPerspective();
+            }
+
+            @Override
+            public void onSwitchShop(FilterItem shop) {
+                // 切换门店
+                mPresenter.switchShop(shop);
             }
         });
-        mShopMenuAnim = new DashboardShopAnim();
+        mShopMenuAnim = new ShopMenuAnim();
         mTopShopMenu.setAdapter(mShopMenuAdapter);
         mTopShopMenu.setAnim(mShopMenuAnim);
         mShopMenuAdapter.init();
@@ -180,31 +188,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     private void initViewPager(Context context) {
-        mPages = mPresenter.createPages();
+        pageAdapter = new PageAdapter(getChildFragmentManager());
         mPager.setOffscreenPageLimit(2);
-        mPager.setAdapter(new PageAdapter(getChildFragmentManager()));
+        mPager.setAdapter(pageAdapter);
         mPager.addOnPageChangeListener(new PageListener());
-        ArrayList<CustomTabEntity> tabs = new ArrayList<>(mPages.size());
-        for (PageHost page : mPages) {
-            tabs.add(new CustomTabEntity() {
-                @Override
-                public String getTabTitle() {
-                    return getString(page.getTitle());
-                }
 
-                @Override
-                public int getTabSelectedIcon() {
-                    return page.getIcon();
-                }
-
-                @Override
-                public int getTabUnselectedIcon() {
-                    return page.getIcon();
-                }
-            });
-        }
-        mPageTab.setTabData(tabs);
-        mPageTab.setCurrentTab(0);
         mPageTab.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelect(int position) {
@@ -265,22 +253,22 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Click(R.id.tv_dashboard_top_today)
     void clickPeriodToday() {
-        mPresenter.setPeriod(Constants.TIME_PERIOD_TODAY);
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_TODAY);
     }
 
     @Click(R.id.tv_dashboard_top_yesterday)
     void clickPeriodYesterday() {
-        mPresenter.setPeriod(Constants.TIME_PERIOD_YESTERDAY);
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_YESTERDAY);
     }
 
     @Click(R.id.tv_dashboard_top_week)
     void clickPeriodWeek() {
-        mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK);
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_WEEK);
     }
 
     @Click(R.id.tv_dashboard_top_month)
     void clickPeriodMonth() {
-        mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH);
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_MONTH);
     }
 
     @Click(R.id.btn_dashboard_tip_add_fs)
@@ -322,6 +310,33 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public void setShopList(List<FilterItem> list) {
         mShopMenuAdapter.setData(list);
+    }
+
+    @Override
+    public void setPages(List<PageHost> pages) {
+        mPages = pages;
+        ArrayList<CustomTabEntity> tabs = new ArrayList<>(mPages.size());
+        for (PageHost page : mPages) {
+            tabs.add(new CustomTabEntity() {
+                @Override
+                public String getTabTitle() {
+                    return getString(page.getTitle());
+                }
+
+                @Override
+                public int getTabSelectedIcon() {
+                    return page.getIcon();
+                }
+
+                @Override
+                public int getTabUnselectedIcon() {
+                    return page.getIcon();
+                }
+            });
+        }
+        mPageTab.setTabData(tabs);
+        mPageTab.setCurrentTab(0);
+        pageAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -515,7 +530,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         @Override
         public void onPageSelected(int position) {
             mPageTab.setCurrentTab(position);
-            mPresenter.setPage(mPages.get(position).getType());
+            mPresenter.switchPage(mPages.get(position).getType());
             updateTab(mPresenter.getPageType(), mPresenter.getPeriod());
             resetTop();
         }
