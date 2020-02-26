@@ -33,6 +33,10 @@ public class CommonConfig extends BaseConfig {
 
     public static String SUNMI_H5_URL = "";
 
+    //微信app id
+    public static String WECHAT_APP_ID = "wxd1d7c6ec2279cfdc";
+    public static String WECHAT_SECRET = "cd5ffb1b5b5fbc24b0816514c9baae13";
+
     @Override
     protected void initDev(Context context, String env) {
         SUNMI_STORE_URL = "https://store.dev.sunmi.com/";
