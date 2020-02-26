@@ -160,35 +160,21 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
         // 初始化设置顶部门店选择下拉列表
         mShopMenuAdapter = new DashboardShopAdapter(context);
+        mShopMenuAdapter.setOnSwitchListener(new DashboardShopAdapter.OnPerspectiveSwitchListener() {
+            @Override
+            public void onSwitchToTotal() {
+                mTopShopMenu.dismiss(true);
+                // TODO: 切换到总部视角
+            }
+
+            @Override
+            public void onSwitchToShop() {
+                // TODO: 切换到门店视角
+            }
+        });
         mShopMenuAnim = new DashboardShopAnim();
         mTopShopMenu.setAdapter(mShopMenuAdapter);
         mTopShopMenu.setAnim(mShopMenuAnim);
-        mShopMenuAdapter.setOnItemClickListener((adapter, model, position) -> {
-            // 切换到门店视角
-            if (model.isChecked()) {
-                return;
-            }
-            mPresenter.setShop(model);
-            mShopMenuAdapter.selectShopPerspective();
-
-            // 当前门店放在列表的第一个位置
-            if (position == 0) {
-                return;
-            }
-            List<FilterItem> data = adapter.getData();
-            data.remove(position);
-            data.add(0, model);
-            adapter.notifyItemRangeChanged(0, position + 1);
-        });
-        DropdownMenuNew.ViewHolder<FilterItem> content = mShopMenuAdapter.getContent();
-        if (content != null) {
-            content.getView(R.id.sil_company).setOnClickListener(v -> {
-                mTopShopMenu.dismiss(true);
-                // 切换到总部视角
-                mShopMenuAdapter.selectTotalPerspective();
-                // TODO: 切换到总部视角
-            });
-        }
         mShopMenuAdapter.init();
 
     }

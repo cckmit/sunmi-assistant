@@ -749,9 +749,14 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 super.onMeasure(recycler, state, widthSpec, heightSpec);
                 return;
             }
-            View firstChildView = recycler.getViewForPosition(0);
-            measureChild(firstChildView, widthSpec, heightSpec);
-            int itemHeight = firstChildView.getMeasuredHeight();
+
+            final int widthMode = View.MeasureSpec.getMode(widthSpec);
+            final int heightMode = View.MeasureSpec.getMode(heightSpec);
+            final int widthSize = View.MeasureSpec.getSize(widthSpec);
+            final int heightSize = View.MeasureSpec.getSize(heightSpec);
+
+            int itemHeight = getChildHeight(recycler, widthSpec, heightSpec);
+
             int height;
             if (maxCount > 0) {
                 height = getChildCount() > maxCount ?
@@ -759,8 +764,30 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             } else {
                 height = Math.min(itemHeight * getChildCount(), (int) maxHeight);
             }
+
             setMeasuredDimension(View.MeasureSpec.getSize(widthSpec), height);
         }
+
+        private int getChildHeight(RecyclerView.Recycler recycler, int widthSpec, int heightSpec) {
+            if (getChildCount() == 0) {
+                return 0;
+            }
+            View child = recycler.getViewForPosition(0);
+
+            RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) child.getLayoutParams();
+
+            int childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,
+                    getPaddingLeft() + getPaddingRight(), p.width);
+
+            int childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec,
+                    getPaddingTop() + getPaddingBottom(), p.height);
+
+            child.measure(childWidthSpec, childHeightSpec);
+            int height = child.getMeasuredHeight() + p.bottomMargin + p.topMargin;
+            recycler.recycleView(child);
+            return height;
+        }
+
     }
 
     private static class DefaultAnimation implements Anim {
