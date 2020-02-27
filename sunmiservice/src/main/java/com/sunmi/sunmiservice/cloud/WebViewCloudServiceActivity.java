@@ -67,13 +67,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
     @Extra
     String mUrl;
     @Extra
-    ArrayList<String> snList;
-    @Extra
-    String productNo;
-    @Extra
     String params;
-    @Extra
-    String sn;
 
     private boolean hasSendDeviceInfo = false;
     private CountDownTimer countDownTimer;

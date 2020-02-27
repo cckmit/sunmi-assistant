@@ -46,7 +46,7 @@
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_26"
         android:layout_toEndOf="@+id/iv_icon"
-        android:textColor="@color/text_caption"
+        android:textColor="@color/color_ipc_manger_summary"
         android:layout_toStartOf="@+id/btn_detail"
         android:textSize="@dimen/sp_12" />
 
