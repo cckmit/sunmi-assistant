@@ -104,7 +104,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         initTitleBar();
         initCloudCard();
         initCashPreventCardVisibility(false);
-        if (SpUtils.getLoanStatus()){
+        if (SpUtils.getLoanStatus()) {
             tvLoan.setVisibility(View.VISIBLE);
             llLoan.setVisibility(View.VISIBLE);
         }
@@ -170,8 +170,16 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         mPresenter.load();
     }
 
+    @Click(resName = "ll_online_course")
+    void onlineCourseClick() {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
+            return;
+        }
+        WebViewActivity_.intent(mActivity).url(CommonConstants.H5_SERVICE_COURSE).start();
+    }
+
     @Click(resName = "ll_loan")
-    void commerceBankClick(){
+    void commerceBankClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }

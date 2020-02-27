@@ -68,8 +68,8 @@ public class CommonConstants {
     public static final int RESULT_FAIL = 0;
 
     //服务类型
-    public static final int SERVICE_TYPE_CLOUD_7 =1;
-    public static final int SERVICE_TYPE_CLOUD_30 =2;
+    public static final int SERVICE_TYPE_CLOUD_7 = 1;
+    public static final int SERVICE_TYPE_CLOUD_30 = 2;
     public static final int SERVICE_TYPE_LOAN = 6;
 
     public static final int SERVICE_STATUS_UNABLE = 1;
@@ -82,5 +82,6 @@ public class CommonConstants {
     public static final String H5_CLOUD_RENEW = CommonConfig.SERVICE_H5_URL + "cloudStorage/subscribeService";
     public static final String H5_AGREEMENT = CommonConfig.SERVICE_H5_URL + "privacyManagement";
     public static final String H5_CASH_PREVENT_LOSS = CommonConfig.SERVICE_H5_URL + "cashPreventLoss";
-    public static final String H5_LOAN = CommonConfig.SUNMI_H5_URL +"jie/";
+    public static final String H5_LOAN = CommonConfig.SUNMI_H5_URL + "jie/";
+    public static final String H5_SERVICE_COURSE = CommonConfig.SUNMI_H5_URL + "";//todo
 }
