@@ -2,10 +2,15 @@ package com.sunmi.assistant.dashboard.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Pair;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
 
 import java.text.DecimalFormat;
@@ -13,7 +18,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import sunmi.common.utils.CommonHelper;
 
@@ -22,6 +29,8 @@ import sunmi.common.utils.CommonHelper;
  * @since 2019-06-21
  */
 public class Utils {
+
+    public static final String FORMAT_DATE_TIME = "yyyy.MM.dd HH:mm";
 
     public static final String DATA_NONE = "--";
     public static final String DATA_ZERO = "0";
@@ -63,6 +72,33 @@ public class Utils {
     private static Calendar temp = Calendar.getInstance();
     @SuppressLint("SimpleDateFormat")
     private static SimpleDateFormat tempFormat = new SimpleDateFormat();
+
+    private static ThreadLocal<Map<String, SimpleDateFormat>> sThreadLocal = new ThreadLocal<>();
+
+    private static SimpleDateFormat getTimeFormat(String pattern) {
+        Map<String, SimpleDateFormat> formatMap = sThreadLocal.get();
+
+        if (formatMap == null) {
+            formatMap = new HashMap<>();
+            sThreadLocal.set(formatMap);
+        }
+
+        SimpleDateFormat format = formatMap.get(pattern);
+        if (format == null) {
+            format = new SimpleDateFormat(pattern, Locale.getDefault());
+            formatMap.put(pattern, format);
+        }
+        return format;
+    }
+
+    public static long parseTime(String pattern, String str) throws ParseException {
+        return getTimeFormat(pattern).parse(str).getTime();
+    }
+
+    public static String formatTime(String pattern, long timestamp) {
+        return getTimeFormat(pattern).format(new Date(timestamp));
+    }
+
 
     public static Pair<Long, Long> getPeriodTimestamp(int period) {
         temp.setTimeInMillis(System.currentTimeMillis());
@@ -343,6 +379,56 @@ public class Utils {
 
     public static boolean hasFloating(int source) {
         return (source & Constants.DATA_SOURCE_FLOATING) != 0;
+    }
+
+    public static void setupLineChart(LineChart chart) {
+        Context context = chart.getContext();
+        // 设置通用图表
+        chart.setTouchEnabled(true);
+        chart.setScaleEnabled(false);
+        chart.setPinchZoom(false);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.getDescription().setEnabled(false);
+        chart.setDrawGridBackground(false);
+        chart.getLegend().setEnabled(false);
+        chart.getAxisRight().setEnabled(false);
+
+        // 设置X轴
+        XAxis lineXAxis = chart.getXAxis();
+        lineXAxis.setDrawAxisLine(true);
+        lineXAxis.setDrawGridLines(false);
+        lineXAxis.setTextSize(10f);
+        lineXAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
+        lineXAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        // 设置Y轴
+        YAxis lineYAxis = chart.getAxisLeft();
+        lineYAxis.setDrawAxisLine(false);
+        lineYAxis.setGranularityEnabled(true);
+        lineYAxis.setGranularity(1f);
+        lineYAxis.setTextSize(10f);
+        lineYAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
+        lineYAxis.setAxisMinimum(0f);
+        lineYAxis.setDrawGridLines(true);
+        lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
+        lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        lineYAxis.setYOffset(-5f);
+        lineYAxis.setXOffset(-1f);
+    }
+
+    public static void setupLineChartDataSet(Context context, LineDataSet set, int color) {
+        float dashLength = CommonHelper.dp2px(context, 4f);
+        float dashSpaceLength = CommonHelper.dp2px(context, 2f);
+        set.setColor(color);
+        set.setHighLightColor(color);
+        set.setDrawValues(false);
+        set.setDrawCircles(false);
+        set.setDrawHorizontalHighlightIndicator(false);
+        set.setLineWidth(2f);
+        set.setHighlightLineWidth(1f);
+        set.enableDashedHighlightLine(dashLength, dashSpaceLength, 0);
+        set.setLineContinuous(false);
+        set.setLinePhase(1f);
     }
 
 }

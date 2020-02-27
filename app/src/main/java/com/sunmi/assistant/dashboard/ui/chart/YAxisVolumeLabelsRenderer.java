@@ -24,18 +24,18 @@ public class YAxisVolumeLabelsRenderer extends YAxisRenderer {
             for (int i = 0; i < 6; i++) {
                 labels[i] = i;
             }
-            return 5;
+            return 5.1f;
         } else if (max <= 10) {
             for (int i = 0; i < 6; i++) {
                 labels[i] = i * 2;
             }
-            return 10;
+            return 10.1f;
         } else {
             double offset = Math.ceil(max / 25);
             for (int i = 0; i < 6; i++) {
                 labels[i] = (float) (i * offset * 5);
             }
-            return (float) (offset * 25);
+            return (float) (offset * 25) + 0.5f;
         }
     }
 

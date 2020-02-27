@@ -83,6 +83,7 @@
     <string name="dashboard_title_business_trend">Business Trends</string>
     <string name="dashboard_var_transaction_rate_abbr">Conversion Rate</string>
     <string name="dashboard_var_sales_volume">Transactions</string>
+    <string name="dashboard_var_sales_amount">销售额</string>
     <string name="dashboard_var_customer_volume">Customer Visits</string>
     <string name="dashboard_title_distribution">Customer Distribution</string>
     <string name="dashboard_var_new_old">New/Repeat</string>

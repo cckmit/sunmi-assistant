@@ -12,6 +12,8 @@ import com.sunmi.assistant.dashboard.page.ProfileFragment;
 import com.sunmi.assistant.dashboard.page.ProfileFragment_;
 import com.sunmi.assistant.dashboard.page.RealtimeFragment;
 import com.sunmi.assistant.dashboard.page.RealtimeFragment_;
+import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment;
+import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment_;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -94,7 +96,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         List<PageHost> pages = new ArrayList<>();
 
-        // TODO: Add pages fragment
+        TotalRealtimeFragment totalRealtimeFragment = new TotalRealtimeFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_realtime_today, 0,
+                totalRealtimeFragment, Constants.PAGE_TOTAL_REALTIME));
 
         mPageType = Constants.PAGE_TOTAL_REALTIME;
         if (isViewAttached()) {
