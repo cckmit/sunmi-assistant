@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.card.total;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -16,6 +16,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.CustomerLineMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
@@ -47,9 +48,9 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @since 2019-07-01
  */
-public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, CustomerHistoryTrendResp> {
+public class TotalRealTimeTrendCard extends BaseRefreshCard<TotalRealTimeTrendCard.Model, CustomerHistoryTrendResp> {
 
-    private static CustomerTrendCard sInstance;
+    private static TotalRealTimeTrendCard sInstance;
 
     private static final long MILLIS_PER_HOUR = 3600000;
     private static final long MILLIS_PER_DAY = 3600000 * 24;
@@ -69,13 +70,13 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     private float mDashLength;
     private float mDashSpaceLength;
 
-    private CustomerTrendCard(Presenter presenter, int source) {
+    private TotalRealTimeTrendCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static CustomerTrendCard get(Presenter presenter, int source) {
+    public static TotalRealTimeTrendCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new CustomerTrendCard(presenter, source);
+            sInstance = new TotalRealTimeTrendCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }

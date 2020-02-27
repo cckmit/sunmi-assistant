@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.card.shop;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 

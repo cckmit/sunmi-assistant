@@ -3,12 +3,12 @@ package com.sunmi.assistant.dashboard.page;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
-import com.sunmi.assistant.dashboard.card.ProfileAnalysisCard;
-import com.sunmi.assistant.dashboard.card.ProfileNoDataCard;
-import com.sunmi.assistant.dashboard.card.ProfileNoFsCard;
-import com.sunmi.assistant.dashboard.card.ProfileOverviewCard;
-import com.sunmi.assistant.dashboard.card.ProfilePeriodCard;
-import com.sunmi.assistant.dashboard.card.ProfileWaitDataCard;
+import com.sunmi.assistant.dashboard.card.shop.ProfileAnalysisCard;
+import com.sunmi.assistant.dashboard.card.shop.ProfileNoDataCard;
+import com.sunmi.assistant.dashboard.card.shop.ProfileNoFsCard;
+import com.sunmi.assistant.dashboard.card.shop.ProfileOverviewCard;
+import com.sunmi.assistant.dashboard.card.shop.ProfilePeriodCard;
+import com.sunmi.assistant.dashboard.card.shop.ProfileWaitDataCard;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 

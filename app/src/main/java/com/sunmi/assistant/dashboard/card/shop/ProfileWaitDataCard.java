@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.card.shop;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -16,17 +17,17 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class ProfileNoDataCard extends BaseRefreshCard<ProfileNoDataCard.Model, Object> {
+public class ProfileWaitDataCard extends BaseRefreshCard<ProfileWaitDataCard.Model, Object> {
 
-    private static ProfileNoDataCard sInstance;
+    private static ProfileWaitDataCard sInstance;
 
-    private ProfileNoDataCard(Presenter presenter, int source) {
+    private ProfileWaitDataCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static ProfileNoDataCard get(Presenter presenter, int source) {
+    public static ProfileWaitDataCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new ProfileNoDataCard(presenter, source);
+            sInstance = new ProfileWaitDataCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -58,7 +59,9 @@ public class ProfileNoDataCard extends BaseRefreshCard<ProfileNoDataCard.Model, 
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         TextView tip = holder.getView(R.id.tv_dashboard_tip);
-        tip.setText(R.string.dashboard_no_customer_data_tip);
+        tip.setText(R.string.dashboard_no_customer_wait_tip);
+        int paddingTop = (int) view.getContext().getResources().getDimension(R.dimen.dp_120);
+        view.setPaddingRelative(0, paddingTop, 0, 0);
         return holder;
     }
 

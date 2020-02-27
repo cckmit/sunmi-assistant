@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.card.shop;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.xiaojinzi.component.impl.Router;
 
 import retrofit2.Call;

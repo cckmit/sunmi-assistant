@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.card.shop;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,6 +18,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;

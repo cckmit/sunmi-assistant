@@ -1,32 +1,30 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.card.shop;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.View;
-import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
-import sunmi.common.base.recycle.ItemType;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
  * @author yinhui
  * @since 2019-07-01
  */
-public class CustomerWaitDataCard extends BaseRefreshCard<CustomerWaitDataCard.Model, Object> {
+public class RealtimeNoDataCard extends BaseRefreshCard<RealtimeNoDataCard.Model, Object> {
 
-    private static CustomerWaitDataCard sInstance;
+    private static RealtimeNoDataCard sInstance;
 
-    private CustomerWaitDataCard(Presenter presenter, int source) {
+    private RealtimeNoDataCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static CustomerWaitDataCard get(Presenter presenter, int source) {
+    public static RealtimeNoDataCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new CustomerWaitDataCard(presenter, source);
+            sInstance = new RealtimeNoDataCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -51,17 +49,6 @@ public class CustomerWaitDataCard extends BaseRefreshCard<CustomerWaitDataCard.M
     @Override
     protected Model createModel() {
         return new Model();
-    }
-
-    @NonNull
-    @Override
-    public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
-        BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
-        TextView tip = holder.getView(R.id.tv_dashboard_tip);
-        tip.setText(R.string.dashboard_no_customer_wait_tip);
-        int paddingTop = (int) view.getContext().getResources().getDimension(R.dimen.dp_120);
-        view.setPaddingRelative(0, paddingTop, 0, 0);
-        return holder;
     }
 
     @Override

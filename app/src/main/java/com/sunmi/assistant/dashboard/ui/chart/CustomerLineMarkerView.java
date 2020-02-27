@@ -14,7 +14,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.card.CustomerTrendCard;
+import com.sunmi.assistant.dashboard.card.shop.CustomerTrendCard;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 

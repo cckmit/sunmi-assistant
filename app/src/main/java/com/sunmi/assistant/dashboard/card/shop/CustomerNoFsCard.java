@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.card;
+package com.sunmi.assistant.dashboard.card.shop;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
@@ -7,33 +7,35 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.importorder.ImportOrderPreviewActivity_;
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.xiaojinzi.component.impl.Router;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.router.IpcApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
  * @author yinhui
  * @since 2019-07-01
  */
-public class RealtimeNoOrderCard extends BaseRefreshCard<RealtimeNoOrderCard.Model, Object> {
+public class CustomerNoFsCard extends BaseRefreshCard<CustomerNoFsCard.Model, Object> {
 
-    private static RealtimeNoOrderCard sInstance;
+    private static CustomerNoFsCard sInstance;
 
     private int mColorGray;
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    private RealtimeNoOrderCard(Presenter presenter, int source) {
+    private CustomerNoFsCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static RealtimeNoOrderCard get(Presenter presenter, int source) {
+    public static CustomerNoFsCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new RealtimeNoOrderCard(presenter, source);
+            sInstance = new CustomerNoFsCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
@@ -46,7 +48,7 @@ public class RealtimeNoOrderCard extends BaseRefreshCard<RealtimeNoOrderCard.Mod
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_realtime_no_order;
+        return R.layout.dashboard_item_no_fs;
     }
 
     @Override
@@ -74,11 +76,10 @@ public class RealtimeNoOrderCard extends BaseRefreshCard<RealtimeNoOrderCard.Mod
         float radius = context.getResources().getDimension(R.dimen.dp_12);
         this.mContentBg = new GradientDrawable();
         this.mContentBg.setCornerRadii(new float[]{radius, radius, radius, radius, radius, radius, radius, radius});
+        view.setPaddingRelative(0, 0, 0, (int) context.getResources().getDimension(R.dimen.dp_32));
 
-        holder.addOnClickListener(R.id.btn_dashboard_dock, (h, model, position) -> {
-            ImportOrderPreviewActivity_.intent(context).importOrderType(CommonConstants.IMPORT_ORDER_FROM_COMMON).start();
-        });
-
+        holder.addOnClickListener(R.id.btn_dashboard_add, (h, model, position) ->
+                Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_FS,CommonConstants.CONFIG_IPC_FROM_COMMON));
         return holder;
     }
 
@@ -86,8 +87,8 @@ public class RealtimeNoOrderCard extends BaseRefreshCard<RealtimeNoOrderCard.Mod
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         View root = holder.getView(R.id.layout_dashboard_root);
         View content = holder.getView(R.id.layout_dashboard_content);
-        root.setBackgroundColor(!hasAuth() && !hasFs() ? mColorWhite : mColorGray);
-        mContentBg.setColor(!hasAuth() && !hasFs() ? mColorGray : mColorWhite);
+        root.setBackgroundColor(mColorWhite);
+        mContentBg.setColor(mColorGray);
         content.setBackground(mContentBg);
     }
 
