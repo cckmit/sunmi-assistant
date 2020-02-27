@@ -283,36 +283,36 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             volume.setVisibility(View.VISIBLE);
             customer.setVisibility(View.GONE);
             rate.setVisibility(View.GONE);
-            title.setText(R.string.dashboard_data_sales_amount);
+            title.setText(R.string.dashboard_var_total_sales_amount);
         } else if (!hasAuth() && hasFs()) {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.GONE);
             customer.setVisibility(View.GONE);
             rate.setVisibility(View.GONE);
-            title.setText(R.string.dashboard_data_customer);
+            title.setText(R.string.dashboard_var_customer);
         } else {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.VISIBLE);
             customer.setVisibility(View.VISIBLE);
             rate.setVisibility(View.VISIBLE);
-            title.setText(R.string.dashboard_data_sales_amount);
+            title.setText(R.string.dashboard_var_total_sales_amount);
         }
         // 根据当前选择的时间筛选展示不同的文案
         if (period == Constants.TIME_PERIOD_TODAY) {
-            subtitle.setText(R.string.dashboard_period_yesterday);
-            volumeSubtitle.setText(R.string.dashboard_period_yesterday);
-            customerSubtitle.setText(R.string.dashboard_period_yesterday);
-            rateSubtitle.setText(R.string.dashboard_period_yesterday);
+            subtitle.setText(R.string.dashboard_time_yesterday);
+            volumeSubtitle.setText(R.string.dashboard_time_yesterday);
+            customerSubtitle.setText(R.string.dashboard_time_yesterday);
+            rateSubtitle.setText(R.string.dashboard_time_yesterday);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
-            subtitle.setText(R.string.dashboard_period_last_week);
-            volumeSubtitle.setText(R.string.dashboard_period_last_week);
-            customerSubtitle.setText(R.string.dashboard_period_last_week);
-            rateSubtitle.setText(R.string.dashboard_period_last_week);
+            subtitle.setText(R.string.dashboard_time_last_week);
+            volumeSubtitle.setText(R.string.dashboard_time_last_week);
+            customerSubtitle.setText(R.string.dashboard_time_last_week);
+            rateSubtitle.setText(R.string.dashboard_time_last_week);
         } else {
-            subtitle.setText(R.string.dashboard_period_last_month);
-            volumeSubtitle.setText(R.string.dashboard_period_last_month);
-            customerSubtitle.setText(R.string.dashboard_period_last_month);
-            rateSubtitle.setText(R.string.dashboard_period_last_month);
+            subtitle.setText(R.string.dashboard_time_last_month);
+            volumeSubtitle.setText(R.string.dashboard_time_last_month);
+            customerSubtitle.setText(R.string.dashboard_time_last_month);
+            rateSubtitle.setText(R.string.dashboard_time_last_month);
         }
     }
 

@@ -136,7 +136,7 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         mMarkerFormatter.setValueType(TimeMarkerFormatter.VALUE_TYPE_RATE);
         mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
         mLineChartMarker.setChartView(chart);
-        mLineChartMarker.setTitle(R.string.dashboard_card_title_customer_enter_rate);
+        mLineChartMarker.setTitle(R.string.dashboard_title_enter_rate);
         chart.setMarker(mLineChartMarker);
 
         return holder;

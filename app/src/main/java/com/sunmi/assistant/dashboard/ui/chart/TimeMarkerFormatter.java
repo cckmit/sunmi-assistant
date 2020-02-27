@@ -33,7 +33,7 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
 
     public TimeMarkerFormatter(Context context) {
         weekName = context.getResources().getStringArray(R.array.week_name);
-        timeLabel = context.getString(R.string.dashboard_card_marker_time);
+        timeLabel = context.getString(R.string.dashboard_var_time);
     }
 
     public void setValueType(int valueType) {

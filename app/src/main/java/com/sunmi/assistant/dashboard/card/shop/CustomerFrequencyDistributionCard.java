@@ -141,7 +141,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         chart.setRenderer(renderer);
         markerFormatter = new MarkerFormatter(context);
         BarChartMarkerView marker = new BarChartMarkerView(context, markerFormatter);
-        marker.setTitle(R.string.dashboard_card_customer_frequency_marker_title);
+        marker.setTitle(R.string.dashboard_var_customer_count2);
         marker.setChartView(chart);
         chart.setMarker(marker);
         return holder;
@@ -270,8 +270,8 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
 
         private MarkerFormatter(Context context) {
             valueFormat = context.getString(R.string.str_num_people);
-            labelFormat = context.getString(R.string.dashboard_card_customer_frequency_marker_value);
-            labelAboveFormat = context.getString(R.string.dashboard_card_customer_frequency_marker_count_above);
+            labelFormat = context.getString(R.string.dashboard_unit_frequency_count);
+            labelAboveFormat = context.getString(R.string.dashboard_unit_frequency_count_above);
         }
 
         private void setMax(int max) {

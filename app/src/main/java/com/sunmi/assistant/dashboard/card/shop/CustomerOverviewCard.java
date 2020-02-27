@@ -155,19 +155,19 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
         holder.getView(R.id.layout_enter_frequency).setVisibility(View.VISIBLE);
         switch (period) {
             case Constants.TIME_PERIOD_WEEK:
-                subTitle.setText(R.string.dashboard_period_last_week);
-                enterRateSubTitle.setText(R.string.dashboard_period_last_week);
-                enterFrequencySubTitle.setText(R.string.dashboard_period_last_week);
+                subTitle.setText(R.string.dashboard_time_last_week);
+                enterRateSubTitle.setText(R.string.dashboard_time_last_week);
+                enterFrequencySubTitle.setText(R.string.dashboard_time_last_week);
                 break;
             case Constants.TIME_PERIOD_MONTH:
-                subTitle.setText(R.string.dashboard_period_last_month);
-                enterRateSubTitle.setText(R.string.dashboard_period_last_month);
-                enterFrequencySubTitle.setText(R.string.dashboard_period_last_month);
+                subTitle.setText(R.string.dashboard_time_last_month);
+                enterRateSubTitle.setText(R.string.dashboard_time_last_month);
+                enterFrequencySubTitle.setText(R.string.dashboard_time_last_month);
                 break;
             case Constants.TIME_PERIOD_YESTERDAY:
-                subTitle.setText(R.string.dashboard_period_last_day);
-                enterRateSubTitle.setText(R.string.dashboard_period_last_day);
-                enterFrequencySubTitle.setText(R.string.dashboard_period_last_day);
+                subTitle.setText(R.string.dashboard_time_last_day);
+                enterRateSubTitle.setText(R.string.dashboard_time_last_day);
+                enterFrequencySubTitle.setText(R.string.dashboard_time_last_day);
                 break;
             default:
                 break;

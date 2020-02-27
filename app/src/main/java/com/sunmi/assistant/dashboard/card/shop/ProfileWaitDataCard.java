@@ -59,7 +59,7 @@ public class ProfileWaitDataCard extends BaseRefreshCard<ProfileWaitDataCard.Mod
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         TextView tip = holder.getView(R.id.tv_dashboard_tip);
-        tip.setText(R.string.dashboard_no_customer_wait_tip);
+        tip.setText(R.string.dashboard_tip_no_customer_wait);
         int paddingTop = (int) view.getContext().getResources().getDimension(R.dimen.dp_120);
         view.setPaddingRelative(0, paddingTop, 0, 0);
         return holder;

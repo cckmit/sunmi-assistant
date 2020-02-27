@@ -162,7 +162,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         lineMarkerFormatter.setValueType(TimeMarkerFormatter.VALUE_TYPE_RATE);
         mLineChartMarker = new LineChartMarkerView(context, lineMarkerFormatter);
         mLineChartMarker.setChartView(chart);
-        mLineChartMarker.setTitle(R.string.dashboard_card_tab_rate);
+        mLineChartMarker.setTitle(R.string.dashboard_var_transaction_rate_abbr);
         chart.setMarker(mLineChartMarker);
     }
 
@@ -403,9 +403,9 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         bar.getAxisLeft().setAxisMaximum(maxAxis);
 
         if (model.type == Constants.DATA_TYPE_VOLUME) {
-            mBarChartMarker.setTitle(R.string.dashboard_card_tab_volume);
+            mBarChartMarker.setTitle(R.string.dashboard_var_sales_volume);
         } else if (model.type == Constants.DATA_TYPE_CUSTOMER) {
-            mBarChartMarker.setTitle(R.string.dashboard_card_tab_customer);
+            mBarChartMarker.setTitle(R.string.dashboard_var_customer_volume);
         }
 
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {

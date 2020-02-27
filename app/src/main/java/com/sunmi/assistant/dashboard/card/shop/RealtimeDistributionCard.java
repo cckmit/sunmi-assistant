@@ -86,11 +86,11 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
 
     @Override
     public void init(Context context) {
-        mAgeLabel = context.getString(R.string.dashboard_card_age_label);
-        mNewLabel = context.getString(R.string.dashboard_card_tab_new);
-        mOldLabel = context.getString(R.string.dashboard_card_tab_old);
-        mMaleLabel = context.getString(R.string.dashboard_card_male);
-        mFemaleLabel = context.getString(R.string.dashboard_card_female);
+        mAgeLabel = context.getString(R.string.dashboard_unit_age);
+        mNewLabel = context.getString(R.string.dashboard_var_customer_new);
+        mOldLabel = context.getString(R.string.dashboard_var_customer_old);
+        mMaleLabel = context.getString(R.string.dashboard_var_male);
+        mFemaleLabel = context.getString(R.string.dashboard_var_female);
     }
 
     @Override

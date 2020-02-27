@@ -299,11 +299,11 @@ public class Utils {
     public static CharSequence formatFrequency(Context context, float value, int period, boolean highlight) {
         String base;
         if (period == Constants.TIME_PERIOD_MONTH) {
-            base = context.getString(R.string.dashboard_card_customer_frequency_data_month);
+            base = context.getString(R.string.dashboard_unit_frequency_data_month);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
-            base = context.getString(R.string.dashboard_card_customer_frequency_data_week);
+            base = context.getString(R.string.dashboard_unit_frequency_data_week);
         } else {
-            base = context.getString(R.string.dashboard_card_customer_frequency_data_day);
+            base = context.getString(R.string.dashboard_unit_frequency_data_day);
         }
 
         String result;

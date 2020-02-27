@@ -65,7 +65,7 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
 
     @Override
     public void init(Context context) {
-        mAgeLabel = context.getString(R.string.dashboard_card_age_label);
+        mAgeLabel = context.getString(R.string.dashboard_unit_age);
     }
 
     @Override

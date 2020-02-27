@@ -184,7 +184,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
         // 设置Line图
         mMarkerFormatter = new MarkerFormatter(context);
         mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
-        mLineChartMarker.setTitle(R.string.dashboard_card_customer_frequency);
+        mLineChartMarker.setTitle(R.string.dashboard_var_frequency);
         mLineChartMarker.setChartView(lineChart);
         lineChart.setMarker(mLineChartMarker);
 
@@ -198,8 +198,8 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
         // 更新Title
         tvTitle.setText(model.period == Constants.TIME_PERIOD_WEEK
-                ? R.string.dashboard_card_title_customer_frequency_trend_week
-                : R.string.dashboard_card_title_customer_frequency_trend_month);
+                ? R.string.dashboard_title_frequency_trend_week
+                : R.string.dashboard_title_frequency_trend_month);
 
         List<ChartEntry> dataSet = model.dataSet;
 

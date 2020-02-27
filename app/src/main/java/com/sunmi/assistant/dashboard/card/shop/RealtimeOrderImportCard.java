@@ -163,22 +163,22 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
         if (model.state == Constants.IMPORT_NONE) {
             String time = DateUtils.formatDateTime(context, model.authTime * 1000,
                     DateUtils.FORMAT_SHOW_YEAR);
-            tip.setText(context.getString(R.string.dashboard_card_import_tip_import, time));
+            tip.setText(context.getString(R.string.dashboard_tip_import_saas, time));
             tip.setTextColor(mColorNormal);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             tip.setCompoundDrawablePadding(0);
             btn.setVisibility(View.VISIBLE);
-            btn.setText(R.string.dashboard_card_import_btn);
+            btn.setText(R.string.dashboard_btn_import);
 
         } else if (model.state == Constants.IMPORT_DOING) {
-            tip.setText(R.string.dashboard_card_import_tip_loading);
+            tip.setText(R.string.dashboard_tip_importing);
             tip.setTextColor(mColorOk);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             tip.setCompoundDrawablePadding(0);
             btn.setVisibility(View.INVISIBLE);
 
         } else if (model.state == Constants.IMPORT_SUCCESS) {
-            tip.setText(R.string.dashboard_card_import_tip_ok);
+            tip.setText(R.string.dashboard_tip_import_ok);
             tip.setTextColor(mColorOk);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.dashboard_import_ok,
                     0, 0, 0);
@@ -187,7 +187,7 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
             btn.setText(R.string.str_confirm);
 
         } else if (model.state == Constants.IMPORT_FAIL) {
-            tip.setText(R.string.dashboard_card_import_tip_error);
+            tip.setText(R.string.dashboard_tip_import_error);
             tip.setTextColor(mColorError);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.dashboard_import_error,
                     0, 0, 0);

@@ -18,7 +18,7 @@
         android:gravity="center_vertical"
         android:paddingStart="@dimen/dp_20"
         android:paddingEnd="@dimen/dp_20"
-        android:text="@string/dashboard_dropdown_shop_tip"
+        android:text="@string/dashboard_shop_menu_tip"
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_12" />
 

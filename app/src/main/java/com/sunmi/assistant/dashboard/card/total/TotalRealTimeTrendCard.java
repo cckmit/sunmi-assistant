@@ -364,13 +364,13 @@ public class TotalRealTimeTrendCard extends BaseRefreshCard<TotalRealTimeTrendCa
         int markerTitle;
         if (model.type == Constants.DATA_TYPE_NEW) {
             color = COLOR_NEW;
-            markerTitle = R.string.dashboard_card_tab_new;
+            markerTitle = R.string.dashboard_var_customer_new;
         } else if (model.type == Constants.DATA_TYPE_OLD) {
             color = COLOR_OLD;
-            markerTitle = R.string.dashboard_card_tab_old;
+            markerTitle = R.string.dashboard_var_customer_old;
         } else {
             color = COLOR_ALL;
-            markerTitle = R.string.dashboard_card_tab_all;
+            markerTitle = R.string.dashboard_var_all;
         }
 
         // Use correct chart marker & update it.

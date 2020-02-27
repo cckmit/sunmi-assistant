@@ -157,19 +157,19 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         TextView oldCustomerSubTitle = holder.getView(R.id.tv_dashboard_old_subtitle);
         switch (period) {
             case Constants.TIME_PERIOD_WEEK:
-                subTitle.setText(R.string.dashboard_period_last_week);
-                newCustomerSubTitle.setText(R.string.dashboard_period_last_week);
-                oldCustomerSubTitle.setText(R.string.dashboard_period_last_week);
+                subTitle.setText(R.string.dashboard_time_last_week);
+                newCustomerSubTitle.setText(R.string.dashboard_time_last_week);
+                oldCustomerSubTitle.setText(R.string.dashboard_time_last_week);
                 break;
             case Constants.TIME_PERIOD_MONTH:
-                subTitle.setText(R.string.dashboard_period_last_month);
-                newCustomerSubTitle.setText(R.string.dashboard_period_last_month);
-                oldCustomerSubTitle.setText(R.string.dashboard_period_last_month);
+                subTitle.setText(R.string.dashboard_time_last_month);
+                newCustomerSubTitle.setText(R.string.dashboard_time_last_month);
+                oldCustomerSubTitle.setText(R.string.dashboard_time_last_month);
                 break;
             case Constants.TIME_PERIOD_YESTERDAY:
-                subTitle.setText(R.string.dashboard_period_last_day);
-                newCustomerSubTitle.setText(R.string.dashboard_period_last_day);
-                oldCustomerSubTitle.setText(R.string.dashboard_period_last_day);
+                subTitle.setText(R.string.dashboard_time_last_day);
+                newCustomerSubTitle.setText(R.string.dashboard_time_last_day);
+                oldCustomerSubTitle.setText(R.string.dashboard_time_last_day);
                 break;
             default:
                 break;

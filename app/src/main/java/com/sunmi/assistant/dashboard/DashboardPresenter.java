@@ -110,7 +110,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         List<PageHost> pages = new ArrayList<>();
 
         RealtimeFragment realtimeFragment = new RealtimeFragment_();
-        pages.add(new PageHost(R.string.dashboard_page_overview, 0, realtimeFragment, Constants.PAGE_OVERVIEW));
+        pages.add(new PageHost(R.string.dashboard_page_realtime_data, 0, realtimeFragment, Constants.PAGE_OVERVIEW));
 
         CustomerFragment customerFragment = new CustomerFragment_();
         pages.add(new PageHost(R.string.dashboard_page_customer, 0, customerFragment, Constants.PAGE_CUSTOMER));

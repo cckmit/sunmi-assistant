@@ -32,7 +32,7 @@ public class XAxisFrequencyDistributionFormatter extends ValueFormatter {
     @Override
     public String getAxisLabel(float value, AxisBase axis) {
         if (value > max) {
-            return context.getString(R.string.dashborad_card_customer_frequency_above, max);
+            return context.getString(R.string.dashboard_unit_frequency_count_above_abbr, max);
         } else {
             return String.valueOf((int) value);
         }

@@ -69,7 +69,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
 
     @Override
     public void init(Context context) {
-        mAgeLabel = context.getString(R.string.dashboard_card_age_label);
+        mAgeLabel = context.getString(R.string.dashboard_unit_age);
         mMaleLabel = context.getString(R.string.str_gender_male);
         mFemaleLabel = context.getString(R.string.str_gender_female);
     }
@@ -261,7 +261,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
             TextView tvFrequency = holder.getView(R.id.tv_dashboard_frequency);
             if (item.state == Item.STATE_ERROR) {
                 ivAvatar.setImageResource(R.mipmap.dashboard_customer_avatar_error);
-                tvTitle.setText(R.string.dashboard_card_customer_none);
+                tvTitle.setText(R.string.dashboard_tip_customer_none);
                 tvCount.setText(Utils.DATA_ZERO);
                 tvRatio.setText(Utils.DATA_ZERO_RATIO);
                 tvOldRatio.setText(Utils.DATA_ZERO_RATIO);

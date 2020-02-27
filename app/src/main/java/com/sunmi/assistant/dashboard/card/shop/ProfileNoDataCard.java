@@ -59,7 +59,7 @@ public class ProfileNoDataCard extends BaseRefreshCard<ProfileNoDataCard.Model, 
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         TextView tip = holder.getView(R.id.tv_dashboard_tip);
-        tip.setText(R.string.dashboard_no_customer_data_tip);
+        tip.setText(R.string.dashboard_tip_no_customer_title);
         return holder;
     }
 
