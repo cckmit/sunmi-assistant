@@ -246,16 +246,12 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
                 List<ShopInfo> shops = data.getShop_list();
                 List<FilterItem> result = new ArrayList<>(shops.size());
-                boolean isSaasDocked = true;
+                boolean isSaasDocked = false;
                 for (ShopInfo shop : shops) {
-                    if (shop.getShopId() == mShopId) {
-                        FilterItem item = new FilterItem(shop.getShopId(), shop.getShopName());
-                        item.setChecked(true);
-                        isSaasDocked = shop.getSaasExist() == 1;
-                        result.add(0, item);
-                    } else {
-                        result.add(new FilterItem(shop.getShopId(), shop.getShopName()));
+                    if (shop.getShopId() == mShopId && shop.getSaasExist() == 1) {
+                        isSaasDocked = true;
                     }
+                    result.add(new FilterItem(shop.getShopId(), shop.getShopName()));
                 }
                 mLoadFlag &= ~Constants.FLAG_SHOP;
                 if (isViewAttached()) {
