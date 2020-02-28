@@ -104,7 +104,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         initTitleBar();
         initCloudCard();
         initCashPreventCardVisibility(false);
-        if (SpUtils.getLoanStatus()){
+        if (SpUtils.getLoanStatus()) {
             tvLoan.setVisibility(View.VISIBLE);
             llLoan.setVisibility(View.VISIBLE);
         }else {
@@ -115,7 +115,10 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     }
 
     private void initTitleBar() {
-        titleBar.getRightTextView().setOnClickListener(v -> ServiceManageActivity_.intent(mActivity).start());
+        titleBar.getRightTextView().setOnClickListener(v ->
+                WebViewCloudServiceActivity_.intent(mActivity)
+                        .mUrl(CommonConstants.H5_SERVICE_MANAGER)
+                        .params(WebViewParamsUtils.getUserInfoParams()).start());
     }
 
     @UiThread
@@ -173,8 +176,16 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         mPresenter.load();
     }
 
+    @Click(resName = "ll_online_course")
+    void onlineCourseClick() {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
+            return;
+        }
+        WebViewActivity_.intent(mActivity).url(CommonConstants.H5_SERVICE_COURSE).start();
+    }
+
     @Click(resName = "ll_loan")
-    void commerceBankClick(){
+    void commerceBankClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
@@ -204,7 +215,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         if (cashServiceInfoList.isEmpty()) {
             // 没有设备开通收银视频，进入开通页
             WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO)
-                    .params(WebViewParamsUtils.getCashVideoParams()).start();
+                    .params(WebViewParamsUtils.getCashVideoParams(null, 0)).start();
         } else if (hasCloudService) {
             // 有设备开通收银视频，并已经开通云存储服务，进入收银视频总览页
             Router.withApi(IpcApi.class)

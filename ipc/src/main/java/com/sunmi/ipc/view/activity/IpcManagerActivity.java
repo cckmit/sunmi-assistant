@@ -65,6 +65,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.SunmiServiceApi;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
@@ -224,7 +225,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         initSurfaceView();
         initManageList();
-        if ( isSS1()) {
+        if (isSS1()) {
             mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
             if (!CommonHelper.isGooglePlay()) {
                 mPresenter.getCashVideoService(device.getId());
@@ -589,11 +590,20 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
     }
 
     @Override
-    public void getCashVideoServiceSuccess(ArrayList<CashServiceInfo> devices, boolean alreadySubscribe) {
+    public void getCashVideoServiceSuccess(ArrayList<CashServiceInfo> devices, boolean alreadySubscribe, int status, int validTime) {
         hideLoadingDialog();
         serviceBeans = devices;
+        cashVideoItem.setStatus(status);
         if (!devices.isEmpty()) {
-            cashVideoItem.setRightText(context.getString(R.string.str_setting_detail));
+            if (status == CommonConstants.SERVICE_EXPIRED) {
+                cashVideoItem.setRightText(getString(R.string.str_renew_now));
+                cashVideoItem.setSummary(getString(R.string.tip_renew_service));
+            } else {
+                cashVideoItem.setRightText(getString(R.string.str_setting_detail));
+                if (validTime / (3600 * 24) < 3) {
+                    cashVideoItem.setSummary(getString(R.string.tip_validity_period, DateTimeUtils.secondToPeriod(validTime)));
+                }
+            }
             if (devices.get(0).isHasCashLossPrevention()) {
                 cashVideoItem.setLeftImageResId(R.mipmap.ipc_manage_cash_loss_prevent);
                 cashVideoItem.setTitle(getString(R.string.str_cash_loss_prevent));
@@ -970,9 +980,11 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             public void convert(ViewHolder holder, IpcManageBean bean) {
                 Button btnDetail = holder.getView(R.id.btn_detail);
                 ImageView ivTag = holder.getView(R.id.iv_tag);
+                TextView tvSummary = holder.getView(R.id.tv_summary);
                 holder.setImageResource(R.id.iv_icon, bean.getLeftImageResId());
                 holder.setText(R.id.tv_title, bean.getTitle());
-                holder.setText(R.id.tv_summary, bean.getSummary());
+                tvSummary.setSelected(bean.getStatus() == CommonConstants.SERVICE_EXPIRED);
+                tvSummary.setText(bean.getSummary());
                 holder.setText(R.id.btn_detail, bean.getRightText());
                 btnDetail.setEnabled(bean.isEnabled());
                 if (bean.getTagImageResId() != -1) {
@@ -997,18 +1009,36 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                             if (cashVideoSubscribed) {  //已有其他门店开启收银视频
                                 shortTip(R.string.cash_video_other_device_already_subscribe_tip);
                             } else {
-                                if (serviceBeans.isEmpty()) {   //去开启收银视频
-                                    Router.withApi(SunmiServiceApi.class)
-                                            .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO,
-                                                    WebViewParamsUtils.getCashVideoParams());
-                                } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
-                                    CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
-                                            .serviceBeans(serviceBeans)
-                                            .hasCashLossPrevent(serviceBeans.get(0).isHasCashLossPrevention()).start();
-                                } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
-                                    shortTip(R.string.tip_after_cloud_cash_video);
-                                } else {
-                                    shortTip(R.string.tip_cloud_expired);
+                                switch (bean.getStatus()) {
+                                    case CommonConstants.SERVICE_NOT_OPENED:   //去开启收银视频
+                                        Router.withApi(SunmiServiceApi.class)
+                                                .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO,
+                                                        WebViewParamsUtils.getCashVideoParams(null, 0));
+                                        break;
+                                    case CommonConstants.SERVICE_ALREADY_OPENED:
+                                        if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
+                                            CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
+                                                    .serviceBeans(serviceBeans)
+                                                    .hasCashLossPrevent(serviceBeans.get(0).isHasCashLossPrevention()).start();
+                                        } else if (cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED) {
+                                            shortTip(R.string.tip_after_cloud_cash_video);
+                                        } else {
+                                            shortTip(R.string.tip_cloud_expired);
+                                        }
+                                        break;
+                                    case CommonConstants.SERVICE_EXPIRED:
+                                        if (serviceBeans.get(0).isHasCashLossPrevention()) {
+                                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,
+                                                    CommonConstants.H5_CASH_PREVENT_RENEW,
+                                                    WebViewParamsUtils.getCashPreventLossParams(device.getDeviceid(), 1));
+                                        } else {
+                                            Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,
+                                                    CommonConstants.H5_CASH_VIDEO_RENEW,
+                                                    WebViewParamsUtils.getCashVideoParams(device.getDeviceid(), 1));
+                                        }
+                                        break;
+                                    default:
+                                        break;
                                 }
                             }
                             break;

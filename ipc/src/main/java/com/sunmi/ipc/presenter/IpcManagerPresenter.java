@@ -10,7 +10,6 @@ import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.tutk.IOTC.P2pCmdCallback;
-import com.xiaomi.clientreport.processor.IEventProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +33,8 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
         implements IpcManagerContract.Presenter {
 
     private static final int STATE_CASH_VIDEO_SERVICE_ON = 1;
+    private int status;
+    private int validTime;
 
     @Override
     public void changeQuality(int quality, IOTCClient iotcClient) {
@@ -112,7 +113,8 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                         ArrayList<CashServiceInfo> devices = new ArrayList<>();
                         if (list == null || list.isEmpty()) {
                             if (isViewAttached()) {
-                                mView.getCashVideoServiceSuccess(devices, false);
+                                mView.getCashVideoServiceSuccess(devices, false,
+                                        CommonConstants.SERVICE_NOT_OPENED, 0);
                             }
                             return;
                         }
@@ -124,11 +126,19 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                             if (device.getStatus() == STATE_CASH_VIDEO_SERVICE_ON
                                     && device.getDeviceId() == deviceId) {
                                 getCashPreventService(device.getDeviceSn());
+                                status = device.getStatus();
+                                validTime =device.getValidTime();
                                 return;
+                            } else if (device.getStatus() == CommonConstants.SERVICE_EXPIRED
+                                    && device.getDeviceId() == deviceId) {
+                                if (isViewAttached()) {
+                                    mView.getCashVideoServiceSuccess(devices, hasCashVideoService, device.getStatus(), 0);
+                                }
                             }
                         }
                         if (isViewAttached()) {
-                            mView.getCashVideoServiceSuccess(devices, hasCashVideoService);
+                            mView.getCashVideoServiceSuccess(devices, hasCashVideoService,
+                                    CommonConstants.SERVICE_NOT_OPENED, 0);
                         }
                     }
 
@@ -151,19 +161,22 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                 List<ServiceResp.Info> beans = data.getList();
                 ArrayList<CashServiceInfo> cashServiceInfos = new ArrayList<>();
                 if (beans.size() > 0) {
-                    for (ServiceResp.Info bean : beans) {
-                        CashServiceInfo info = new CashServiceInfo();
-                        info.setDeviceId(bean.getDeviceId());
-                        info.setDeviceSn(bean.getDeviceSn());
-                        info.setDeviceName(bean.getDeviceName());
-                        info.setImgUrl(bean.getImgUrl());
-                        info.setHasCashLossPrevention(bean.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED
-                                && ConfigManager.get().getCashSecurityEnable());
-                        cashServiceInfos.add(info);
+                    ServiceResp.Info bean = beans.get(0);
+                    CashServiceInfo info = new CashServiceInfo();
+                    info.setDeviceId(bean.getDeviceId());
+                    info.setDeviceSn(bean.getDeviceSn());
+                    info.setDeviceName(bean.getDeviceName());
+                    info.setImgUrl(bean.getImgUrl());
+                    info.setHasCashLossPrevention(bean.getStatus() != CommonConstants.SERVICE_NOT_OPENED
+                            && ConfigManager.get().getCashSecurityEnable());
+                    cashServiceInfos.add(info);
+                    if (info.isHasCashLossPrevention()) {
+                        status = bean.getStatus();
+                        validTime = bean.getValidTime();
                     }
                 }
                 if (isViewAttached()) {
-                    mView.getCashVideoServiceSuccess(cashServiceInfos, true);
+                    mView.getCashVideoServiceSuccess(cashServiceInfos, true, status, validTime);
                 }
             }
 
@@ -187,13 +200,13 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                 item.setRightText(context.getString(R.string.str_use_free));
                 if (!CommonHelper.isGooglePlay()) {
                     item.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
-                }else {
+                } else {
                     item.setTagImageResId(-1);
                 }
             } else if (data.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                if (data.getServiceType() == CommonConstants.SERVICE_TYPE_CLOUD_7){
+                if (data.getServiceType() == CommonConstants.SERVICE_TYPE_CLOUD_7) {
                     item.setTitle(context.getString(R.string.service_cloud_7));
-                }else {
+                } else {
                     item.setTitle(context.getString(R.string.service_cloud_30));
                 }
                 item.setSummary(context.getString(R.string.str_remaining_validity_period,
