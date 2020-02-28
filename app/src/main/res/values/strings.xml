@@ -75,7 +75,8 @@
     <string name="dashboard_time_week_4">4th Week</string>
     <string name="dashboard_time_week_5">5th Week</string>
     <string name="dashboard_time_week_6">6th Week</string>
-
+    <string name="dashboard_title_performance">业绩排行</string>
+    <string name="dashboard_btn_get_more">查看更多数据</string>
     <string name="dashboard_title_frequency">Customer visits frequency</string>
     <string name="dashboard_tip_customer_avg_enter">The average number of customer visits to the store over a period of time</string>
     <string name="dashboard_title_frequency_distribution">Store visits</string>

@@ -37,9 +37,9 @@ import sunmi.common.rpc.retrofit.BaseResponse;
  * @author yinhui
  * @since 2019-07-01
  */
-public class TotalRealTimeTrendCard extends BaseRefreshCard<TotalRealTimeTrendCard.Model, CustomerHistoryTrendResp> {
+public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCard.Model, CustomerHistoryTrendResp> {
 
-    private static TotalRealTimeTrendCard sInstance;
+    private static TotalRealtimeTrendCard sInstance;
 
     private static final int COLOR_CUSTOMER = 0xFF00BC7D;
     private static final int COLOR_SALES = 0xFF00BC7D;
@@ -52,13 +52,13 @@ public class TotalRealTimeTrendCard extends BaseRefreshCard<TotalRealTimeTrendCa
     private LineChartMarkerView mLineChartMarker;
     private TimeMarkerFormatter mMarkerFormatter;
 
-    private TotalRealTimeTrendCard(Presenter presenter, int source) {
+    private TotalRealtimeTrendCard(Presenter presenter, int source) {
         super(presenter, source);
     }
 
-    public static TotalRealTimeTrendCard get(Presenter presenter, int source) {
+    public static TotalRealtimeTrendCard get(Presenter presenter, int source) {
         if (sInstance == null) {
-            sInstance = new TotalRealTimeTrendCard(presenter, source);
+            sInstance = new TotalRealtimeTrendCard(presenter, source);
         } else {
             sInstance.reset(presenter, source);
         }
