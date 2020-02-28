@@ -57,6 +57,7 @@
     <string name="dashboard_title_business_trend">经营趋势</string>
     <string name="dashboard_title_distribution">客群分布</string>
     <string name="dashboard_title_customer_trend">客流趋势</string>
+    <string name="dashboard_title_performance">业绩排行</string>
     <string name="dashboard_title_frequency_trend_week">周到店频次趋势</string>
     <string name="dashboard_title_frequency_trend_month">月到店频次趋势</string>
     <string name="dashboard_title_frequency_avg">客群平均到店频次</string>
@@ -103,6 +104,7 @@
     <string name="dashboard_btn_add">添加</string>
     <string name="dashboard_btn_add_device">添加设备</string>
     <string name="dashboard_btn_no_order_dock">接入</string>
+    <string name="dashboard_btn_get_more">查看更多数据</string>
 
     <string name="dashboard_tip_profile_analysis">按照人数占比进行排列</string>
     <string name="dashboard_tip_customer_none">暂无客流数据</string>

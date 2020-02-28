@@ -3,6 +3,8 @@ package com.sunmi.assistant.dashboard.page;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.card.total.TotalRealtimePerformanceCard;
+import com.sunmi.assistant.dashboard.card.total.TotalRealtimeTrendCard;
 import com.sunmi.assistant.dashboard.util.Constants;
 
 import java.util.ArrayList;
@@ -122,7 +124,8 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
 
     private void initList(int source) {
         mList.clear();
-        // TODO: Add Cards
+        mList.add(TotalRealtimeTrendCard.get(this, source));
+        mList.add(TotalRealtimePerformanceCard.get(this, source));
     }
 
     @Override

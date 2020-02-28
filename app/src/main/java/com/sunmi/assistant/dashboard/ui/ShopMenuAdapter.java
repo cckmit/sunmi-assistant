@@ -60,6 +60,7 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
         });
 
         silName.setOnClickListener(v -> {
+            last = null;
             if (!isTotalPerspective) {
                 switchToTotalPerspective();
             }
