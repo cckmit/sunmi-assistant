@@ -1016,7 +1016,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                                 .goToWebViewCloud(context, CommonConstants.H5_CASH_VIDEO,
                                                         WebViewParamsUtils.getCashVideoParams(null, 0));
                                         break;
-                                    case CommonConstants.SERVICE_ALREADY_OPENED:
+                                    case CommonConstants.SERVICE_ALREADY_OPENED:  //服务已开通
                                         if (cloudStorageServiceStatus == CommonConstants.SERVICE_ALREADY_OPENED) {
                                             CashVideoOverviewActivity_.intent(context).isSingleDevice(true)
                                                     .serviceBeans(serviceBeans)
@@ -1027,7 +1027,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                             shortTip(R.string.tip_cloud_expired);
                                         }
                                         break;
-                                    case CommonConstants.SERVICE_EXPIRED:
+                                    case CommonConstants.SERVICE_EXPIRED: //服务已过期
                                         if (serviceBeans.get(0).isHasCashLossPrevention()) {
                                             Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,
                                                     CommonConstants.H5_CASH_PREVENT_RENEW,
