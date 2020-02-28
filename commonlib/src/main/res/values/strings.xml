@@ -192,6 +192,6 @@
     <string name="str_refresh_loading">Loading…</string>
     <string name="service_cloud_7">Cloud Storage(7-Days)</string>
     <string name="service_cloud_30">Cloud Storage(30-Days)</string>
-    <string name="str_renew_now">立即续费</string>
-    <string name="tip_renew_service">服务已过期，请尽快续费</string>
+    <string name="str_renew_now">立即续订</string>
+    <string name="tip_renew_service">服务已过期，请尽快续订</string>
 </resources>
