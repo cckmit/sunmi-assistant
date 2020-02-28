@@ -20,22 +20,19 @@ public class YAxisVolumeLabelsRenderer extends YAxisRenderer {
         if (labels == null) {
             labels = new float[6];
         }
-        if (max <= 5) {
+        float fragment = max / 5;
+        if (fragment <= 1) {
             for (int i = 0; i < 6; i++) {
                 labels[i] = i;
             }
             return 5.1f;
-        } else if (max <= 10) {
-            for (int i = 0; i < 6; i++) {
-                labels[i] = i * 2;
-            }
-            return 10.1f;
         } else {
-            double offset = Math.ceil(max / 25);
+            int index = (int) Math.pow(10, (int) Math.log10(fragment));
+            float result = (float) (Math.ceil(fragment / index) * index);
             for (int i = 0; i < 6; i++) {
-                labels[i] = (float) (i * offset * 5);
+                labels[i] = result * i;
             }
-            return (float) (offset * 25) + 0.5f;
+            return result * 5 + 0.1f;
         }
     }
 
