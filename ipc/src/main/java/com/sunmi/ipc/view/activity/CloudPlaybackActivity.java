@@ -382,7 +382,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @Click(resName = "btn_open_service")
     void openServiceClick() {
         Router.withApi(SunmiServiceApi.class)
-                .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(),""));
+                .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(), ""));
     }
 
     @Click(resName = "rl_top")
@@ -826,7 +826,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     //初始化时间轴
     private void initTimeSlotData(boolean isFirstInit) {
-        if (!isFirstInit) {
+        if (isFirstInit) {
+            setCalendarEnable(true);
+        } else {
             showVideoLoading();
         }
         timeSlotsInDay.clear();
