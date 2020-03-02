@@ -595,11 +595,12 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         hideLoadingDialog();
         serviceBeans = devices;
         cashVideoItem.setStatus(status);
+        if (status == CommonConstants.SERVICE_EXPIRED) {
+            cashVideoItem.setRightText(getString(R.string.str_renew_now));
+            cashVideoItem.setSummary(getString(R.string.tip_renew_service));
+        }
         if (!devices.isEmpty()) {
-            if (status == CommonConstants.SERVICE_EXPIRED) {
-                cashVideoItem.setRightText(getString(R.string.str_renew_now));
-                cashVideoItem.setSummary(getString(R.string.tip_renew_service));
-            } else {
+            if (status ==CommonConstants.SERVICE_ALREADY_OPENED){
                 cashVideoItem.setRightText(getString(R.string.str_setting_detail));
                 if (validTime / (3600 * 24) < 3) {
                     cashVideoItem.setSummary(getString(R.string.tip_validity_period, DateTimeUtils.secondToPeriod(validTime)));
