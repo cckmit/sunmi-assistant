@@ -64,7 +64,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private int mSource = 0;
     private int mPerspective = CommonConstants.PERSPECTIVE_TOTAL;
 
-    private SparseArray<FilterItem> mShops = new SparseArray<>();
     private SparseArray<PageContract.PagePresenter> mPages = new SparseArray<>(3);
     private int mPageType = Constants.PAGE_NONE;
 
@@ -252,7 +251,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
                 List<ShopInfo> shops = data.getShop_list();
                 List<FilterItem> result = new ArrayList<>(shops.size());
-                mShops.clear();
                 boolean isSaasDocked = false;
                 for (ShopInfo shop : shops) {
                     if (shop.getShopId() == mShopId && shop.getSaasExist() == 1) {
@@ -260,7 +258,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     }
                     FilterItem item = new FilterItem(shop.getShopId(), shop.getShopName());
                     result.add(item);
-                    mShops.put(shop.getShopId(), item);
                 }
                 mLoadFlag &= ~Constants.FLAG_SHOP;
                 if (isViewAttached()) {
