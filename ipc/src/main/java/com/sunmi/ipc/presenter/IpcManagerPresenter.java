@@ -10,7 +10,6 @@ import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.tutk.IOTC.P2pCmdCallback;
-import com.xiaomi.clientreport.processor.IEventProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -205,7 +204,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                     item.setTagImageResId(-1);
                 }
             } else if (data.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                if (data.getServiceType() == CommonConstants.SERVICE_TYPE_CLOUD_7){
+                if (data.getServiceTag() == 1){
                     item.setTitle(context.getString(R.string.service_cloud_7));
                 }else {
                     item.setTitle(context.getString(R.string.service_cloud_30));
