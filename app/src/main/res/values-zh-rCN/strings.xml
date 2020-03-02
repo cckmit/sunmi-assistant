@@ -75,6 +75,7 @@
     <string name="dashboard_var_sales_volume">交易笔数</string>
     <string name="dashboard_var_transaction_rate">交易转化率</string>
     <string name="dashboard_var_transaction_rate_abbr">转化率</string>
+    <string name="dashboard_var_sales_volume_total">总交易笔数</string>
 
     <string name="dashboard_var_customer">进店客流</string>
     <string name="dashboard_var_customer_count">进店人数</string>
@@ -91,6 +92,7 @@
     <string name="dashboard_var_customer_total_ratio">总人数占比</string>
     <string name="dashboard_var_customer_old_ratio">熟客占比</string>
     <string name="dashboard_var_frequency">到店频次</string>
+    <string name="dashboard_var_customer_total">总客流量</string>
 
     <string name="dashboard_unit_age">岁</string>
     <string name="dashboard_unit_frequency_data_day">%s次/日</string>
