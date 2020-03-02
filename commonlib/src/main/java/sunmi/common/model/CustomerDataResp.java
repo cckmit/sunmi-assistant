@@ -22,6 +22,9 @@ public class CustomerDataResp {
      * early_stranger_passenger_count : 1213
      * latest_member_passenger_count : 1213
      * early_member_passenger_count : 1213
+     * passenger_count : 6898
+     * pass_head_count : 30000
+     * early_pass_head_count : 28000
      */
 
     @SerializedName("latest_passenger_count")
@@ -48,6 +51,12 @@ public class CustomerDataResp {
     private int latestMemberPassengerCount;
     @SerializedName("early_member_passenger_count")
     private int earlyMemberPassengerCount;
+    @SerializedName("passenger_count")
+    private int passengerCount;
+    @SerializedName("pass_head_count")
+    private int passHeadCount;
+    @SerializedName("early_pass_head_count")
+    private int earlyPassHeadCount;
 
     public int getLatestPassengerCount() {
         return latestPassengerCount;
@@ -95,5 +104,17 @@ public class CustomerDataResp {
 
     public int getEarlyMemberPassengerCount() {
         return earlyMemberPassengerCount;
+    }
+
+    public int getPassengerCount() {
+        return passengerCount;
+    }
+
+    public int getPassHeadCount() {
+        return passHeadCount;
+    }
+
+    public int getEarlyPassHeadCount() {
+        return earlyPassHeadCount;
     }
 }
