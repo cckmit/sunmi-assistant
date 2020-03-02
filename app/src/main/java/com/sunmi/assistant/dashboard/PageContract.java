@@ -26,6 +26,8 @@ public interface PageContract {
 
         Context getContext();
 
+        int getPerspective();
+
         void updateTab(int period);
 
         void setCards(List<BaseRefreshCard> data);

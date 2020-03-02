@@ -7,10 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -100,8 +97,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
-    private List<PageHost> mPages = new ArrayList<>();
     private PageAdapter pageAdapter;
+    private PageListener pageListener;
     private ShopMenuAdapter mShopMenuAdapter;
     private ShopMenuAnim mShopMenuAnim;
 
@@ -132,8 +129,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             return;
         }
         initDimens(context);
-        initTopBar(context);
         initViewPager(context);
+        initTopBar(context);
     }
 
     private void initDimens(Context context) {
@@ -189,9 +186,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private void initViewPager(Context context) {
         pageAdapter = new PageAdapter(getChildFragmentManager());
+        pageListener = new PageListener();
         mPager.setOffscreenPageLimit(2);
         mPager.setAdapter(pageAdapter);
-        mPager.addOnPageChangeListener(new PageListener());
+        mPager.addOnPageChangeListener(pageListener);
 
         mPageTab.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -313,10 +311,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void setPages(List<PageHost> pages) {
-        mPages = pages;
-        ArrayList<CustomTabEntity> tabs = new ArrayList<>(mPages.size());
-        for (PageHost page : mPages) {
+    public void setPages(List<PageHost> pages, int perspective) {
+        ArrayList<CustomTabEntity> tabs = new ArrayList<>(pages.size());
+        for (PageHost page : pages) {
             tabs.add(new CustomTabEntity() {
                 @Override
                 public String getTabTitle() {
@@ -336,7 +333,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
         mPageTab.setTabData(tabs);
         mPageTab.setCurrentTab(0);
-        pageAdapter.notifyDataSetChanged();
+        mPager.setCurrentItem(0);
+        pageListener.setPages(pages);
+        pageAdapter.setPages(pages, perspective);
     }
 
     @Override
@@ -504,24 +503,16 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mPresenter.stopAutoRefresh();
     }
 
-    private class PageAdapter extends FragmentStatePagerAdapter {
-
-        public PageAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int i) {
-            return mPages.get(i).getFragment();
-        }
-
-        @Override
-        public int getCount() {
-            return mPages.size();
-        }
-    }
-
     private class PageListener implements ViewPager.OnPageChangeListener {
+
+        private List<PageHost> data = new ArrayList<>();
+
+        public void setPages(List<PageHost> list) {
+            if (list == null || list.isEmpty()) {
+                return;
+            }
+            this.data = list;
+        }
 
         @Override
         public void onPageScrolled(int i, float v, int i1) {
@@ -529,8 +520,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
         @Override
         public void onPageSelected(int position) {
+            if (data.size() <= position) {
+                return;
+            }
             mPageTab.setCurrentTab(position);
-            mPresenter.switchPage(mPages.get(position).getType());
+            mPresenter.switchPage(data.get(position).getType());
             updateTab(mPresenter.getPageType(), mPresenter.getPeriod());
             resetTop();
         }

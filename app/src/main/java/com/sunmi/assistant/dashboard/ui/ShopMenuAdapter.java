@@ -65,6 +65,8 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
                 switchToTotalPerspective();
             }
         });
+
+        switchToTotalPerspective();
     }
 
     @Override

@@ -25,14 +25,24 @@ public class PageAdapter extends PagerAdapter {
     private static final boolean DEBUG = false;
     private final FragmentManager mFragmentManager;
     private FragmentTransaction mCurTransaction = null;
-    private ArrayList<Fragment.SavedState> mSavedState = new ArrayList();
-    private ArrayList<Fragment> mFragments = new ArrayList();
+    private ArrayList<Fragment.SavedState> mSavedState = new ArrayList<>();
+    private ArrayList<Fragment> mFragments = new ArrayList<>();
     private Fragment mCurrentPrimaryItem = null;
 
-    private List<PageHost> data;
+    private int perspective;
+    private List<PageHost> data = new ArrayList<>();
 
     public PageAdapter(FragmentManager fm) {
         this.mFragmentManager = fm;
+    }
+
+    public void setPages(List<PageHost> pages, int perspective) {
+        if (pages == null || pages.isEmpty()) {
+            return;
+        }
+        this.perspective = perspective;
+        data = pages;
+        notifyDataSetChanged();
     }
 
     public Fragment getItem(int i) {
@@ -42,6 +52,16 @@ public class PageAdapter extends PagerAdapter {
     @Override
     public int getCount() {
         return data.size();
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        if (object instanceof PageContract.PageView) {
+            PageContract.PageView page = (PageContract.PageView) object;
+            return page.getPerspective() == this.perspective ? POSITION_UNCHANGED : POSITION_NONE;
+        } else {
+            return POSITION_NONE;
+        }
     }
 
     @Override

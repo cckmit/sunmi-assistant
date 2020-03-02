@@ -6,8 +6,10 @@ package com.sunmi.assistant.dashboard.util;
  */
 public class Constants {
 
-    public static final int PAGE_NONE = 0;
+    public static final int PERSPECTIVE_TOTAL = 1;
+    public static final int PERSPECTIVE_SHOP = 2;
 
+    public static final int PAGE_NONE = 0;
     public static final int PAGE_OVERVIEW = 1;
     public static final int PAGE_CUSTOMER = 2;
     public static final int PAGE_PROFILE = 3;

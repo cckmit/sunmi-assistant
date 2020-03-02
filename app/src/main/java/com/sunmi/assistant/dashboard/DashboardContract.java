@@ -15,7 +15,7 @@ public interface DashboardContract {
 
         void setShopList(List<FilterItem> list);
 
-        void setPages(List<PageHost> pages);
+        void setPages(List<PageHost> pages, int perspective);
 
         void setSource(int source);
 

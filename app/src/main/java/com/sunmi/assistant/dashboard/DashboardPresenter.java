@@ -62,7 +62,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private int mCompanyId;
     private int mShopId;
     private int mSource = 0;
-    private boolean isTotalPerspective = true;
+    private int mPerspective = Constants.PERSPECTIVE_TOTAL;
 
     private SparseArray<PageContract.PagePresenter> mPages = new SparseArray<>(3);
     private int mPageType = Constants.PAGE_NONE;
@@ -80,6 +80,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
         load(Constants.FLAG_ALL_MASK, true, true);
+        switchToTotalPerspective();
     }
 
     @Override
@@ -91,7 +92,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void switchToTotalPerspective() {
-        isTotalPerspective = true;
+        mPerspective = Constants.PERSPECTIVE_TOTAL;
         mPages.clear();
 
         List<PageHost> pages = new ArrayList<>();
@@ -102,13 +103,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         mPageType = Constants.PAGE_TOTAL_REALTIME;
         if (isViewAttached()) {
-            mView.setPages(pages);
+            mView.setPages(pages, mPerspective);
         }
     }
 
     @Override
     public void switchToShopPerspective() {
-        isTotalPerspective = false;
+        mPerspective = Constants.PERSPECTIVE_SHOP;
         mPages.clear();
 
         List<PageHost> pages = new ArrayList<>();
@@ -124,7 +125,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
         mPageType = Constants.PAGE_OVERVIEW;
         if (isViewAttached()) {
-            mView.setPages(pages);
+            mView.setPages(pages, mPerspective);
         }
     }
 
