@@ -127,7 +127,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                                     && device.getDeviceId() == deviceId) {
                                 getCashPreventService(device.getDeviceSn());
                                 status = device.getStatus();
-                                validTime =device.getValidTime();
+                                validTime = device.getValidTime();
                                 return;
                             } else if (device.getStatus() == CommonConstants.SERVICE_EXPIRED
                                     && device.getDeviceId() == deviceId) {
@@ -200,13 +200,13 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                 item.setRightText(context.getString(R.string.str_use_free));
                 if (!CommonHelper.isGooglePlay()) {
                     item.setTagImageResId(R.mipmap.ipc_cloud_free_half_year);
-                }else {
+                } else {
                     item.setTagImageResId(-1);
                 }
             } else if (data.getStatus() == CommonConstants.SERVICE_ALREADY_OPENED) {
-                if (data.getServiceTag() == 1){
+                if (data.getServiceTag() == 1) {
                     item.setTitle(context.getString(R.string.service_cloud_7));
-                }else {
+                } else {
                     item.setTitle(context.getString(R.string.service_cloud_30));
                 }
                 item.setSummary(context.getString(R.string.str_remaining_validity_period,
