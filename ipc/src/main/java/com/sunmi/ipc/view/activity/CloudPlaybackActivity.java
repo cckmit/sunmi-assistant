@@ -171,6 +171,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         titleBar.setAppTitle(device.getName());
         titleBar.getLeftLayout().setOnClickListener(this);
         if (isServiceUnopened()) {
+            setCalendarEnable(false);
             timeLine.setVisibility(View.GONE);
             llNoService.setVisibility(View.VISIBLE);
             btnOpenService.setVisibility(View.VISIBLE);
@@ -179,6 +180,10 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             ivMute.setEnabled(false);
             ivFullScreen.setEnabled(false);
             rlBottomBar.setVisibility(View.VISIBLE);
+        }
+        ivNextDay.setEnabled(false);
+        if (currentTime > 0) {
+            setCalendarEnable(false);
         }
         ivpCloud.setVideoPlayListener(this);
         initData();
