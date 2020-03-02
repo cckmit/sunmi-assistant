@@ -68,7 +68,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
      */
     @Override
     public void apCheckLogin(Context context, String password) {
-        APCall.getInstance().checkLogin(context, password);
+        APCall.getInstance().checkApPassword(context, password);
     }
 
     @Override
