@@ -15,6 +15,8 @@ public interface DashboardContract {
 
         void setShopList(List<FilterItem> list);
 
+        void switchPerspective(int perspective);
+
         void setPages(List<PageHost> pages, int perspective);
 
         void setSource(int source);
@@ -37,11 +39,7 @@ public interface DashboardContract {
 
         void reload(int flag);
 
-        void switchToTotalPerspective();
-
-        void switchToShopPerspective();
-
-        void switchShop(FilterItem shop);
+        void switchPerspective(int perspective);
 
         void switchPeriod(int period);
 

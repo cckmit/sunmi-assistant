@@ -32,4 +32,6 @@ public class CommonNotifications {
     public static final int cashVideoSubscribe = totalEvents++; //收银视屏服务订阅成功
     public static final int cashPreventSubscribe = totalEvents++;  //收银防损服务订阅成功
 
+    public static final int perspectiveSwitch = totalEvents++;    //视角切换
+
 }

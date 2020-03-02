@@ -62,8 +62,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private int mCompanyId;
     private int mShopId;
     private int mSource = 0;
-    private int mPerspective = Constants.PERSPECTIVE_TOTAL;
+    private int mPerspective = CommonConstants.PERSPECTIVE_TOTAL;
 
+    private SparseArray<FilterItem> mShops = new SparseArray<>();
     private SparseArray<PageContract.PagePresenter> mPages = new SparseArray<>(3);
     private int mPageType = Constants.PAGE_NONE;
 
@@ -91,8 +92,17 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void switchToTotalPerspective() {
-        mPerspective = Constants.PERSPECTIVE_TOTAL;
+    public void switchPerspective(int perspective) {
+        if (perspective == CommonConstants.PERSPECTIVE_TOTAL) {
+            switchToTotalPerspective();
+        } else if (perspective == CommonConstants.PERSPECTIVE_SHOP) {
+            switchToShopPerspective();
+        }
+    }
+
+    private void switchToTotalPerspective() {
+        LogCat.d("yinhui", "presenter: switch to total.");
+        mPerspective = CommonConstants.PERSPECTIVE_TOTAL;
         mPages.clear();
 
         List<PageHost> pages = new ArrayList<>();
@@ -108,9 +118,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         refresh(false, true);
     }
 
-    @Override
-    public void switchToShopPerspective() {
-        mPerspective = Constants.PERSPECTIVE_SHOP;
+    private void switchToShopPerspective() {
+        LogCat.d("yinhui", "presenter: switch to shop.");
+        mPerspective = CommonConstants.PERSPECTIVE_SHOP;
         mPages.clear();
 
         List<PageHost> pages = new ArrayList<>();
@@ -129,13 +139,6 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             mView.setPages(pages, mPerspective);
         }
         refresh(false, true);
-    }
-
-    @Override
-    public void switchShop(FilterItem shop) {
-        SpUtils.setShopId(shop.getId());
-        SpUtils.setShopName(shop.getItemName());
-        BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
     }
 
     @Override
@@ -249,12 +252,15 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
                 List<ShopInfo> shops = data.getShop_list();
                 List<FilterItem> result = new ArrayList<>(shops.size());
+                mShops.clear();
                 boolean isSaasDocked = false;
                 for (ShopInfo shop : shops) {
                     if (shop.getShopId() == mShopId && shop.getSaasExist() == 1) {
                         isSaasDocked = true;
                     }
-                    result.add(new FilterItem(shop.getShopId(), shop.getShopName()));
+                    FilterItem item = new FilterItem(shop.getShopId(), shop.getShopName());
+                    result.add(item);
+                    mShops.put(shop.getShopId(), item);
                 }
                 mLoadFlag &= ~Constants.FLAG_SHOP;
                 if (isViewAttached()) {

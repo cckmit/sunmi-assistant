@@ -629,11 +629,11 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             }
         }
 
-        public void updateTitle() {
+        protected void updateTitle() {
             setupTitle(title, selected);
         }
 
-        public void updateContent() {
+        protected void updateContent() {
             setupContent(content, selected);
         }
 
@@ -653,6 +653,10 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
         public void setOnItemClickListener(OnItemClickListener<T> l) {
             listener = l;
+        }
+
+        public DropdownMenuNew getMenu() {
+            return dropdownMenu;
         }
 
         public ViewHolder<T> getTitle() {

@@ -13,7 +13,6 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshViewHolder;
-import com.sunmi.assistant.dashboard.util.Constants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -24,6 +23,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -91,7 +91,7 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
 
     @Override
     public int getPerspective() {
-        return Constants.PERSPECTIVE_SHOP;
+        return CommonConstants.PERSPECTIVE_SHOP;
     }
 
     @Override

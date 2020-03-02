@@ -157,26 +157,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
         // 初始化设置顶部门店选择下拉列表
         mShopMenuAdapter = new ShopMenuAdapter(context);
-        mShopMenuAdapter.setOnSwitchListener(new ShopMenuAdapter.OnPerspectiveSwitchListener() {
-            @Override
-            public void onSwitchToTotalPerspective() {
-                // 切换到总部视角
-                mTopShopMenu.dismiss(true);
-                mPresenter.switchToTotalPerspective();
-            }
-
-            @Override
-            public void onSwitchToShopPerspective() {
-                // 切换到门店视角
-                mPresenter.switchToShopPerspective();
-            }
-
-            @Override
-            public void onSwitchShop(FilterItem shop) {
-                // 切换门店
-                mPresenter.switchShop(shop);
-            }
-        });
         mShopMenuAnim = new ShopMenuAnim();
         mTopShopMenu.setAdapter(mShopMenuAdapter);
         mTopShopMenu.setAnim(mShopMenuAnim);
@@ -311,6 +291,11 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
+    public void switchPerspective(int perspective) {
+        mShopMenuAdapter.switchPerspective(perspective);
+    }
+
+    @Override
     public void setPages(List<PageHost> pages, int perspective) {
         ArrayList<CustomTabEntity> tabs = new ArrayList<>(pages.size());
         for (PageHost page : pages) {
@@ -331,11 +316,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 }
             });
         }
-        mPageTab.setTabData(tabs);
-        mPageTab.setCurrentTab(0);
-        mPager.setCurrentItem(0);
         pageListener.setPages(pages);
         pageAdapter.setPages(pages, perspective);
+        mPager.setCurrentItem(0);
+        if (mPageTab.getTabCount() != 0) {
+            mPageTab.setCurrentTab(0);
+        }
+        mPageTab.setTabData(tabs);
     }
 
     @Override
@@ -461,7 +448,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 CommonNotifications.shopCreate,
                 CommonNotifications.shopSaasDock,
                 IpcConstants.refreshIpcList,
-                CommonNotifications.cloudStorageChange
+                CommonNotifications.cloudStorageChange,
+                CommonNotifications.perspectiveSwitch
         };
     }
 
@@ -488,6 +476,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mPresenter.reload(Constants.FLAG_FS | Constants.FLAG_BUNDLED_LIST);
         } else if (id == CommonNotifications.cloudStorageChange) {
             mPresenter.reload(Constants.FLAG_BUNDLED_LIST);
+        } else if (id == CommonNotifications.perspectiveSwitch) {
+            this.switchPerspective(SpUtils.getPerspective());
+            mPresenter.switchPerspective(SpUtils.getPerspective());
         }
     }
 
@@ -523,7 +514,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             if (data.size() <= position) {
                 return;
             }
-            mPageTab.setCurrentTab(position);
             mPresenter.switchPage(data.get(position).getType());
             updateTab(mPresenter.getPageType(), mPresenter.getPeriod());
             resetTop();

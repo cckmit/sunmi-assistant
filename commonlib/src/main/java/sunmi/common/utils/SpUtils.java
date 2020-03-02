@@ -36,6 +36,7 @@ public class SpUtils {
     private static final String UNREAD_SYSTEM_MSG = "unread_system_msg";
     private static final String AD_LOAN_UIDS = "ad_loan_uids";
     private static final String LOAN_STATUS = "loan_status";
+    private static final String PERSPECTIVE = "perspective";
 
     SpUtils() {
     }
@@ -294,5 +295,13 @@ public class SpUtils {
 
     public static boolean getLoanStatus(){
         return SharedManager.getBooleanValue(BaseApplication.getContext(),LOAN_STATUS);
+    }
+
+    public static void setPerspective(int perspective) {
+        SharedManager.putValue(BaseApplication.getContext(), PERSPECTIVE, perspective);
+    }
+
+    public static int getPerspective() {
+        return SharedManager.getIntValue(BaseApplication.getContext(), PERSPECTIVE);
     }
 }

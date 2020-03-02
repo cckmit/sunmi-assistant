@@ -8,14 +8,16 @@ import com.sunmi.assistant.R;
 
 import java.util.List;
 
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.FilterItem;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownMenuNew;
 import sunmi.common.view.SettingItemLayout;
 
 public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
-
-    private OnPerspectiveSwitchListener listener;
 
     private boolean isTotalPerspective = true;
     private FilterItem last;
@@ -42,12 +44,13 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
 
             // 切换视角
             if (isTotalPerspective) {
-                switchToShopPerspective();
+                SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
             }
             // 切换门店
-            if (listener != null) {
-                listener.onSwitchShop(model);
-            }
+            SpUtils.setShopId(model.getId());
+            SpUtils.setShopName(model.getItemName());
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
 
             // 将选中的项移到第一个位置
             if (position == 0) {
@@ -62,7 +65,9 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
         silName.setOnClickListener(v -> {
             last = null;
             if (!isTotalPerspective) {
-                switchToTotalPerspective();
+                getMenu().dismiss(true);
+                SpUtils.setPerspective(CommonConstants.PERSPECTIVE_TOTAL);
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
             }
         });
 
@@ -98,10 +103,19 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
         }
     }
 
+    public void switchPerspective(int perspective) {
+        if (perspective == CommonConstants.PERSPECTIVE_TOTAL) {
+            switchToTotalPerspective();
+        } else if (perspective == CommonConstants.PERSPECTIVE_SHOP) {
+            switchToShopPerspective();
+        }
+    }
+
     /**
      * 切换到总部视角
      */
     private void switchToTotalPerspective() {
+        LogCat.d("yinhui", "adapter: switch to total.");
         isTotalPerspective = true;
         getSelected().clear();
         List<FilterItem> data = getData();
@@ -117,38 +131,19 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
             SettingItemLayout silName = content.getView(R.id.sil_company);
             silName.setChecked(true);
         }
-        if (listener != null) {
-            listener.onSwitchToTotalPerspective();
-        }
     }
 
     /**
      * 切换到门店视角
-     *
      */
     private void switchToShopPerspective() {
+        LogCat.d("yinhui", "adapter: switch to shop.");
         isTotalPerspective = false;
         DropdownMenuNew.ViewHolder<FilterItem> content = getContent();
         if (content != null) {
             SettingItemLayout silName = content.getView(R.id.sil_company);
             silName.setChecked(false);
         }
-        if (listener != null) {
-            listener.onSwitchToShopPerspective();
-        }
-    }
-
-    public void setOnSwitchListener(OnPerspectiveSwitchListener listener) {
-        this.listener = listener;
-    }
-
-    public interface OnPerspectiveSwitchListener {
-
-        void onSwitchToTotalPerspective();
-
-        void onSwitchToShopPerspective();
-
-        void onSwitchShop(FilterItem shop);
     }
 
 }
