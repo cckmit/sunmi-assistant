@@ -105,6 +105,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (isViewAttached()) {
             mView.setPages(pages, mPerspective);
         }
+        refresh(false, true);
     }
 
     @Override
@@ -127,6 +128,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (isViewAttached()) {
             mView.setPages(pages, mPerspective);
         }
+        refresh(false, true);
     }
 
     @Override
