@@ -127,7 +127,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                                     && device.getDeviceId() == deviceId) {
                                 getCashPreventService(device.getDeviceSn());
                                 status = device.getStatus();
-                                validTime =device.getValidTime();
+                                validTime = device.getValidTime();
                                 return;
                             } else if (device.getStatus() == CommonConstants.SERVICE_EXPIRED
                                     && device.getDeviceId() == deviceId) {
