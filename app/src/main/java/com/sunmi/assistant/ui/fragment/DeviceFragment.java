@@ -423,9 +423,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         return new int[]{
                 NotificationConstant.bindRouterChanged,
                 NotificationConstant.apPostStatus, NotificationConstant.apStatusException,
-                NotificationConstant.checkLogin, NotificationConstant.checkLoginAgain,
-                NotificationConstant.apisConfig,
-                NotificationConstant.checkLoginAgain, CommonConstants.tabDevice,
+                NotificationConstant.checkApPassword, NotificationConstant.checkLoginAgain,
+                NotificationConstant.apisConfig, CommonConstants.tabDevice,
                 com.sunmi.cloudprinter.constant.Constants.NOTIFICATION_PRINTER_ADDED
         };
     }
@@ -471,7 +470,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (NotificationConstant.apisConfig == id) {//ap是否配置2034
             ResponseBean res = (ResponseBean) args[0];
             mPresenter.getApConfig(mActivity, res, clickedDevice);
-        } else if (NotificationConstant.checkLogin == id) {
+        } else if (NotificationConstant.checkApPassword == id) {
             ResponseBean res = (ResponseBean) args[0];
             mPresenter.checkApLoginPassword(mActivity, res, clickedDevice);
         } else if (NotificationConstant.checkLoginAgain == id) {
