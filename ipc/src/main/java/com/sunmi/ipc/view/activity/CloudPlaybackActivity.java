@@ -171,7 +171,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         titleBar.setAppTitle(device.getName());
         titleBar.getLeftLayout().setOnClickListener(this);
         if (isServiceUnopened()) {
-            setCalendarEnable(false);
             timeLine.setVisibility(View.GONE);
             llNoService.setVisibility(View.VISIBLE);
             btnOpenService.setVisibility(View.VISIBLE);
@@ -180,10 +179,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             ivMute.setEnabled(false);
             ivFullScreen.setEnabled(false);
             rlBottomBar.setVisibility(View.VISIBLE);
-        }
-        ivNextDay.setEnabled(false);
-        if (currentTime > 0) {
-            setCalendarEnable(false);
         }
         ivpCloud.setVideoPlayListener(this);
         initData();
@@ -382,7 +377,7 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     @Click(resName = "btn_open_service")
     void openServiceClick() {
         Router.withApi(SunmiServiceApi.class)
-                .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(),""));
+                .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(), ""));
     }
 
     @Click(resName = "rl_top")
@@ -826,7 +821,9 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
 
     //初始化时间轴
     private void initTimeSlotData(boolean isFirstInit) {
-        if (!isFirstInit) {
+        if (isFirstInit) {
+            setCalendarEnable(true);
+        } else {
             showVideoLoading();
         }
         timeSlotsInDay.clear();

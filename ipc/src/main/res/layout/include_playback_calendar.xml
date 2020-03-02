@@ -11,6 +11,7 @@
         android:layout_width="@dimen/dp_48"
         android:layout_height="match_parent"
         android:background="@drawable/btn_bg_left_radius"
+        android:enabled="false"
         android:scaleType="center"
         android:src="@drawable/ic_previous_day" />
 
@@ -46,6 +47,7 @@
         android:layout_width="@dimen/dp_48"
         android:layout_height="match_parent"
         android:background="@drawable/btn_bg_right_radius"
+        android:enabled="false"
         android:scaleType="center"
         android:src="@drawable/ic_next_day" />
 
