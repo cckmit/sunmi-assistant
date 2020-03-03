@@ -29,7 +29,7 @@ public class TotalRealTimeOverviewCard extends BaseRefreshCard<TotalRealTimeOver
         super(presenter, source);
     }
 
-    public TotalRealTimeOverviewCard get(Presenter presenter, int source) {
+    public static TotalRealTimeOverviewCard get(Presenter presenter, int source) {
         if (sInstance == null) {
             sInstance = new TotalRealTimeOverviewCard(presenter, source);
         } else {
