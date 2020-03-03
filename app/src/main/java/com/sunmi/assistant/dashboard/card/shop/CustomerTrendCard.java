@@ -31,7 +31,6 @@ import com.sunmi.assistant.dashboard.util.Utils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -204,47 +203,6 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     @Override
     protected Model createModel() {
         return new Model("");
-    }
-
-    private void initValue(int period, SparseArray<ChartEntry> allMap,
-                           SparseArray<ChartEntry> newMap,
-                           SparseArray<ChartEntry> oldMap) {
-        long startTime = Utils.getStartTime(period);
-        long yesterday = System.currentTimeMillis() - MILLIS_PER_DAY;
-        long time;
-        if (period == Constants.TIME_PERIOD_YESTERDAY) {
-            for (int i = 1; i < MAX_POINT_DAY; i++) {
-                time = startTime + (i - 1) * MILLIS_PER_HOUR;
-                float x = Utils.encodeChartXAxisFloat(period, time);
-                allMap.put((int) x, new CustomerEntry(x, 0f, time, 0, 0));
-                newMap.put((int) x, new ChartEntry(x, 0, time));
-                oldMap.put((int) x, new ChartEntry(x, 0, time));
-            }
-
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            for (int i = 1; i < MAX_POINT_WEEK; i++) {
-                time = startTime + (i - 1) * MILLIS_PER_DAY;
-                if (time > yesterday) {
-                    break;
-                }
-                float x = Utils.encodeChartXAxisFloat(period, time);
-                allMap.put((int) x, new CustomerEntry(x, 0f, time, 0, 0));
-                newMap.put((int) x, new ChartEntry(x, 0, time));
-                oldMap.put((int) x, new ChartEntry(x, 0, time));
-            }
-        } else {
-            int max = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH) + 1;
-            for (int i = 1; i < max; i++) {
-                time = startTime + (i - 1) * MILLIS_PER_DAY;
-                if (time > yesterday) {
-                    break;
-                }
-                float x = Utils.encodeChartXAxisFloat(period, time);
-                allMap.put((int) x, new CustomerEntry(x, 0f, time, 0, 0));
-                newMap.put((int) x, new ChartEntry(x, 0, time));
-                oldMap.put((int) x, new ChartEntry(x, 0, time));
-            }
-        }
     }
 
     private void fillValue(List<ChartEntry> list, SparseArray<ChartEntry> map) {
@@ -461,35 +419,6 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();
-            }
-        }
-
-        public void random() {
-            List<ChartEntry> allList = dataSets.get(Constants.DATA_TYPE_ALL);
-            List<ChartEntry> newList = dataSets.get(Constants.DATA_TYPE_NEW);
-            List<ChartEntry> oldList = dataSets.get(Constants.DATA_TYPE_OLD);
-            allList.clear();
-            newList.clear();
-            oldList.clear();
-            Random r = new Random(System.currentTimeMillis());
-            int count = period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
-            int min = count / 3;
-            long time = Utils.getStartTime(period);
-            boolean inDay = period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY;
-            for (int i = 1; i < count + 1; i++) {
-                time = time + (i - 1) * (inDay ? 3600000 : 86400000);
-                float x = Utils.encodeChartXAxisFloat(period, time);
-                if (i <= min + 1) {
-                    allList.add(new CustomerEntry(x, 0f, time, 0, 0));
-                    newList.add(new ChartEntry(x, 0f, time));
-                    oldList.add(new ChartEntry(x, 0f, time));
-                } else {
-                    int n = r.nextInt(1000);
-                    int o = r.nextInt(1000);
-                    allList.add(new CustomerEntry(x, n + o, time, 0, 0));
-                    newList.add(new ChartEntry(x, n, time));
-                    oldList.add(new ChartEntry(x, o, time));
-                }
             }
         }
 

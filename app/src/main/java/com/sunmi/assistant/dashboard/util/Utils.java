@@ -1,6 +1,5 @@
 package com.sunmi.assistant.dashboard.util;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
@@ -22,6 +21,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import sunmi.common.model.Interval;
 import sunmi.common.utils.CommonHelper;
 
 /**
@@ -31,15 +31,12 @@ import sunmi.common.utils.CommonHelper;
 public class Utils {
 
     public static final String FORMAT_DATE_TIME = "yyyy.MM.dd HH:mm";
+    public static final String FORMAT_TIME = "HH:mm";
+    public static final String FORMAT_DATE_MARKER = "MM.dd";
 
     public static final String DATA_NONE = "--";
     public static final String DATA_ZERO = "0";
     public static final String DATA_ZERO_RATIO = "0%";
-
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat DATE_FORMAT_HOUR_MINUTE = new SimpleDateFormat("HH:mm");
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat DATE_FORMAT_DATE_TIME = new SimpleDateFormat("yyyy.MM.dd HH:mm");
 
     private static final DecimalFormat FORMAT_MAX_SINGLE_DECIMAL = new DecimalFormat("#.#");
     private static final DecimalFormat FORMAT_THOUSANDS_DOUBLE_DECIMAL = new DecimalFormat(",###,##0.00");
@@ -70,8 +67,6 @@ public class Utils {
     private static String[] sWeekName;
 
     private static Calendar temp = Calendar.getInstance();
-    @SuppressLint("SimpleDateFormat")
-    private static SimpleDateFormat tempFormat = new SimpleDateFormat();
 
     private static ThreadLocal<Map<String, SimpleDateFormat>> sThreadLocal = new ThreadLocal<>();
 
@@ -79,7 +74,7 @@ public class Utils {
         Map<String, SimpleDateFormat> formatMap = sThreadLocal.get();
 
         if (formatMap == null) {
-            formatMap = new HashMap<>();
+            formatMap = new HashMap<>(4);
             sThreadLocal.set(formatMap);
         }
 
@@ -91,16 +86,36 @@ public class Utils {
         return format;
     }
 
+    /**
+     * 解析时间字符串为时间戳
+     *
+     * @param pattern 字符串模式
+     * @param str     时间字符串
+     * @return 时间戳
+     * @throws ParseException 解析异常
+     */
     public static long parseTime(String pattern, String str) throws ParseException {
         return getTimeFormat(pattern).parse(str).getTime();
     }
 
+    /**
+     * 格式化时间戳
+     *
+     * @param pattern   字符串模式
+     * @param timestamp 时间戳
+     * @return 格式化的时间字符串
+     */
     public static String formatTime(String pattern, long timestamp) {
         return getTimeFormat(pattern).format(new Date(timestamp));
     }
 
-
-    public static Pair<Long, Long> getPeriodTimestamp(int period) {
+    /**
+     * 根据时间维度计算该时间段的起止时间戳
+     *
+     * @param period 时间维度
+     * @return 起止时间戳
+     */
+    public static Interval getPeriodTimestamp(int period) {
         temp.setTimeInMillis(System.currentTimeMillis());
         long timeStart;
         long timeEnd;
@@ -133,7 +148,7 @@ public class Utils {
             temp.add(Calendar.MONTH, 1);
             timeEnd = temp.getTimeInMillis();
         }
-        return new Pair<>(timeStart, timeEnd);
+        return new Interval(timeStart, timeEnd);
     }
 
     /**
@@ -154,37 +169,6 @@ public class Utils {
             temp.setTimeInMillis(System.currentTimeMillis());
             return new Pair<>(9997, temp.getActualMaximum(Calendar.DAY_OF_MONTH) + 10001);
         }
-    }
-
-    public static long getStartTime(int period) {
-        temp.setTimeInMillis(System.currentTimeMillis());
-        int year = temp.get(Calendar.YEAR);
-        int month = temp.get(Calendar.MONTH);
-        int day = temp.get(Calendar.DATE);
-        temp.clear();
-
-        if (period == Constants.TIME_PERIOD_TODAY) {
-            temp.set(year, month, day);
-            return temp.getTimeInMillis();
-
-        } else if (period == Constants.TIME_PERIOD_YESTERDAY) {
-            temp.set(year, month, day);
-            temp.add(Calendar.DATE, -1);
-            return temp.getTimeInMillis();
-
-        } else if (period == Constants.TIME_PERIOD_WEEK) {
-            temp.setFirstDayOfWeek(Calendar.MONDAY);
-            temp.set(year, month, day);
-            int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
-            int offset = temp.getFirstDayOfWeek() - dayOfWeek;
-            temp.add(Calendar.DATE, offset > 0 ? offset - 7 : offset);
-            return temp.getTimeInMillis();
-
-        } else if (period == Constants.TIME_PERIOD_MONTH) {
-            temp.set(year, month, 1);
-            return temp.getTimeInMillis();
-        }
-        return 0;
     }
 
     /**
@@ -222,37 +206,11 @@ public class Utils {
         }
     }
 
-    public static String getHourMinute(long timestamp) {
-        synchronized (DATE_FORMAT_HOUR_MINUTE) {
-            return DATE_FORMAT_HOUR_MINUTE.format(new Date(timestamp));
-        }
-    }
-
-    public static String getDateTime(long timestamp) {
-        synchronized (DATE_FORMAT_DATE_TIME) {
-            return DATE_FORMAT_DATE_TIME.format(new Date(timestamp));
-        }
-    }
-
     public static String getWeekName(Context context, int timeIndex) {
         if (sWeekName == null) {
             sWeekName = context.getResources().getStringArray(R.array.week_name);
         }
         return sWeekName[timeIndex % DAYS_OF_WEEK];
-    }
-
-    public static long parseDateTime(String pattern, String str) throws ParseException {
-        synchronized (LOCK) {
-            tempFormat.applyPattern(pattern);
-            return tempFormat.parse(str).getTime();
-        }
-    }
-
-    public static String formatDateTime(String pattern, long timestamp) {
-        synchronized (LOCK) {
-            tempFormat.applyPattern(pattern);
-            return tempFormat.format(new Date(timestamp));
-        }
     }
 
     /**
@@ -332,6 +290,15 @@ public class Utils {
         return s;
     }
 
+    /**
+     * 格式化进店频次数据
+     *
+     * @param context   上下文
+     * @param value     值
+     * @param period    时间维度
+     * @param highlight 是否突出显示数据
+     * @return 格式化的字符串
+     */
     public static CharSequence formatFrequency(Context context, float value, int period, boolean highlight) {
         String base;
         if (period == Constants.TIME_PERIOD_MONTH) {
@@ -429,6 +396,10 @@ public class Utils {
         set.enableDashedHighlightLine(dashLength, dashSpaceLength, 0);
         set.setLineContinuous(false);
         set.setLinePhase(1f);
+    }
+
+    public static void clear() {
+        sThreadLocal.remove();
     }
 
 }

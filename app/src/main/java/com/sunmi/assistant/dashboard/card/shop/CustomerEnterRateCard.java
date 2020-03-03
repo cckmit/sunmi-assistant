@@ -30,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -259,22 +258,5 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
             dataSet.clear();
         }
 
-        public void random() {
-            dataSet.clear();
-            Random r = new Random(System.currentTimeMillis());
-            int count = period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
-            int min = count / 3;
-            long time = Utils.getStartTime(period);
-            boolean inDay = period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY;
-            for (int i = 1; i < count + 1; i++) {
-                time = time + (i - 1) * (inDay ? 3600000 : 86400000);
-                float x = Utils.encodeChartXAxisFloat(period, time);
-                if (i <= min + 1) {
-                    dataSet.add(new ChartEntry(x, 0f, time));
-                } else {
-                    dataSet.add(new ChartEntry(x, r.nextFloat(), time));
-                }
-            }
-        }
     }
 }

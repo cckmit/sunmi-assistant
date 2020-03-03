@@ -64,7 +64,7 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
         mTvState.setText(mOrderInfo.isOrderNormal() ?
                 getResources().getString(R.string.order_success) : getResources().getString(R.string.order_refunds));
         mTvOrderNo.setText(String.valueOf(mOrderInfo.getNo()));
-        mTvTime.setText(Utils.getDateTime(mOrderInfo.getPurchaseTime()));
+        mTvTime.setText(Utils.formatTime(Utils.FORMAT_DATE_TIME, mOrderInfo.getPurchaseTime()));
         mTvType.setText(mOrderInfo.getPurchaseType());
         mDetailListAdapter = new DetailListAdapter(this);
         mDetailList.setDividerHeight(0);

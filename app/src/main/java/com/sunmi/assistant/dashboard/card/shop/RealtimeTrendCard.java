@@ -39,7 +39,6 @@ import com.sunmi.assistant.dashboard.util.Utils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -496,33 +495,6 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
                 type = Constants.DATA_TYPE_VOLUME;
             } else {
                 type = Constants.DATA_TYPE_CUSTOMER;
-            }
-        }
-
-        private void random() {
-            List<ChartEntry> rateList = dataSets.get(Constants.DATA_TYPE_RATE);
-            List<ChartEntry> volumeList = dataSets.get(Constants.DATA_TYPE_VOLUME);
-            List<ChartEntry> customerList = dataSets.get(Constants.DATA_TYPE_CUSTOMER);
-            rateList.clear();
-            volumeList.clear();
-            customerList.clear();
-            Random r = new Random(System.currentTimeMillis());
-            int count = period == Constants.TIME_PERIOD_WEEK ? 5 : 20;
-            int min = count / 3;
-            long time = Utils.getStartTime(period);
-            boolean inDay = period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY;
-            for (int i = 1; i < count + 1; i++) {
-                time = time + (i - 1) * (inDay ? 3600000 : 86400000);
-                float x = Utils.encodeChartXAxisFloat(period, time);
-                if (i <= min + 1) {
-                    rateList.add(new ChartEntry(x, 0f, time));
-                    volumeList.add(new ChartEntry(x, 0f, time));
-                    customerList.add(new ChartEntry(x, 0f, time));
-                } else {
-                    rateList.add(new ChartEntry(x, r.nextFloat(), time));
-                    volumeList.add(new ChartEntry(x, r.nextInt(1000), time));
-                    customerList.add(new ChartEntry(x, r.nextInt(1000), time));
-                }
             }
         }
 

@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.card.shop;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +20,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -66,9 +66,9 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
     }
 
     private void loadSales(int companyId, int shopId, int period, CardCallback callback) {
-        Pair<Long, Long> time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
+        Interval time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
         PaymentApi.get().getOrderTotalAmount(companyId, shopId,
-                time.first / 1000, time.second / 1000, 1,
+                time.start / 1000, time.end / 1000, 1,
                 new RetrofitCallback<OrderTotalAmountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalAmountResp data) {
@@ -98,9 +98,9 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
     }
 
     private void loadVolume(int companyId, int shopId, int period, CardCallback callback) {
-        Pair<Long, Long> time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
+        Interval time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
         PaymentApi.get().getOrderTotalCount(companyId, shopId,
-                time.first / 1000, time.second / 1000, 1,
+                time.start / 1000, time.end / 1000, 1,
                 new RetrofitCallback<OrderTotalCountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalCountResp data) {
@@ -317,10 +317,10 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
     }
 
     private void goToOrderList(Context context) {
-        Pair<Long, Long> periodTimestamp = Utils.getPeriodTimestamp(mPeriod);
+        Interval periodTimestamp = Utils.getPeriodTimestamp(mPeriod);
         OrderListActivity_.intent(context)
-                .mTimeStart(periodTimestamp.first)
-                .mTimeEnd(periodTimestamp.second)
+                .mTimeStart(periodTimestamp.start)
+                .mTimeEnd(periodTimestamp.end)
                 .mInitOrderType(OrderInfo.ORDER_TYPE_ALL)
                 .start();
     }

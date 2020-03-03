@@ -9,7 +9,6 @@ import android.text.format.DateFormat;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.TextView;
@@ -39,6 +38,7 @@ import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerAgeGenderResp;
 import sunmi.common.model.CustomerAgeNewOldResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -100,9 +100,9 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
 
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        Pair<Long, Long> time = Utils.getPeriodTimestamp(period);
-        String start = DateFormat.format(DATE_FORMAT, time.first).toString();
-        String end = DateFormat.format(DATE_FORMAT, time.second - 1).toString();
+        Interval time = Utils.getPeriodTimestamp(period);
+        String start = DateFormat.format(DATE_FORMAT, time.start).toString();
+        String end = DateFormat.format(DATE_FORMAT, time.end - 1).toString();
         if (mAgeList == null) {
             loadAgeList(companyId, shopId, start, end, callback);
         } else {
