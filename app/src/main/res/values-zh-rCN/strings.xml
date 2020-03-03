@@ -70,6 +70,7 @@
     <string name="dashboard_card_tab_all">全部</string>
     <string name="dashboard_card_tab_new">新客</string>
     <string name="dashboard_card_tab_old">熟客</string>
+    <string name="dashboard_card_tab_unknown">未识别</string>
 
     <string name="dashboard_card_marker_time">时间</string>
     <string name="dashboard_card_male">男性</string>
@@ -77,7 +78,7 @@
     <string name="dashboard_card_age_label">岁</string>
     <string name="dashboard_card_pie_hole_ratio">%s占比</string>
 
-    <string name="dashboard_card_customer_tip">按照人数占比进行排列</string>
+    <string name="dashboard_card_customer_tip">基于人脸采集数据，按照客流占比排列</string>
     <string name="dashboard_card_customer_count">进店人数</string>
     <string name="dashboard_card_customer_ratio">总人数占比</string>
     <string name="dashboard_card_customer_old_ratio">熟客占比</string>
@@ -125,6 +126,8 @@
     <string name="dashboard_no_customer_wait_tip">客流数据会在次日01:00~02:00更新</string>
     <string name="dashboard_no_customer_fs_tip">您已解绑了门店中的摄像机设备</string>
     <string name="dashboard_no_customer_fs_add_btn">添加设备</string>
+
+    <string name="dashboard_tip_customer_distribution">基于人脸采集数据</string>
 
     <string name="str_platform_list">平台列表</string>
     <string name="str_platform_skip">跳过</string>
