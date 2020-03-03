@@ -372,4 +372,6 @@
     <string name="dialog_protocol_cancel">暂不使用</string>
     <string name="dialog_protocol_confirm">同意</string>
     <string name="sunmi_login_agree">登录即表示您同意遵守</string>
+    <string name="str_sort_desc">正序</string>
+    <string name="str_sort_asce">倒序</string>
 </resources>

@@ -360,4 +360,6 @@
     <string name="dialog_protocol_cancel">Don\'t Agree</string>
     <string name="dialog_protocol_confirm">Agree</string>
     <string name="sunmi_login_agree">Login means you\'ve agree to terms</string>
+    <string name="str_sort_desc">正序</string>
+    <string name="str_sort_asce">倒序</string>
 </resources>
