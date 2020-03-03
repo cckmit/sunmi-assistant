@@ -85,6 +85,7 @@
     <string name="dashboard_var_customer_all">全部客流</string>
     <string name="dashboard_var_customer_new">新客</string>
     <string name="dashboard_var_customer_old">熟客</string>
+    <string name="dashboard_var_customer_unknown">未识别</string>
     <string name="dashboard_var_new_old">新老</string>
     <string name="dashboard_var_gender">性别</string>
     <string name="dashboard_var_male">男性</string>

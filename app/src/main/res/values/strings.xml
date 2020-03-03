@@ -92,6 +92,7 @@
     <string name="dashboard_var_new_old">New/Repeat</string>
     <string name="dashboard_var_customer_new">New</string>
     <string name="dashboard_var_customer_old">Repeat</string>
+    <string name="dashboard_var_customer_unknown">未识别</string>
     <string name="dashboard_var_gender">Gender</string>
     <string name="dashboard_var_male">Male</string>
     <string name="dashboard_var_female">Female</string>
