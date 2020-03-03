@@ -994,7 +994,7 @@ public class CashPlayActivity extends BaseMvpActivity<CashVideoPresenter> implem
                 mLossPreventDialog = new OpenLossPreventServiceDialog.Builder(this)
                         .setListener((dialog, which) -> Router.withApi(SunmiServiceApi.class)
                                 .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
-                                        WebViewParamsUtils.getCashPreventLossParams(service.getDeviceSn())
+                                        WebViewParamsUtils.getCashPreventLossParams(service.getDeviceSn(),0)
                                         , new BiCallback<Intent>() {
                                             @Override
                                             public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {

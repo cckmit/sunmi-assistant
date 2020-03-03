@@ -280,7 +280,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             for (CustomerHistoryTrendResp.Item item : list) {
                 long time = item.getTime();
                 float x = Utils.encodeChartXAxisFloat(model.period, time);
-                allMap.put((int) x, new CustomerEntry(x, item.getTotalCount(), time,
+                allMap.put((int) x, new CustomerEntry(x, item.getTotalCount() + item.getEntryHeadCount(), time,
                         item.getStrangerCount(), item.getRegularCount()));
                 newMap.put((int) x, new ChartEntry(x, item.getStrangerCount(), time));
                 oldMap.put((int) x, new ChartEntry(x, item.getRegularCount(), time));

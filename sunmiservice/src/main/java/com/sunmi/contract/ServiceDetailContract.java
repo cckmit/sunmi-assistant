@@ -17,6 +17,8 @@ public interface ServiceDetailContract {
 
     interface Presenter {
         void getServiceDetailByDevice(int category);
+
+        void getServiceDetailByServiceNo(String serviceNo);
     }
 
 }

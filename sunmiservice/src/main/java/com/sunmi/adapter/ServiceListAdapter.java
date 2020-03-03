@@ -73,7 +73,7 @@ public class ServiceListAdapter extends BaseQuickAdapter<ServiceDetailBean, Base
         });
 
         helper.getView(R.id.btn_setting_detail).setOnClickListener(v ->
-                ServiceDetailActivity_.intent(context).mSn(item.getDeviceSn())
+                ServiceDetailActivity_.intent(context).serviceNo(item.getServiceNo())
                         .deviceName(item.getDeviceName()).isBind(item.isBind()).start());
 
     }

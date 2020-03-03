@@ -56,7 +56,7 @@ public class WebViewParamsUtils {
     }
 
 
-    public static String getCashVideoParams() {
+    public static String getCashVideoParams(String sn, int renew) {
         String params = "";
         try {
             JSONObject userInfo = new JSONObject()
@@ -64,7 +64,9 @@ public class WebViewParamsUtils {
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId());
             JSONObject cashVideo = new JSONObject()
-                    .put("shop_name", SpUtils.getShopName());
+                    .put("shop_name", SpUtils.getShopName())
+                    .put("snList", new JSONArray().put(sn))
+                    .put("renew", renew);
             params = new JSONObject()
                     .put("userInfo", userInfo)
                     .put("cashVideo", cashVideo)
@@ -76,7 +78,7 @@ public class WebViewParamsUtils {
         return params;
     }
 
-    public static String getCashPreventLossParams(String sn) {
+    public static String getCashPreventLossParams(String sn, int renew) {
         String params = "";
         try {
             JSONObject userInfo = new JSONObject()
@@ -84,7 +86,8 @@ public class WebViewParamsUtils {
                     .put("company_id", SpUtils.getCompanyId())
                     .put("shop_id", SpUtils.getShopId());
             JSONObject cashPreventLoss = new JSONObject()
-                    .put("snList", new JSONArray().put(sn));
+                    .put("snList", new JSONArray().put(sn))
+                    .put("renew", renew);
             params = new JSONObject()
                     .put("userInfo", userInfo)
                     .put("cashPreventLoss", cashPreventLoss)

@@ -108,7 +108,8 @@
     <string name="dashboard_btn_no_order_dock">接入</string>
     <string name="dashboard_btn_get_more">查看更多数据</string>
 
-    <string name="dashboard_tip_profile_analysis">按照人数占比进行排列</string>
+    <string name="dashboard_tip_customer_distribution">基于人脸采集数据</string>
+    <string name="dashboard_tip_profile_analysis">基于人脸采集数据，按照客流占比排列</string>
     <string name="dashboard_tip_customer_none">暂无客流数据</string>
     <string name="dashboard_tip_customer_avg_enter">时间段内顾客的平均到店次数</string>
     <string name="dashboard_tip_import_saas">支持%s前2个月的订单</string>

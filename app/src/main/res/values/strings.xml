@@ -59,7 +59,7 @@
     <string name="dashboard_page_realtime_today">今日实时</string>
     <string name="dashboard_var_customer_pass">Passing Customers</string>
     <string name="dashboard_var_customer_all">All the Customers</string>
-    <string name="dashboard_tip_profile_analysis">Rank per proportion</string>
+    <string name="dashboard_tip_profile_analysis">基于人脸采集数据，按照客流占比排列</string>
     <string name="dashboard_var_customer_count">Customer Visits</string>
     <string name="dashboard_var_customer_total_ratio">Of the Total</string>
     <string name="dashboard_var_customer_old_ratio">Repeat</string>
@@ -114,6 +114,7 @@
     <string name="dashboard_tip_no_customer_title">No data，you can try：</string>
     <string name="dashboard_tip_no_customer_wait">Data will be updated from 1:00 to 2:00 the next day</string>
     <string name="dashboard_tip_no_fs_floating">The camera is untethered</string>
+    <string name="dashboard_tip_customer_distribution">基于人脸采集数据</string>
     <string name="str_platform_list">Platform list</string>
     <string name="str_platform_skip">Skip</string>
     <string name="str_button_check">Verification</string>

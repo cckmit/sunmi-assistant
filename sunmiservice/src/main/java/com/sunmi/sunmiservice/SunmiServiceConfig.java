@@ -6,16 +6,13 @@ import com.umeng.commonsdk.UMConfigure;
 import com.umeng.socialize.PlatformConfig;
 
 import sunmi.common.base.BaseConfig;
+import sunmi.common.constant.CommonConfig;
 
 public class SunmiServiceConfig extends BaseConfig {
 
     //增值创新服务
     public static String VALUE_ADDED_SERVICES = "";
     public static String SUNMI_MALL_HOST = "";
-
-    //微信app id
-    public static String WECHAT_APP_ID = "wxd1d7c6ec2279cfdc";
-    public static String WECHAT_SECRET = "cd5ffb1b5b5fbc24b0816514c9baae13";
 
     //微信小程序相关
     public static String WECHAT_USER_NAME = "gh_933e62947669";
@@ -44,7 +41,7 @@ public class SunmiServiceConfig extends BaseConfig {
         //与箭头处所指的地方进行对照，包名和签名如果不一样，改成一样即可。注意所谓的一样是指，大小写都要一样，
         // 不能有冒号出现在调试微信的时候请注意你的签名，
         //注意微信有时会在微信客户端缓存签名数据，因此修改微信开放平台应用签名后，注意清除微信客户端数据后再进行测试
-        PlatformConfig.setWeixin(WECHAT_APP_ID, WECHAT_SECRET);
+        PlatformConfig.setWeixin(CommonConfig.WECHAT_APP_ID, CommonConfig.WECHAT_SECRET);
         UMConfigure.setLogEnabled(true);
     }
 

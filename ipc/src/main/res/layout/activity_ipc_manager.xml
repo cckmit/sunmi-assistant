@@ -70,7 +70,7 @@
                     android:background="@drawable/bg_round_corner_black_15"
                     android:scaleType="center"
                     android:src="@mipmap/ic_cloud_playback"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <ImageView
                     android:id="@+id/iv_sdcard_playback"

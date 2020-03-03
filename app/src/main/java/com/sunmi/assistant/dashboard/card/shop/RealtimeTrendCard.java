@@ -268,7 +268,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
             for (CustomerRateResp.Item bean : list) {
                 long timestamp = Math.abs(bean.getTime());
                 int count = Math.abs(bean.getOrderCount());
-                int customer = Math.abs(bean.getPassengerFlowCount());
+                int customer = Math.abs(bean.getPassengerFlowCount() + bean.getEntryHeadCount());
                 float x = Utils.encodeChartXAxisFloat(model.period, timestamp);
                 float rate = customer == 0 ? 0f : Math.min((float) count / customer, 1f);
                 rateList.add(new ChartEntry(x, rate, timestamp));

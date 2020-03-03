@@ -143,8 +143,8 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                             return;
                         }
                         Model model = getModel();
-                        model.customer = data.getLatestCount();
-                        model.lastCustomer = data.getEarlyCount();
+                        model.customer = data.getLatestCount() + data.getLatestEntryHeadCount();
+                        model.lastCustomer = data.getEarlyCount() + data.getEarlyEntryHeadCount();
                         if (hasAuth()) {
                             model.rate = model.customer == 0 ?
                                     0f : Math.min((float) model.volume / model.customer, 1f);

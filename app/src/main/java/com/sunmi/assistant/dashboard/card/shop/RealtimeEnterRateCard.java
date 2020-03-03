@@ -60,7 +60,7 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
     @Override
     protected void setupModel(Model model, CustomerCountResp response) {
         model.passCustomer = response.getLatestPassCount();
-        model.customer = response.getLatestCount();
+        model.customer = response.getLatestCount() + response.getLatestEntryHeadCount();
     }
 
     @Override
