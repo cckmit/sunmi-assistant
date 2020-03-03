@@ -10,23 +10,20 @@ import com.google.gson.annotations.SerializedName;
 public class CustomerDataResp {
 
     /**
-     * latest_passenger_count : 1213
-     * early_passenger_count : 1213
-     * latest_pass_passenger_count : 1213
-     * early_pass_passenger_count : 1213
-     * latest_uniq_passenger_count : 1213
-     * early_uniq_passenger_count : 1213
-     * latest_regular_passenger_count : 1213
-     * early_regular_passenger_count : 1213
-     * latest_stranger_passenger_count : 1213
-     * early_stranger_passenger_count : 1213
-     * latest_member_passenger_count : 1213
-     * early_member_passenger_count : 1213
+     * latest_passenger_count : 285
+     * early_passenger_count : 920
+     * latest_pass_passenger_count : 0
+     * early_pass_passenger_count : 0
+     * latest_uniq_passenger_count : 211
+     * early_uniq_passenger_count : 590
+     * latest_regular_passenger_count : 153
+     * early_regular_passenger_count : 435
+     * latest_stranger_passenger_count : 132
+     * early_stranger_passenger_count : 485
+     * latest_member_passenger_count : 0
+     * early_member_passenger_count : 0
      * latest_entry_head_count : 0
      * early_entry_head_count : 0
-     * passenger_count : 6898
-     * pass_head_count : 30000
-     * early_pass_head_count : 28000
      */
 
     @SerializedName("latest_passenger_count")
@@ -57,12 +54,6 @@ public class CustomerDataResp {
     private int latestEntryHeadCount;
     @SerializedName("early_entry_head_count")
     private int earlyEntryHeadCount;
-    @SerializedName("passenger_count")
-    private int passengerCount;
-    @SerializedName("pass_head_count")
-    private int passHeadCount;
-    @SerializedName("early_pass_head_count")
-    private int earlyPassHeadCount;
 
     public int getLatestPassengerCount() {
         return latestPassengerCount;
@@ -118,17 +109,5 @@ public class CustomerDataResp {
 
     public int getEarlyEntryHeadCount() {
         return earlyEntryHeadCount;
-    }
-
-    public int getPassengerCount() {
-        return passengerCount;
-    }
-
-    public int getPassHeadCount() {
-        return passHeadCount;
-    }
-
-    public int getEarlyPassHeadCount() {
-        return earlyPassHeadCount;
     }
 }

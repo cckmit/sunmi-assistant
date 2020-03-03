@@ -13,8 +13,8 @@ import com.sunmi.assistant.dashboard.util.Utils;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.model.CustomerCountResp;
-import sunmi.common.model.CustomerDataResp;
 import sunmi.common.model.SaleDataResp;
+import sunmi.common.model.TotalCustomerDataResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -74,16 +74,17 @@ public class TotalRealTimeOverviewCard extends BaseRefreshCard<TotalRealTimeOver
     }
 
     private void loadCustomerYesterday(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalCustomerData(companyId, startTime, 1, new RetrofitCallback<CustomerDataResp>() {
+        SunmiStoreApi.getInstance().getTotalCustomerData(companyId, startTime, 1,
+                new RetrofitCallback<TotalCustomerDataResp>() {
             @Override
-            public void onSuccess(int code, String msg, CustomerDataResp data) {
+            public void onSuccess(int code, String msg, TotalCustomerDataResp data) {
                 Model model = getModel();
                 model.earlCount = data.getPassengerCount();
                 loadSaleData(companyId, callback);
             }
 
             @Override
-            public void onFail(int code, String msg, CustomerDataResp data) {
+            public void onFail(int code, String msg, TotalCustomerDataResp data) {
                 callback.onFail(code, msg, data);
             }
         });

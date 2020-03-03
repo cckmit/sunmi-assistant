@@ -19,6 +19,7 @@ import sunmi.common.model.CustomerRateResp;
 import sunmi.common.model.CustomerRealtimeTrendResp;
 import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.CustomerShopDistributionResp;
+import sunmi.common.model.TotalCustomerDataResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -154,7 +155,7 @@ public interface CustomerInterface {
      * 获取总部T+1客流概况
      */
     @POST(companyPath + "history/getByDate")
-    Call<BaseResponse<CustomerDataResp>> getTotalCustomerData(@Body BaseRequest request);
+    Call<BaseResponse<TotalCustomerDataResp>> getTotalCustomerData(@Body BaseRequest request);
 
     /**
      * 获取总部T+1客群年龄生熟客分布
