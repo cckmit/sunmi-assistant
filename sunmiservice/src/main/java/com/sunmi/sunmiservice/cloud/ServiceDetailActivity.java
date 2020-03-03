@@ -74,6 +74,8 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     boolean isBind;
     @Extra
     String deviceName;
+    @Extra
+    String serviceNo;
 
     private ServiceDetailBean bean;
 
@@ -96,7 +98,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new ServiceDetailPresenter(mSn);
         mPresenter.attachView(this);
-        mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
+        getServiceDetail();
         showLoadingDialog();
     }
 
@@ -145,7 +147,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (CommonNotifications.cloudStorageChange == id) {
-            mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
+            getServiceDetail();
         }
     }
 
@@ -184,6 +186,14 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
 
     @Click(resName = "btn_refresh")
     void refreshClick() {
-        mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
+        getServiceDetail();
+    }
+
+    private void getServiceDetail(){
+        if (serviceNo == null) {
+            mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
+        }else {
+            mPresenter.getServiceDetailByServiceNo(serviceNo);
+        }
     }
 }

@@ -38,6 +38,15 @@ public interface ServiceInterface {
     @POST(path + "subscription/getInfoByDevice")
     Call<BaseResponse<ServiceDetailBean>> getServiceDetailByDevice(@Body BaseRequest request);
 
+
+    /**
+     * 查看用户订阅服务记录详情
+     * @param request
+     * @return
+     */
+    @POST(path +"subscription/getInfo")
+    Call<BaseResponse<ServiceDetailBean>> getServiceDetailByServiceNo(@Body BaseRequest request);
+
     /**
      * 查询当前门店捆绑服务信息
      * @param request
