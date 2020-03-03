@@ -234,6 +234,8 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         titleBar.setAppTitle(device.getName());
         titleBar.getLeftLayout().setOnClickListener(this);
         rlBottomBar.setVisibility(View.VISIBLE);
+        ivNextDay.setEnabled(false);
+        ivPreDay.setEnabled(false);
         //初始化时间轴 设置时间轴每个小刻度5分钟，每个大刻度包含6个小刻度
         timeLine.setInterval(300, 6);
         timeLine.setListener(this);
