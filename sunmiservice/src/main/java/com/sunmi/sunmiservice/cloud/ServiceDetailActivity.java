@@ -119,7 +119,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             } else {
                 tvDeviceName.setText("- -");
                 tvStatus.setText(R.string.str_unbind);
-                // btnRenewal.setVisibility(View.GONE);
+                btnRenewal.setVisibility(View.GONE);
             }
             tvDeviceModel.setText(bean.getDeviceModel());
             tvDeviceSn.setText(sn);
@@ -127,7 +127,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             tvExpireTime.setText(DateTimeUtils.secondToDate(bean.getExpireTime(), "yyyy-MM-dd HH:mm"));
             if (bean.getStatus() != CommonConstants.SERVICE_EXPIRED) {
                 tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime()));
-            } else {
+            } else if (isBind) {
                 tvStatus.setText(R.string.str_expired);
                 tvRemaining.setText("- -");
             }
@@ -189,10 +189,10 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         getServiceDetail();
     }
 
-    private void getServiceDetail(){
+    private void getServiceDetail() {
         if (serviceNo == null) {
             mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
-        }else {
+        } else {
             mPresenter.getServiceDetailByServiceNo(serviceNo);
         }
     }
