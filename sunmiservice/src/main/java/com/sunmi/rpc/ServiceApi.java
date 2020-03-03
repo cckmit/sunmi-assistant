@@ -64,6 +64,21 @@ public class ServiceApi {
         }
     }
 
+    public void getServiceDetailByServiceNo(String serviceNo,RetrofitCallback<ServiceDetailBean> callback){
+        try {
+            String params = new JSONObject()
+                    .put("company_id", SpUtils.getCompanyId())
+                    .put("shop_id", SpUtils.getShopId())
+                    .put("service_no", serviceNo)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ServiceInterface.class)
+                    .getServiceDetailByServiceNo(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void getBundledList(RetrofitCallback<BundleServiceMsg> callback) {
         try {
             String params = new JSONObject()
