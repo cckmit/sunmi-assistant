@@ -100,7 +100,7 @@
 
     <string name="dashboard_card_customer_none">暂无客流数据</string>
     <string name="dashboard_card_customer_group_frequency">客群到店频次</string>
-    <string name="dashboard_card_customer_avg_enter">时间段内顾客的平均到店次数</string>
+    <string name="dashboard_card_customer_avg_enter">基于人脸采集数据，时间段内顾客的平均到店次数</string>
     <string name="dashboard_card_customer_frequency_distribution">到店次数分布</string>
     <string name="dashborad_card_customer_week_frequency_trend">周到店频次趋势</string>
     <string name="dashborad_card_customer_month_frequency_trend">月到店频次趋势</string>
