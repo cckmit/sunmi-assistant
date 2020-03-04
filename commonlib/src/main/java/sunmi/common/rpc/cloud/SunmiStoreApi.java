@@ -14,6 +14,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Callback;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.model.AuthorizeInfoResp;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.CustomerAgeGenderResp;
@@ -38,7 +39,6 @@ import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.SaleDataResp;
 import sunmi.common.model.ServiceEnableResp;
 import sunmi.common.model.ServiceListResp;
-import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
@@ -699,9 +699,9 @@ public class SunmiStoreApi {
     }
 
     /**
-     * 获取门店对接信息，包括授权状态，授权时间，数据导入状态
+     * 获取门店SaaS授权信息，包括授权状态，授权时间，数据导入状态
      */
-    public void getAuthorizeInfo(int companyId, int shopId, RetrofitCallback<ShopAuthorizeInfoResp> callback) {
+    public void getAuthorizeInfo(int companyId, int shopId, RetrofitCallback<AuthorizeInfoResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -709,6 +709,22 @@ public class SunmiStoreApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .getAuthorizeInfo(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取商户下所有门店SaaS授权信息，包括授权状态，授权时间，数据导入状态
+     */
+    public void getAuthorizeInfo(int companyId, RetrofitCallback<AuthorizeInfoResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .getCompanyAuthorizeInfo(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();

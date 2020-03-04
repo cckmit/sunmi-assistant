@@ -18,7 +18,8 @@ import java.util.List;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.model.ShopAuthorizeInfoResp;
+import sunmi.common.model.AuthorizeInfoResp;
+import sunmi.common.model.SaasStatus;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -28,7 +29,7 @@ import sunmi.common.utils.SpUtils;
  * @author yinhui
  * @since 2019-07-01
  */
-public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImportCard.Model, ShopAuthorizeInfoResp> {
+public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImportCard.Model, AuthorizeInfoResp> {
 
     private static RealtimeOrderImportCard sInstance;
 
@@ -71,7 +72,7 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
     }
 
     @Override
-    protected Call<BaseResponse<ShopAuthorizeInfoResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<AuthorizeInfoResp>> load(int companyId, int shopId, int period, CardCallback callback) {
         if (getModel().state != Constants.IMPORT_COMPLETE) {
             SunmiStoreApi.getInstance().getAuthorizeInfo(companyId, shopId, callback);
         }
@@ -137,19 +138,19 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
     }
 
     @Override
-    protected void setupModel(Model model, ShopAuthorizeInfoResp response) {
+    protected void setupModel(Model model, AuthorizeInfoResp response) {
         if (response == null
-                || response.getAuthorizedList() == null
-                || response.getAuthorizedList().isEmpty()) {
+                || response.getList() == null
+                || response.getList().isEmpty()) {
             return;
         }
-        List<ShopAuthorizeInfoResp.Info> list = response.getAuthorizedList();
-        ShopAuthorizeInfoResp.Info info = list.get(0);
+        List<SaasStatus> list = response.getList();
+        SaasStatus info = list.get(0);
         model.state = info.getImportStatus();
         model.authTime = info.getAuthorizedTime();
         model.saasList.clear();
         model.saasCount = list.size();
-        for (ShopAuthorizeInfoResp.Info item : list) {
+        for (SaasStatus item : list) {
             model.saasList.add(new Model.Item(item.getShopNo(), item.getSaasSource()));
         }
     }

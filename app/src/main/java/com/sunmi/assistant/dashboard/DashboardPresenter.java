@@ -31,9 +31,10 @@ import java.util.Set;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.model.AuthorizeInfoResp;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.FilterItem;
-import sunmi.common.model.ShopAuthorizeInfoResp;
+import sunmi.common.model.SaasStatus;
 import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
@@ -293,14 +294,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             return;
         }
         SunmiStoreApi.getInstance().getAuthorizeInfo(mCompanyId, mShopId,
-                new RetrofitCallback<ShopAuthorizeInfoResp>() {
+                new RetrofitCallback<AuthorizeInfoResp>() {
                     @Override
-                    public void onSuccess(int code, String msg, ShopAuthorizeInfoResp data) {
-                        if (data == null || data.getAuthorizedList() == null) {
+                    public void onSuccess(int code, String msg, AuthorizeInfoResp data) {
+                        if (data == null || data.getList() == null) {
                             onFail(code, msg, data);
                             return;
                         }
-                        List<ShopAuthorizeInfoResp.Info> list = data.getAuthorizedList();
+                        List<SaasStatus> list = data.getList();
                         if (list.isEmpty()) {
                             mSource &= ~Constants.DATA_SOURCE_AUTH;
                             mSource &= ~Constants.DATA_SOURCE_IMPORT;
@@ -318,7 +319,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     }
 
                     @Override
-                    public void onFail(int code, String msg, ShopAuthorizeInfoResp data) {
+                    public void onFail(int code, String msg, AuthorizeInfoResp data) {
                         LogCat.e(TAG, "Load saas import Failed. " + code + ":" + msg);
                         if (isViewAttached()) {
                             mView.loadDataFailed();

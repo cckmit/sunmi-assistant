@@ -5,10 +5,10 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import sunmi.common.model.AuthStoreInfo;
+import sunmi.common.model.AuthorizeInfoResp;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ServiceEnableResp;
-import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
@@ -83,7 +83,13 @@ public interface ShopInterface {
      * 获取门店Saas对接信息，包括授权状态，授权时间，数据导入状态
      */
     @POST(saasPath + "getAuthorizeInfo")
-    Call<BaseResponse<ShopAuthorizeInfoResp>> getAuthorizeInfo(@Body BaseRequest request);
+    Call<BaseResponse<AuthorizeInfoResp>> getAuthorizeInfo(@Body BaseRequest request);
+
+    /**
+     * 获取商户下所有门店SaaS授权信息，包括授权状态，授权时间，数据导入状态
+     */
+    @POST(saasPath + "company/getAuthorizeInfo")
+    Call<BaseResponse<AuthorizeInfoResp>> getCompanyAuthorizeInfo(@Body BaseRequest request);
 
     /**
      * 门店导入Saas历史数据
