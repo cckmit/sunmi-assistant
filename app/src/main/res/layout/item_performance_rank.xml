@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_48"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/c_white">
+
+    <TextView
+        android:id="@+id/tv_shop_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/text_normal"
+        android:text="@string/ap_no_signal"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/sp_16"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:textColor="@color/common_orange"
+        android:textStyle="bold"
+        tools:text="1204"/>
+
+</RelativeLayout>

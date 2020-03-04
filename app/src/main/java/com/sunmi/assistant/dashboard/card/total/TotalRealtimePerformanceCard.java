@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.subpage.PerformanceRankActivity_;
 import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
             }
         });
         holder.addOnClickListener(R.id.btn_more, (holder1, model, position) -> {
-            // TODO: 下钻
+            PerformanceRankActivity_.intent(context).start();
         });
 
         ListView lv = holder.getView(R.id.lv_dashboard_list);
