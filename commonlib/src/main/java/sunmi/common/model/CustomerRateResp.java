@@ -48,15 +48,22 @@ public class CustomerRateResp {
          * time : 1
          * order_count : 11
          * passenger_flow_count : 123
+         * pass_count : 123
+         * entry_head_count : 123
          */
 
         private long timestamp = -1;
+
         @SerializedName("time")
         private int timeIndex;
         @SerializedName("order_count")
         private int orderCount;
         @SerializedName("passenger_flow_count")
         private int passengerFlowCount;
+        @SerializedName("pass_count")
+        private int passCount;
+        @SerializedName("entry_head_count")
+        private int entryHeadCount;
 
         /**
          * @param period 是 number 1：今日，2：本周，3：本月，4：昨日
@@ -113,5 +120,12 @@ public class CustomerRateResp {
             return passengerFlowCount;
         }
 
+        public int getPassCount() {
+            return passCount;
+        }
+
+        public int getEntryHeadCount() {
+            return entryHeadCount;
+        }
     }
 }

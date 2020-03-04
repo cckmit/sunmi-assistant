@@ -170,8 +170,8 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
             for (CustomerEnterRateTrendResp.Item item : list) {
                 long time = format.parse(item.getTime()).getTime();
                 float x = Utils.encodeChartXAxisFloat(model.period, time);
-                int total = item.getPassPassengerCount() + item.getPassengerCount();
-                float y = total <= 0 ? 0f : (float) item.getPassengerCount() / total;
+                int total = item.getPassPassengerCount() + item.getPassengerCount() + item.getEntryHeadCount();
+                float y = total <= 0 ? 0f : (float) (item.getPassengerCount() + item.getEntryHeadCount()) / total;
                 model.dataSet.add(new ChartEntry(x, y, time));
             }
         } catch (ParseException e) {
