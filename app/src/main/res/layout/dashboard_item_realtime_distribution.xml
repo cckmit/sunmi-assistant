@@ -19,6 +19,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tv_dashboard_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_2"
+        android:text="@string/dashboard_tip_customer_distribution"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
+
+    <TextView
         android:id="@+id/tv_dashboard_new_old"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
@@ -64,6 +76,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_tip" />
 
 </android.support.constraint.ConstraintLayout>

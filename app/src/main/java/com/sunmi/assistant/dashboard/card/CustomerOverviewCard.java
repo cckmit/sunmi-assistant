@@ -63,20 +63,23 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
     @Override
     protected void setupModel(Model model, CustomerDataResp response) {
         int latestCount = response.getLatestPassengerCount();
+        int latestHeadCount = response.getLatestEntryHeadCount();
         int earlyCount = response.getEarlyPassengerCount();
+        int earlyHeadCount = response.getEarlyEntryHeadCount();
         int latestPassCount = response.getLatestPassPassengerCount();
         int earlyPassCont = response.getEarlyPassPassengerCount();
         int latestUniq = response.getLatestUniqPassengerCount();
         int earlyUniq = response.getEarlyUniqPassengerCount();
-        model.latestCount = latestCount;
-        model.earlyCount = earlyCount;
-        if (latestCount > 0 && latestPassCount >= 0) {
-            model.latestEnterRate = (float) latestCount / (latestCount + latestPassCount);
+
+        model.latestCount = latestCount + latestHeadCount;
+        model.earlyCount = earlyCount + earlyHeadCount;
+        if (model.latestCount > 0 && latestPassCount >= 0) {
+            model.latestEnterRate = (float) model.latestCount / (model.latestCount + latestPassCount);
         } else {
             model.latestEnterRate = 0;
         }
-        if (earlyCount > 0 && earlyPassCont >= 0) {
-            model.earlyEnterRate = (float) earlyCount / (earlyCount + earlyPassCont);
+        if (model.earlyCount > 0 && earlyPassCont >= 0) {
+            model.earlyEnterRate = (float) model.earlyCount / (model.earlyCount + earlyPassCont);
         } else {
             model.earlyEnterRate = 0;
         }

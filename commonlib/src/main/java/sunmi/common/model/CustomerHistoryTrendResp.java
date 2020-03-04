@@ -52,9 +52,12 @@ public class CustomerHistoryTrendResp {
          * stranger_count : 12
          * regular_count : 12
          * total_count : 12
+         * pass_count : 321
+         * entry_head_count : 321
          */
 
         private long timestamp = -1;
+
         @SerializedName("time")
         private String timeStr;
         @SerializedName("stranger_count")
@@ -63,6 +66,10 @@ public class CustomerHistoryTrendResp {
         private int regularCount;
         @SerializedName("total_count")
         private int totalCount;
+        @SerializedName("pass_count")
+        private int passCount;
+        @SerializedName("entry_head_count")
+        private int entryHeadCount;
 
         /**
          * @param period 是 number 1：今日，2：本周，3：本月，4：昨日
@@ -116,6 +123,14 @@ public class CustomerHistoryTrendResp {
 
         public int getTotalCount() {
             return totalCount;
+        }
+
+        public int getPassCount() {
+            return passCount;
+        }
+
+        public int getEntryHeadCount() {
+            return entryHeadCount;
         }
     }
 }
