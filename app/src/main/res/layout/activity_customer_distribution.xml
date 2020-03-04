@@ -13,7 +13,7 @@
         app:layout_constraintTop_toBottomOf="@+id/dm_motion_customer">
 
         <sunmi.common.view.SmRecyclerView
-            android:id="@+id/rv_rank"
+            android:id="@+id/rv_customer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -33,16 +33,16 @@
         app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
     <LinearLayout
-        android:id="@+id/dm_motion_customer"
+        android:id="@+id/dm_motion_sort"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
         android:background="@color/c_white"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dm_motion_customer"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/dm_motion_sale"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_type">
 
         <TextView
             android:id="@+id/dropdown_title"
@@ -51,9 +51,9 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/str_sort_desc"
             android:textColor="@color/text_common_normal_checkable"
-            android:textSize="@dimen/sp_12" />
+            android:textSize="@dimen/sp_12"
+            android:text="@string/str_sort_desc"/>
 
         <ImageView
             android:id="@+id/dropdown_img"
@@ -64,22 +64,57 @@
     </LinearLayout>
 
     <sunmi.common.view.DropdownMenuNew
-        android:id="@+id/dm_motion_sale"
+        android:id="@+id/dm_motion_customer"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
         android:background="@color/c_white"
         app:dm_menuIndex="3"
-        app:layout_constraintEnd_toStartOf="@+id/dm_motion_customer"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/dm_motion_sort"
+        app:layout_constraintTop_toBottomOf="@+id/rg_type" />
 
     <View
-        android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
         android:background="@color/c_divider"
-        app:layout_constraintTop_toBottomOf="@id/dm_motion_customer" />
+        app:layout_constraintTop_toBottomOf="@id/dm_motion_sort" />
+
+    <RadioGroup
+        android:id="@+id/rg_type"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/c_white"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/dp_20"
+        android:paddingEnd="@dimen/dp_20"
+        app:layout_constraintTop_toBottomOf="@id/title_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <RadioButton
+            android:id="@+id/rb_new_old"
+            style="@style/TopTabTitle"
+            android:checked="true"
+            android:text="@string/dashboard_var_new_old" />
+
+        <RadioButton
+            android:id="@+id/rb_gender"
+            style="@style/TopTabTitle"
+            android:text="@string/dashboard_var_gender" />
+
+        <RadioButton
+            android:id="@+id/rb_age"
+            style="@style/TopTabTitle"
+            android:text="@string/str_common_age" />
+
+    </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0_5"
+        android:background="@color/c_divider"
+        app:layout_constraintTop_toBottomOf="@id/rg_type" />
 
     <sunmi.common.view.TitleBarView
         android:id="@+id/title_bar"

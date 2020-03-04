@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
+import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.FilterItem;
@@ -31,7 +33,8 @@ import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.ViewHolder;
 
 @EActivity(R.layout.activity_performance_rank)
-public class PerformanceRankActivity extends BaseActivity {
+public class PerformanceRankActivity extends BaseActivity
+        implements BGARefreshLayout.BGARefreshLayoutDelegate {
 
     @ViewById(R.id.dm_motion_sale)
     DropdownMenuNew dmMotionSale;
@@ -41,6 +44,8 @@ public class PerformanceRankActivity extends BaseActivity {
     ImageView dropdownImg;
     @ViewById(R.id.rv_rank)
     SmRecyclerView rvRank;
+    @ViewById(R.id.layout_refresh)
+    BGARefreshLayout refreshView;
     @ViewById(R.id.layout_error)
     View layoutError;
 
@@ -56,6 +61,15 @@ public class PerformanceRankActivity extends BaseActivity {
         rvRank.init(R.drawable.shap_line_divider);
         CustomerShopDataResp.isSortByCount = true;
         CustomerShopDataResp.isDesc = true;
+        refreshView.setDelegate(this);
+        // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
+        BGANormalRefreshViewHolder refreshViewHolder =
+                new BGANormalRefreshViewHolder(context, false);
+        refreshViewHolder.setRefreshingText(getString(R.string.str_refresh_loading));
+        refreshViewHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
+        refreshViewHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
+        refreshView.setRefreshViewHolder(refreshViewHolder); // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项
+        refreshView.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本// 设置正在加载更多时的文本
         initSort();
         initFilters();
         getData();
@@ -94,7 +108,8 @@ public class PerformanceRankActivity extends BaseActivity {
             public void onSuccess(int code, String msg, CustomerShopDataResp data) {
                 layoutError.setVisibility(View.GONE);
                 if (data != null && data.getShopList().size() > 0) {
-                    dataList = data.getShopList();
+                    dataList.clear();
+                    dataList.addAll(data.getShopList());
                     initAdapter();
                 }
             }
@@ -123,10 +138,20 @@ public class PerformanceRankActivity extends BaseActivity {
     }
 
     @Click(R.id.dm_motion_customer)
-    void sortClick(){
-        CustomerShopDataResp.isDesc = ! CustomerShopDataResp.isDesc;
+    void sortClick() {
+        CustomerShopDataResp.isDesc = !CustomerShopDataResp.isDesc;
         initSort();
         initAdapter();
+    }
+
+    @Override
+    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
+        getData();
+    }
+
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
+        return false;
     }
 
     private class Adapter extends CommonListAdapter<CustomerShopDataResp.Item> {

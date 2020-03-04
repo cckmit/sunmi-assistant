@@ -1,0 +1,46 @@
+package com.sunmi.assistant.dashboard.data;
+
+public class GenderCustomer implements Comparable<GenderCustomer> {
+
+    private String shopName;
+    private int maleCount;
+    private int femaleCount;
+
+    public static boolean isDesc;
+    public static boolean isSortByMale;
+
+    public GenderCustomer(String shopName, int maleCount, int femaleCount) {
+        this.shopName = shopName;
+        this.maleCount = maleCount;
+        this.femaleCount = femaleCount;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public int getMaleCount() {
+        return maleCount;
+    }
+
+    public int getFemaleCount() {
+        return femaleCount;
+    }
+
+    @Override
+    public int compareTo(GenderCustomer o) {
+        if (isSortByMale) {
+            if (isDesc) {
+                return o.maleCount - maleCount;
+            } else {
+                return maleCount - o.maleCount;
+            }
+        } else {
+            if (isDesc) {
+                return o.femaleCount - femaleCount;
+            } else {
+                return femaleCount - o.femaleCount;
+            }
+        }
+    }
+}
