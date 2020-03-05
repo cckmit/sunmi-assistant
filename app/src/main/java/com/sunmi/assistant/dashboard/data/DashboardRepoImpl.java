@@ -260,19 +260,19 @@ public class DashboardRepoImpl implements DashboardRepo {
 
     @Override
     public void clearCache(int flag) {
-        if ((flag & Constants.CACHE_FLAG_SHOP) != 0) {
+        if ((flag & Constants.FLAG_SHOP) != 0) {
             shopMap = null;
         }
-        if ((flag & Constants.CACHE_FLAG_SAAS) != 0) {
+        if ((flag & Constants.FLAG_SAAS) != 0) {
             saasMap = null;
         }
-        if ((flag & Constants.CACHE_FLAG_IPC) != 0) {
+        if ((flag & Constants.FLAG_FS) != 0) {
             deviceMap = null;
         }
-        if ((flag & Constants.CACHE_FLAG_CUSTOMER) != 0) {
+        if ((flag & Constants.FLAG_CUSTOMER) != 0) {
             customer = null;
         }
-        if ((flag & Constants.CACHE_FLAG_CLOUD_BUNDLE) != 0) {
+        if ((flag & Constants.FLAG_BUNDLED_LIST) != 0) {
             bundledCloudInfo = null;
         }
     }

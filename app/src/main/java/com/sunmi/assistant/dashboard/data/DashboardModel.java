@@ -10,19 +10,26 @@ import sunmi.common.model.ShopInfo;
  */
 public interface DashboardModel {
 
-    void getShopList(int companyId, boolean forceLoad, Callback<SparseArray<ShopInfo>> callback);
+    void getShopList(int companyId, Callback<SparseArray<ShopInfo>> callback);
 
-    void hasSaasAuth(int companyId, boolean forceLoad, Callback<Boolean> callback);
+    void hasSaasState(int companyId, Callback<Integer> callback);
 
-    void hasSaasAuth(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback);
+    void hasSaasState(int companyId, int shopId, Callback<Integer> callback);
 
-    void hasSaasImport(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback);
+    void hasFs(int companyId, Callback<Boolean> callback);
 
-    void hasFs(int companyId, boolean forceLoad, Callback<Boolean> callback);
+    void hasFs(int companyId, int shopId, Callback<Boolean> callback);
 
-    void hasFs(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback);
+    void hasCustomer(int companyId, int shopId, Callback<Boolean> callback);
 
-    void hasCustomer(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback);
+    void isFloatingShow(int companyId, int shopId, Callback<Boolean> callback);
 
-    void hasCloudService(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback);
+    void loadCondition(int flag, DashboardCondition condition,
+                       int companyId, Callback<DashboardCondition> callback);
+
+    void loadCondition(int flag, DashboardCondition condition,
+                       int companyId, int shopId, Callback<DashboardCondition> callback);
+
+    void clearCache(int flag);
+
 }

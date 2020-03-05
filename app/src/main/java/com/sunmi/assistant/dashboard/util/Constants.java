@@ -20,6 +20,8 @@ public class Constants {
     public static final int FLAG_CUSTOMER = 0x8;
     public static final int FLAG_BUNDLED_LIST = 0x10;
     public static final int FLAG_ALL_MASK = 0x1F;
+    public static final int FLAG_CONDITION_COMPANY_MASK = FLAG_SAAS | FLAG_FS;
+    public static final int FLAG_CONDITION_SHOP_MASK = FLAG_SAAS | FLAG_FS | FLAG_CUSTOMER | FLAG_BUNDLED_LIST;
 
     public static final int TIME_PERIOD_INIT = 0;
     public static final int TIME_PERIOD_TODAY = 1;
@@ -51,17 +53,15 @@ public class Constants {
     public static final int DATA_SOURCE_CUSTOMER = 0x8;
     public static final int DATA_SOURCE_FLOATING = 0x10;
 
-    public static final int CACHE_FLAG_SHOP = 0x1;
-    public static final int CACHE_FLAG_SAAS = 0x2;
-    public static final int CACHE_FLAG_IPC = 0x4;
-    public static final int CACHE_FLAG_CUSTOMER = 0x8;
-    public static final int CACHE_FLAG_CLOUD_BUNDLE = 0x10;
+    public static final int SAAS_STATE_NONE = 0;
+    public static final int SAAS_STATE_AUTH = 1;
+    public static final int SAAS_STATE_IMPORT = 2;
 
-    public static final int IMPORT_NONE = 0;
-    public static final int IMPORT_DOING = 1;
-    public static final int IMPORT_SUCCESS = 2;
-    public static final int IMPORT_FAIL = 3;
-    public static final int IMPORT_COMPLETE = 10;
+    public static final int IMPORT_STATE_NONE = 0;
+    public static final int IMPORT_STATE_DOING = 1;
+    public static final int IMPORT_STATE_SUCCESS = 2;
+    public static final int IMPORT_STATE_FAIL = 3;
+    public static final int IMPORT_STATE_COMPLETE = 10;
 
     public static final int NO_CUSTOMER_DATA = 5087;
 }

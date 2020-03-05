@@ -307,7 +307,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                             mSource &= ~Constants.DATA_SOURCE_IMPORT;
                         } else {
                             mSource |= Constants.DATA_SOURCE_AUTH;
-                            if (list.get(0).getImportStatus() == Constants.IMPORT_SUCCESS) {
+                            if (list.get(0).getImportStatus() == Constants.IMPORT_STATE_SUCCESS) {
                                 // 导入成功
                                 mSource |= Constants.DATA_SOURCE_IMPORT;
                             } else {

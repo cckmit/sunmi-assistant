@@ -73,7 +73,7 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
 
     @Override
     protected Call<BaseResponse<AuthorizeInfoResp>> load(int companyId, int shopId, int period, CardCallback callback) {
-        if (getModel().state != Constants.IMPORT_COMPLETE) {
+        if (getModel().state != Constants.IMPORT_STATE_COMPLETE) {
             SunmiStoreApi.getInstance().getAuthorizeInfo(companyId, shopId, callback);
         }
         return null;
@@ -97,12 +97,12 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         holder.addOnClickListener(R.id.btn_dashboard_import, (h, model, position) -> {
-            if (model.state == Constants.IMPORT_NONE || model.state == Constants.IMPORT_FAIL) {
+            if (model.state == Constants.IMPORT_STATE_NONE || model.state == Constants.IMPORT_STATE_FAIL) {
                 // Import
                 mRequestCount = 0;
                 mFailedCount = 0;
                 mPresenter.showLoading();
-                switchState(model, Constants.IMPORT_DOING);
+                switchState(model, Constants.IMPORT_STATE_DOING);
                 int companyId = SpUtils.getCompanyId();
                 int shopId = SpUtils.getShopId();
                 for (Model.Item item : model.saasList) {
@@ -125,13 +125,13 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
 
                                     mFailedCount++;
                                     if (mFailedCount >= model.saasCount) {
-                                        switchState(model, Constants.IMPORT_FAIL);
+                                        switchState(model, Constants.IMPORT_STATE_FAIL);
                                     }
                                 }
                             });
                 }
-            } else if (model.state == Constants.IMPORT_SUCCESS) {
-                switchState(model, Constants.IMPORT_COMPLETE);
+            } else if (model.state == Constants.IMPORT_STATE_SUCCESS) {
+                switchState(model, Constants.IMPORT_STATE_COMPLETE);
             }
         });
         return holder;
@@ -161,7 +161,7 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
         TextView tip = holder.getView(R.id.tv_dashboard_tip);
         Button btn = holder.getView(R.id.btn_dashboard_import);
 
-        if (model.state == Constants.IMPORT_NONE) {
+        if (model.state == Constants.IMPORT_STATE_NONE) {
             String time = DateUtils.formatDateTime(context, model.authTime * 1000,
                     DateUtils.FORMAT_SHOW_YEAR);
             tip.setText(context.getString(R.string.dashboard_tip_import_saas, time));
@@ -171,14 +171,14 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
             btn.setVisibility(View.VISIBLE);
             btn.setText(R.string.dashboard_btn_import);
 
-        } else if (model.state == Constants.IMPORT_DOING) {
+        } else if (model.state == Constants.IMPORT_STATE_DOING) {
             tip.setText(R.string.dashboard_tip_importing);
             tip.setTextColor(mColorOk);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             tip.setCompoundDrawablePadding(0);
             btn.setVisibility(View.INVISIBLE);
 
-        } else if (model.state == Constants.IMPORT_SUCCESS) {
+        } else if (model.state == Constants.IMPORT_STATE_SUCCESS) {
             tip.setText(R.string.dashboard_tip_import_ok);
             tip.setTextColor(mColorOk);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.dashboard_import_ok,
@@ -187,7 +187,7 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
             btn.setVisibility(View.VISIBLE);
             btn.setText(R.string.str_confirm);
 
-        } else if (model.state == Constants.IMPORT_FAIL) {
+        } else if (model.state == Constants.IMPORT_STATE_FAIL) {
             tip.setText(R.string.dashboard_tip_import_error);
             tip.setTextColor(mColorError);
             tip.setCompoundDrawablesRelativeWithIntrinsicBounds(R.mipmap.dashboard_import_error,
@@ -205,14 +205,14 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
-        private int state = Constants.IMPORT_NONE;
+        private int state = Constants.IMPORT_STATE_NONE;
         private long authTime;
         private int saasCount;
         private List<Item> saasList = new ArrayList<>();
 
         @Override
         public void init(int source) {
-            this.state = Constants.IMPORT_NONE;
+            this.state = Constants.IMPORT_STATE_NONE;
             this.authTime = 0;
             this.saasCount = 0;
             this.saasList.clear();

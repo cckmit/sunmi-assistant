@@ -130,7 +130,7 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
 
     @Override
     public void onImportStateChange(int state) {
-        if (state == Constants.IMPORT_COMPLETE) {
+        if (state == Constants.IMPORT_STATE_COMPLETE) {
             this.mImportState = IMPORT_STATE_DISMISS;
             scrollToTop();
         } else {
