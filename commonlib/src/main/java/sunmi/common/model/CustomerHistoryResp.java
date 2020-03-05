@@ -13,6 +13,8 @@ public class CustomerHistoryResp {
      * regular_count : 123
      * stranger_count : 321
      * member_count : 321
+     * pass_count : 321
+     * entry_head_count : 321
      */
 
     @SerializedName("total_count")
@@ -23,6 +25,10 @@ public class CustomerHistoryResp {
     private int strangerCount;
     @SerializedName("member_count")
     private int memberCount;
+    @SerializedName("pass_count")
+    private int passCount;
+    @SerializedName("entry_head_count")
+    private int entryHeadCount;
 
     public int getTotalCount() {
         return totalCount;
@@ -40,4 +46,11 @@ public class CustomerHistoryResp {
         return memberCount;
     }
 
+    public int getPassCount() {
+        return passCount;
+    }
+
+    public int getEntryHeadCount() {
+        return entryHeadCount;
+    }
 }
