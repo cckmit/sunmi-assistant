@@ -10,43 +10,57 @@ import sunmi.common.model.ShopInfo;
  */
 public class DashboardModelImpl implements DashboardModel {
 
+    private DashboardRepo repo;
+
+    private static final class Holder {
+        private static final DashboardModel INSTANCE = new DashboardModelImpl();
+    }
+
+    public static DashboardModel get() {
+        return Holder.INSTANCE;
+    }
+
+    private DashboardModelImpl() {
+        repo = DashboardRepoImpl.get();
+    }
+
     @Override
-    public void getShopList(int companyId, Callback<SparseArray<ShopInfo>> callback) {
+    public void getShopList(int companyId, boolean forceLoad, Callback<SparseArray<ShopInfo>> callback) {
+        repo.getShopList(companyId, forceLoad, callback);
+    }
+
+    @Override
+    public void hasSaasAuth(int companyId, boolean forceLoad, Callback<Boolean> callback) {
 
     }
 
     @Override
-    public void hasSaasAuth(int companyId, Callback<Boolean> callback) {
+    public void hasSaasAuth(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback) {
 
     }
 
     @Override
-    public void hasSaasAuth(int companyId, int shopId, Callback<Boolean> callback) {
+    public void hasSaasImport(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback) {
 
     }
 
     @Override
-    public void hasSaasImport(int companyId, int shopId, Callback<Boolean> callback) {
+    public void hasFs(int companyId, boolean forceLoad, Callback<Boolean> callback) {
 
     }
 
     @Override
-    public void hasFs(int companyId, Callback<Boolean> callback) {
+    public void hasFs(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback) {
 
     }
 
     @Override
-    public void hasFs(int companyId, int shopId, Callback<Boolean> callback) {
+    public void hasCustomer(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback) {
 
     }
 
     @Override
-    public void hasCustomer(int companyId, int shopId, Callback<Boolean> callback) {
-
-    }
-
-    @Override
-    public void hasCloudService(int companyId, int shopId, Callback<Boolean> callback) {
+    public void hasCloudService(int companyId, int shopId, boolean forceLoad, Callback<Boolean> callback) {
 
     }
 }

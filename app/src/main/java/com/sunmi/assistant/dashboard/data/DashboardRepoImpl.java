@@ -47,6 +47,17 @@ public class DashboardRepoImpl implements DashboardRepo {
     private CustomerHistoryResp customer;
     private ShopBundledCloudInfo bundledCloudInfo;
 
+    private static final class Holder {
+        private static final DashboardRepo INSTANCE = new DashboardRepoImpl();
+    }
+
+    public static DashboardRepo get() {
+        return Holder.INSTANCE;
+    }
+
+    private DashboardRepoImpl() {
+    }
+
     @Override
     public void getShopList(int companyId, boolean forceLoad, Callback<SparseArray<ShopInfo>> callback) {
         if (forceLoad) {
