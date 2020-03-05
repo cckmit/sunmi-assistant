@@ -7,6 +7,8 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
@@ -39,7 +41,11 @@ import com.sunmi.ipc.service.P2pService;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.sunmi.ipc.utils.IpcUtils;
 import com.sunmi.ipc.view.activity.setting.IpcSettingActivity_;
+import com.xiaojinzi.component.impl.BiCallback;
 import com.xiaojinzi.component.impl.Router;
+import com.xiaojinzi.component.impl.RouterErrorResult;
+import com.xiaojinzi.component.impl.RouterRequest;
+import com.xiaojinzi.component.impl.RouterResult;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -70,6 +76,7 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.WebViewParamsUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -600,8 +607,9 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
             cashVideoItem.setSummary(getString(R.string.tip_renew_service));
         }
         if (!devices.isEmpty()) {
-            if (status ==CommonConstants.SERVICE_ALREADY_OPENED){
+            if (status == CommonConstants.SERVICE_ALREADY_OPENED) {
                 cashVideoItem.setRightText(getString(R.string.str_setting_detail));
+                cashVideoItem.setSummary(getString(R.string.cash_video_item_content));
                 if (validTime / (3600 * 24) < 3) {
                     cashVideoItem.setSummary(getString(R.string.tip_validity_period, DateTimeUtils.secondToPeriod(validTime)));
                 }
@@ -610,10 +618,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                 cashVideoItem.setLeftImageResId(R.mipmap.ipc_manage_cash_loss_prevent);
                 cashVideoItem.setTitle(getString(R.string.str_cash_loss_prevent));
             }
-            adapter.notifyDataSetChanged();
         } else if (alreadySubscribe) {// 已经有其他摄像机开通了收银视频服务
             cashVideoSubscribed = true;
         }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -1029,10 +1037,26 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
                                         }
                                         break;
                                     case CommonConstants.SERVICE_EXPIRED: //服务已过期
-                                        if (serviceBeans.get(0).isHasCashLossPrevention()) {
+                                        if (!serviceBeans.isEmpty()) {
                                             Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,
                                                     CommonConstants.H5_CASH_PREVENT_RENEW,
-                                                    WebViewParamsUtils.getCashPreventLossParams(device.getDeviceid(), 1));
+                                                    WebViewParamsUtils.getCashPreventLossParams(device.getDeviceid(), 1)
+                                                    , new BiCallback<Intent>() {
+                                                        @Override
+                                                        public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
+                                                            mPresenter.onServiceSubscribeResult(intent, device.getDeviceid());
+                                                        }
+
+                                                        @Override
+                                                        public void onCancel(@Nullable RouterRequest originalRequest) {
+
+                                                        }
+
+                                                        @Override
+                                                        public void onError(@NonNull RouterErrorResult errorResult) {
+
+                                                        }
+                                                    });
                                         } else {
                                             Router.withApi(SunmiServiceApi.class).goToWebViewCloud(context,
                                                     CommonConstants.H5_CASH_VIDEO_RENEW,
