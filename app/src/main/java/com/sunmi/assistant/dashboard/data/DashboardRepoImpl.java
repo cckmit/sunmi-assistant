@@ -5,10 +5,12 @@ import android.util.SparseArray;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.bean.BundleServiceMsg;
+import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.rpc.ServiceApi;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -16,8 +18,10 @@ import java.util.Set;
 
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
-import sunmi.common.model.CompanyIpcList;
+import sunmi.common.model.AuthorizeInfoResp;
+import sunmi.common.model.CompanyIpcListResp;
 import sunmi.common.model.CustomerHistoryResp;
+import sunmi.common.model.IpcDevice;
 import sunmi.common.model.SaasStatus;
 import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.model.ShopInfo;
@@ -25,6 +29,7 @@ import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.ThreadPool;
 import sunmi.common.utils.log.LogCat;
 
@@ -37,12 +42,17 @@ public class DashboardRepoImpl implements DashboardRepo {
     private static final String TAG = DashboardRepoImpl.class.getSimpleName();
 
     private SparseArray<ShopInfo> shopMap;
+    private SparseArray<List<SaasStatus>> saasMap;
+    private SparseArray<List<IpcDevice>> deviceMap;
     private CustomerHistoryResp customer;
     private ShopBundledCloudInfo bundledCloudInfo;
 
     @Override
     public void getShopList(int companyId, boolean forceLoad, Callback<SparseArray<ShopInfo>> callback) {
-        if (!forceLoad && shopMap != null) {
+        if (forceLoad) {
+            shopMap = null;
+        }
+        if (shopMap != null) {
             callback.onLoaded(shopMap);
             return;
         }
@@ -72,17 +82,89 @@ public class DashboardRepoImpl implements DashboardRepo {
 
     @Override
     public void getSaasStatus(int companyId, boolean forceLoad, Callback<SparseArray<List<SaasStatus>>> callback) {
+        if (forceLoad) {
+            saasMap = null;
+        }
+        if (saasMap != null) {
+            callback.onLoaded(saasMap);
+            return;
+        }
+        SunmiStoreApi.getInstance().getAuthorizeInfo(companyId, new RetrofitCallback<AuthorizeInfoResp>() {
+            @Override
+            public void onSuccess(int code, String msg, AuthorizeInfoResp data) {
+                if (data == null || data.getList() == null) {
+                    onFail(code, msg, data);
+                    return;
+                }
+                List<SaasStatus> list = data.getList();
+                saasMap = new SparseArray<>();
+                for (SaasStatus info : list) {
+                    List<SaasStatus> statusList = saasMap.get(info.getShopId());
+                    if (statusList == null) {
+                        statusList = new ArrayList<>();
+                        saasMap.put(info.getShopId(), statusList);
+                    }
+                    statusList.add(info);
+                }
+                callback.onLoaded(saasMap);
+            }
 
+            @Override
+            public void onFail(int code, String msg, AuthorizeInfoResp data) {
+                LogCat.e(TAG, "Load saas status Failed. " + code + ":" + msg);
+                saasMap = null;
+                callback.onFail();
+            }
+        });
     }
 
     @Override
-    public void getIpcList(int companyId, boolean forceLoad, Callback<List<CompanyIpcList>> callback) {
+    public void getIpcList(int companyId, boolean forceLoad, Callback<SparseArray<List<IpcDevice>>> callback) {
+        if (forceLoad) {
+            deviceMap = null;
+        }
+        if (deviceMap != null) {
+            callback.onLoaded(deviceMap);
+            return;
+        }
+        IpcCloudApi.getInstance().getCompanyIpcList(companyId, new RetrofitCallback<CompanyIpcListResp>() {
+            @Override
+            public void onSuccess(int code, String msg, CompanyIpcListResp data) {
+                if (data == null || data.getList() == null) {
+                    onFail(code, msg, data);
+                    return;
+                }
+                List<IpcDevice> list = data.getList();
+                deviceMap = new SparseArray<>();
+                for (IpcDevice info : list) {
+                    if (!DeviceTypeUtils.getInstance().isFS1(info.getModel())) {
+                        continue;
+                    }
+                    List<IpcDevice> deviceList = deviceMap.get(info.getShopId());
+                    if (deviceList == null) {
+                        deviceList = new ArrayList<>();
+                        deviceMap.put(info.getShopId(), deviceList);
+                    }
+                    deviceList.add(info);
+                }
+                callback.onLoaded(deviceMap);
+            }
 
+            @Override
+            public void onFail(int code, String msg, CompanyIpcListResp data) {
+                LogCat.e(TAG, "Load ipc device Failed. " + code + ":" + msg);
+                deviceMap = null;
+                callback.onFail();
+            }
+        });
     }
 
     @Override
     public void getCustomer(int companyId, int shopId, boolean forceLoad, Callback<CustomerHistoryResp> callback) {
-        if (!forceLoad && customer != null) {
+        if (forceLoad) {
+            customer = null;
+        }
+        if (customer != null) {
             callback.onLoaded(customer);
             return;
         }
@@ -124,7 +206,10 @@ public class DashboardRepoImpl implements DashboardRepo {
 
     @Override
     public void getBundledList(int companyId, int shopId, boolean forceLoad, Callback<ShopBundledCloudInfo> callback) {
-        if (!forceLoad && bundledCloudInfo != null) {
+        if (forceLoad) {
+            bundledCloudInfo = null;
+        }
+        if (bundledCloudInfo != null) {
             callback.onLoaded(bundledCloudInfo);
             return;
         }

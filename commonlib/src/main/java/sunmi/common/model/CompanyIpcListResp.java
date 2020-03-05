@@ -10,11 +10,11 @@ import java.util.List;
  */
 public class CompanyIpcListResp {
 
-    @SerializedName("shop_list")
-    private List<CompanyIpcList> shopList;
+    @SerializedName("device_list")
+    private List<IpcDevice> list;
 
-    public List<CompanyIpcList> getShopList() {
-        return shopList;
+    public List<IpcDevice> getList() {
+        return list;
     }
 
 }

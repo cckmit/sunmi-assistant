@@ -77,7 +77,7 @@ public interface DeviceInterface {
     /**
      * 获取商户下所有门店的IPC设备列表
      */
-    @POST("ipc/api/company/device/getList")
+    @POST(path + "company/getList")
     Call<BaseResponse<CompanyIpcListResp>> getCompanyIpcList(@Body BaseRequest request);
 
 }

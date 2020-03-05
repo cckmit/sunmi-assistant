@@ -4,8 +4,8 @@ import android.util.SparseArray;
 
 import java.util.List;
 
-import sunmi.common.model.CompanyIpcList;
 import sunmi.common.model.CustomerHistoryResp;
+import sunmi.common.model.IpcDevice;
 import sunmi.common.model.SaasStatus;
 import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.model.ShopInfo;
@@ -20,7 +20,7 @@ public interface DashboardRepo {
 
     void getSaasStatus(int companyId, boolean forceLoad, Callback<SparseArray<List<SaasStatus>>> callback);
 
-    void getIpcList(int companyId, boolean forceLoad, Callback<List<CompanyIpcList>> callback);
+    void getIpcList(int companyId, boolean forceLoad, Callback<SparseArray<List<IpcDevice>>> callback);
 
     void getCustomer(int companyId, int shopId, boolean forceLoad, Callback<CustomerHistoryResp> callback);
 
