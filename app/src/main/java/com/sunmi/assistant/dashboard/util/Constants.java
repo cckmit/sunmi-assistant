@@ -51,6 +51,12 @@ public class Constants {
     public static final int DATA_SOURCE_CUSTOMER = 0x8;
     public static final int DATA_SOURCE_FLOATING = 0x10;
 
+    public static final int CACHE_FLAG_SHOP = 0x1;
+    public static final int CACHE_FLAG_SAAS = 0x2;
+    public static final int CACHE_FLAG_IPC = 0x4;
+    public static final int CACHE_FLAG_CUSTOMER = 0x8;
+    public static final int CACHE_FLAG_CLOUD_BUNDLE = 0x10;
+
     public static final int IMPORT_NONE = 0;
     public static final int IMPORT_DOING = 1;
     public static final int IMPORT_SUCCESS = 2;

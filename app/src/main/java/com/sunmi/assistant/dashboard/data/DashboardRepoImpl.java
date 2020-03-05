@@ -59,10 +59,7 @@ public class DashboardRepoImpl implements DashboardRepo {
     }
 
     @Override
-    public void getShopList(int companyId, boolean forceLoad, Callback<SparseArray<ShopInfo>> callback) {
-        if (forceLoad) {
-            shopMap = null;
-        }
+    public void getShopList(int companyId, Callback<SparseArray<ShopInfo>> callback) {
         if (shopMap != null) {
             callback.onLoaded(shopMap);
             return;
@@ -92,10 +89,7 @@ public class DashboardRepoImpl implements DashboardRepo {
     }
 
     @Override
-    public void getSaasStatus(int companyId, boolean forceLoad, Callback<SparseArray<List<SaasStatus>>> callback) {
-        if (forceLoad) {
-            saasMap = null;
-        }
+    public void getSaasStatus(int companyId, Callback<SparseArray<List<SaasStatus>>> callback) {
         if (saasMap != null) {
             callback.onLoaded(saasMap);
             return;
@@ -130,10 +124,7 @@ public class DashboardRepoImpl implements DashboardRepo {
     }
 
     @Override
-    public void getIpcList(int companyId, boolean forceLoad, Callback<SparseArray<List<IpcDevice>>> callback) {
-        if (forceLoad) {
-            deviceMap = null;
-        }
+    public void getIpcList(int companyId, Callback<SparseArray<List<IpcDevice>>> callback) {
         if (deviceMap != null) {
             callback.onLoaded(deviceMap);
             return;
@@ -171,10 +162,7 @@ public class DashboardRepoImpl implements DashboardRepo {
     }
 
     @Override
-    public void getCustomer(int companyId, int shopId, boolean forceLoad, Callback<CustomerHistoryResp> callback) {
-        if (forceLoad) {
-            customer = null;
-        }
+    public void getCustomer(int companyId, int shopId, Callback<CustomerHistoryResp> callback) {
         if (customer != null) {
             callback.onLoaded(customer);
             return;
@@ -216,10 +204,7 @@ public class DashboardRepoImpl implements DashboardRepo {
     }
 
     @Override
-    public void getBundledList(int companyId, int shopId, boolean forceLoad, Callback<ShopBundledCloudInfo> callback) {
-        if (forceLoad) {
-            bundledCloudInfo = null;
-        }
+    public void getBundledList(int companyId, int shopId, Callback<ShopBundledCloudInfo> callback) {
         if (bundledCloudInfo != null) {
             callback.onLoaded(bundledCloudInfo);
             return;
@@ -271,5 +256,24 @@ public class DashboardRepoImpl implements DashboardRepo {
                 callback.onFail();
             }
         });
+    }
+
+    @Override
+    public void clearCache(int flag) {
+        if ((flag & Constants.CACHE_FLAG_SHOP) != 0) {
+            shopMap = null;
+        }
+        if ((flag & Constants.CACHE_FLAG_SAAS) != 0) {
+            saasMap = null;
+        }
+        if ((flag & Constants.CACHE_FLAG_IPC) != 0) {
+            deviceMap = null;
+        }
+        if ((flag & Constants.CACHE_FLAG_CUSTOMER) != 0) {
+            customer = null;
+        }
+        if ((flag & Constants.CACHE_FLAG_CLOUD_BUNDLE) != 0) {
+            bundledCloudInfo = null;
+        }
     }
 }

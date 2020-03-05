@@ -16,13 +16,15 @@ import sunmi.common.model.ShopInfo;
  */
 public interface DashboardRepo {
 
-    void getShopList(int companyId, boolean forceLoad, Callback<SparseArray<ShopInfo>> callback);
+    void getShopList(int companyId, Callback<SparseArray<ShopInfo>> callback);
 
-    void getSaasStatus(int companyId, boolean forceLoad, Callback<SparseArray<List<SaasStatus>>> callback);
+    void getSaasStatus(int companyId, Callback<SparseArray<List<SaasStatus>>> callback);
 
-    void getIpcList(int companyId, boolean forceLoad, Callback<SparseArray<List<IpcDevice>>> callback);
+    void getIpcList(int companyId, Callback<SparseArray<List<IpcDevice>>> callback);
 
-    void getCustomer(int companyId, int shopId, boolean forceLoad, Callback<CustomerHistoryResp> callback);
+    void getCustomer(int companyId, int shopId, Callback<CustomerHistoryResp> callback);
 
-    void getBundledList(int companyId, int shopId, boolean forceLoad, Callback<ShopBundledCloudInfo> callback);
+    void getBundledList(int companyId, int shopId, Callback<ShopBundledCloudInfo> callback);
+
+    void clearCache(int flag);
 }

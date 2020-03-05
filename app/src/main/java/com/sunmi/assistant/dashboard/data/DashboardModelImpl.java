@@ -26,7 +26,7 @@ public class DashboardModelImpl implements DashboardModel {
 
     @Override
     public void getShopList(int companyId, boolean forceLoad, Callback<SparseArray<ShopInfo>> callback) {
-        repo.getShopList(companyId, forceLoad, callback);
+
     }
 
     @Override
