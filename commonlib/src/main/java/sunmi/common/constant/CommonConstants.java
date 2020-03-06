@@ -83,8 +83,9 @@ public class CommonConstants {
     public static final String H5_AGREEMENT = CommonConfig.SERVICE_H5_URL + "privacyManagement";
     public static final String H5_CASH_PREVENT_LOSS = CommonConfig.SERVICE_H5_URL + "cashPreventLoss";
     public static final String H5_LOAN = CommonConfig.SUNMI_H5_URL + "jie/";
-    public static final String H5_SERVICE_COURSE = CommonConfig.SUNMI_H5_URL + "";//todo
-    public static final String H5_SERVICE_MANAGER = CommonConfig.SERVICE_H5_URL +"serviceManagement";
-    public static final String H5_CASH_VIDEO_RENEW = CommonConfig.SERVICE_H5_URL+"cashvideo/service";
-    public static final String H5_CASH_PREVENT_RENEW = CommonConfig.SERVICE_H5_URL+"cashPreventLoss/confirmOrder";
+    public static final String H5_SERVICE_MANAGER = CommonConfig.SERVICE_H5_URL + "serviceManagement";
+    public static final String H5_CASH_VIDEO_RENEW = CommonConfig.SERVICE_H5_URL + "cashvideo/service";
+    public static final String H5_CASH_PREVENT_RENEW = CommonConfig.SERVICE_H5_URL + "cashPreventLoss/confirmOrder";
+    public static final String H5_SERVICE_COURSE = CommonConfig.SERVICE_H5_URL + "dinglive/dinghome";
+
 }
