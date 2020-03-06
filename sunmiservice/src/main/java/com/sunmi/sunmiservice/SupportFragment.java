@@ -54,7 +54,6 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     View layoutContent;
     @ViewById(resName = "layoutNetworkError")
     View layoutNetworkError;
-
     @ViewById(resName = "tv_cloud_storage")
     TextView tvCloudStorage;
     @ViewById(resName = "iv_tip_free")
@@ -178,7 +177,8 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
-        WebViewActivity_.intent(mActivity).url(CommonConstants.H5_SERVICE_COURSE).start();
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_SERVICE_COURSE)
+                .params(WebViewParamsUtils.getUserInfoParams()).showTitleBar(true).start();
     }
 
     @Click(resName = "ll_loan")

@@ -127,6 +127,25 @@ public class NetworkUtils {
     }
 
     /**
+     * 获取网络类型
+     */
+    public static int getNetworkType(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkINfo = cm.getActiveNetworkInfo();
+        if (networkINfo != null) {
+            if (networkINfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+                return 1;
+            } else if (networkINfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                return 2;
+            }
+        } else {
+            return 0;
+        }
+        return -1;
+    }
+
+    /**
      * 获取信号ssid
      *
      * @param context
