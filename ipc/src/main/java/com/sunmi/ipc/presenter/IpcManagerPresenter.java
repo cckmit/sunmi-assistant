@@ -1,8 +1,11 @@
 package com.sunmi.ipc.presenter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.text.TextUtils;
 
 import com.sunmi.ipc.R;
+import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcManagerContract;
 import com.sunmi.ipc.model.IotcCmdResp;
 import com.sunmi.ipc.model.IpcManageBean;
@@ -10,6 +13,10 @@ import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.ipc.rpc.OpcodeConstants;
 import com.sunmi.ipc.utils.IOTCClient;
 import com.tutk.IOTC.P2pCmdCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,6 +141,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                                 if (isViewAttached()) {
                                     mView.getCashVideoServiceSuccess(devices, hasCashVideoService, device.getStatus(), 0);
                                 }
+                                return;
                             }
                         }
                         if (isViewAttached()) {
@@ -188,7 +196,34 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                 }
             }
         });
+    }
 
+    @Override
+    public void onServiceSubscribeResult(Intent intent, String deviceSn) {
+        String args = intent.getStringExtra("args");
+        if (!TextUtils.isEmpty(args)) {
+            try {
+                JSONObject jsonObject = new JSONObject(args);
+                int code = jsonObject.getInt("code");
+                JSONObject data = jsonObject.getJSONObject("data");
+                if (code == 100) {
+                    JSONArray list = data.getJSONArray("list");
+                    for (int i = 0; i < list.length(); i++) {
+                        JSONObject serviceObject = list.optJSONObject(i);
+                        int service = serviceObject.getInt("service");
+                        int status = serviceObject.getInt("status");
+                        if (service == IpcConstants.SERVICE_TYPE_CASH_PREVENT
+                                && status == CommonConstants.RESULT_OK) {
+                            getCashPreventService(deviceSn);
+                        }
+                    }
+                }
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private IpcManageBean getStorage(IpcManageBean item, ServiceResp.Info data, Context context) {
