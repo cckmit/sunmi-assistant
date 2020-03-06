@@ -125,6 +125,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         Callback<DashboardCondition> callback = new Callback<DashboardCondition>() {
             @Override
             public void onLoaded(DashboardCondition result) {
+                LogCat.i(TAG, "Load condition success.");
                 mCondition = result;
                 for (int i = 0, size = mPages.size(); i < size; i++) {
                     PageContract.PagePresenter page = mPages.valueAt(i);
@@ -141,6 +142,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
             @Override
             public void onFail() {
+                LogCat.e(TAG, "Load condition failed.");
                 if (isViewAttached()) {
                     mView.loadDataFailed();
                 }
