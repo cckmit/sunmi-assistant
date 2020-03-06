@@ -34,15 +34,15 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
 
     private static RealtimeOverviewCard sInstance;
 
-    private RealtimeOverviewCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private RealtimeOverviewCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static RealtimeOverviewCard get(Presenter presenter, DashboardCondition condition) {
+    public static RealtimeOverviewCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new RealtimeOverviewCard(presenter, condition);
+            sInstance = new RealtimeOverviewCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -57,19 +57,19 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
     }
 
     @Override
-    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
+                                              CardCallback callback) {
         if (mCondition.hasSaas) {
-            loadSales(companyId, shopId, period, callback);
+            loadSales(companyId, shopId, period, periodTime, callback);
         } else if (mCondition.hasFs) {
-            loadCustomer(companyId, shopId, period, callback);
+            loadCustomer(companyId, shopId, period, periodTime, callback);
         }
         return null;
     }
 
-    private void loadSales(int companyId, int shopId, int period, CardCallback callback) {
-        Interval time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
+    private void loadSales(int companyId, int shopId, int period, Interval periodTime, CardCallback callback) {
         PaymentApi.get().getOrderTotalAmount(companyId, shopId,
-                time.start / 1000, time.end / 1000, 1,
+                periodTime.start / 1000, periodTime.end / 1000, 1,
                 new RetrofitCallback<OrderTotalAmountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalAmountResp data) {
@@ -78,7 +78,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                             return;
                         }
                         Model model = getModel();
-                        if (period == Constants.TIME_PERIOD_TODAY) {
+                        if (period == Constants.TIME_PERIOD_DAY) {
                             model.sales = data.getDayAmount();
                             model.lastSales = data.getYesterdayAmount();
                         } else if (period == Constants.TIME_PERIOD_WEEK) {
@@ -88,7 +88,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                             model.sales = data.getMonthAmount();
                             model.lastSales = data.getLastMonthAmount();
                         }
-                        loadVolume(companyId, shopId, period, callback);
+                        loadVolume(companyId, shopId, period, periodTime, callback);
                     }
 
                     @Override
@@ -98,10 +98,9 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                 });
     }
 
-    private void loadVolume(int companyId, int shopId, int period, CardCallback callback) {
-        Interval time = Utils.getPeriodTimestamp(Constants.TIME_PERIOD_TODAY);
+    private void loadVolume(int companyId, int shopId, int period, Interval periodTime, CardCallback callback) {
         PaymentApi.get().getOrderTotalCount(companyId, shopId,
-                time.start / 1000, time.end / 1000, 1,
+                periodTime.start / 1000, periodTime.end / 1000, 1,
                 new RetrofitCallback<OrderTotalCountResp>() {
                     @Override
                     public void onSuccess(int code, String msg, OrderTotalCountResp data) {
@@ -110,7 +109,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                             return;
                         }
                         Model model = getModel();
-                        if (period == Constants.TIME_PERIOD_TODAY) {
+                        if (period == Constants.TIME_PERIOD_DAY) {
                             model.volume = data.getDayCount();
                             model.lastVolume = data.getYesterdayCount();
                         } else if (period == Constants.TIME_PERIOD_WEEK) {
@@ -121,7 +120,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                             model.lastVolume = data.getLastMonthCount();
                         }
                         if (mCondition.hasFs) {
-                            loadCustomer(companyId, shopId, period, callback);
+                            loadCustomer(companyId, shopId, period, periodTime, callback);
                         } else {
                             callback.onSuccess();
                         }
@@ -134,7 +133,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                 });
     }
 
-    private void loadCustomer(int companyId, int shopId, int period, CardCallback callback) {
+    private void loadCustomer(int companyId, int shopId, int period, Interval periodTime, CardCallback callback) {
         SunmiStoreApi.getInstance().getCustomer(companyId, shopId, period,
                 new RetrofitCallback<CustomerCountResp>() {
                     @Override
@@ -299,7 +298,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
             title.setText(R.string.dashboard_var_total_sales_amount);
         }
         // 根据当前选择的时间筛选展示不同的文案
-        if (period == Constants.TIME_PERIOD_TODAY) {
+        if (period == Constants.TIME_PERIOD_DAY) {
             subtitle.setText(R.string.dashboard_time_yesterday);
             volumeSubtitle.setText(R.string.dashboard_time_yesterday);
             customerSubtitle.setText(R.string.dashboard_time_yesterday);
@@ -318,7 +317,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
     }
 
     private void goToOrderList(Context context) {
-        Interval periodTimestamp = Utils.getPeriodTimestamp(mPeriod);
+        Interval periodTimestamp = Utils.getPeriodTimestamp(mPeriod, 0);
         OrderListActivity_.intent(context)
                 .mTimeStart(periodTimestamp.start)
                 .mTimeEnd(periodTimestamp.end)

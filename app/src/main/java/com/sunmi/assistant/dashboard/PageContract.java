@@ -8,6 +8,7 @@ import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.Interval;
 
 /**
  * @author yinhui
@@ -46,7 +47,7 @@ public interface PageContract {
 
         void setCondition(DashboardCondition condition);
 
-        void setPeriod(int period);
+        void setPeriod(int period, Interval periodTime);
 
         void scrollToTop();
 

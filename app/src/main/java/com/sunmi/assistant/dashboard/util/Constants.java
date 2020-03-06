@@ -23,11 +23,9 @@ public class Constants {
     public static final int FLAG_CONDITION_COMPANY_MASK = FLAG_SAAS | FLAG_FS;
     public static final int FLAG_CONDITION_SHOP_MASK = FLAG_SAAS | FLAG_FS | FLAG_CUSTOMER | FLAG_BUNDLED_LIST;
 
-    public static final int TIME_PERIOD_INIT = 0;
-    public static final int TIME_PERIOD_TODAY = 1;
+    public static final int TIME_PERIOD_DAY = 1;
     public static final int TIME_PERIOD_WEEK = 2;
     public static final int TIME_PERIOD_MONTH = 3;
-    public static final int TIME_PERIOD_YESTERDAY = 4;
 
     public static final int DATA_MODE_SALES = 0;
     public static final int DATA_MODE_ORDER = 1;

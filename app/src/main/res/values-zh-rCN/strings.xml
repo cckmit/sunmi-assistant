@@ -40,9 +40,12 @@
     <string name="dashboard_page_profile">客群画像</string>
 
     <string name="dashboard_time_today">今日</string>
-    <string name="dashboard_time_week">本周</string>
-    <string name="dashboard_time_month">本月</string>
     <string name="dashboard_time_yesterday">昨日</string>
+    <string name="dashboard_time_this_week">本周</string>
+    <string name="dashboard_time_this_month">本月</string>
+    <string name="dashboard_time_day">日</string>
+    <string name="dashboard_time_week">周</string>
+    <string name="dashboard_time_month">月</string>
     <string name="dashboard_time_last_day">上日</string>
     <string name="dashboard_time_last_week">上周</string>
     <string name="dashboard_time_last_month">上月</string>

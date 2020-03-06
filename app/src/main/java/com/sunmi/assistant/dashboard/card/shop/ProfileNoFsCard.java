@@ -15,6 +15,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.Interval;
 import sunmi.common.router.IpcApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -30,15 +31,15 @@ public class ProfileNoFsCard extends BaseRefreshCard<ProfileNoFsCard.Model, Obje
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    private ProfileNoFsCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private ProfileNoFsCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static ProfileNoFsCard get(Presenter presenter, DashboardCondition condition) {
+    public static ProfileNoFsCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new ProfileNoFsCard(presenter, condition);
+            sInstance = new ProfileNoFsCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -53,7 +54,8 @@ public class ProfileNoFsCard extends BaseRefreshCard<ProfileNoFsCard.Model, Obje
     }
 
     @Override
-    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
+                                              CardCallback callback) {
         callback.onSuccess();
         return null;
     }

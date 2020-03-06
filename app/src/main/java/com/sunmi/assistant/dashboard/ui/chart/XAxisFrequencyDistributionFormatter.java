@@ -22,7 +22,7 @@ public class XAxisFrequencyDistributionFormatter extends ValueFormatter {
     }
 
     public void setPeriod(int period) {
-        if (period == Constants.TIME_PERIOD_YESTERDAY) {
+        if (period == Constants.TIME_PERIOD_DAY) {
             max = 4;
         } else {
             max = 10;

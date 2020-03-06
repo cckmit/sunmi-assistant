@@ -14,6 +14,7 @@ import com.sunmi.assistant.dashboard.util.Utils;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.Interval;
 import sunmi.common.model.SaleDataResp;
 import sunmi.common.model.TotalCustomerDataResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
@@ -26,15 +27,15 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
     private static TotalRealtimeOverviewCard sInstance;
     private String startTime = DateTimeUtils.getYesterday("yyyy-MM-dd");
 
-    private TotalRealtimeOverviewCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private TotalRealtimeOverviewCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static TotalRealtimeOverviewCard get(Presenter presenter, DashboardCondition condition) {
+    public static TotalRealtimeOverviewCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new TotalRealtimeOverviewCard(presenter, condition);
+            sInstance = new TotalRealtimeOverviewCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -51,7 +52,8 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
     }
 
     @Override
-    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
+                                              CardCallback callback) {
         //ToDo 通过source判断显示的数据
         loadCustomerLatest(companyId, callback);
         return null;

@@ -9,6 +9,7 @@ import com.sunmi.assistant.dashboard.data.DashboardCondition;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
@@ -19,15 +20,15 @@ public class RealtimeNoDataCard extends BaseRefreshCard<RealtimeNoDataCard.Model
 
     private static RealtimeNoDataCard sInstance;
 
-    private RealtimeNoDataCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private RealtimeNoDataCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static RealtimeNoDataCard get(Presenter presenter, DashboardCondition condition) {
+    public static RealtimeNoDataCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new RealtimeNoDataCard(presenter, condition);
+            sInstance = new RealtimeNoDataCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -43,7 +44,8 @@ public class RealtimeNoDataCard extends BaseRefreshCard<RealtimeNoDataCard.Model
     }
 
     @Override
-    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
+                                              CardCallback callback) {
         return null;
     }
 

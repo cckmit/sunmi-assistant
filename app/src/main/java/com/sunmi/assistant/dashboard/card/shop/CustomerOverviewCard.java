@@ -15,6 +15,7 @@ import com.sunmi.assistant.dashboard.util.Utils;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.model.CustomerDataResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -27,19 +28,18 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
 
     private static CustomerOverviewCard sInstance;
 
-    private CustomerOverviewCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private CustomerOverviewCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static CustomerOverviewCard get(Presenter presenter, DashboardCondition condition) {
+    public static CustomerOverviewCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new CustomerOverviewCard(presenter, condition);
+            sInstance = new CustomerOverviewCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
-
 
     @Override
     public void init(Context context) {
@@ -51,8 +51,14 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
     }
 
     @Override
-    protected Call<BaseResponse<CustomerDataResp>> load(int companyId, int shopId, int period, CardCallback callback) {
-        SunmiStoreApi.getInstance().getCustomerData(companyId, shopId, period, callback);
+    protected Call<BaseResponse<CustomerDataResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                        CardCallback callback) {
+        int type = period;
+        if (period == Constants.TIME_PERIOD_DAY) {
+            // 昨日为4。
+            type = 4;
+        }
+        SunmiStoreApi.getInstance().getCustomerData(companyId, shopId, type, callback);
         return null;
     }
 
@@ -168,7 +174,7 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
                 enterRateSubTitle.setText(R.string.dashboard_time_last_month);
                 enterFrequencySubTitle.setText(R.string.dashboard_time_last_month);
                 break;
-            case Constants.TIME_PERIOD_YESTERDAY:
+            case Constants.TIME_PERIOD_DAY:
                 subTitle.setText(R.string.dashboard_time_last_day);
                 enterRateSubTitle.setText(R.string.dashboard_time_last_day);
                 enterFrequencySubTitle.setText(R.string.dashboard_time_last_day);

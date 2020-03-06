@@ -15,6 +15,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
@@ -29,15 +30,15 @@ public class RealtimeNoOrderCard extends BaseRefreshCard<RealtimeNoOrderCard.Mod
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    private RealtimeNoOrderCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private RealtimeNoOrderCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static RealtimeNoOrderCard get(Presenter presenter, DashboardCondition condition) {
+    public static RealtimeNoOrderCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new RealtimeNoOrderCard(presenter, condition);
+            sInstance = new RealtimeNoOrderCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -52,7 +53,8 @@ public class RealtimeNoOrderCard extends BaseRefreshCard<RealtimeNoOrderCard.Mod
     }
 
     @Override
-    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
+                                              CardCallback callback) {
         callback.onSuccess();
         return null;
     }

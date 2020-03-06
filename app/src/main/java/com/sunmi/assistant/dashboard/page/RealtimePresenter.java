@@ -15,12 +15,14 @@ import com.sunmi.assistant.dashboard.card.shop.RealtimePeriodCard;
 import com.sunmi.assistant.dashboard.card.shop.RealtimeTrendCard;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.Interval;
 import sunmi.common.utils.CommonHelper;
 
 /**
@@ -40,7 +42,8 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
     private DashboardCondition mCondition;
-    private int mPeriod = Constants.TIME_PERIOD_INIT;
+    private int mPeriod;
+    private Interval mPeriodTime;
     private int mImportState = IMPORT_STATE_DISMISS;
 
     private boolean isConditionChanged = true;
@@ -52,6 +55,8 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
 
     @Override
     public void init() {
+        mPeriod = Constants.TIME_PERIOD_DAY;
+        mPeriodTime = Utils.getPeriodTimestamp(mPeriod, 0);
         if (isConditionChanged && mCondition != null) {
             refresh(true);
         }
@@ -64,42 +69,42 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
 
     private void initList() {
         mList.clear();
-        mList.add(RealtimePeriodCard.get(this, mCondition));
+        mList.add(RealtimePeriodCard.get(this, mCondition, mPeriod, mPeriodTime));
         // No any data
         if (!mCondition.hasSaas && !mCondition.hasFs) {
-            mList.add(RealtimeNoDataCard.get(this, mCondition));
+            mList.add(RealtimeNoDataCard.get(this, mCondition, mPeriod, mPeriodTime));
             if (!CommonHelper.isGooglePlay()) {
-                mList.add(RealtimeNoOrderCard.get(this, mCondition));
+                mList.add(RealtimeNoOrderCard.get(this, mCondition, mPeriod, mPeriodTime));
             }
-            mList.add(RealtimeNoFsCard.get(this, mCondition));
-            mList.add(RealtimeGapCard.get(this, mCondition));
+            mList.add(RealtimeNoFsCard.get(this, mCondition, mPeriod, mPeriodTime));
+            mList.add(RealtimeGapCard.get(this, mCondition, mPeriod, mPeriodTime));
             return;
         }
 
         // Overview data card
-        mList.add(RealtimeOverviewCard.get(this, mCondition));
+        mList.add(RealtimeOverviewCard.get(this, mCondition, mPeriod, mPeriodTime));
 
         // Shop enter rate card.
         if (mCondition.hasFs) {
-            mList.add(RealtimeEnterRateCard.get(this, mCondition));
+            mList.add(RealtimeEnterRateCard.get(this, mCondition, mPeriod, mPeriodTime));
         }
 
         // Realtime trend card (line & bar)
         if (mCondition.hasSaas || mCondition.hasFs) {
-            mList.add(RealtimeTrendCard.get(this, mCondition));
+            mList.add(RealtimeTrendCard.get(this, mCondition, mPeriod, mPeriodTime));
         }
 
         // Distribution card (pie)
         if (mCondition.hasFs) {
-            mList.add(RealtimeDistributionCard.get(this, mCondition));
+            mList.add(RealtimeDistributionCard.get(this, mCondition, mPeriod, mPeriodTime));
         }
 
         // No order card or import card
         if (!CommonHelper.isGooglePlay()) {
             if (!mCondition.hasSaas) {
-                mList.add(RealtimeNoOrderCard.get(this, mCondition));
+                mList.add(RealtimeNoOrderCard.get(this, mCondition, mPeriod, mPeriodTime));
             } else if (!mCondition.hasImport || mImportState == IMPORT_STATE_SHOW) {
-                RealtimeOrderImportCard card = RealtimeOrderImportCard.get(this, mCondition);
+                RealtimeOrderImportCard card = RealtimeOrderImportCard.get(this, mCondition, mPeriod, mPeriodTime);
                 card.setListener(this);
                 mList.add(card);
             }
@@ -107,9 +112,9 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
 
         // No fs card
         if (!mCondition.hasFs) {
-            mList.add(RealtimeNoFsCard.get(this, mCondition));
+            mList.add(RealtimeNoFsCard.get(this, mCondition, mPeriod, mPeriodTime));
         }
-        mList.add(RealtimeGapCard.get(this, mCondition));
+        mList.add(RealtimeGapCard.get(this, mCondition, mPeriod, mPeriodTime));
     }
 
     @Override
@@ -128,9 +133,9 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
         }
         for (BaseRefreshCard card : mList) {
             card.init(mView.getContext());
+            card.refresh(true);
         }
         mView.setCards(mList);
-        setPeriod(Constants.TIME_PERIOD_TODAY);
     }
 
     @Override
@@ -160,10 +165,14 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
     }
 
     @Override
-    public void setPeriod(int period) {
+    public void setPeriod(int period, Interval periodTime) {
+        if (mPeriod == period && Objects.equals(mPeriodTime, periodTime)) {
+            return;
+        }
         mPeriod = period;
+        mPeriodTime = periodTime;
         for (BaseRefreshCard card : mList) {
-            card.setPeriod(period, false);
+            card.setPeriod(period, periodTime, false);
         }
         if (isViewAttached()) {
             mView.updateTab(period);

@@ -85,7 +85,7 @@ public class CustomerLineMarkerView extends MarkerView {
             String title = "";
             CustomerTrendCard.CustomerEntry entry = (CustomerTrendCard.CustomerEntry) e;
             long time = entry.getTime();
-            if (mPeriod == Constants.TIME_PERIOD_YESTERDAY) {
+            if (mPeriod == Constants.TIME_PERIOD_DAY) {
                 Calendar c = Calendar.getInstance();
                 c.setTimeInMillis(time);
                 int hour = c.get(Calendar.HOUR_OF_DAY);

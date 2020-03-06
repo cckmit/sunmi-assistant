@@ -40,8 +40,11 @@
     <string name="dashboard_title_frequency_avg">Average frequency of store visits</string>
     <string name="dashboard_var_all">All</string>
     <string name="dashboard_time_today">Today</string>
-    <string name="dashboard_time_week">Week</string>
-    <string name="dashboard_time_month">Month</string>
+    <string name="dashboard_time_this_week">Week</string>
+    <string name="dashboard_time_this_month">Month</string>
+    <string name="dashboard_time_day">日</string>
+    <string name="dashboard_time_week">周</string>
+    <string name="dashboard_time_month">月</string>
     <string name="dashboard_time_yesterday">Yesterday</string>
     <string name="dashboard_time_last_day">Last Day</string>
     <string name="dashboard_time_last_week">Last Week</string>

@@ -72,15 +72,15 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     private SparseArray<FaceAge> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
 
-    private RealtimeDistributionCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private RealtimeDistributionCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static RealtimeDistributionCard get(Presenter presenter, DashboardCondition condition) {
+    public static RealtimeDistributionCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new RealtimeDistributionCard(presenter, condition);
+            sInstance = new RealtimeDistributionCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -100,10 +100,10 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     }
 
     @Override
-    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        Interval time = Utils.getPeriodTimestamp(period);
-        String start = DateFormat.format(DATE_FORMAT, time.start).toString();
-        String end = DateFormat.format(DATE_FORMAT, time.end - 1).toString();
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
+                                              CardCallback callback) {
+        String start = DateFormat.format(DATE_FORMAT, periodTime.start).toString();
+        String end = DateFormat.format(DATE_FORMAT, periodTime.end - 1).toString();
         if (mAgeList == null) {
             loadAgeList(companyId, shopId, start, end, callback);
         } else {

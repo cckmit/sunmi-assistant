@@ -5,18 +5,18 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
-import com.sunmi.assistant.dashboard.util.Constants;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseRecyclerAdapter;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
@@ -50,7 +50,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     protected static final DecimalFormat FORMAT_THOUSANDS = new DecimalFormat(",###,###");
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    private RequestCall<Resp> mCall = new RequestCall<>();
+
     private Model mModel;
     private int mPositionMin = -1;
     private int mPositionMax = -1;
@@ -59,21 +59,23 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     protected DashboardCondition mCondition;
     protected int mState;
     protected int mPeriod;
+    protected Interval mPeriodTime;
 
-    protected BaseRefreshCard(Presenter presenter, DashboardCondition condition) {
+    protected BaseRefreshCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         this.mModel = createModel();
         if (this.mModel == null) {
             throw new RuntimeException("createModel() must return NON-NULL model!");
         }
-        reset(presenter, condition);
+        reset(presenter, condition, period, periodTime);
     }
 
-    public void reset(Presenter presenter, DashboardCondition condition) {
+    public void reset(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         mModel.valid = false;
         mModel.init(condition);
-        this.mPresenter = presenter;
         this.mState = STATE_INIT;
-        this.mPeriod = Constants.TIME_PERIOD_INIT;
+        this.mPresenter = presenter;
+        this.mPeriod = period;
+        this.mPeriodTime = periodTime;
         this.mCondition = condition;
     }
 
@@ -88,11 +90,12 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         adapter.register((Class<Model>) mModel.getClass(), this);
     }
 
-    public void setPeriod(int period, boolean forceLoad) {
-        if (!forceLoad && this.mPeriod == period) {
+    public void setPeriod(int period, Interval periodTime, boolean forceLoad) {
+        if (!forceLoad && this.mPeriod == period && Objects.equals(mPeriodTime, periodTime)) {
             return;
         }
         this.mPeriod = period;
+        this.mPeriodTime = periodTime;
         mModel.valid = false;
         requestLoad(true);
     }
@@ -105,28 +108,22 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     }
 
     public void cancelLoad() {
-        if (mCall.isLoading()) {
-            mCall.cancel();
-        }
+        // TODO: Cancel.
     }
 
     private void requestLoad(boolean showLoading) {
-        if (mPeriod == Constants.TIME_PERIOD_INIT) {
-            LogCat.d(TAG, "Period is not initialized, skip.");
-            return;
-        }
-        if (mCall.isLoading() && mCall.isRequestSame(SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod)) {
-            LogCat.d(TAG, "Data is loading, skip.");
-            return;
-        }
+//        if (mCall.isLoading() && mCall.isRequestSame(SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod)) {
+//            LogCat.d(TAG, "Data is loading, skip.");
+//            return;
+//        }
         LogCat.d(TAG, "Start to load data.");
         mState = STATE_LOADING;
         if (showLoading) {
             updateViews();
         }
         CardCallback callback = new CardCallback(mPeriod);
-        Call<BaseResponse<Resp>> call = load(SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod, callback);
-        mCall.set(call, SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod);
+        Call<BaseResponse<Resp>> call = load(SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod, mPeriodTime, callback);
+//        mCall.set(call, SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod);
     }
 
     protected void updateViews() {
@@ -174,18 +171,25 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         }
     }
 
+    /**
+     * 初始化
+     *
+     * @param context 上下文
+     */
     public abstract void init(Context context);
 
     /**
      * 加载数据，如果有API请求，请使用callback回调；如果无需网络请求，直接使用callback.success();
      *
-     * @param companyId 商户ID
-     * @param shopId    店铺ID
-     * @param period    时间枚举
-     * @param callback  接口回调
+     * @param companyId  商户ID
+     * @param shopId     店铺ID
+     * @param period     时间维度
+     * @param periodTime 时间段
+     * @param callback   接口回调
      * @return API请求Call，用于取消
      */
-    protected abstract Call<BaseResponse<Resp>> load(int companyId, int shopId, int period, CardCallback callback);
+    protected abstract Call<BaseResponse<Resp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                     CardCallback callback);
 
     /**
      * 创建ViewModel数据
@@ -273,55 +277,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         }
     }
 
-    private static class RequestCall<Resp> {
-        @Nullable
-        private Call<BaseResponse<Resp>> call;
-        private int companyId;
-        private int shopId;
-        private int period;
-
-        public void set(Call<BaseResponse<Resp>> call, int companyId, int shopId, int period) {
-            if (this.call != null) {
-                this.call.cancel();
-            }
-            this.call = call;
-            this.companyId = companyId;
-            this.shopId = shopId;
-            this.period = period;
-        }
-
-        public void clear() {
-            this.call = null;
-            this.companyId = -1;
-            this.shopId = -1;
-            this.period = 0;
-        }
-
-        public Call<BaseResponse<Resp>> get() {
-            return this.call;
-        }
-
-        public void cancel() {
-            if (this.call != null) {
-                this.call.cancel();
-                clear();
-            }
-        }
-
-        public boolean isRequestSame(int companyId, int shopId, int period) {
-            return this.companyId == companyId && this.shopId == shopId && this.period == period;
-        }
-
-        public boolean isLoading() {
-            return this.call != null && !this.call.isCanceled();
-        }
-
-        public boolean isCanceled() {
-            return this.call != null && this.call.isCanceled();
-        }
-
-    }
-
     public static abstract class BaseModel {
         public boolean valid = false;
         public int period;
@@ -346,7 +301,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
         void pullToRefresh(boolean showLoading);
 
-        void setPeriod(int period);
+        void setPeriod(int period, Interval periodTime);
 
         void showLoading();
 

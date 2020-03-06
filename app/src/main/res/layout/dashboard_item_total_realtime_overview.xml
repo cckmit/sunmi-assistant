@@ -70,7 +70,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_value"
             tools:text="8,900" />
 
-
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout

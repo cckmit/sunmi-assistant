@@ -23,6 +23,7 @@ import sunmi.common.base.adapter.ViewHolder;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerHistoryTrendResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
@@ -38,15 +39,15 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
 
     private DetailListAdapter mAdapter;
 
-    private TotalRealtimePerformanceCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private TotalRealtimePerformanceCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static TotalRealtimePerformanceCard get(Presenter presenter, DashboardCondition condition) {
+    public static TotalRealtimePerformanceCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new TotalRealtimePerformanceCard(presenter, condition);
+            sInstance = new TotalRealtimePerformanceCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -66,7 +67,8 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     }
 
     @Override
-    protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                                CardCallback callback) {
         // TODO: API
         return null;
     }

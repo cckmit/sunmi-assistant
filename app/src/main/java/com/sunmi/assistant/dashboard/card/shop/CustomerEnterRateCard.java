@@ -36,6 +36,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerEnterRateTrendResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
@@ -57,15 +58,15 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
     private float mDashSpaceLength;
 
 
-    private CustomerEnterRateCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private CustomerEnterRateCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static CustomerEnterRateCard get(Presenter presenter, DashboardCondition condition) {
+    public static CustomerEnterRateCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new CustomerEnterRateCard(presenter, condition);
+            sInstance = new CustomerEnterRateCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -143,12 +144,16 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
     }
 
     @Override
-    protected Call<BaseResponse<CustomerEnterRateTrendResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<CustomerEnterRateTrendResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                                  CardCallback callback) {
         String group = "day";
-        if (period == Constants.TIME_PERIOD_YESTERDAY) {
+        int type = period;
+        if (period == Constants.TIME_PERIOD_DAY) {
             group = "hour";
+            // 昨日为4。
+            type = 4;
         }
-        SunmiStoreApi.getInstance().getCustomerEnterRateTrend(companyId, shopId, period, group, callback);
+        SunmiStoreApi.getInstance().getCustomerEnterRateTrend(companyId, shopId, type, group, callback);
         return null;
     }
 
@@ -215,7 +220,7 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         line.getXAxis().setAxisMaximum(xAxisRange.second);
 
         // Use correct chart marker & update it.
-        if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
+        if (model.period == Constants.TIME_PERIOD_DAY) {
             mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR);
         } else {
             mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);

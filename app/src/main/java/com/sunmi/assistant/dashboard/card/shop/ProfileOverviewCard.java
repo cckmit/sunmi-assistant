@@ -16,6 +16,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerDataResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -27,15 +28,15 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     private static ProfileOverviewCard sInstance;
 
-    private ProfileOverviewCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private ProfileOverviewCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static ProfileOverviewCard get(Presenter presenter, DashboardCondition condition) {
+    public static ProfileOverviewCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new ProfileOverviewCard(presenter, condition);
+            sInstance = new ProfileOverviewCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -50,8 +51,13 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
     }
 
     @Override
-    protected Call<BaseResponse<CustomerDataResp>> load(int companyId, int shopId, int period, CardCallback callback) {
-        SunmiStoreApi.getInstance().getCustomerData(companyId, shopId, period, callback);
+    protected Call<BaseResponse<CustomerDataResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                        CardCallback callback) {
+        int type = period;
+        if (period == Constants.TIME_PERIOD_DAY) {
+            type = 4;
+        }
+        SunmiStoreApi.getInstance().getCustomerData(companyId, shopId, type, callback);
         return null;
     }
 
@@ -177,7 +183,7 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
                 newCustomerSubTitle.setText(R.string.dashboard_time_last_month);
                 oldCustomerSubTitle.setText(R.string.dashboard_time_last_month);
                 break;
-            case Constants.TIME_PERIOD_YESTERDAY:
+            case Constants.TIME_PERIOD_DAY:
                 subTitle.setText(R.string.dashboard_time_last_day);
                 newCustomerSubTitle.setText(R.string.dashboard_time_last_day);
                 oldCustomerSubTitle.setText(R.string.dashboard_time_last_day);

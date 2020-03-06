@@ -37,6 +37,7 @@ import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.exception.TimeDateException;
 import sunmi.common.model.CustomerHistoryTrendResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -68,15 +69,15 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     private float mDashLength;
     private float mDashSpaceLength;
 
-    private CustomerTrendCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private CustomerTrendCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static CustomerTrendCard get(Presenter presenter, DashboardCondition condition) {
+    public static CustomerTrendCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new CustomerTrendCard(presenter, condition);
+            sInstance = new CustomerTrendCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -169,12 +170,16 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     }
 
     @Override
-    protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                                CardCallback callback) {
         String group = "day";
-        if (period == Constants.TIME_PERIOD_YESTERDAY) {
+        int type = period;
+        if (period == Constants.TIME_PERIOD_DAY) {
             group = "hour";
+            // 昨日为4。
+            type = 4;
         }
-        SunmiStoreApi.getInstance().getHistoryCustomerTrend(companyId, shopId, period, group,
+        SunmiStoreApi.getInstance().getHistoryCustomerTrend(companyId, shopId, type, group,
                 new RetrofitCallback<CustomerHistoryTrendResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerHistoryTrendResp data) {
@@ -332,7 +337,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         line.setMarker(mLineChartMarker);
         mLineChartMarker.setTitle(markerTitle);
         mLineChartMarker.setPointColor(color);
-        if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
+        if (model.period == Constants.TIME_PERIOD_DAY) {
             mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
         } else {
             mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);

@@ -30,6 +30,7 @@ import sunmi.common.base.adapter.ViewHolder;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerHistoryDetailResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -52,16 +53,16 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
     private SparseArray<FaceAge> mAgeList;
     private CommonAdapter<Item> mAdapter;
 
-    private ProfileAnalysisCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private ProfileAnalysisCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static ProfileAnalysisCard get(Presenter presenter, DashboardCondition condition) {
+    public static ProfileAnalysisCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new ProfileAnalysisCard(presenter, condition);
+            sInstance = new ProfileAnalysisCard(presenter, condition, period, periodTime);
         } else {
             sInstance.mPresenter = presenter;
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -79,7 +80,8 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
     }
 
     @Override
-    protected Call<BaseResponse<CustomerHistoryDetailResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<CustomerHistoryDetailResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                                 CardCallback callback) {
         if (mAgeList == null) {
             loadAgeList(companyId, shopId, period, callback);
         } else {
@@ -120,7 +122,11 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
     }
 
     private void loadDetail(int companyId, int shopId, int period, CardCallback callback) {
-        SunmiStoreApi.getInstance().getHistoryCustomerDetail(companyId, shopId, period,
+        int type = period;
+        if (period == Constants.TIME_PERIOD_DAY) {
+            type = 4;
+        }
+        SunmiStoreApi.getInstance().getHistoryCustomerDetail(companyId, shopId, type,
                 new RetrofitCallback<CustomerHistoryDetailResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerHistoryDetailResp data) {

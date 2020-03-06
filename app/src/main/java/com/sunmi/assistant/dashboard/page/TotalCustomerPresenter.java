@@ -3,9 +3,6 @@ package com.sunmi.assistant.dashboard.page;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
-import com.sunmi.assistant.dashboard.card.total.TotalRealtimeOverviewCard;
-import com.sunmi.assistant.dashboard.card.total.TotalRealtimePerformanceCard;
-import com.sunmi.assistant.dashboard.card.total.TotalRealtimeTrendCard;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
@@ -21,10 +18,10 @@ import sunmi.common.model.Interval;
  * @author yinhui
  * @date 2019-10-14
  */
-public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.View>
+public class TotalCustomerPresenter extends BasePresenter<TotalRealtimeContract.View>
         implements TotalRealtimeContract.Presenter, BaseRefreshCard.Presenter {
 
-    private static final String TAG = TotalRealtimePresenter.class.getSimpleName();
+    private static final String TAG = TotalCustomerPresenter.class.getSimpleName();
 
 
     private PageContract.ParentPresenter mParent;
@@ -36,7 +33,7 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
 
     private boolean isConditionChanged = true;
 
-    TotalRealtimePresenter(PageContract.ParentPresenter parent) {
+    TotalCustomerPresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
         mCondition = this.mParent.onChildCreate(this);
     }
@@ -44,7 +41,7 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
     @Override
     public void init() {
         mPeriod = Constants.TIME_PERIOD_DAY;
-        mPeriodTime = Utils.getPeriodTimestamp(mPeriod, 0);
+        mPeriodTime = Utils.getPeriodTimestamp(mPeriod, -1);
         if (isConditionChanged && mCondition != null) {
             refresh(true);
         }
@@ -52,14 +49,11 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
 
     @Override
     public int getType() {
-        return Constants.PAGE_TOTAL_REALTIME;
+        return Constants.PAGE_TOTAL_CUSTOMER;
     }
 
     private void initList() {
         mList.clear();
-        mList.add(TotalRealtimeOverviewCard.get(this, mCondition, mPeriod, mPeriodTime));
-        mList.add(TotalRealtimeTrendCard.get(this, mCondition, mPeriod, mPeriodTime));
-        mList.add(TotalRealtimePerformanceCard.get(this, mCondition, mPeriod, mPeriodTime));
     }
 
     private void load() {

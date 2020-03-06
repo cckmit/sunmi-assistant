@@ -10,10 +10,12 @@ import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
@@ -24,15 +26,15 @@ public class ProfilePeriodCard extends BaseRefreshCard<ProfilePeriodCard.Model, 
 
     private static ProfilePeriodCard sInstance;
 
-    private ProfilePeriodCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private ProfilePeriodCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static ProfilePeriodCard get(Presenter presenter, DashboardCondition condition) {
+    public static ProfilePeriodCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new ProfilePeriodCard(presenter, condition);
+            sInstance = new ProfilePeriodCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -48,7 +50,8 @@ public class ProfilePeriodCard extends BaseRefreshCard<ProfilePeriodCard.Model, 
     }
 
     @Override
-    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
+                                              CardCallback callback) {
         callback.onSuccess();
         return null;
     }
@@ -67,11 +70,11 @@ public class ProfilePeriodCard extends BaseRefreshCard<ProfilePeriodCard.Model, 
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         holder.addOnClickListener(R.id.tv_dashboard_yesterday, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_YESTERDAY));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, -1)));
         holder.addOnClickListener(R.id.tv_dashboard_week, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, 0)));
         holder.addOnClickListener(R.id.tv_dashboard_month, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, 0)));
         holder.getView(R.id.tv_dashboard_yesterday).setVisibility(View.VISIBLE);
         return holder;
     }
@@ -81,8 +84,8 @@ public class ProfilePeriodCard extends BaseRefreshCard<ProfilePeriodCard.Model, 
         TextView yesterday = holder.getView(R.id.tv_dashboard_yesterday);
         TextView week = holder.getView(R.id.tv_dashboard_week);
         TextView month = holder.getView(R.id.tv_dashboard_month);
-        yesterday.setSelected(model.period == Constants.TIME_PERIOD_YESTERDAY);
-        yesterday.setTypeface(null, model.period == Constants.TIME_PERIOD_YESTERDAY ? Typeface.BOLD : Typeface.NORMAL);
+        yesterday.setSelected(model.period == Constants.TIME_PERIOD_DAY);
+        yesterday.setTypeface(null, model.period == Constants.TIME_PERIOD_DAY ? Typeface.BOLD : Typeface.NORMAL);
         week.setSelected(model.period == Constants.TIME_PERIOD_WEEK);
         week.setTypeface(null, model.period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
         month.setSelected(model.period == Constants.TIME_PERIOD_MONTH);

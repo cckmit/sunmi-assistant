@@ -23,6 +23,7 @@ import com.sunmi.assistant.dashboard.ui.ShopMenuAdapter;
 import com.sunmi.assistant.dashboard.ui.ShopMenuAnim;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.xiaojinzi.component.impl.Router;
@@ -231,22 +232,22 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Click(R.id.tv_dashboard_top_today)
     void clickPeriodToday() {
-        mPresenter.switchPeriod(Constants.TIME_PERIOD_TODAY);
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, 0));
     }
 
     @Click(R.id.tv_dashboard_top_yesterday)
     void clickPeriodYesterday() {
-        mPresenter.switchPeriod(Constants.TIME_PERIOD_YESTERDAY);
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, -1));
     }
 
     @Click(R.id.tv_dashboard_top_week)
     void clickPeriodWeek() {
-        mPresenter.switchPeriod(Constants.TIME_PERIOD_WEEK);
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, 0));
     }
 
     @Click(R.id.tv_dashboard_top_month)
     void clickPeriodMonth() {
-        mPresenter.switchPeriod(Constants.TIME_PERIOD_MONTH);
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, 0));
     }
 
     @Click(R.id.btn_dashboard_tip_add_fs)
@@ -257,7 +258,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Click(R.id.btn_refresh)
     void clickReload() {
         showLoadingDialog();
-        mPresenter.init();
+        mPresenter.load(Constants.FLAG_ALL_MASK, false, false, true);
     }
 
     @Click(R.id.iv_close)
@@ -336,9 +337,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void updateTab(int pageType, int period) {
-        if (period == Constants.TIME_PERIOD_INIT) {
-            return;
-        }
         if (pageType != mPresenter.getPageType()) {
             return;
         }
@@ -349,10 +347,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mTodayView.setVisibility(View.GONE);
             mYesterdayView.setVisibility(View.VISIBLE);
         }
-        mTodayView.setSelected(period == Constants.TIME_PERIOD_TODAY);
-        mTodayView.setTypeface(null, period == Constants.TIME_PERIOD_TODAY ? Typeface.BOLD : Typeface.NORMAL);
-        mYesterdayView.setSelected(period == Constants.TIME_PERIOD_YESTERDAY);
-        mYesterdayView.setTypeface(null, period == Constants.TIME_PERIOD_YESTERDAY ? Typeface.BOLD : Typeface.NORMAL);
+        mTodayView.setSelected(period == Constants.TIME_PERIOD_DAY);
+        mTodayView.setTypeface(null, period == Constants.TIME_PERIOD_DAY ? Typeface.BOLD : Typeface.NORMAL);
+        mYesterdayView.setSelected(period == Constants.TIME_PERIOD_DAY);
+        mYesterdayView.setTypeface(null, period == Constants.TIME_PERIOD_DAY ? Typeface.BOLD : Typeface.NORMAL);
         mWeekView.setSelected(period == Constants.TIME_PERIOD_WEEK);
         mWeekView.setTypeface(null, period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
         mMonthView.setSelected(period == Constants.TIME_PERIOD_MONTH);

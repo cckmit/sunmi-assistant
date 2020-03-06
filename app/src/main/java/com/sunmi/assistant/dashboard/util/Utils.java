@@ -114,9 +114,10 @@ public class Utils {
      * 根据时间维度计算该时间段的起止时间戳
      *
      * @param period 时间维度
+     * @param offset 时间偏移，例：当时间维度为Day时，offset=0：表示今日；offset=-1：表示昨日。
      * @return 起止时间戳
      */
-    public static Interval getPeriodTimestamp(int period) {
+    public static Interval getPeriodTimestamp(int period, int offset) {
         temp.setTimeInMillis(System.currentTimeMillis());
         long timeStart;
         long timeEnd;
@@ -127,24 +128,22 @@ public class Utils {
         temp.setFirstDayOfWeek(Calendar.MONDAY);
         temp.set(year, month, date);
 
-        if (period == Constants.TIME_PERIOD_TODAY) {
-            timeStart = temp.getTimeInMillis();
-            temp.add(Calendar.DATE, 1);
-            timeEnd = temp.getTimeInMillis();
-        } else if (period == Constants.TIME_PERIOD_YESTERDAY) {
-            temp.add(Calendar.DATE, -1);
+        if (period == Constants.TIME_PERIOD_DAY) {
+            temp.add(Calendar.DATE, offset);
             timeStart = temp.getTimeInMillis();
             temp.add(Calendar.DATE, 1);
             timeEnd = temp.getTimeInMillis();
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
-            int offset = temp.getFirstDayOfWeek() - dayOfWeek;
-            temp.add(Calendar.DATE, offset > 0 ? offset - DAYS_OF_WEEK : offset);
+            int index = temp.getFirstDayOfWeek() - dayOfWeek;
+            temp.add(Calendar.DATE, index > 0 ? index - DAYS_OF_WEEK : index);
+            temp.add(Calendar.DATE, DAYS_OF_WEEK * offset);
             timeStart = temp.getTimeInMillis();
             temp.add(Calendar.DATE, DAYS_OF_WEEK);
             timeEnd = temp.getTimeInMillis();
         } else {
             temp.set(Calendar.DATE, 1);
+            temp.add(Calendar.MONTH, offset);
             timeStart = temp.getTimeInMillis();
             temp.add(Calendar.MONTH, 1);
             timeEnd = temp.getTimeInMillis();
@@ -162,7 +161,7 @@ public class Utils {
      * @return X轴值范围
      */
     public static Pair<Integer, Integer> calcChartXAxisRange(int period) {
-        if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
+        if (period == Constants.TIME_PERIOD_DAY) {
             return new Pair<>(-2, 26);
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             return new Pair<>(100, 108);
@@ -183,7 +182,7 @@ public class Utils {
      */
     public static float encodeChartXAxisFloat(int period, long timestamp) {
         temp.setTimeInMillis(timestamp);
-        if (period == Constants.TIME_PERIOD_TODAY || period == Constants.TIME_PERIOD_YESTERDAY) {
+        if (period == Constants.TIME_PERIOD_DAY) {
             return temp.get(Calendar.HOUR_OF_DAY) + 1;
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             temp.setFirstDayOfWeek(Calendar.MONDAY);

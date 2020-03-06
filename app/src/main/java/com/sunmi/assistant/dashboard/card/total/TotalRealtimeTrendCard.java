@@ -32,6 +32,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerHistoryTrendResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
 /**
@@ -53,15 +54,15 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
     private LineChartMarkerView mLineChartMarker;
     private TimeMarkerFormatter mMarkerFormatter;
 
-    private TotalRealtimeTrendCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private TotalRealtimeTrendCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static TotalRealtimeTrendCard get(Presenter presenter, DashboardCondition condition) {
+    public static TotalRealtimeTrendCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new TotalRealtimeTrendCard(presenter, condition);
+            sInstance = new TotalRealtimeTrendCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -100,7 +101,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
 
         // 设置图表渲染器，格式化器，自定义浮窗
         lineXAxisRenderer = new XAxisLabelRenderer(lineChart);
-        lineXAxisRenderer.setPeriod(Constants.TIME_PERIOD_TODAY, 0);
+        lineXAxisRenderer.setPeriod(Constants.TIME_PERIOD_DAY, 0);
         lineYAxisRenderer = new YAxisVolumeLabelsRenderer(lineChart);
         lineChart.setXAxisRenderer(lineXAxisRenderer);
         lineChart.setRendererLeftYAxis(lineYAxisRenderer);
@@ -118,7 +119,8 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
     }
 
     @Override
-    protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                                CardCallback callback) {
         // TODO: API
         return null;
     }
@@ -168,7 +170,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
             }
         }
 
-        Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(Constants.TIME_PERIOD_TODAY);
+        Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(Constants.TIME_PERIOD_DAY);
         line.getXAxis().setAxisMinimum(xAxisRange.first);
         line.getXAxis().setAxisMaximum(xAxisRange.second);
         float maxAxis = lineYAxisRenderer.setMaxValue(max);

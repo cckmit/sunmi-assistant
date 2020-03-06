@@ -13,6 +13,7 @@ import com.sunmi.assistant.dashboard.util.Utils;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.model.CustomerCountResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -25,15 +26,15 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
     private static RealtimeEnterRateCard sInstance;
 
 
-    private RealtimeEnterRateCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private RealtimeEnterRateCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static RealtimeEnterRateCard get(Presenter presenter, DashboardCondition condition) {
+    public static RealtimeEnterRateCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new RealtimeEnterRateCard(presenter, condition);
+            sInstance = new RealtimeEnterRateCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -48,7 +49,8 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
     }
 
     @Override
-    protected Call<BaseResponse<CustomerCountResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<CustomerCountResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                         CardCallback callback) {
         SunmiStoreApi.getInstance().getCustomer(companyId, shopId, period, callback);
         return null;
     }

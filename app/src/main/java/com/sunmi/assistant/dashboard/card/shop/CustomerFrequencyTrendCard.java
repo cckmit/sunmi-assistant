@@ -38,6 +38,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerFrequencyTrendResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
@@ -61,15 +62,15 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
     private XAxisLabelRenderer lineXAxisRenderer;
 
-    private CustomerFrequencyTrendCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private CustomerFrequencyTrendCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static CustomerFrequencyTrendCard get(Presenter presenter, DashboardCondition condition) {
+    public static CustomerFrequencyTrendCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new CustomerFrequencyTrendCard(presenter, condition);
+            sInstance = new CustomerFrequencyTrendCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -84,7 +85,8 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
     }
 
     @Override
-    protected Call<BaseResponse<CustomerFrequencyTrendResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<CustomerFrequencyTrendResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                                  CardCallback callback) {
         String group;
         if (period == Constants.TIME_PERIOD_MONTH) {
             group = "week";
@@ -223,7 +225,7 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
         // Use correct chart marker & update it.
         if (model.period == Constants.TIME_PERIOD_WEEK) {
             mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
-            mMarkerFormatter.setPeriod(Constants.TIME_PERIOD_YESTERDAY);
+            mMarkerFormatter.setPeriod(Constants.TIME_PERIOD_DAY);
         } else {
             mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE_SPAN);
             mMarkerFormatter.setPeriod(Constants.TIME_PERIOD_WEEK);

@@ -20,6 +20,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.AuthorizeInfoResp;
+import sunmi.common.model.Interval;
 import sunmi.common.model.SaasStatus;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -43,15 +44,15 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
     private int mRequestCount;
     private int mFailedCount;
 
-    private RealtimeOrderImportCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private RealtimeOrderImportCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static RealtimeOrderImportCard get(Presenter presenter, DashboardCondition condition) {
+    public static RealtimeOrderImportCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new RealtimeOrderImportCard(presenter, condition);
+            sInstance = new RealtimeOrderImportCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -73,7 +74,8 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
     }
 
     @Override
-    protected Call<BaseResponse<AuthorizeInfoResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<AuthorizeInfoResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                         CardCallback callback) {
         if (getModel().state != Constants.IMPORT_STATE_COMPLETE) {
             SunmiStoreApi.getInstance().getAuthorizeInfo(companyId, shopId, callback);
         }

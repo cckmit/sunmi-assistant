@@ -6,6 +6,7 @@ import java.util.List;
 
 import sunmi.common.base.BaseView;
 import sunmi.common.model.FilterItem;
+import sunmi.common.model.Interval;
 
 public interface DashboardContract {
 
@@ -43,7 +44,7 @@ public interface DashboardContract {
 
         void switchPerspective(int perspective);
 
-        void switchPeriod(int period);
+        void switchPeriod(int period, Interval periodTime);
 
         void switchPage(int type);
 

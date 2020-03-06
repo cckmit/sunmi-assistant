@@ -25,6 +25,7 @@ import java.util.List;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.FilterItem;
+import sunmi.common.model.Interval;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
@@ -212,10 +213,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void switchPeriod(int period) {
+    public void switchPeriod(int period, Interval periodTime) {
         PageContract.PagePresenter current = getCurrent();
         if (current != null) {
-            current.setPeriod(period);
+            current.setPeriod(period, periodTime);
         }
     }
 
@@ -249,7 +250,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (current != null) {
             return current.getPeriod();
         } else {
-            return Constants.TIME_PERIOD_INIT;
+            return Constants.TIME_PERIOD_DAY;
         }
     }
 

@@ -11,12 +11,14 @@ import com.sunmi.assistant.dashboard.card.shop.ProfilePeriodCard;
 import com.sunmi.assistant.dashboard.card.shop.ProfileWaitDataCard;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.model.Interval;
 
 
 /**
@@ -32,7 +34,8 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
     private List<BaseRefreshCard> mList = new ArrayList<>();
 
     private DashboardCondition mCondition;
-    private int mPeriod = Constants.TIME_PERIOD_INIT;
+    private int mPeriod;
+    private Interval mPeriodTime;
 
     private boolean isConditionChanged = true;
 
@@ -43,6 +46,8 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
 
     @Override
     public void init() {
+        mPeriod = Constants.TIME_PERIOD_DAY;
+        mPeriodTime = Utils.getPeriodTimestamp(mPeriod, -1);
         if (isConditionChanged && mCondition != null) {
             refresh(true);
         }
@@ -55,15 +60,15 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
 
     private void initList() {
         mList.clear();
-        mList.add(ProfilePeriodCard.get(this, mCondition));
+        mList.add(ProfilePeriodCard.get(this, mCondition, mPeriod, mPeriodTime));
         if (mCondition.hasCustomer) {
-            mList.add(ProfileOverviewCard.get(this, mCondition));
-            mList.add(ProfileAnalysisCard.get(this, mCondition));
+            mList.add(ProfileOverviewCard.get(this, mCondition, mPeriod, mPeriodTime));
+            mList.add(ProfileAnalysisCard.get(this, mCondition, mPeriod, mPeriodTime));
         } else if (mCondition.hasFs) {
-            mList.add(ProfileWaitDataCard.get(this, mCondition));
+            mList.add(ProfileWaitDataCard.get(this, mCondition, mPeriod, mPeriodTime));
         } else {
-            mList.add(ProfileNoDataCard.get(this, mCondition));
-            mList.add(ProfileNoFsCard.get(this, mCondition));
+            mList.add(ProfileNoDataCard.get(this, mCondition, mPeriod, mPeriodTime));
+            mList.add(ProfileNoFsCard.get(this, mCondition, mPeriod, mPeriodTime));
         }
     }
 
@@ -73,9 +78,9 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
         }
         for (BaseRefreshCard card : mList) {
             card.init(mView.getContext());
+            card.refresh(true);
         }
         mView.setCards(mList);
-        setPeriod(Constants.TIME_PERIOD_YESTERDAY);
     }
 
     @Override
@@ -105,10 +110,14 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
     }
 
     @Override
-    public void setPeriod(int period) {
+    public void setPeriod(int period, Interval periodTime) {
+        if (mPeriod == period && Objects.equals(mPeriodTime, periodTime)) {
+            return;
+        }
         mPeriod = period;
+        mPeriodTime = periodTime;
         for (BaseRefreshCard card : mList) {
-            card.setPeriod(period, false);
+            card.setPeriod(period, periodTime, false);
         }
         if (isViewAttached()) {
             mView.updateTab(period);

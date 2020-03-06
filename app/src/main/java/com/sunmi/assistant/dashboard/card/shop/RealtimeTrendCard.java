@@ -46,6 +46,7 @@ import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.exception.TimeDateException;
 import sunmi.common.model.CustomerRateResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
@@ -72,15 +73,15 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
     private float mDashLength;
     private float mDashSpaceLength;
 
-    private RealtimeTrendCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private RealtimeTrendCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static RealtimeTrendCard get(Presenter presenter, DashboardCondition condition) {
+    public static RealtimeTrendCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new RealtimeTrendCard(presenter, condition);
+            sInstance = new RealtimeTrendCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -240,7 +241,8 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
     }
 
     @Override
-    protected Call<BaseResponse<CustomerRateResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<CustomerRateResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                        CardCallback callback) {
         SunmiStoreApi.getInstance().getCustomerRate(companyId, shopId, period, callback);
         return null;
     }
@@ -360,7 +362,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         line.getXAxis().setAxisMaximum(xAxisRange.second);
 
         int color = ContextCompat.getColor(line.getContext(), R.color.common_orange);
-        if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
+        if (model.period == Constants.TIME_PERIOD_DAY) {
             lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
         } else {
             lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
@@ -408,7 +410,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
             mBarChartMarker.setTitle(R.string.dashboard_var_customer_volume);
         }
 
-        if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
+        if (model.period == Constants.TIME_PERIOD_DAY) {
             barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
         } else {
             barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
@@ -461,7 +463,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
     }
 
     private float calcBarWidth(int period) {
-        if (period == Constants.TIME_PERIOD_TODAY) {
+        if (period == Constants.TIME_PERIOD_DAY) {
             return 0.5f;
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             return 0.3f;

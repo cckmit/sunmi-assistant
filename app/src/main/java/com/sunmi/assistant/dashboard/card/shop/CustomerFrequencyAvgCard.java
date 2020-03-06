@@ -28,6 +28,7 @@ import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.base.recycle.SimpleArrayAdapter;
 import sunmi.common.model.CustomerFrequencyAvgResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -46,15 +47,15 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
     private SparseArray<FaceAge> mAgeMap;
     private AgeListAdapter mAdapter;
 
-    private CustomerFrequencyAvgCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private CustomerFrequencyAvgCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static CustomerFrequencyAvgCard get(Presenter presenter, DashboardCondition condition) {
+    public static CustomerFrequencyAvgCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new CustomerFrequencyAvgCard(presenter, condition);
+            sInstance = new CustomerFrequencyAvgCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -70,7 +71,8 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
     }
 
     @Override
-    protected Call<BaseResponse<CustomerFrequencyAvgResp>> load(int companyId, int shopId, int period, CardCallback callback) {
+    protected Call<BaseResponse<CustomerFrequencyAvgResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                                CardCallback callback) {
         if (mAgeMap == null) {
             loadAgeList(companyId, shopId, period, callback);
         } else {
@@ -79,10 +81,10 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
         return null;
     }
 
-    private void loadAgeList(int companyId, int shopId, int period, CardCallback callback) {
+    private void loadAgeList(int companyId, int shopId, int type, CardCallback callback) {
         mAgeMap = CacheManager.get().get(CacheManager.CACHE_AGE_NAME);
         if (mAgeMap != null) {
-            loadAvg(companyId, shopId, period, callback);
+            loadAvg(companyId, shopId, type, callback);
             return;
         }
         IpcCloudApi.getInstance().getFaceAgeRange(companyId, shopId, new RetrofitCallback<FaceAgeRangeResp>() {
@@ -100,7 +102,7 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
                     size += age.getName().length() * 2 + 8;
                 }
                 CacheManager.get().put(CacheManager.CACHE_AGE_NAME, mAgeMap, size);
-                loadAvg(companyId, shopId, period, callback);
+                loadAvg(companyId, shopId, type, callback);
             }
 
             @Override
@@ -110,8 +112,8 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
         });
     }
 
-    private void loadAvg(int companyId, int shopId, int period, CardCallback callback) {
-        SunmiStoreApi.getInstance().getCustomerFrequencyAvg(companyId, shopId, period, callback);
+    private void loadAvg(int companyId, int shopId, int type, CardCallback callback) {
+        SunmiStoreApi.getInstance().getCustomerFrequencyAvg(companyId, shopId, type, callback);
     }
 
     @Override

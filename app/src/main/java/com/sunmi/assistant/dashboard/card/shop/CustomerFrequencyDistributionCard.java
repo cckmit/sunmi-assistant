@@ -36,6 +36,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerFrequencyDistributionResp;
+import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.utils.CommonHelper;
@@ -56,15 +57,15 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
     private MarkerFormatter markerFormatter;
 
 
-    private CustomerFrequencyDistributionCard(Presenter presenter, DashboardCondition condition) {
-        super(presenter, condition);
+    private CustomerFrequencyDistributionCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
+        super(presenter, condition, period, periodTime);
     }
 
-    public static CustomerFrequencyDistributionCard get(Presenter presenter, DashboardCondition condition) {
+    public static CustomerFrequencyDistributionCard get(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         if (sInstance == null) {
-            sInstance = new CustomerFrequencyDistributionCard(presenter, condition);
+            sInstance = new CustomerFrequencyDistributionCard(presenter, condition, period, periodTime);
         } else {
-            sInstance.reset(presenter, condition);
+            sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
     }
@@ -80,8 +81,14 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
     }
 
     @Override
-    protected Call<BaseResponse<CustomerFrequencyDistributionResp>> load(int companyId, int shopId, int period, CardCallback callback) {
-        SunmiStoreApi.getInstance().getCustomerFrequencyDistribution(companyId, shopId, period, callback);
+    protected Call<BaseResponse<CustomerFrequencyDistributionResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                                         CardCallback callback) {
+        int type = period;
+        if (period == Constants.TIME_PERIOD_DAY) {
+            // 昨日为4。
+            type = 4;
+        }
+        SunmiStoreApi.getInstance().getCustomerFrequencyDistribution(companyId, shopId, type, callback);
         return null;
     }
 
@@ -176,7 +183,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         BarChart chart = holder.getView(R.id.view_dashboard_bar_chart);
         ConstraintLayout layout = holder.getView(R.id.layout_frequency_chart);
-        if (model.period == Constants.TIME_PERIOD_YESTERDAY) {
+        if (model.period == Constants.TIME_PERIOD_DAY) {
             layout.setBackgroundResource(R.drawable.dashboard_bg_white_radius);
             model.setPadding(0, 0, 0, paddingBottom);
             chart.getXAxis().setAxisMinimum(0f);
@@ -245,7 +252,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
     }
 
     private float calcBarWidth(int period) {
-        if (period == Constants.TIME_PERIOD_YESTERDAY) {
+        if (period == Constants.TIME_PERIOD_DAY) {
             return 0.25f;
         } else {
             return 0.45f;
@@ -254,7 +261,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
 
     private int getMax(int period) {
         int max;
-        if (period == Constants.TIME_PERIOD_YESTERDAY) {
+        if (period == Constants.TIME_PERIOD_DAY) {
             max = 4;
         } else {
             max = 10;
@@ -311,7 +318,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         }
 
         private void setPeriod(int period) {
-            if (period == Constants.TIME_PERIOD_YESTERDAY) {
+            if (period == Constants.TIME_PERIOD_DAY) {
                 labels = new float[]{1, 2, 3, 4, 5};
             } else {
                 labels = new float[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
