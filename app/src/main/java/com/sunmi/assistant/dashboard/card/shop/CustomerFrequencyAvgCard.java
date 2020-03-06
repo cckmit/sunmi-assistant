@@ -85,7 +85,7 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
             loadAvg(companyId, shopId, period, callback);
             return;
         }
-        IpcCloudApi.getInstance().getFaceAgeRange(companyId, shopId, new RetrofitCallback<FaceAgeRangeResp>() {
+        IpcCloudApi.getInstance().getFaceAgeRange(new RetrofitCallback<FaceAgeRangeResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
                 if (data == null || data.getAgeRangeList() == null) {

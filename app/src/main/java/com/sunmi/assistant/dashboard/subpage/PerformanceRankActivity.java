@@ -71,7 +71,7 @@ public class PerformanceRankActivity extends BaseActivity
         refreshViewHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
         refreshViewHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
         refreshView.setRefreshViewHolder(refreshViewHolder); // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项
-        refreshView.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本// 设置正在加载更多时的文本
+        refreshView.setIsShowLoadingMoreView(false);
         initSort();
         initFilters();
         getData();

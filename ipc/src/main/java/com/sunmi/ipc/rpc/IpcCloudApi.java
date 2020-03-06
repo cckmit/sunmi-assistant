@@ -289,19 +289,10 @@ public class IpcCloudApi implements IpcCloudApiAnno {
     /**
      * -------------------- 人脸库相关 --------------------
      */
-    public void getFaceAgeRange(int companyId, int shopId,
-                                RetrofitCallback<FaceAgeRangeResp> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .put("shop_id", shopId)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .getAgeRange(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public void getFaceAgeRange(RetrofitCallback<FaceAgeRangeResp> callback) {
+        SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
+                .getAgeRange(new BaseRequest(""))
+                .enqueue(callback);
     }
 
     public Call<BaseResponse<FaceListResp>> getFaceList(

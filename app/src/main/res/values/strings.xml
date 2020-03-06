@@ -96,6 +96,10 @@
     <string name="dashboard_var_gender">Gender</string>
     <string name="dashboard_var_male">Male</string>
     <string name="dashboard_var_female">Female</string>
+    <string name="dashboard_var_old_count">熟客人数</string>
+    <string name="dashboard_var_new_count">新客人数</string>
+    <string name="dashboard_var_male_count">男性人数</string>
+    <string name="dashboard_var_female_count">女性人数</string>
     <string name="dashboard_unit_age"> </string>
     <string name="dashboard_tip_customer_none">No data</string>
     <string name="dashboard_title_import_saas">Import history order</string>

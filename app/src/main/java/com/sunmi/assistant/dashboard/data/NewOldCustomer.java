@@ -7,7 +7,7 @@ public class NewOldCustomer implements Comparable<NewOldCustomer> {
     private int oldCount;
 
     public static boolean isDesc;
-    public static boolean isSortByOld;
+    public static boolean isSortByNew;
 
     public NewOldCustomer(String shopName, int newCount, int oldCount) {
         this.shopName = shopName;
@@ -20,26 +20,26 @@ public class NewOldCustomer implements Comparable<NewOldCustomer> {
     }
 
     public int getCount() {
-        if (isSortByOld) {
-            return oldCount;
-        } else {
+        if (isSortByNew) {
             return newCount;
+        } else {
+            return oldCount;
         }
     }
 
     @Override
     public int compareTo(NewOldCustomer o) {
-        if (isSortByOld) {
-            if (isDesc) {
-                return o.oldCount - oldCount;
-            } else {
-                return oldCount - o.oldCount;
-            }
-        } else {
+        if (isSortByNew) {
             if (isDesc) {
                 return o.newCount - newCount;
             } else {
                 return newCount - o.newCount;
+            }
+        } else {
+            if (isDesc) {
+                return o.oldCount - oldCount;
+            } else {
+                return oldCount - o.oldCount;
             }
         }
     }

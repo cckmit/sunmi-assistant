@@ -20,7 +20,7 @@ public class AgeCustomer implements Comparable<AgeCustomer> {
     }
 
     public int getAgeCount() {
-        return count.get(ageCode);
+        return count.get(ageCode) != null ? count.get(ageCode) : 0;
     }
 
     @Override

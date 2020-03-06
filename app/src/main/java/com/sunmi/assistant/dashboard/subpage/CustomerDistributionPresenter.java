@@ -42,35 +42,34 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
             }
             return;
         }
-        IpcCloudApi.getInstance().getFaceAgeRange(SpUtils.getCompanyId(), SpUtils.getShopId(),
-                new RetrofitCallback<FaceAgeRangeResp>() {
-                    @Override
-                    public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
-                        if (data == null || data.getAgeRangeList() == null) {
-                            onFail(code, msg, data);
-                            return;
-                        }
-                        List<FaceAge> list = data.getAgeRangeList();
-                        SparseArray<FaceAge> ageMap = new SparseArray<>(list.size());
-                        int size = 4;
-                        for (FaceAge age : list) {
-                            ageMap.put(age.getCode(), age);
-                            size += age.getName().length() * 2 + 8;
-                        }
-                        CacheManager.get().put(CacheManager.CACHE_AGE_NAME, ageMap, size);
-                        if (isViewAttached()) {
-                            mView.hideLoadingDialog();
-                            mView.ageRangeSuccess(ageMap);
-                        }
-                    }
+        IpcCloudApi.getInstance().getFaceAgeRange(new RetrofitCallback<FaceAgeRangeResp>() {
+            @Override
+            public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
+                if (data == null || data.getAgeRangeList() == null) {
+                    onFail(code, msg, data);
+                    return;
+                }
+                List<FaceAge> list = data.getAgeRangeList();
+                SparseArray<FaceAge> ageMap = new SparseArray<>(list.size());
+                int size = 4;
+                for (FaceAge age : list) {
+                    ageMap.put(age.getCode(), age);
+                    size += age.getName().length() * 2 + 8;
+                }
+                CacheManager.get().put(CacheManager.CACHE_AGE_NAME, ageMap, size);
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.ageRangeSuccess(ageMap);
+                }
+            }
 
-                    @Override
-                    public void onFail(int code, String msg, FaceAgeRangeResp data) {
-                        if (isViewAttached()) {
-                            mView.ageRangeFail(code, msg);
-                        }
-                    }
-                });
+            @Override
+            public void onFail(int code, String msg, FaceAgeRangeResp data) {
+                if (isViewAttached()) {
+                    mView.ageRangeFail(code, msg);
+                }
+            }
+        });
     }
 
     @SuppressLint("UseSparseArrays")
@@ -135,7 +134,7 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
                                 genderCustomers.add(new GenderCustomer(bean.getShopName(), maleCount, femaleCount));
                             }
                         }
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             mView.getCustomerShopAgeGenderSuccess(genderCustomers);
                         }
                     }

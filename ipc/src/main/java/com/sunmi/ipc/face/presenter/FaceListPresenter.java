@@ -100,7 +100,7 @@ public class FaceListPresenter extends BasePresenter<FaceListContract.View>
             }
             return;
         }
-        IpcCloudApi.getInstance().getFaceAgeRange(SpUtils.getCompanyId(), mShopId, new RetrofitCallback<FaceAgeRangeResp>() {
+        IpcCloudApi.getInstance().getFaceAgeRange(new RetrofitCallback<FaceAgeRangeResp>() {
             @Override
             public void onSuccess(int code, String msg, FaceAgeRangeResp data) {
                 if (data == null || data.getAgeRangeList() == null) {
