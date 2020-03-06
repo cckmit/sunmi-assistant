@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 
 import java.util.ArrayList;
@@ -42,15 +43,15 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
     private int mRequestCount;
     private int mFailedCount;
 
-    private RealtimeOrderImportCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private RealtimeOrderImportCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static RealtimeOrderImportCard get(Presenter presenter, int source) {
+    public static RealtimeOrderImportCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new RealtimeOrderImportCard(presenter, source);
+            sInstance = new RealtimeOrderImportCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -199,7 +200,7 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
         } else {
             holder.itemView.postDelayed(() -> {
                 getAdapter().remove(position);
-                mPresenter.refresh(true);
+                mPresenter.pullToRefresh(true);
             }, 200);
         }
     }
@@ -211,7 +212,7 @@ public class RealtimeOrderImportCard extends BaseRefreshCard<RealtimeOrderImport
         private List<Item> saasList = new ArrayList<>();
 
         @Override
-        public void init(int source) {
+        public void init(DashboardCondition condition) {
             this.state = Constants.IMPORT_STATE_NONE;
             this.authTime = 0;
             this.saasCount = 0;

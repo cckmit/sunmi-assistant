@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Utils;
 
 import retrofit2.Call;
@@ -24,15 +25,15 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
     private static RealtimeEnterRateCard sInstance;
 
 
-    private RealtimeEnterRateCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private RealtimeEnterRateCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static RealtimeEnterRateCard get(Presenter presenter, int source) {
+    public static RealtimeEnterRateCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new RealtimeEnterRateCard(presenter, source);
+            sInstance = new RealtimeEnterRateCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

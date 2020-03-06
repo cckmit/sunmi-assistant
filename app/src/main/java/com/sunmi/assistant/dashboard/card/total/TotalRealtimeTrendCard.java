@@ -14,6 +14,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
@@ -52,15 +53,15 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
     private LineChartMarkerView mLineChartMarker;
     private TimeMarkerFormatter mMarkerFormatter;
 
-    private TotalRealtimeTrendCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private TotalRealtimeTrendCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static TotalRealtimeTrendCard get(Presenter presenter, int source) {
+    public static TotalRealtimeTrendCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new TotalRealtimeTrendCard(presenter, source);
+            sInstance = new TotalRealtimeTrendCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -245,7 +246,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
         }
 
         @Override
-        public void init(int source) {
+        public void init(DashboardCondition condition) {
             type = TYPE_CUSTOMER;
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);

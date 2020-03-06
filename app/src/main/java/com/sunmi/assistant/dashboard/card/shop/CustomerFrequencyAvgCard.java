@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.ipc.face.model.FaceAge;
@@ -45,15 +46,15 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
     private SparseArray<FaceAge> mAgeMap;
     private AgeListAdapter mAdapter;
 
-    private CustomerFrequencyAvgCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private CustomerFrequencyAvgCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static CustomerFrequencyAvgCard get(Presenter presenter, int source) {
+    public static CustomerFrequencyAvgCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new CustomerFrequencyAvgCard(presenter, source);
+            sInstance = new CustomerFrequencyAvgCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

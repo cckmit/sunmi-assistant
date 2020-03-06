@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 
@@ -26,15 +27,15 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     private static ProfileOverviewCard sInstance;
 
-    private ProfileOverviewCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private ProfileOverviewCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static ProfileOverviewCard get(Presenter presenter, int source) {
+    public static ProfileOverviewCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new ProfileOverviewCard(presenter, source);
+            sInstance = new ProfileOverviewCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

@@ -23,6 +23,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.ui.chart.PieChartMarkerView;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
@@ -71,15 +72,15 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     private SparseArray<FaceAge> mAgeList;
     private OnPieSelectedListener mOnSelectedListener;
 
-    private RealtimeDistributionCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private RealtimeDistributionCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static RealtimeDistributionCard get(Presenter presenter, int source) {
+    public static RealtimeDistributionCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new RealtimeDistributionCard(presenter, source);
+            sInstance = new RealtimeDistributionCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -523,7 +524,7 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
         }
 
         @Override
-        public void init(int source) {
+        public void init(DashboardCondition condition) {
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();

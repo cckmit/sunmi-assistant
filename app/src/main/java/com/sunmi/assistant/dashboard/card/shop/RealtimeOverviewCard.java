@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.assistant.data.PaymentApi;
@@ -33,15 +34,15 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
 
     private static RealtimeOverviewCard sInstance;
 
-    private RealtimeOverviewCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private RealtimeOverviewCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static RealtimeOverviewCard get(Presenter presenter, int source) {
+    public static RealtimeOverviewCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new RealtimeOverviewCard(presenter, source);
+            sInstance = new RealtimeOverviewCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -57,9 +58,9 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
 
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        if (hasAuth()) {
+        if (mCondition.hasSaas) {
             loadSales(companyId, shopId, period, callback);
-        } else if (hasFs()) {
+        } else if (mCondition.hasFs) {
             loadCustomer(companyId, shopId, period, callback);
         }
         return null;
@@ -119,7 +120,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                             model.volume = data.getMonthCount();
                             model.lastVolume = data.getLastMonthCount();
                         }
-                        if (hasFs()) {
+                        if (mCondition.hasFs) {
                             loadCustomer(companyId, shopId, period, callback);
                         } else {
                             callback.onSuccess();
@@ -145,7 +146,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                         Model model = getModel();
                         model.customer = data.getLatestCount() + data.getLatestEntryHeadCount();
                         model.lastCustomer = data.getEarlyCount() + data.getEarlyEntryHeadCount();
-                        if (hasAuth()) {
+                        if (mCondition.hasSaas) {
                             model.rate = model.customer == 0 ?
                                     0f : Math.min((float) model.volume / model.customer, 1f);
                             model.lastRate = model.lastCustomer == 0 ?
@@ -176,7 +177,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
         Context context = holder.getContext();
         holder.addOnClickListener(R.id.layout_dashboard_main, (h, model, position) -> {
-            if (!hasAuth() && hasFs()) {
+            if (!mCondition.hasSaas && mCondition.hasFs) {
                 goToCustomerList(context);
             } else {
                 goToOrderList(context);
@@ -202,12 +203,12 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
         TextView customerSubdata = holder.getView(R.id.tv_dashboard_customer_subdata);
         TextView rateValue = holder.getView(R.id.tv_dashboard_rate);
         TextView rateSubdata = holder.getView(R.id.tv_dashboard_rate_subdata);
-        if (hasAuth() && !hasFs()) {
+        if (mCondition.hasSaas && !mCondition.hasFs) {
             value.setText(model.getSales(context));
             subdata.setText(model.getLastSales(context));
             volumeValue.setText(model.getVolume(context));
             volumeSubdata.setText(model.getLastVolume(context));
-        } else if (!hasAuth() && hasFs()) {
+        } else if (!mCondition.hasSaas && mCondition.hasFs) {
             value.setText(model.getCustomer(context));
             subdata.setText(model.getLastCustomer(context));
         } else {
@@ -229,7 +230,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
         View customer = holder.getView(R.id.layout_dashboard_customer);
         View rate = holder.getView(R.id.layout_dashboard_rate);
         ImageView loading = holder.getView(R.id.iv_dashboard_loading);
-        if (!hasAuth() && hasFs()) {
+        if (!mCondition.hasSaas && mCondition.hasFs) {
             main.setVisibility(View.INVISIBLE);
             volume.setVisibility(View.GONE);
             customer.setVisibility(View.GONE);
@@ -278,13 +279,13 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
         TextView rateSubtitle = holder.getView(R.id.tv_dashboard_rate_subtitle);
         holder.getView(R.id.iv_dashboard_loading).setVisibility(View.GONE);
         // 根据数据来源变更View展示的部分和文案
-        if (hasAuth() && !hasFs()) {
+        if (mCondition.hasSaas && !mCondition.hasFs) {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.VISIBLE);
             customer.setVisibility(View.GONE);
             rate.setVisibility(View.GONE);
             title.setText(R.string.dashboard_var_total_sales_amount);
-        } else if (!hasAuth() && hasFs()) {
+        } else if (!mCondition.hasSaas && mCondition.hasFs) {
             main.setVisibility(View.VISIBLE);
             volume.setVisibility(View.GONE);
             customer.setVisibility(View.GONE);

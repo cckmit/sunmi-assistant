@@ -1,5 +1,7 @@
 package com.sunmi.assistant.dashboard;
 
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
@@ -19,7 +21,7 @@ public interface DashboardContract {
 
         void setPages(List<PageHost> pages, int perspective);
 
-        void setSource(int source);
+        void setCondition(DashboardCondition condition);
 
         void updateTab(int page, int period);
 
@@ -37,7 +39,7 @@ public interface DashboardContract {
 
         void init();
 
-        void reload(int flag);
+        void load(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading);
 
         void switchPerspective(int perspective);
 
@@ -46,6 +48,8 @@ public interface DashboardContract {
         void switchPage(int type);
 
         void scrollToTop();
+
+        void closeFloatingAd();
 
         int getPageType();
 

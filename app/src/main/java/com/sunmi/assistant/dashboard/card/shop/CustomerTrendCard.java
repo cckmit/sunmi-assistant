@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
@@ -30,7 +31,6 @@ import com.sunmi.assistant.dashboard.util.Utils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -68,15 +68,15 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     private float mDashLength;
     private float mDashSpaceLength;
 
-    private CustomerTrendCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private CustomerTrendCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static CustomerTrendCard get(Presenter presenter, int source) {
+    public static CustomerTrendCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new CustomerTrendCard(presenter, source);
+            sInstance = new CustomerTrendCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -405,7 +405,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         }
 
         @Override
-        public void init(int source) {
+        public void init(DashboardCondition condition) {
             type = Constants.DATA_TYPE_ALL;
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);

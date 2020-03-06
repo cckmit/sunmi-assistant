@@ -3,7 +3,6 @@ package com.sunmi.assistant.dashboard.card.shop;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
-import android.util.Pair;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.ipc.face.model.FaceAge;
@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import retrofit2.Call;
 import sunmi.common.base.adapter.CommonAdapter;
@@ -53,16 +52,16 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
     private SparseArray<FaceAge> mAgeList;
     private CommonAdapter<Item> mAdapter;
 
-    private ProfileAnalysisCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private ProfileAnalysisCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static ProfileAnalysisCard get(Presenter presenter, int source) {
+    public static ProfileAnalysisCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new ProfileAnalysisCard(presenter, source);
+            sInstance = new ProfileAnalysisCard(presenter, condition);
         } else {
             sInstance.mPresenter = presenter;
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -203,7 +202,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
 
         Context context = holder.getContext();
         View view = holder.itemView;
-        if (hasFloating()) {
+        if (mCondition.isFloatingShow) {
             int paddingBottom = (int) context.getResources().getDimension(R.dimen.dp_80);
             view.setPaddingRelative(0, 0, 0, paddingBottom);
         } else {
@@ -356,47 +355,9 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
         private List<Item> list = new ArrayList<>(3);
 
         @Override
-        public void init(int source) {
+        public void init(DashboardCondition condition) {
             list.clear();
         }
 
-        @SuppressWarnings({"unused", "AlibabaUndefineMagicConstant"})
-        public void random(SparseArray<String> ageList, String ageLabel, String maleLabel, String femaleLabel) {
-            Random random = new Random();
-            List<Pair<Integer, Integer>> pool = new ArrayList<>();
-            for (int i = 0; i < 8; i++) {
-                for (int j = 0; j < 2; j++) {
-                    pool.add(new Pair<>(i + 1, j + 1));
-                }
-            }
-            list.clear();
-            int itemCount = random.nextInt(5) + 1;
-            int total = 0;
-            for (int i = 0; i < itemCount; i++) {
-                int size = pool.size();
-                Pair<Integer, Integer> item = pool.remove(random.nextInt(10000) % size);
-                String ageName = ageList.get(item.first);
-                String genderName = item.second == 1 ? maleLabel : femaleLabel;
-                String name = String.format("%s  |  %s%s", genderName, ageName, ageLabel);
-                int count = random.nextInt(1000);
-                total += count;
-                list.add(new Item(Constants.TIME_PERIOD_WEEK, item.first, item.second, name, count, count * 3 / 4, count * 2 / 3));
-            }
-            Collections.sort(list, (o1, o2) -> o2.count - o1.count);
-            if (list.size() > 3) {
-                list.subList(3, list.size()).clear();
-            }
-            for (Item item : list) {
-                item.setTotal(total);
-            }
-            int type = random.nextInt(10000) % 3;
-            for (Item item : list) {
-                if (type == 1) {
-                    item.setLoading();
-                } else if (type == 2) {
-                    item.setError();
-                }
-            }
-        }
     }
 }

@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Utils;
 
 import retrofit2.Call;
@@ -20,20 +21,20 @@ import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.DateTimeUtils;
 
-public class TotalRealTimeOverviewCard extends BaseRefreshCard<TotalRealTimeOverviewCard.Model, Object> {
+public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOverviewCard.Model, Object> {
 
-    private static TotalRealTimeOverviewCard sInstance;
+    private static TotalRealtimeOverviewCard sInstance;
     private String startTime = DateTimeUtils.getYesterday("yyyy-MM-dd");
 
-    private TotalRealTimeOverviewCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private TotalRealtimeOverviewCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static TotalRealTimeOverviewCard get(Presenter presenter, int source) {
+    public static TotalRealtimeOverviewCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new TotalRealTimeOverviewCard(presenter, source);
+            sInstance = new TotalRealtimeOverviewCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

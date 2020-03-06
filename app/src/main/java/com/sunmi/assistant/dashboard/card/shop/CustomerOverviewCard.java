@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 
@@ -26,15 +27,15 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
 
     private static CustomerOverviewCard sInstance;
 
-    private CustomerOverviewCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private CustomerOverviewCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static CustomerOverviewCard get(Presenter presenter, int source) {
+    public static CustomerOverviewCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new CustomerOverviewCard(presenter, source);
+            sInstance = new CustomerOverviewCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

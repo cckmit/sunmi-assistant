@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 
 import retrofit2.Call;
@@ -23,15 +24,15 @@ public class CustomerPeriodCard extends BaseRefreshCard<CustomerPeriodCard.Model
 
     private static CustomerPeriodCard sInstance;
 
-    private CustomerPeriodCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private CustomerPeriodCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static CustomerPeriodCard get(Presenter presenter, int source) {
+    public static CustomerPeriodCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new CustomerPeriodCard(presenter, source);
+            sInstance = new CustomerPeriodCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

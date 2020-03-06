@@ -10,7 +10,7 @@ import sunmi.common.model.ShopInfo;
  */
 public interface DashboardModel {
 
-    void getShopList(int companyId, Callback<SparseArray<ShopInfo>> callback);
+    void loadShopList(int companyId, Callback<SparseArray<ShopInfo>> callback);
 
     void hasSaasState(int companyId, Callback<Integer> callback);
 

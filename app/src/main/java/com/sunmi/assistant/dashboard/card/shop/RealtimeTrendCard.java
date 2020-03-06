@@ -22,6 +22,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
@@ -71,15 +72,15 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
     private float mDashLength;
     private float mDashSpaceLength;
 
-    private RealtimeTrendCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private RealtimeTrendCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static RealtimeTrendCard get(Presenter presenter, int source) {
+    public static RealtimeTrendCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new RealtimeTrendCard(presenter, source);
+            sInstance = new RealtimeTrendCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -287,7 +288,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         // setup card background
         View root = holder.getView(R.id.layout_dashboard_root);
-        if (hasFs()) {
+        if (mCondition.hasFs) {
             root.setBackgroundResource(R.color.common_fill);
         } else {
             root.setBackgroundResource(R.drawable.bg_top_gray_radius);
@@ -339,9 +340,9 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         BarChart bar = holder.getView(R.id.view_dashboard_bar_chart);
 
         // Set visible & button selected
-        rate.setVisibility(hasFs() && hasAuth() ? View.VISIBLE : View.GONE);
-        volume.setVisibility(hasAuth() ? View.VISIBLE : View.GONE);
-        customer.setVisibility(hasFs() ? View.VISIBLE : View.GONE);
+        rate.setVisibility(mCondition.hasFs && mCondition.hasSaas ? View.VISIBLE : View.GONE);
+        volume.setVisibility(mCondition.hasSaas ? View.VISIBLE : View.GONE);
+        customer.setVisibility(mCondition.hasFs ? View.VISIBLE : View.GONE);
         line.setVisibility(model.type == Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         bar.setVisibility(model.type != Constants.DATA_TYPE_RATE ? View.VISIBLE : View.INVISIBLE);
         rate.setSelected(model.type == Constants.DATA_TYPE_RATE);
@@ -480,18 +481,18 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         }
 
         @Override
-        public void init(int source) {
-            updateType(source);
+        public void init(DashboardCondition condition) {
+            updateType(condition);
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();
             }
         }
 
-        private void updateType(int source) {
-            if ((source & Constants.DATA_SOURCE_FS) != 0 && (source & Constants.DATA_SOURCE_AUTH) != 0) {
+        private void updateType(DashboardCondition condition) {
+            if (condition.hasFs && condition.hasSaas) {
                 type = Constants.DATA_TYPE_RATE;
-            } else if ((source & Constants.DATA_SOURCE_AUTH) != 0) {
+            } else if (condition.hasSaas) {
                 type = Constants.DATA_TYPE_VOLUME;
             } else {
                 type = Constants.DATA_TYPE_CUSTOMER;
