@@ -97,6 +97,10 @@
     <string name="dashboard_var_customer_old_ratio">熟客占比</string>
     <string name="dashboard_var_frequency">到店频次</string>
     <string name="dashboard_var_customer_total">总客流量</string>
+    <string name="dashboard_var_old_count">熟客人数</string>
+    <string name="dashboard_var_new_count">新客人数</string>
+    <string name="dashboard_var_male_count">男性人数</string>
+    <string name="dashboard_var_female_count">女性人数</string>
 
     <string name="dashboard_unit_age">岁</string>
     <string name="dashboard_unit_frequency_data_day">%s次/日</string>

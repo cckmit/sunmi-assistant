@@ -25,6 +25,7 @@ import sunmi.common.model.FilterItem;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.DropdownAdapterNew;
 import sunmi.common.view.DropdownAnimNew;
@@ -58,6 +59,7 @@ public class PerformanceRankActivity extends BaseActivity
 
     @AfterViews
     void init() {
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         rvRank.init(R.drawable.shap_line_divider);
         CustomerShopDataResp.isSortByCount = true;
         CustomerShopDataResp.isDesc = true;
@@ -69,10 +71,11 @@ public class PerformanceRankActivity extends BaseActivity
         refreshViewHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
         refreshViewHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
         refreshView.setRefreshViewHolder(refreshViewHolder); // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项
-        refreshView.setIsShowLoadingMoreView(false); // 设置正在加载更多时的文本// 设置正在加载更多时的文本
+        refreshView.setIsShowLoadingMoreView(false);
         initSort();
         initFilters();
         getData();
+        showLoadingDialog();
     }
 
     private void initSort() {
@@ -106,7 +109,9 @@ public class PerformanceRankActivity extends BaseActivity
         SunmiStoreApi.getInstance().getTotalSaleShopData(SpUtils.getCompanyId(), new RetrofitCallback<CustomerShopDataResp>() {
             @Override
             public void onSuccess(int code, String msg, CustomerShopDataResp data) {
+                hideLoadingDialog();
                 layoutError.setVisibility(View.GONE);
+                refreshView.endRefreshing();
                 if (data != null && data.getShopList().size() > 0) {
                     dataList.clear();
                     dataList.addAll(data.getShopList());
@@ -116,7 +121,11 @@ public class PerformanceRankActivity extends BaseActivity
 
             @Override
             public void onFail(int code, String msg, CustomerShopDataResp data) {
-                layoutError.setVisibility(View.VISIBLE);
+                hideLoadingDialog();
+                refreshView.endRefreshing();
+                if (dataList.size() <= 0) {
+                    layoutError.setVisibility(View.VISIBLE);
+                }
             }
         });
     }
@@ -135,6 +144,7 @@ public class PerformanceRankActivity extends BaseActivity
     @Click(R.id.btn_refresh)
     void refresh() {
         getData();
+        showLoadingDialog();
     }
 
     @Click(R.id.dm_motion_customer)

@@ -19,12 +19,12 @@ public class GenderCustomer implements Comparable<GenderCustomer> {
         return shopName;
     }
 
-    public int getMaleCount() {
-        return maleCount;
-    }
-
-    public int getFemaleCount() {
-        return femaleCount;
+    public int getCount() {
+        if (isSortByMale) {
+            return maleCount;
+        } else {
+            return femaleCount;
+        }
     }
 
     @Override
