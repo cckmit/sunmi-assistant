@@ -79,7 +79,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        dataType = 0;
+        dataType = DATA_TYPE_NEW_OLD;
         refreshView.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
         BGANormalRefreshViewHolder refreshViewHolder =
@@ -174,22 +174,43 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
 
     @Click(R.id.rb_new_old)
     void newOldClick() {
+        if (newOldCustomers.size() <= 0) {
+            showDarkLoading();
+            mPresenter.getCustomerShopAgeDistribution();
+        }
         switchType(DATA_TYPE_NEW_OLD);
     }
 
     @Click(R.id.rb_gender)
     void genderClick() {
+        if (genderCustomers.size() <= 0) {
+            showDarkLoading();
+            mPresenter.getCustomerShopAgeGenderDistribution();
+        }
         switchType(DATA_TYPE_GENDER);
     }
 
     @Click(R.id.rb_age)
     void ageClick() {
+        if (ageFilters == null) {
+            showDarkLoading();
+            mPresenter.ageRange();
+        }
+        if (ageCustomers.size() <= 0) {
+            showDarkLoading();
+            mPresenter.getCustomerShopAgeDistribution();
+        }
         switchType(DADA_TYPE_AGE);
     }
 
     @Click(R.id.dm_motion_sort)
     void sortClick() {
         initSort(!NewOldCustomer.isDesc);
+        Collections.sort(newOldCustomers);
+        Collections.sort(genderCustomers);
+        if (ageFilters != null) {
+            Collections.sort(ageCustomers);
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -207,6 +228,9 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
 
     @Override
     public void ageRangeSuccess(SparseArray<FaceAge> ageMap) {
+        if (dataType == DADA_TYPE_AGE) {
+            hideLoadingDialog();
+        }
         int size = ageMap.size();
         ageFilters = new ArrayList<>(size);
         String ageLabel = getString(R.string.dashboard_unit_age);
@@ -220,6 +244,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     @Override
     public void ageRangeFail(int code, String msg) {
         if (dataType == DADA_TYPE_AGE) {
+            hideLoadingDialog();
             layoutError.setVisibility(View.VISIBLE);
         }
     }
@@ -255,7 +280,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
                 }
                 break;
             case DADA_TYPE_AGE:
-                if (ageCustomers.size() <= 0 || ageFilters == null) {
+                if (ageCustomers.size() <= 0) {
                     layoutError.setVisibility(View.VISIBLE);
                 }
                 break;
@@ -272,7 +297,9 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         this.genderCustomers.clear();
         this.genderCustomers.addAll(genderCustomers);
         Collections.sort(this.genderCustomers);
-        adapter.notifyDataSetChanged();
+        if (dataType == DATA_TYPE_GENDER) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

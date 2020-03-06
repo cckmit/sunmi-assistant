@@ -52,8 +52,11 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
 
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, CardCallback callback) {
-        //ToDo 通过source判断显示的数据
-        loadCustomerLatest(companyId, callback);
+        if (mCondition.hasFs) {
+            loadCustomerLatest(companyId, callback);
+        }else if (mCondition.hasSaas){
+            loadSaleData(companyId, callback);
+        }
         return null;
     }
 
@@ -81,7 +84,11 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
             public void onSuccess(int code, String msg, TotalCustomerDataResp data) {
                 Model model = getModel();
                 model.earlCount = data.getPassengerCount();
-                loadSaleData(companyId, callback);
+                if(mCondition.hasSaas) {
+                    loadSaleData(companyId, callback);
+                }else {
+                    callback.onSuccess();
+                }
             }
 
             @Override
@@ -134,11 +141,11 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
 
     @Override
     protected void setupModel(Model model, Object response) {
-
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        setupVisible(holder);
         Context context = holder.getContext();
         TextView value = holder.getView(R.id.tv_dashboard_value);
         TextView subValue = holder.getView(R.id.tv_dashboard_subdata);
@@ -146,12 +153,22 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
         TextView amountSubData = holder.getView(R.id.tv_sales_amount_subdata);
         TextView volume = holder.getView(R.id.tv_sales_volume);
         TextView volumeSubData = holder.getView(R.id.tv_sales_volume_subdata);
-        value.setText(model.getCount(context));
-        subValue.setText(model.getEarlCount(context));
-        amount.setText(model.getAmount(context));
-        amountSubData.setText(model.getEarlAmount(context));
-        volume.setText(model.getVolume(context));
-        volumeSubData.setText(model.getEarlVolume(context));
+        if (mCondition.hasSaas && !mCondition.hasFs){
+            amount.setText(model.getAmount(context));
+            amountSubData.setText(model.getEarlAmount(context));
+            volume.setText(model.getVolume(context));
+            volumeSubData.setText(model.getEarlVolume(context));
+        }else if (!mCondition.hasSaas && mCondition.hasFs){
+            value.setText(model.getCount(context));
+            subValue.setText(model.getEarlCount(context));
+        }else {
+            value.setText(model.getCount(context));
+            subValue.setText(model.getEarlCount(context));
+            amount.setText(model.getAmount(context));
+            amountSubData.setText(model.getEarlAmount(context));
+            volume.setText(model.getVolume(context));
+            volumeSubData.setText(model.getEarlVolume(context));
+        }
     }
 
     @Override
@@ -161,14 +178,23 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
         View volume = holder.getView(R.id.layout_sales_volume);
         ImageView loading = holder.getView(R.id.iv_dashboard_loading);
         loading.setImageResource(R.mipmap.dashboard_skeleton_multi);
-        main.setVisibility(View.INVISIBLE);
-        amount.setVisibility(View.INVISIBLE);
-        volume.setVisibility(View.INVISIBLE);
+        if (!mCondition.hasSaas && mCondition.hasFs) {
+            main.setVisibility(View.INVISIBLE);
+            volume.setVisibility(View.GONE);
+            amount.setVisibility(View.GONE);
+            loading.setImageResource(R.mipmap.dashboard_skeleton_single);
+        } else {
+            main.setVisibility(View.INVISIBLE);
+            amount.setVisibility(View.INVISIBLE);
+            volume.setVisibility(View.INVISIBLE);
+            loading.setImageResource(R.mipmap.dashboard_skeleton_multi);
+        }
         loading.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        setupVisible(holder);
         TextView value = holder.getView(R.id.tv_dashboard_value);
         TextView subValue = holder.getView(R.id.tv_dashboard_subdata);
         TextView amount = holder.getView(R.id.tv_sales_amount);
@@ -181,6 +207,25 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
         amountSubData.setText(Utils.DATA_NONE);
         volume.setText(Utils.DATA_NONE);
         volumeSubData.setText(Utils.DATA_NONE);
+    }
+
+    private void setupVisible(@NonNull BaseViewHolder<Model> holder){
+        View main = holder.getView(R.id.layout_dashboard_main);
+        View amount = holder.getView(R.id.layout_sales_amount);
+        View volume = holder.getView(R.id.layout_sales_volume);
+        if (mCondition.hasSaas && !mCondition.hasFs){
+            main.setVisibility(View.GONE);
+            amount.setVisibility(View.VISIBLE);
+            volume.setVisibility(View.VISIBLE);
+        }else if (!mCondition.hasSaas && mCondition.hasFs){
+            main.setVisibility(View.VISIBLE);
+            amount.setVisibility(View.GONE);
+            volume.setVisibility(View.GONE);
+        }else {
+            main.setVisibility(View.VISIBLE);
+            amount.setVisibility(View.VISIBLE);
+            volume.setVisibility(View.VISIBLE);
+        }
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
