@@ -9,11 +9,12 @@ import com.sunmi.assistant.dashboard.card.shop.ProfileNoFsCard;
 import com.sunmi.assistant.dashboard.card.shop.ProfileOverviewCard;
 import com.sunmi.assistant.dashboard.card.shop.ProfilePeriodCard;
 import com.sunmi.assistant.dashboard.card.shop.ProfileWaitDataCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
-import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import sunmi.common.base.BasePresenter;
 
@@ -27,24 +28,49 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
 
     private static final String TAG = ProfilePresenter.class.getSimpleName();
 
-    private int mSource = -1;
+    private PageContract.ParentPresenter mParent;
+    private List<BaseRefreshCard> mList = new ArrayList<>();
+
+    private DashboardCondition mCondition;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
 
-    private PageContract.ParentPresenter mParent;
-
-    private List<BaseRefreshCard> mList = new ArrayList<>();
+    private boolean isConditionChanged = true;
 
     ProfilePresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
-        this.mParent.onChildCreate(getType(), this);
+        mCondition = this.mParent.onChildCreate(this);
     }
 
     @Override
-    public void load() {
+    public void init() {
+        if (isConditionChanged && mCondition != null) {
+            refresh(true);
+        }
+    }
+
+    @Override
+    public int getType() {
+        return Constants.PAGE_PROFILE;
+    }
+
+    private void initList() {
+        mList.clear();
+        mList.add(ProfilePeriodCard.get(this, mCondition));
+        if (mCondition.hasCustomer) {
+            mList.add(ProfileOverviewCard.get(this, mCondition));
+            mList.add(ProfileAnalysisCard.get(this, mCondition));
+        } else if (mCondition.hasFs) {
+            mList.add(ProfileWaitDataCard.get(this, mCondition));
+        } else {
+            mList.add(ProfileNoDataCard.get(this, mCondition));
+            mList.add(ProfileNoFsCard.get(this, mCondition));
+        }
+    }
+
+    private void load() {
         if (!isViewAttached()) {
             return;
         }
-
         for (BaseRefreshCard card : mList) {
             card.init(mView.getContext());
         }
@@ -53,16 +79,29 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
     }
 
     @Override
-    public void setSource(int source, boolean showLoading) {
-        if (mSource != source) {
-            mSource = source;
-            initList(mSource);
+    public void refresh(boolean showLoading) {
+        if (isConditionChanged) {
+            initList();
             load();
+            isConditionChanged = false;
         } else {
             for (BaseRefreshCard card : mList) {
                 card.refresh(showLoading);
             }
         }
+    }
+
+    @Override
+    public void setCondition(DashboardCondition condition) {
+        if (!Objects.equals(mCondition, condition)) {
+            mCondition = condition;
+            isConditionChanged = true;
+        }
+    }
+
+    @Override
+    public void pullToRefresh(boolean showLoading) {
+        mParent.refresh(true, true, true, showLoading);
     }
 
     @Override
@@ -74,28 +113,6 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
         if (isViewAttached()) {
             mView.updateTab(period);
         }
-    }
-
-    @Override
-    public void scrollToTop() {
-        if (isViewAttached()) {
-            mView.scrollToTop();
-        }
-    }
-
-    @Override
-    public void refresh(boolean showLoading) {
-        mParent.refresh(true, showLoading);
-    }
-
-    @Override
-    public int getType() {
-        return Constants.PAGE_PROFILE;
-    }
-
-    @Override
-    public int getPeriod() {
-        return mPeriod;
     }
 
     @Override
@@ -120,22 +137,20 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
     }
 
     @Override
-    public void release() {
-        detachView();
+    public void scrollToTop() {
+        if (isViewAttached()) {
+            mView.scrollToTop();
+        }
     }
 
-    private void initList(int source) {
-        mList.clear();
-        mList.add(ProfilePeriodCard.get(this, source));
-        if (Utils.hasCustomer(source)) {
-            mList.add(ProfileOverviewCard.get(this, source));
-            mList.add(ProfileAnalysisCard.get(this, source));
-        } else if (Utils.hasFs(source)) {
-            mList.add(ProfileWaitDataCard.get(this, source));
-        } else {
-            mList.add(ProfileNoDataCard.get(this, source));
-            mList.add(ProfileNoFsCard.get(this, source));
-        }
+    @Override
+    public int getPeriod() {
+        return mPeriod;
+    }
+
+    @Override
+    public void release() {
+        detachView();
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.importorder.ImportOrderPreviewActivity_;
 
 import retrofit2.Call;
@@ -28,15 +29,15 @@ public class RealtimeNoOrderCard extends BaseRefreshCard<RealtimeNoOrderCard.Mod
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    private RealtimeNoOrderCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private RealtimeNoOrderCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static RealtimeNoOrderCard get(Presenter presenter, int source) {
+    public static RealtimeNoOrderCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new RealtimeNoOrderCard(presenter, source);
+            sInstance = new RealtimeNoOrderCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -87,8 +88,8 @@ public class RealtimeNoOrderCard extends BaseRefreshCard<RealtimeNoOrderCard.Mod
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         View root = holder.getView(R.id.layout_dashboard_root);
         View content = holder.getView(R.id.layout_dashboard_content);
-        root.setBackgroundColor(!hasAuth() && !hasFs() ? mColorWhite : mColorGray);
-        mContentBg.setColor(!hasAuth() && !hasFs() ? mColorGray : mColorWhite);
+        root.setBackgroundColor(!mCondition.hasSaas && !mCondition.hasFs ? mColorWhite : mColorGray);
+        mContentBg.setColor(!mCondition.hasSaas && !mCondition.hasFs ? mColorGray : mColorWhite);
         content.setBackground(mContentBg);
     }
 

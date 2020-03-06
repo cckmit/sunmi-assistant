@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.xiaojinzi.component.impl.Router;
 
 import retrofit2.Call;
@@ -29,15 +30,15 @@ public class CustomerNoFsCard extends BaseRefreshCard<CustomerNoFsCard.Model, Ob
     private int mColorWhite;
     private GradientDrawable mContentBg;
 
-    private CustomerNoFsCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private CustomerNoFsCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static CustomerNoFsCard get(Presenter presenter, int source) {
+    public static CustomerNoFsCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new CustomerNoFsCard(presenter, source);
+            sInstance = new CustomerNoFsCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

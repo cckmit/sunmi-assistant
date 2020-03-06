@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 
 import retrofit2.Call;
@@ -23,15 +24,15 @@ public class RealtimePeriodCard extends BaseRefreshCard<RealtimePeriodCard.Model
 
     private static RealtimePeriodCard sInstance;
 
-    private RealtimePeriodCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private RealtimePeriodCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static RealtimePeriodCard get(Presenter presenter, int source) {
+    public static RealtimePeriodCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new RealtimePeriodCard(presenter, source);
+            sInstance = new RealtimePeriodCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

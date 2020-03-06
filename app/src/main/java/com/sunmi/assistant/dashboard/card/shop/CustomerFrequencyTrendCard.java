@@ -19,6 +19,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
@@ -60,15 +61,15 @@ public class CustomerFrequencyTrendCard extends BaseRefreshCard<CustomerFrequenc
 
     private XAxisLabelRenderer lineXAxisRenderer;
 
-    private CustomerFrequencyTrendCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private CustomerFrequencyTrendCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static CustomerFrequencyTrendCard get(Presenter presenter, int source) {
+    public static CustomerFrequencyTrendCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new CustomerFrequencyTrendCard(presenter, source);
+            sInstance = new CustomerFrequencyTrendCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

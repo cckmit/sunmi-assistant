@@ -17,12 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.ui.ScrollableViewPager;
 import com.sunmi.assistant.dashboard.ui.ShopMenuAdapter;
 import com.sunmi.assistant.dashboard.ui.ShopMenuAnim;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.assistant.dashboard.util.Constants;
-import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.xiaojinzi.component.impl.Router;
@@ -263,7 +263,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Click(R.id.iv_close)
     void clickClose() {
         llFloating.setVisibility(View.GONE);
-        mPresenter.saveShopBundledCloudInfo(false);
+        mPresenter.closeFloatingAd();
     }
 
     @Click(R.id.btn_floating)
@@ -326,12 +326,10 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void setSource(int source) {
+    public void setCondition(DashboardCondition condition) {
         mHasInit = true;
-        mHasData = Utils.hasAuth(source) || Utils.hasFs(source);
-        mNoFsTip.setVisibility(!Utils.hasFs(source)
-                && Utils.hasCustomer(source)
-                && !Utils.hasFloating(source) ?
+        mHasData = condition.hasSaas || condition.hasFs;
+        mNoFsTip.setVisibility(!condition.hasFs && condition.hasCustomer && !condition.isFloatingShow ?
                 View.VISIBLE : View.INVISIBLE);
         showContent();
     }
@@ -456,26 +454,27 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.netConnected) {
-            mPresenter.reload(Constants.FLAG_ALL_MASK);
+            mPresenter.load(Constants.FLAG_ALL_MASK, true, true, true);
         } else if (id == CommonNotifications.companySwitch) {
             mHasInit = false;
             mShopMenuAdapter.setCompanyName(SpUtils.getCompanyName());
-            mPresenter.reload(Constants.FLAG_ALL_MASK);
+            mPresenter.load(Constants.FLAG_ALL_MASK, true, true, true);
         } else if (id == CommonNotifications.companyNameChanged) {
             mShopMenuAdapter.setCompanyName(SpUtils.getCompanyName());
         } else if (id == CommonNotifications.shopSwitched) {
             mHasInit = false;
-            mPresenter.reload(Constants.FLAG_SAAS | Constants.FLAG_FS | Constants.FLAG_CUSTOMER | Constants.FLAG_BUNDLED_LIST);
+            mPresenter.load(Constants.FLAG_SAAS | Constants.FLAG_FS | Constants.FLAG_CUSTOMER | Constants.FLAG_BUNDLED_LIST,
+                    true, true, true);
         } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.importShop
                 || id == CommonNotifications.shopCreate) {
-            mPresenter.reload(Constants.FLAG_SHOP);
+            mPresenter.load(Constants.FLAG_SHOP, true, true, true);
         } else if (id == CommonNotifications.shopSaasDock) {
-            mPresenter.reload(Constants.FLAG_SAAS);
+            mPresenter.load(Constants.FLAG_SAAS, true, true, true);
         } else if (id == IpcConstants.refreshIpcList) {
-            mPresenter.reload(Constants.FLAG_FS | Constants.FLAG_BUNDLED_LIST);
+            mPresenter.load(Constants.FLAG_FS | Constants.FLAG_BUNDLED_LIST, true, true, true);
         } else if (id == CommonNotifications.cloudStorageChange) {
-            mPresenter.reload(Constants.FLAG_BUNDLED_LIST);
+            mPresenter.load(Constants.FLAG_BUNDLED_LIST, true, true, true);
         } else if (id == CommonNotifications.perspectiveSwitch) {
             this.switchPerspective(SpUtils.getPerspective());
             mPresenter.switchPerspective(SpUtils.getPerspective());

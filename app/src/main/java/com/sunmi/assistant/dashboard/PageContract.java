@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard;
 import android.content.Context;
 
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 
 import java.util.List;
 
@@ -16,9 +17,9 @@ public interface PageContract {
 
     interface ParentPresenter {
 
-        void onChildCreate(int pageType, PagePresenter presenter);
+        DashboardCondition onChildCreate(PagePresenter presenter);
 
-        void refresh(boolean forceReload, boolean showLoading);
+        void refresh(boolean reloadCondition, boolean clearCache, boolean onlyCurrentPage, boolean showLoading);
 
     }
 
@@ -37,17 +38,17 @@ public interface PageContract {
 
     interface PagePresenter {
 
-        void load();
+        void init();
 
-        void setSource(int source, boolean showLoading);
+        int getType();
+
+        void refresh(boolean showLoading);
+
+        void setCondition(DashboardCondition condition);
 
         void setPeriod(int period);
 
         void scrollToTop();
-
-        void refresh(boolean showLoading);
-
-        int getType();
 
         int getPeriod();
 

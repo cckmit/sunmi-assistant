@@ -8,8 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
-import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.text.DecimalFormat;
 
@@ -56,45 +56,25 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     private int mPositionMax = -1;
 
     protected Presenter mPresenter;
+    protected DashboardCondition mCondition;
     protected int mState;
-    protected int mSource;
     protected int mPeriod;
 
-    protected BaseRefreshCard(Presenter presenter, int source) {
+    protected BaseRefreshCard(Presenter presenter, DashboardCondition condition) {
         this.mModel = createModel();
         if (this.mModel == null) {
             throw new RuntimeException("createModel() must return NON-NULL model!");
         }
-        reset(presenter, source);
+        reset(presenter, condition);
     }
 
-    public void reset(Presenter presenter, int source) {
+    public void reset(Presenter presenter, DashboardCondition condition) {
         mModel.valid = false;
-        mModel.init(source);
+        mModel.init(condition);
         this.mPresenter = presenter;
         this.mState = STATE_INIT;
         this.mPeriod = Constants.TIME_PERIOD_INIT;
-        this.mSource = source;
-    }
-
-    public boolean hasAuth() {
-        return Utils.hasAuth(mSource);
-    }
-
-    public boolean hasImport() {
-        return Utils.hasImport(mSource);
-    }
-
-    public boolean hasFs() {
-        return Utils.hasFs(mSource);
-    }
-
-    public boolean hasCustomer() {
-        return Utils.hasCustomer(mSource);
-    }
-
-    public boolean hasFloating() {
-        return Utils.hasFloating(mSource);
+        this.mCondition = condition;
     }
 
     public Model getModel() {
@@ -107,49 +87,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         //noinspection unchecked
         adapter.register((Class<Model>) mModel.getClass(), this);
     }
-//
-//    protected void updateModels() {
-//        if (Looper.myLooper() != Looper.getMainLooper()) {
-//            mHandler.post(this::updateModels);
-//            return;
-//        }
-//        mModels.clear();
-//        mPositionMin = -1;
-//        mPositionMax = -1;
-//        BaseRecyclerAdapter adapter = getAdapter();
-//        int count = adapter.getItemCount();
-//        int min = count;
-//        int max = -1;
-//        for (int i = count - 1; i >= 0; i--) {
-//            if (adapter.getItemType(i) == this) {
-//                min = Math.min(min, i);
-//                max = Math.max(max, i);
-//                //noinspection unchecked
-//                mModels.add((Model) adapter.getItem(i));
-//            }
-//        }
-//        if (min <= max) {
-//            mPositionMin = min;
-//            mPositionMax = max;
-//        }
-//    }
-//
-//    protected void clearModels() {
-//        if (Looper.myLooper() != Looper.getMainLooper()) {
-//            mHandler.post(this::clearModels);
-//            return;
-//        }
-//        mModels.clear();
-//        mPositionMin = -1;
-//        mPositionMax = -1;
-//        BaseRecyclerAdapter adapter = getAdapter();
-//        int count = adapter.getItemCount();
-//        for (int i = count - 1; i >= 0; i--) {
-//            if (adapter.getItemType(i) == this) {
-//                adapter.remove(i);
-//            }
-//        }
-//    }
 
     public void setPeriod(int period, boolean forceLoad) {
         if (!forceLoad && this.mPeriod == period) {
@@ -187,7 +124,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         if (showLoading) {
             updateViews();
         }
-        CardCallback callback = new CardCallback(mSource, mPeriod);
+        CardCallback callback = new CardCallback(mPeriod);
         Call<BaseResponse<Resp>> call = load(SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod, callback);
         mCall.set(call, SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod);
     }
@@ -298,11 +235,9 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     protected class CardCallback extends RetrofitCallback<Resp> {
 
-        private int source;
         private int period;
 
-        public CardCallback(int source, int period) {
-            this.source = source;
+        public CardCallback(int period) {
             this.period = period;
         }
 
@@ -311,7 +246,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             LogCat.d(TAG, "Dashboard card load data pass. ");
             mState = STATE_SUCCESS;
             mModel.valid = true;
-            mModel.source = this.source;
             mModel.period = this.period;
             setupModel(mModel, null);
             updateViews();
@@ -323,7 +257,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             LogCat.d(TAG, "Dashboard card load Success. " + msg);
             mState = STATE_SUCCESS;
             mModel.valid = true;
-            mModel.source = this.source;
             mModel.period = this.period;
             setupModel(mModel, data);
             updateViews();
@@ -334,7 +267,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         public void onFail(int code, String msg, Resp data) {
             LogCat.e(TAG, "Dashboard card load Failed. " + msg);
             mState = STATE_FAILED;
-            mModel.source = this.source;
             mModel.period = this.period;
             mPresenter.showFailedTip();
             updateViews();
@@ -392,13 +324,12 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     public static abstract class BaseModel {
         public boolean valid = false;
-        public int source;
         public int period;
 
         public int[] padding;
         public int[] margin;
 
-        public void init(int source) {
+        public void init(DashboardCondition condition) {
         }
 
         public void setMargin(int left, int top, int right, int bottom) {
@@ -413,9 +344,9 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
 
     public interface Presenter {
 
-        void setPeriod(int period);
+        void pullToRefresh(boolean showLoading);
 
-        void refresh(boolean showLoading);
+        void setPeriod(int period);
 
         void showLoading();
 

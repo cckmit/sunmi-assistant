@@ -3,13 +3,15 @@ package com.sunmi.assistant.dashboard.page;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
-import com.sunmi.assistant.dashboard.card.total.TotalRealTimeOverviewCard;
+import com.sunmi.assistant.dashboard.card.total.TotalRealtimeOverviewCard;
 import com.sunmi.assistant.dashboard.card.total.TotalRealtimePerformanceCard;
 import com.sunmi.assistant.dashboard.card.total.TotalRealtimeTrendCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import sunmi.common.base.BasePresenter;
 
@@ -22,28 +24,43 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
 
     private static final String TAG = TotalRealtimePresenter.class.getSimpleName();
 
-    private static final int IMPORT_STATE_SHOW = 0;
-    private static final int IMPORT_STATE_DISMISS = 1;
-
-    private int mSource = -1;
-    private int mPeriod = Constants.TIME_PERIOD_INIT;
-    private int mImportState = IMPORT_STATE_DISMISS;
 
     private PageContract.ParentPresenter mParent;
-
     private List<BaseRefreshCard> mList = new ArrayList<>();
+
+    private DashboardCondition mCondition;
+    private int mPeriod = Constants.TIME_PERIOD_INIT;
+
+    private boolean isConditionChanged = true;
 
     TotalRealtimePresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
-        this.mParent.onChildCreate(getType(), this);
+        mCondition = this.mParent.onChildCreate(this);
     }
 
     @Override
-    public void load() {
+    public void init() {
+        if (isConditionChanged && mCondition != null) {
+            refresh(true);
+        }
+    }
+
+    @Override
+    public int getType() {
+        return Constants.PAGE_TOTAL_REALTIME;
+    }
+
+    private void initList() {
+        mList.clear();
+        mList.add(TotalRealtimeOverviewCard.get(this, mCondition));
+        mList.add(TotalRealtimeTrendCard.get(this, mCondition));
+        mList.add(TotalRealtimePerformanceCard.get(this, mCondition));
+    }
+
+    private void load() {
         if (!isViewAttached()) {
             return;
         }
-
         for (BaseRefreshCard card : mList) {
             card.init(mView.getContext());
         }
@@ -52,16 +69,29 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
     }
 
     @Override
-    public void setSource(int source, boolean showLoading) {
-        if (mSource != source) {
-            mSource = source;
-            initList(mSource);
+    public void refresh(boolean showLoading) {
+        if (isConditionChanged) {
+            initList();
             load();
+            isConditionChanged = false;
         } else {
             for (BaseRefreshCard card : mList) {
                 card.refresh(showLoading);
             }
         }
+    }
+
+    @Override
+    public void setCondition(DashboardCondition condition) {
+        if (!Objects.equals(mCondition, condition)) {
+            mCondition = condition;
+            isConditionChanged = true;
+        }
+    }
+
+    @Override
+    public void pullToRefresh(boolean showLoading) {
+        mParent.refresh(true, true, true, showLoading);
     }
 
     @Override
@@ -73,28 +103,6 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
         if (isViewAttached()) {
             mView.updateTab(period);
         }
-    }
-
-    @Override
-    public void scrollToTop() {
-        if (isViewAttached()) {
-            mView.scrollToTop();
-        }
-    }
-
-    @Override
-    public void refresh(boolean showLoading) {
-        mParent.refresh(true, showLoading);
-    }
-
-    @Override
-    public int getType() {
-        return Constants.PAGE_TOTAL_REALTIME;
-    }
-
-    @Override
-    public int getPeriod() {
-        return mPeriod;
     }
 
     @Override
@@ -119,15 +127,20 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
     }
 
     @Override
-    public void release() {
-        detachView();
+    public void scrollToTop() {
+        if (isViewAttached()) {
+            mView.scrollToTop();
+        }
     }
 
-    private void initList(int source) {
-        mList.clear();
-        mList.add(TotalRealTimeOverviewCard.get(this,source));
-        mList.add(TotalRealtimeTrendCard.get(this, source));
-        mList.add(TotalRealtimePerformanceCard.get(this, source));
+    @Override
+    public int getPeriod() {
+        return mPeriod;
+    }
+
+    @Override
+    public void release() {
+        detachView();
     }
 
     @Override

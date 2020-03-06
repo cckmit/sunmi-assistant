@@ -62,7 +62,7 @@ public class ProfileFragment extends BaseMvpFragment<ProfilePresenter>
         mPresenter.attachView(this);
         initRefreshLayout(context);
         initRecycler(context);
-        mPresenter.load();
+        mPresenter.init();
     }
 
     private void initRefreshLayout(Context context) {
@@ -125,7 +125,7 @@ public class ProfileFragment extends BaseMvpFragment<ProfilePresenter>
 
     @Override
     public void onRefreshLayoutBeginRefreshing(RefreshLayout layout) {
-        mPresenter.refresh(true);
+        mPresenter.pullToRefresh(true);
         layout.postDelayed(layout::endRefreshing, 500);
     }
 

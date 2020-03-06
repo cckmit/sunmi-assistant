@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.subpage.PerformanceRankActivity_;
 import com.sunmi.assistant.dashboard.util.Utils;
 
@@ -37,15 +38,15 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
 
     private DetailListAdapter mAdapter;
 
-    private TotalRealtimePerformanceCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private TotalRealtimePerformanceCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static TotalRealtimePerformanceCard get(Presenter presenter, int source) {
+    public static TotalRealtimePerformanceCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new TotalRealtimePerformanceCard(presenter, source);
+            sInstance = new TotalRealtimePerformanceCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -248,7 +249,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
         }
 
         @Override
-        public void init(int source) {
+        public void init(DashboardCondition condition) {
             type = TYPE_CUSTOMER;
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);

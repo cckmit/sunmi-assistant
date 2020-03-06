@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -21,15 +22,15 @@ public class ProfileWaitDataCard extends BaseRefreshCard<ProfileWaitDataCard.Mod
 
     private static ProfileWaitDataCard sInstance;
 
-    private ProfileWaitDataCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private ProfileWaitDataCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static ProfileWaitDataCard get(Presenter presenter, int source) {
+    public static ProfileWaitDataCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new ProfileWaitDataCard(presenter, source);
+            sInstance = new ProfileWaitDataCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

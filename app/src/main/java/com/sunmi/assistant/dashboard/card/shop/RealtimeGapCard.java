@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -21,15 +22,15 @@ public class RealtimeGapCard extends BaseRefreshCard<RealtimeGapCard.Model, Obje
 
     private static RealtimeGapCard sInstance;
 
-    private RealtimeGapCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private RealtimeGapCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static RealtimeGapCard get(Presenter presenter, int source) {
+    public static RealtimeGapCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new RealtimeGapCard(presenter, source);
+            sInstance = new RealtimeGapCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -63,14 +64,14 @@ public class RealtimeGapCard extends BaseRefreshCard<RealtimeGapCard.Model, Obje
         Context context = holder.getContext();
         int color;
         int height;
-        if (hasAuth() || hasFs()) {
+        if (mCondition.hasSaas || mCondition.hasFs) {
             color = ContextCompat.getColor(context, R.color.common_fill);
         } else {
             color = 0xFFFFFFFF;
         }
-        if (hasFloating()){
+        if (mCondition.isFloatingShow) {
             height = (int) context.getResources().getDimension(R.dimen.dp_80);
-        }else if (hasAuth() && hasFs()) {
+        } else if (mCondition.hasSaas && mCondition.hasFs) {
             height = (int) context.getResources().getDimension(R.dimen.dp_24);
         } else {
             height = (int) context.getResources().getDimension(R.dimen.dp_32);

@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.renderer.XAxisRenderer;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.IMarkerFormatter;
@@ -55,15 +56,15 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
     private MarkerFormatter markerFormatter;
 
 
-    private CustomerFrequencyDistributionCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private CustomerFrequencyDistributionCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static CustomerFrequencyDistributionCard get(Presenter presenter, int source) {
+    public static CustomerFrequencyDistributionCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new CustomerFrequencyDistributionCard(presenter, source);
+            sInstance = new CustomerFrequencyDistributionCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -335,8 +336,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         private List<BarEntry> dataSet = new ArrayList<>();
 
         @Override
-        public void init(int source) {
-            super.init(source);
+        public void init(DashboardCondition condition) {
             dataSet.clear();
         }
     }

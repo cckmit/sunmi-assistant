@@ -13,11 +13,12 @@ import com.sunmi.assistant.dashboard.card.shop.RealtimeOrderImportCard;
 import com.sunmi.assistant.dashboard.card.shop.RealtimeOverviewCard;
 import com.sunmi.assistant.dashboard.card.shop.RealtimePeriodCard;
 import com.sunmi.assistant.dashboard.card.shop.RealtimeTrendCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
-import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.utils.CommonHelper;
@@ -35,25 +36,96 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
     private static final int IMPORT_STATE_SHOW = 0;
     private static final int IMPORT_STATE_DISMISS = 1;
 
-    private int mSource = -1;
+    private PageContract.ParentPresenter mParent;
+    private List<BaseRefreshCard> mList = new ArrayList<>();
+
+    private DashboardCondition mCondition;
     private int mPeriod = Constants.TIME_PERIOD_INIT;
     private int mImportState = IMPORT_STATE_DISMISS;
 
-    private PageContract.ParentPresenter mParent;
-
-    private List<BaseRefreshCard> mList = new ArrayList<>();
+    private boolean isConditionChanged = true;
 
     RealtimePresenter(PageContract.ParentPresenter parent) {
         this.mParent = parent;
-        this.mParent.onChildCreate(getType(), this);
+        mCondition = this.mParent.onChildCreate(this);
     }
 
     @Override
-    public void load() {
-        if (!isViewAttached()) {
+    public void init() {
+        if (isConditionChanged && mCondition != null) {
+            refresh(true);
+        }
+    }
+
+    @Override
+    public int getType() {
+        return Constants.PAGE_OVERVIEW;
+    }
+
+    private void initList() {
+        mList.clear();
+        mList.add(RealtimePeriodCard.get(this, mCondition));
+        // No any data
+        if (!mCondition.hasSaas && !mCondition.hasFs) {
+            mList.add(RealtimeNoDataCard.get(this, mCondition));
+            if (!CommonHelper.isGooglePlay()) {
+                mList.add(RealtimeNoOrderCard.get(this, mCondition));
+            }
+            mList.add(RealtimeNoFsCard.get(this, mCondition));
+            mList.add(RealtimeGapCard.get(this, mCondition));
             return;
         }
 
+        // Overview data card
+        mList.add(RealtimeOverviewCard.get(this, mCondition));
+
+        // Shop enter rate card.
+        if (mCondition.hasFs) {
+            mList.add(RealtimeEnterRateCard.get(this, mCondition));
+        }
+
+        // Realtime trend card (line & bar)
+        if (mCondition.hasSaas || mCondition.hasFs) {
+            mList.add(RealtimeTrendCard.get(this, mCondition));
+        }
+
+        // Distribution card (pie)
+        if (mCondition.hasFs) {
+            mList.add(RealtimeDistributionCard.get(this, mCondition));
+        }
+
+        // No order card or import card
+        if (!CommonHelper.isGooglePlay()) {
+            if (!mCondition.hasSaas) {
+                mList.add(RealtimeNoOrderCard.get(this, mCondition));
+            } else if (!mCondition.hasImport || mImportState == IMPORT_STATE_SHOW) {
+                RealtimeOrderImportCard card = RealtimeOrderImportCard.get(this, mCondition);
+                card.setListener(this);
+                mList.add(card);
+            }
+        }
+
+        // No fs card
+        if (!mCondition.hasFs) {
+            mList.add(RealtimeNoFsCard.get(this, mCondition));
+        }
+        mList.add(RealtimeGapCard.get(this, mCondition));
+    }
+
+    @Override
+    public void onImportStateChange(int state) {
+        if (state == Constants.IMPORT_STATE_COMPLETE) {
+            this.mImportState = IMPORT_STATE_DISMISS;
+            scrollToTop();
+        } else {
+            this.mImportState = IMPORT_STATE_SHOW;
+        }
+    }
+
+    private void load() {
+        if (!isViewAttached()) {
+            return;
+        }
         for (BaseRefreshCard card : mList) {
             card.init(mView.getContext());
         }
@@ -62,16 +134,29 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
     }
 
     @Override
-    public void setSource(int source, boolean showLoading) {
-        if (mSource != source) {
-            mSource = source;
-            initList(mSource);
+    public void refresh(boolean showLoading) {
+        if (isConditionChanged) {
+            initList();
             load();
+            isConditionChanged = false;
         } else {
             for (BaseRefreshCard card : mList) {
                 card.refresh(showLoading);
             }
         }
+    }
+
+    @Override
+    public void setCondition(DashboardCondition condition) {
+        if (!Objects.equals(mCondition, condition)) {
+            mCondition = condition;
+            isConditionChanged = true;
+        }
+    }
+
+    @Override
+    public void pullToRefresh(boolean showLoading) {
+        mParent.refresh(true, true, true, showLoading);
     }
 
     @Override
@@ -83,28 +168,6 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
         if (isViewAttached()) {
             mView.updateTab(period);
         }
-    }
-
-    @Override
-    public void scrollToTop() {
-        if (isViewAttached()) {
-            mView.scrollToTop();
-        }
-    }
-
-    @Override
-    public void refresh(boolean showLoading) {
-        mParent.refresh(true, showLoading);
-    }
-
-    @Override
-    public int getType() {
-        return Constants.PAGE_OVERVIEW;
-    }
-
-    @Override
-    public int getPeriod() {
-        return mPeriod;
     }
 
     @Override
@@ -129,70 +192,20 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
     }
 
     @Override
-    public void onImportStateChange(int state) {
-        if (state == Constants.IMPORT_STATE_COMPLETE) {
-            this.mImportState = IMPORT_STATE_DISMISS;
-            scrollToTop();
-        } else {
-            this.mImportState = IMPORT_STATE_SHOW;
+    public void scrollToTop() {
+        if (isViewAttached()) {
+            mView.scrollToTop();
         }
+    }
+
+    @Override
+    public int getPeriod() {
+        return mPeriod;
     }
 
     @Override
     public void release() {
         detachView();
-    }
-
-    private void initList(int source) {
-        mList.clear();
-        mList.add(RealtimePeriodCard.get(this, source));
-        // No any data
-        if (!Utils.hasAuth(source) && !Utils.hasFs(source)) {
-            mList.add(RealtimeNoDataCard.get(this, source));
-            if (!CommonHelper.isGooglePlay()) {
-                mList.add(RealtimeNoOrderCard.get(this, source));
-            }
-            mList.add(RealtimeNoFsCard.get(this, source));
-            mList.add(RealtimeGapCard.get(this, source));
-            return;
-        }
-
-        // Overview data card
-        if (Utils.hasAuth(source) || Utils.hasFs(source)) {
-            mList.add(RealtimeOverviewCard.get(this, source));
-        }
-
-        // Shop enter rate card.
-        if (Utils.hasFs(source)) {
-            mList.add(RealtimeEnterRateCard.get(this, source));
-        }
-
-        // Realtime trend card (line & bar)
-        if (Utils.hasAuth(source) || Utils.hasFs(source)) {
-            mList.add(RealtimeTrendCard.get(this, source));
-        }
-
-        // Distribution card (pie)
-        if (Utils.hasFs(source)) {
-            mList.add(RealtimeDistributionCard.get(this, source));
-        }
-
-        // No order card or import card
-        if (!CommonHelper.isGooglePlay()) {
-            if (!Utils.hasAuth(source)) {
-                mList.add(RealtimeNoOrderCard.get(this, source));
-            } else if (!Utils.hasImport(source) || mImportState == IMPORT_STATE_SHOW) {
-                RealtimeOrderImportCard card = RealtimeOrderImportCard.get(this, source);
-                card.setListener(this);
-                mList.add(card);
-            }
-        }
-
-        // No fs card
-        if (!Utils.hasFs(source)) {
-            mList.add(RealtimeNoFsCard.get(this, source));
-        }
-        mList.add(RealtimeGapCard.get(this, source));
     }
 
     @Override

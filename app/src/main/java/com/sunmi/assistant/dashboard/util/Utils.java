@@ -329,26 +329,6 @@ public class Utils {
         return s;
     }
 
-    public static boolean hasAuth(int source) {
-        return (source & Constants.DATA_SOURCE_AUTH) != 0;
-    }
-
-    public static boolean hasImport(int source) {
-        return (source & Constants.DATA_SOURCE_IMPORT) != 0;
-    }
-
-    public static boolean hasFs(int source) {
-        return (source & Constants.DATA_SOURCE_FS) != 0;
-    }
-
-    public static boolean hasCustomer(int source) {
-        return (source & Constants.DATA_SOURCE_CUSTOMER) != 0;
-    }
-
-    public static boolean hasFloating(int source) {
-        return (source & Constants.DATA_SOURCE_FLOATING) != 0;
-    }
-
     public static void setupLineChart(LineChart chart) {
         Context context = chart.getContext();
         // 设置通用图表

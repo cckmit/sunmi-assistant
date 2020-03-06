@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -21,15 +22,15 @@ public class ProfileNoDataCard extends BaseRefreshCard<ProfileNoDataCard.Model, 
 
     private static ProfileNoDataCard sInstance;
 
-    private ProfileNoDataCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private ProfileNoDataCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static ProfileNoDataCard get(Presenter presenter, int source) {
+    public static ProfileNoDataCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new ProfileNoDataCard(presenter, source);
+            sInstance = new ProfileNoDataCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }

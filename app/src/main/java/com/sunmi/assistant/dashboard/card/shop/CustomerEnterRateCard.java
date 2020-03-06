@@ -15,6 +15,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
@@ -56,15 +57,15 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
     private float mDashSpaceLength;
 
 
-    private CustomerEnterRateCard(Presenter presenter, int source) {
-        super(presenter, source);
+    private CustomerEnterRateCard(Presenter presenter, DashboardCondition condition) {
+        super(presenter, condition);
     }
 
-    public static CustomerEnterRateCard get(Presenter presenter, int source) {
+    public static CustomerEnterRateCard get(Presenter presenter, DashboardCondition condition) {
         if (sInstance == null) {
-            sInstance = new CustomerEnterRateCard(presenter, source);
+            sInstance = new CustomerEnterRateCard(presenter, condition);
         } else {
-            sInstance.reset(presenter, source);
+            sInstance.reset(presenter, condition);
         }
         return sInstance;
     }
@@ -254,7 +255,7 @@ public class CustomerEnterRateCard extends BaseRefreshCard<CustomerEnterRateCard
         private List<ChartEntry> dataSet = new ArrayList<>();
 
         @Override
-        public void init(int source) {
+        public void init(DashboardCondition condition) {
             dataSet.clear();
         }
 

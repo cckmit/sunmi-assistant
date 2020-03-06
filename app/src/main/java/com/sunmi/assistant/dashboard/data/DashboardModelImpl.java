@@ -11,6 +11,7 @@ import sunmi.common.model.IpcDevice;
 import sunmi.common.model.SaasStatus;
 import sunmi.common.model.ShopBundledCloudInfo;
 import sunmi.common.model.ShopInfo;
+import sunmi.common.utils.CommonHelper;
 
 /**
  * @author yinhui
@@ -36,12 +37,17 @@ public class DashboardModelImpl implements DashboardModel {
     }
 
     @Override
-    public void getShopList(int companyId, Callback<SparseArray<ShopInfo>> callback) {
+    public void loadShopList(int companyId, Callback<SparseArray<ShopInfo>> callback) {
         repo.getShopList(companyId, callback);
     }
 
     @Override
     public void hasSaasState(int companyId, Callback<Integer> callback) {
+        // 海外版无SaaS服务
+        if (CommonHelper.isGooglePlay()) {
+            callback.onLoaded(Constants.SAAS_STATE_NONE);
+            return;
+        }
         repo.getSaasStatus(companyId, new Callback<SparseArray<List<SaasStatus>>>() {
             @Override
             public void onLoaded(SparseArray<List<SaasStatus>> result) {
@@ -71,6 +77,11 @@ public class DashboardModelImpl implements DashboardModel {
 
     @Override
     public void hasSaasState(int companyId, int shopId, Callback<Integer> callback) {
+        // 海外版无SaaS服务
+        if (CommonHelper.isGooglePlay()) {
+            callback.onLoaded(Constants.SAAS_STATE_NONE);
+            return;
+        }
         repo.getSaasStatus(companyId, new Callback<SparseArray<List<SaasStatus>>>() {
             @Override
             public void onLoaded(SparseArray<List<SaasStatus>> result) {
@@ -152,6 +163,11 @@ public class DashboardModelImpl implements DashboardModel {
 
     @Override
     public void isFloatingShow(int companyId, int shopId, Callback<Boolean> callback) {
+        // 海外版无云服务
+        if (CommonHelper.isGooglePlay()) {
+            callback.onLoaded(false);
+            return;
+        }
         repo.getBundledList(companyId, shopId, new Callback<ShopBundledCloudInfo>() {
             @Override
             public void onLoaded(ShopBundledCloudInfo result) {
@@ -168,6 +184,9 @@ public class DashboardModelImpl implements DashboardModel {
     @Override
     public void loadCondition(int flag, DashboardCondition condition,
                               int companyId, Callback<DashboardCondition> callback) {
+        if (condition == null) {
+            condition = new DashboardCondition();
+        }
         this.loadFlag = flag & Constants.FLAG_CONDITION_COMPANY_MASK;
         this.callback = callback;
 
@@ -182,6 +201,9 @@ public class DashboardModelImpl implements DashboardModel {
     @Override
     public void loadCondition(int flag, DashboardCondition condition,
                               int companyId, int shopId, Callback<DashboardCondition> callback) {
+        if (condition == null) {
+            condition = new DashboardCondition();
+        }
         this.loadFlag = flag & Constants.FLAG_CONDITION_SHOP_MASK;
         this.callback = callback;
 
@@ -229,7 +251,8 @@ public class DashboardModelImpl implements DashboardModel {
 
         @Override
         public void onLoaded(Integer result) {
-            condition.saasState = result;
+            condition.hasSaas = result != Constants.SAAS_STATE_NONE;
+            condition.hasImport = result == Constants.SAAS_STATE_IMPORT;
             loadComplete(Constants.FLAG_SAAS, condition, true);
         }
 
