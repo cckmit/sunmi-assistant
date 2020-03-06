@@ -21,7 +21,9 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.router.IpcApi;
 import sunmi.common.router.SunmiServiceApi;
+import sunmi.common.utils.NetworkUtils;
 import sunmi.common.utils.SpUtils;
+import sunmi.common.utils.Utils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.webview.BaseJSCall;
@@ -214,6 +216,47 @@ public class JSCall extends BaseJSCall {
         }
     }
 
+    @JavascriptInterface
+    public void appNetworkAccessType() {
+        try {
+            String params = new JSONObject()
+                    .put("eventName", "getNetworkAccessType")
+                    .put("params", new JSONObject().put("networkType", NetworkUtils.getNetworkType(context)))
+                    .toString();
+            emitJsEvent(params);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @JavascriptInterface
+    public boolean checkAppInstallationStatus(String arg) {
+        try {
+            JSONObject jsonObject = new JSONObject(arg);
+            if (jsonObject.has("appName")) {
+                String pkgName = getPkgName(jsonObject.getString("appName"));
+                String params = new JSONObject()
+                        .put("eventName", "getAppInstallStatus")
+                        .put("params", new JSONObject().put("install", Utils.checkAppInstalled(context, pkgName)))
+                        .toString();
+                emitJsEvent(params);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void emitJsEvent(String params) {
+        context.runOnUiThread(() -> webView.loadUrl("javascript:emitJsEvent('" + params + "')"));
+    }
+
+    private String getPkgName(String appName) {
+        if (TextUtils.equals("dingding", appName)) {
+            return "com.alibaba.android.rimet";
+        }
+        return "";
+    }
     /*private void launchMiniProgram(String userName, String path, String miniProgramType) {
         if (api == null) return;
         if (!api.isWXAppInstalled()) {
