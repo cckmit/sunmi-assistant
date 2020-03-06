@@ -19,12 +19,12 @@ public class NewOldCustomer implements Comparable<NewOldCustomer> {
         return shopName;
     }
 
-    public int getNewCount() {
-        return newCount;
-    }
-
-    public int getOldCount() {
-        return oldCount;
+    public int getCount() {
+        if (isSortByOld) {
+            return oldCount;
+        } else {
+            return newCount;
+        }
     }
 
     @Override

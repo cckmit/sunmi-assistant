@@ -22,15 +22,6 @@
 
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
-    <include
-        android:id="@+id/layout_error"
-        layout="@layout/include_network_error"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
     <LinearLayout
         android:id="@+id/dm_motion_sort"
@@ -79,6 +70,16 @@
         android:layout_height="@dimen/dp_0_5"
         android:background="@color/c_divider"
         app:layout_constraintTop_toBottomOf="@id/dm_motion_sort" />
+
+    <include
+        android:id="@+id/layout_error"
+        layout="@layout/include_network_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
     <RadioGroup
         android:id="@+id/rg_type"

@@ -181,7 +181,7 @@ public interface CustomerInterface {
      * @param request
      * @return
      */
-    @POST(companyPath + "history/ageRegular/branch/getByDay")
+    @POST(companyPath + "history/ageRegular/branch/getByDate")
     Call<BaseResponse<CustomerShopDistributionResp>> getCustomerShopAgeDistribution(@Body BaseRequest request);
 
     /**
