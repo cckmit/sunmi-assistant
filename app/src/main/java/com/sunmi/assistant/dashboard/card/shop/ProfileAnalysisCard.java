@@ -208,7 +208,7 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
 
         Context context = holder.getContext();
         View view = holder.itemView;
-        if (mCondition.isFloatingShow) {
+        if (mCondition.hasFloating) {
             int paddingBottom = (int) context.getResources().getDimension(R.dimen.dp_80);
             view.setPaddingRelative(0, 0, 0, paddingBottom);
         } else {

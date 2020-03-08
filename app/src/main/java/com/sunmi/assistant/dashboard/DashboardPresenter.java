@@ -18,6 +18,7 @@ import com.sunmi.assistant.dashboard.page.RealtimeFragment_;
 import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment;
 import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment_;
 import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             load(getConditionMask(), clearCache, onlyCurrentPage, showLoading);
             return;
         }
+        LogCat.i(Utils.TAG, "Just refresh. Current=" + onlyCurrentPage);
         for (int i = 0, size = mPages.size(); i < size; i++) {
             PageContract.PagePresenter page = mPages.valueAt(i);
             if (!onlyCurrentPage || page.getType() == mPageType) {
@@ -83,6 +85,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void load(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading) {
+        LogCat.i(Utils.TAG, "Loading. Flag=" + flag
+                + "; Clear=" + clearCache + "; Current=" + onlyCurrentPage);
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
         if (needLoadShop(flag)) {
@@ -125,16 +129,19 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         } else if (mFloatingAdClosed) {
             flag &= ~Constants.FLAG_BUNDLED_LIST;
         }
+        final int finalFlag = flag;
         Callback<DashboardCondition> callback = new Callback<DashboardCondition>() {
             @Override
             public void onLoaded(DashboardCondition result) {
-                LogCat.i(TAG, "Load condition success.");
+                LogCat.i(Utils.TAG, "Load condition success. Flag=" + finalFlag
+                        + "; Clear=" + clearCache + "; Current=" + onlyCurrentPage);
                 mCondition = result;
                 if (mFloatingAdClosed) {
-                    mCondition.isFloatingShow = false;
+                    mCondition.hasFloating = false;
                 }
                 for (int i = 0, size = mPages.size(); i < size; i++) {
                     PageContract.PagePresenter page = mPages.valueAt(i);
+                    LogCat.i(Utils.TAG, "Page:" + page.getType());
                     page.setCondition(mCondition);
                     if (!onlyCurrentPage || page.getType() == mPageType) {
                         page.refresh(showLoading);
@@ -142,13 +149,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
                 if (isViewAttached()) {
                     mView.setCondition(mCondition);
-                    mView.updateFloating(!mFloatingAdClosed && mCondition.isFloatingShow);
+                    mView.updateFloating(!mFloatingAdClosed && mCondition.hasFloating);
                 }
             }
 
             @Override
             public void onFail() {
-                LogCat.e(TAG, "Load condition failed.");
+                LogCat.e(Utils.TAG, "Load condition failed.");
                 if (isViewAttached()) {
                     mView.loadDataFailed();
                 }
@@ -171,7 +178,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void switchToTotalPerspective(boolean refresh) {
-        LogCat.d("yinhui", "presenter: switch to total.");
+        LogCat.i(Utils.TAG, "presenter: switch to total. Refresh=" + refresh);
         mCondition = null;
         mPerspective = CommonConstants.PERSPECTIVE_TOTAL;
         mPages.clear();
@@ -192,7 +199,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void switchToShopPerspective(boolean refresh) {
-        LogCat.d("yinhui", "presenter: switch to shop.");
+        LogCat.i(Utils.TAG, "presenter: switch to shop. Refresh=" + refresh);
         mCondition = null;
         mPerspective = CommonConstants.PERSPECTIVE_SHOP;
         mPages.clear();

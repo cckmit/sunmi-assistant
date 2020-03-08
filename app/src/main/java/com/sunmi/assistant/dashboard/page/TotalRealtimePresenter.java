@@ -16,6 +16,7 @@ import java.util.Objects;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.Interval;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -25,7 +26,6 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
         implements TotalRealtimeContract.Presenter, BaseRefreshCard.Presenter {
 
     private static final String TAG = TotalRealtimePresenter.class.getSimpleName();
-
 
     private PageContract.ParentPresenter mParent;
     private List<BaseRefreshCard> mList = new ArrayList<>();
@@ -43,6 +43,7 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
 
     @Override
     public void init() {
+        LogCat.d(Utils.TAG, TAG + ": INIT, Condition=" + mCondition);
         mPeriod = Constants.TIME_PERIOD_DAY;
         mPeriodTime = Utils.getPeriodTimestamp(mPeriod, 0);
         if (isViewAttached()) {

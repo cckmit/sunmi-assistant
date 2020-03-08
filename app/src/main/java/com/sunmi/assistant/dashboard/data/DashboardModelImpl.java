@@ -312,7 +312,7 @@ public class DashboardModelImpl implements DashboardModel {
 
         @Override
         public void onLoaded(Boolean result) {
-            condition.isFloatingShow = result;
+            condition.hasFloating = result;
             loadComplete(Constants.FLAG_BUNDLED_LIST, condition, true);
         }
 
