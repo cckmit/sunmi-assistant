@@ -122,12 +122,17 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private void loadCondition(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading) {
         if (clearCache) {
             model.clearCache(flag);
+        } else if (mFloatingAdClosed) {
+            flag &= ~Constants.FLAG_BUNDLED_LIST;
         }
         Callback<DashboardCondition> callback = new Callback<DashboardCondition>() {
             @Override
             public void onLoaded(DashboardCondition result) {
                 LogCat.i(TAG, "Load condition success.");
                 mCondition = result;
+                if (mFloatingAdClosed) {
+                    mCondition.isFloatingShow = false;
+                }
                 for (int i = 0, size = mPages.size(); i < size; i++) {
                     PageContract.PagePresenter page = mPages.valueAt(i);
                     page.setCondition(mCondition);

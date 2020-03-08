@@ -45,12 +45,6 @@ public class Constants {
     public static final int DATA_TYPE_NEW = 21;
     public static final int DATA_TYPE_OLD = 22;
 
-    public static final int DATA_SOURCE_AUTH = 0x1;
-    public static final int DATA_SOURCE_IMPORT = 0x2;
-    public static final int DATA_SOURCE_FS = 0x4;
-    public static final int DATA_SOURCE_CUSTOMER = 0x8;
-    public static final int DATA_SOURCE_FLOATING = 0x10;
-
     public static final int SAAS_STATE_NONE = 0;
     public static final int SAAS_STATE_AUTH = 1;
     public static final int SAAS_STATE_IMPORT = 2;
