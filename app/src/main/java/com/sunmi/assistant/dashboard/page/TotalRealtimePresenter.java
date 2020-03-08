@@ -45,6 +45,9 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
     public void init() {
         mPeriod = Constants.TIME_PERIOD_DAY;
         mPeriodTime = Utils.getPeriodTimestamp(mPeriod, 0);
+        if (isViewAttached()) {
+            mView.updateTab(mPeriod);
+        }
         if (isConditionChanged && mCondition != null) {
             refresh(true);
         }
