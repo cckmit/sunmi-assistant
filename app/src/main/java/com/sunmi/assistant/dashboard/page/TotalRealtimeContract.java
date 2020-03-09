@@ -9,6 +9,7 @@ import com.sunmi.assistant.dashboard.PageContract;
 public interface TotalRealtimeContract {
 
     interface View extends PageContract.PageView {
+        void showTimeDialog(int period, long periodTime);
     }
 
     interface Presenter extends PageContract.PagePresenter {

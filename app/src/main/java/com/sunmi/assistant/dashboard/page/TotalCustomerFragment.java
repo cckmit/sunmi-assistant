@@ -1,5 +1,6 @@
 package com.sunmi.assistant.dashboard.page;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshViewHolder;
+import com.sunmi.assistant.dashboard.util.Constants;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -25,6 +27,7 @@ import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.utils.log.LogCat;
+import sunmi.common.view.dialog.BottomDialog;
 
 /**
  * @author yinhui
@@ -45,6 +48,10 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalRealtimePresente
     private LinearLayoutManager mLayoutManager;
     private ItemStickyListener mStickyListener;
     private RefreshViewHolder mRefreshHeaderHolder;
+
+    private Dialog mDialogTimeDay;
+    private Dialog mDialogTimeWeek;
+    private Dialog mDialogTimeMonth;
 
     @AfterViews
     void init() {
@@ -132,6 +139,30 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalRealtimePresente
     @Override
     public boolean onRefreshLayoutBeginLoadingMore(RefreshLayout refreshLayout) {
         return false;
+    }
+
+    @Override
+    public void showTimeDialog(int period, long periodTime) {
+        // TODO: Add dialog
+        if (period == Constants.TIME_PERIOD_DAY) {
+            if (mDialogTimeDay == null) {
+                mDialogTimeDay = new BottomDialog.Builder(getActivity())
+                        .create();
+            }
+            mDialogTimeDay.show();
+        } else if (period == Constants.TIME_PERIOD_WEEK) {
+            if (mDialogTimeWeek == null) {
+                mDialogTimeWeek = new BottomDialog.Builder(getActivity())
+                        .create();
+            }
+            mDialogTimeWeek.show();
+        } else if (period == Constants.TIME_PERIOD_MONTH) {
+            if (mDialogTimeMonth == null) {
+                mDialogTimeMonth = new BottomDialog.Builder(getActivity())
+                        .create();
+            }
+            mDialogTimeMonth.show();
+        }
     }
 
     private class ItemStickyListener extends RecyclerView.OnScrollListener {
