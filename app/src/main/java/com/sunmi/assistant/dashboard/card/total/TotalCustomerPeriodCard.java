@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.card.total;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
@@ -8,6 +9,8 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -23,6 +26,8 @@ public class TotalCustomerPeriodCard extends BaseRefreshCard<TotalCustomerPeriod
 
     private static TotalCustomerPeriodCard sInstance;
 
+    private OnTimeClickListener listener;
+
     private TotalCustomerPeriodCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         super(presenter, condition, period, periodTime);
     }
@@ -34,6 +39,10 @@ public class TotalCustomerPeriodCard extends BaseRefreshCard<TotalCustomerPeriod
             sInstance.reset(presenter, condition, period, periodTime);
         }
         return sInstance;
+    }
+
+    public void setListener(OnTimeClickListener l) {
+        this.listener = l;
     }
 
     @Override
@@ -65,34 +74,52 @@ public class TotalCustomerPeriodCard extends BaseRefreshCard<TotalCustomerPeriod
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
-//        holder.addOnClickListener(R.id.tv_dashboard_yesterday, (h, model, position) ->
-//                mPresenter.setPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, -1)));
-//        holder.addOnClickListener(R.id.tv_dashboard_week, (h, model, position) ->
-//                mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, 0)));
-//        holder.addOnClickListener(R.id.tv_dashboard_month, (h, model, position) ->
-//                mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, 0)));
-//        holder.getView(R.id.tv_dashboard_yesterday).setVisibility(View.VISIBLE);
+        holder.addOnClickListener(R.id.tv_dashboard_day, (h, model, position) ->
+                mPresenter.setPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, -1)));
+        holder.addOnClickListener(R.id.tv_dashboard_week, (h, model, position) ->
+                mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, 0)));
+        holder.addOnClickListener(R.id.tv_dashboard_month, (h, model, position) ->
+                mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, 0)));
+        holder.addOnClickListener(R.id.tv_dashboard_time, (h, model, position) -> {
+            if (listener != null) {
+                listener.onTimeClicked();
+            }
+        });
         return holder;
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        TextView today = holder.getView(R.id.tv_dashboard_day);
+        Context context = holder.getContext();
+        TextView day = holder.getView(R.id.tv_dashboard_day);
         TextView week = holder.getView(R.id.tv_dashboard_week);
         TextView month = holder.getView(R.id.tv_dashboard_month);
+        TextView time = holder.getView(R.id.tv_dashboard_time);
 
-//        today.setSelected(model.period == Constants.TIME_PERIOD_DAY);
-//        today.setTypeface(null, model.period == Constants.TIME_PERIOD_DAY ? Typeface.BOLD : Typeface.NORMAL);
-//        week.setSelected(model.period == Constants.TIME_PERIOD_WEEK);
-//        week.setTypeface(null, model.period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
-//        month.setSelected(model.period == Constants.TIME_PERIOD_MONTH);
-//        month.setTypeface(null, model.period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
+        day.setSelected(model.period == Constants.TIME_PERIOD_DAY);
+        day.setTypeface(null, model.period == Constants.TIME_PERIOD_DAY ? Typeface.BOLD : Typeface.NORMAL);
+        week.setSelected(model.period == Constants.TIME_PERIOD_WEEK);
+        week.setTypeface(null, model.period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
+        month.setSelected(model.period == Constants.TIME_PERIOD_MONTH);
+        month.setTypeface(null, model.period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
+
+        String pattern;
+        if (model.period == Constants.TIME_PERIOD_DAY) {
+            pattern = context.getString(R.string.dashboard_unit_time_pattern_day);
+        } else if (model.period == Constants.TIME_PERIOD_WEEK) {
+            pattern = context.getString(R.string.dashboard_unit_time_pattern_week);
+        } else if (model.period == Constants.TIME_PERIOD_MONTH) {
+            pattern = context.getString(R.string.dashboard_unit_time_pattern_month);
+        } else {
+            pattern = Utils.FORMAT_DATE;
+        }
+        time.setText(Utils.formatTime(pattern, model.periodTime.start));
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
     }
 
-    public interface onTimeClickListener {
-
+    public interface OnTimeClickListener {
+        void onTimeClicked();
     }
 }

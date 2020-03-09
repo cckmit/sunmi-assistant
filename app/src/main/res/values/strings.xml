@@ -73,7 +73,9 @@
     <string name="dashboard_var_customer_count2">The number of visitors</string>
     <string name="dashboard_unit_frequency_count">Times %d</string>
     <string name="dashboard_unit_frequency_count_above">Times More than %d times</string>
-
+    <string name="dashboard_unit_time_pattern_day">yyyy年MM月dd日</string>
+    <string name="dashboard_unit_time_pattern_week">yyyy年第ww周</string>
+    <string name="dashboard_unit_time_pattern_month">yyyy年MM月</string>
     <string name="dashboard_time_week_1">1st Week</string>
     <string name="dashboard_time_week_2">2nd Week</string>
     <string name="dashboard_time_week_3">3rd Week</string>

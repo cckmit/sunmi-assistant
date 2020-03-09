@@ -121,7 +121,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
         if (showLoading) {
             updateViews();
         }
-        CardCallback callback = new CardCallback(mPeriod);
+        CardCallback callback = new CardCallback(mPeriod, mPeriodTime);
         Call<BaseResponse<Resp>> call = load(SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod, mPeriodTime, callback);
 //        mCall.set(call, SpUtils.getCompanyId(), SpUtils.getShopId(), mPeriod);
     }
@@ -240,9 +240,11 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     protected class CardCallback extends RetrofitCallback<Resp> {
 
         private int period;
+        private Interval periodTime;
 
-        public CardCallback(int period) {
+        public CardCallback(int period, Interval periodTime) {
             this.period = period;
+            this.periodTime = periodTime;
         }
 
         @MainThread
@@ -251,6 +253,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             mState = STATE_SUCCESS;
             mModel.valid = true;
             mModel.period = this.period;
+            mModel.periodTime = this.periodTime;
             setupModel(mModel, null);
             updateViews();
         }
@@ -262,6 +265,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             mState = STATE_SUCCESS;
             mModel.valid = true;
             mModel.period = this.period;
+            mModel.periodTime = this.periodTime;
             setupModel(mModel, data);
             updateViews();
         }
@@ -272,6 +276,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             LogCat.e(TAG, "Dashboard card load Failed. " + msg);
             mState = STATE_FAILED;
             mModel.period = this.period;
+            mModel.periodTime = this.periodTime;
             mPresenter.showFailedTip();
             updateViews();
         }
@@ -280,6 +285,7 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     public static abstract class BaseModel {
         public boolean valid = false;
         public int period;
+        public Interval periodTime;
 
         public int[] padding;
         public int[] margin;
