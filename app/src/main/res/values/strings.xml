@@ -50,6 +50,8 @@
     <string name="dashboard_time_last_week">Last Week</string>
     <string name="dashboard_time_last_month">Last Month</string>
     <string name="dashboard_time_before_day">较前一日</string>
+    <string name="dashboard_time_before_week">较前一周</string>
+    <string name="dashboard_time_before_month">较前一月</string>
     <string name="dashboard_var_time">Time</string>
     <string name="dashboard_var_total_sales_amount">Total Sales</string>
     <string name="dashboard_var_customer">Customer Visits</string>

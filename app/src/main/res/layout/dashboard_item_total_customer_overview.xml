@@ -66,14 +66,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_total_customer"
             app:layout_constraintStart_toEndOf="@+id/tv_total_customer_subtitle"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_sales_amount_subdata"/>
+            app:layout_constraintEnd_toStartOf="@id/tv_total_customer_subdata"/>
 
         <TextView
-            android:id="@+id/tv_sales_amount_subdata"
+            android:id="@+id/tv_total_customer_subdata"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_22"
-            android:textColor="@color/dashboard_trend_text"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -151,7 +151,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_22"
-            android:textColor="@color/dashboard_trend_text"
+            android:textColor="@color/text_caption"
             android:textSize="@dimen/sp_12"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
