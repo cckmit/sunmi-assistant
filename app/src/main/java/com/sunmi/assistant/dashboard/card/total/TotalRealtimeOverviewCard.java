@@ -215,6 +215,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
         View main = holder.getView(R.id.layout_dashboard_main);
         View amount = holder.getView(R.id.layout_sales_amount);
         View volume = holder.getView(R.id.layout_sales_volume);
+        holder.getView(R.id.iv_dashboard_loading).setVisibility(View.GONE);
         if (mCondition.hasSaas && !mCondition.hasFs) {
             main.setVisibility(View.GONE);
             amount.setVisibility(View.VISIBLE);
