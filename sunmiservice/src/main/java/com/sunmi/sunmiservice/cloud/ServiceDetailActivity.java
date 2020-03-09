@@ -26,6 +26,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.rpc.RpcErrorCode;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.WebViewParamsUtils;
@@ -73,6 +74,8 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     boolean isBind;
     @Extra
     String deviceName;
+    @Extra
+    String serviceNo;
 
     private ServiceDetailBean bean;
 
@@ -95,7 +98,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new ServiceDetailPresenter(mSn);
         mPresenter.attachView(this);
-        mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
+        getServiceDetail();
         showLoadingDialog();
     }
 
@@ -106,13 +109,17 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             initNetworkNormal();
             this.bean = bean;
             String sn = bean.getDeviceSn();
-            tvServiceName.setText(bean.getServiceName());
+            if (bean.getServiceType() == CommonConstants.SERVICE_TYPE_CLOUD_7) {
+                tvServiceName.setText(R.string.service_cloud_7);
+            } else {
+                tvServiceName.setText(R.string.service_cloud_30);
+            }
             if (isBind) {
                 tvDeviceName.setText(deviceName);
             } else {
                 tvDeviceName.setText("- -");
                 tvStatus.setText(R.string.str_unbind);
-                // btnRenewal.setVisibility(View.GONE);
+                btnRenewal.setVisibility(View.GONE);
             }
             tvDeviceModel.setText(bean.getDeviceModel());
             tvDeviceSn.setText(sn);
@@ -120,7 +127,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
             tvExpireTime.setText(DateTimeUtils.secondToDate(bean.getExpireTime(), "yyyy-MM-dd HH:mm"));
             if (bean.getStatus() != CommonConstants.SERVICE_EXPIRED) {
                 tvRemaining.setText(DateTimeUtils.secondToPeriod(bean.getValidTime()));
-            } else {
+            } else if (isBind) {
                 tvStatus.setText(R.string.str_expired);
                 tvRemaining.setText("- -");
             }
@@ -140,7 +147,7 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     @Override
     public void didReceivedNotification(int id, Object... args) {
         if (CommonNotifications.cloudStorageChange == id) {
-            mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
+            getServiceDetail();
         }
     }
 
@@ -154,8 +161,10 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
     private void initNetworkNormal() {
         rlService.setVisibility(View.VISIBLE);
         rlOrder.setVisibility(View.VISIBLE);
-        btnRenewal.setVisibility(View.VISIBLE);
         networkError.setVisibility(View.GONE);
+        if (!CommonHelper.isGooglePlay()) {
+            btnRenewal.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -177,6 +186,14 @@ public class ServiceDetailActivity extends BaseMvpActivity<ServiceDetailPresente
 
     @Click(resName = "btn_refresh")
     void refreshClick() {
-        mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
+        getServiceDetail();
+    }
+
+    private void getServiceDetail() {
+        if (serviceNo == null) {
+            mPresenter.getServiceDetailByDevice(ServiceConstants.CLOUD_STORAGE_CATEGORY);
+        } else {
+            mPresenter.getServiceDetailByServiceNo(serviceNo);
+        }
     }
 }

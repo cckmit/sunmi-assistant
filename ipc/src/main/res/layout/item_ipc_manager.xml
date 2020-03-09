@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_96"
+    android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/dp_15"
     android:layout_marginTop="@dimen/dp_8"
     android:layout_marginEnd="@dimen/dp_15"
@@ -25,6 +25,7 @@
         android:layout_toEndOf="@+id/iv_icon"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_16"
+        android:layout_toStartOf="@+id/btn_detail"
         android:textStyle="bold" />
 
     <ImageView
@@ -32,8 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_28"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_toEndOf="@id/tv_title"
+        android:layout_marginStart="@dimen/dp_140"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -43,8 +43,10 @@
         android:layout_below="@+id/tv_title"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_26"
         android:layout_toEndOf="@+id/iv_icon"
-        android:textColor="@color/text_caption"
+        android:textColor="@color/color_ipc_manger_summary"
+        android:layout_toStartOf="@+id/btn_detail"
         android:textSize="@dimen/sp_12" />
 
     <Button

@@ -43,6 +43,13 @@ public class ConfigManager implements BaseNotification.NotificationCenterDelegat
 
     public void load(@Nullable Callback<?> callback) {
         clearLoaded();
+        if (CommonHelper.isGooglePlay()) {
+            getPrefs().edit()
+                    .putBoolean(PREFS_SERVICE_ENABLE_LOADED, true)
+                    .putBoolean(PREFS_CASH_SECURITY_ENABLE, false)
+                    .apply();
+            return;
+        }
         SunmiStoreApi.getInstance().getServiceEnable(new RetrofitCallback<ServiceEnableResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceEnableResp data) {

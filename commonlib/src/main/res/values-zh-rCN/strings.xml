@@ -121,8 +121,8 @@
     <string name="sunmi_device_more">更多支持设备\n敬请期待…</string>
     <string name="str_setting_detail">查看详情</string>
     <string name="str_coming_soon">敬请期待</string>
-    <string name="str_num_10_thousands">万</string>
-    <string name="str_num_100_million">亿</string>
+    <string name="str_num_10_thousands">%.2f万</string>
+    <string name="str_num_100_million">%.2f亿</string>
     <string name="str_num_people">%d人</string>
     <string name="str_num_10_thousands_people">%s万人</string>
     <string name="str_num_people_total">总人数</string>
@@ -132,6 +132,7 @@
     <string name="str_support_manage">服务管理</string>
     <string name="str_cloud_manage">云存储服务管理</string>
     <string name="str_remaining_validity_period">剩余有效期：%s</string>
+    <string name="tip_validity_period">剩余有效期：%s\n请至服务管理进行续费</string>
     <string name="ipc_device_name">设备名称：%s</string>
     <string name="str_dev_sn">SN：%s</string>
     <string name="str_dev_mac">MAC：%s</string>
@@ -179,4 +180,18 @@
     <string name="tip_device_offline_check_content">1、设备是否开机\n2、设备是否休眠\n3、设备连接的网络是否保持通畅</string>
     <string name="tip_device_offline_management">当您的设备离线时，离线管理操作：</string>
     <string name="tip_device_offline_management_content">1、若手机与设备处于同一局域网（即手机连接设备Wi-Fi）手机可通过局域网，管理离线设备绝大部分功能\n\n2、若手机与设备处于不同网络环境（即手机未连接设备Wi-Fi），只能管理离线设备部分功能</string>
+    <string name="calendar_day_sunday">日</string>
+    <string name="calendar_day_monday">一</string>
+    <string name="calendar_day_tuesday">二</string>
+    <string name="calendar_day_wednesday">三</string>
+    <string name="calendar_day_thursday">四</string>
+    <string name="calendar_day_friday">五</string>
+    <string name="calendar_day_saturday">六</string>
+    <string name="str_refresh_pull">下拉刷新</string>
+    <string name="str_refresh_release">释放更新</string>
+    <string name="str_refresh_loading">加载中…</string>
+    <string name="service_cloud_7">7天云存储服务</string>
+    <string name="service_cloud_30">30天云存储服务</string>
+    <string name="str_renew_now">立即续订</string>
+    <string name="tip_renew_service">服务已过期，请尽快续订</string>
 </resources>

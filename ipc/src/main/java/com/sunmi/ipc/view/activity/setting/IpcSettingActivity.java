@@ -114,8 +114,8 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
             mAdjustScreen.setVisibility(View.GONE);
-        } else if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
-            mAdjustScreen.setEnabled(false);
+        } else {
+            mAdjustScreen.setVisibility(View.VISIBLE);
         }
         silWdr.setOnCheckedChangeListener((buttonView, isChecked) -> setWDR(isChecked));
         silLight.setOnCheckedChangeListener((buttonView, isChecked) -> setSwLight(isChecked));
@@ -305,11 +305,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         if (!NetworkUtils.isNetworkAvailable(context)) {
             shortTip(R.string.str_net_exception);
-            return;
-        }
-        SunmiDevice device = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (device == null) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
             return;
         }
         showLoadingDialog();
@@ -507,9 +502,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     private void fsAdjust(SunmiDevice device) {
         String versionName = device.getFirmware();
         if (IpcUtils.isNewVersion(versionName, IpcConstants.IPC_VERSION_NO_SDCARD_CHECK)) {
-            getSdCardStatus(device);
-        } else {
             startFsAdjust(device);
+        } else {
+            getSdCardStatus(device);
         }
     }
 
@@ -519,10 +514,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
 
     private void startFsAdjust(SunmiDevice device) {
         hideLoadingDialog();
-        if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(device.getDeviceid())) {
-            shortTip(R.string.ipc_setting_tip_network_dismatch);
-            return;
-        }
         ScreenAdjustSettingActivity_.intent(this).mDevice(device).isFromLive(isFromLive)
                 .mVideoRatio(16f / 9f).start();
     }
@@ -692,7 +683,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     void setWifiUnknown() {
         mWifiName.setEndContent(getString(R.string.str_unknown));
         mWifiName.setEnabled(false);
-        mAdjustScreen.setEnabled(false);
     }
 
     @UiThread
@@ -711,7 +701,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 IPCCall.getInstance().getIsWire(IpcSettingActivity.this, bean.getIp());
                 if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
                     mWifiName.setEnabled(true);
-                    mAdjustScreen.setEnabled(true);
                 }
             }
         }, 1200);

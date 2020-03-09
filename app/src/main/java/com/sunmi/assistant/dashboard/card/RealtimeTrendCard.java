@@ -33,6 +33,7 @@ import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisRateLabelRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
@@ -206,6 +207,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         barYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         barYAxis.setYOffset(-5f);
         barYAxis.setXOffset(-1f);
+        barYAxis.setValueFormatter(new YAxisVolumeLabelFormatter(context));
 
         // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 1f);
@@ -266,7 +268,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
             for (CustomerRateResp.Item bean : list) {
                 long timestamp = Math.abs(bean.getTime());
                 int count = Math.abs(bean.getOrderCount());
-                int customer = Math.abs(bean.getPassengerFlowCount());
+                int customer = Math.abs(bean.getPassengerFlowCount() + bean.getEntryHeadCount());
                 float x = Utils.encodeChartXAxisFloat(model.period, timestamp);
                 float rate = customer == 0 ? 0f : Math.min((float) count / customer, 1f);
                 rateList.add(new ChartEntry(x, rate, timestamp));
@@ -359,7 +361,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
 
         int color = ContextCompat.getColor(line.getContext(), R.color.common_orange);
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
-            lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR);
+            lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
         } else {
             lineMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
         }
@@ -407,7 +409,7 @@ public class RealtimeTrendCard extends BaseRefreshCard<RealtimeTrendCard.Model, 
         }
 
         if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
-            barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR);
+            barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
         } else {
             barMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
         }

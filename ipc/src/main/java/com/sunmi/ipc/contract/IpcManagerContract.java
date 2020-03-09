@@ -1,5 +1,7 @@
 package com.sunmi.ipc.contract;
 
+import android.content.Intent;
+
 import com.sunmi.ipc.model.IpcManageBean;
 import com.sunmi.ipc.utils.IOTCClient;
 
@@ -21,7 +23,7 @@ public interface IpcManagerContract {
 
         void getStorageSuccess(IpcManageBean bean);
 
-        void getCashVideoServiceSuccess(ArrayList<CashServiceInfo> devices, boolean alreadySubscribe);
+        void getCashVideoServiceSuccess(ArrayList<CashServiceInfo> devices, boolean alreadySubscribe, int status, int validTime);
 
         void videoParamsObtained(int compensation, int saturation, int contrast);
     }
@@ -33,6 +35,8 @@ public interface IpcManagerContract {
         void getStorageList(String deviceSn, IpcManageBean item);
 
         void getCashVideoService(int deviceId);
+
+        void onServiceSubscribeResult(Intent intent,String deviceSn);
     }
 
 }

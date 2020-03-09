@@ -32,6 +32,7 @@ import sunmi.common.model.HealthInfoBean;
 import sunmi.common.model.NetEventListBean;
 import sunmi.common.model.PlatformInfo;
 import sunmi.common.model.ServiceEnableResp;
+import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
@@ -118,6 +119,12 @@ public class SunmiStoreApi {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void getServiceList(RetrofitCallback<ServiceListResp> callback) {
+        SunmiStoreRetrofitClient.getInstance().create(AdInterface.class)
+                .getServiceList(new BaseRequest(""))
+                .enqueue(callback);
     }
 
     /**
@@ -904,7 +911,7 @@ public class SunmiStoreApi {
      *
      * @param companyId 是	number	商户ID
      * @param shopId    是	number	门店ID
-     * @param type     2:本周 3:本月 4:昨日
+     * @param type      2:本周 3:本月 4:昨日
      */
     public void getHistoryCustomerDetail(int companyId, int shopId, int type,
                                          RetrofitCallback<CustomerHistoryDetailResp> callback) {

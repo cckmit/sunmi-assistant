@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string-array name="dashboard_purchase_type">
-        <item>支付宝</item>
-        <item>微信</item>
-        <item>现金</item>
-        <item>银行卡刷卡</item>
-        <item>银联二维码</item>
-        <item>其他</item>
+    <string-array name="dashboard_week_list">
+        <item>@string/dashboard_card_customer_week_1</item>
+        <item>@string/dashboard_card_customer_week_2</item>
+        <item>@string/dashboard_card_customer_week_3</item>
+        <item>@string/dashboard_card_customer_week_4</item>
+        <item>@string/dashboard_card_customer_week_5</item>
+        <item>@string/dashboard_card_customer_week_6</item>
     </string-array>
 
     <string-array name="msg_tag" tools:ignore="ExtraTranslation">

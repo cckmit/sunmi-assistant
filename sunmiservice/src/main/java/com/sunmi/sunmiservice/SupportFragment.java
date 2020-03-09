@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashServiceInfo;
@@ -53,7 +54,6 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     View layoutContent;
     @ViewById(resName = "layoutNetworkError")
     View layoutNetworkError;
-
     @ViewById(resName = "tv_cloud_storage")
     TextView tvCloudStorage;
     @ViewById(resName = "iv_tip_free")
@@ -68,6 +68,10 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     LinearLayout llCashPrevent;
     @ViewById(resName = "ll_cash_video")
     LinearLayout llCashVideo;
+    @ViewById(resName = "tv_loan")
+    TextView tvLoan;
+    @ViewById(resName = "ll_loan")
+    LinearLayout llLoan;
 
     /**
      * 第三方app和微信通信的openApi接口
@@ -86,9 +90,9 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
 
     private void regToWx() {
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
-        api = WXAPIFactory.createWXAPI(mActivity, SunmiServiceConfig.WECHAT_APP_ID, true);
+        api = WXAPIFactory.createWXAPI(mActivity, CommonConfig.WECHAT_APP_ID, true);
         // 将应用的appId注册到微信
-        api.registerApp(SunmiServiceConfig.WECHAT_APP_ID);
+        api.registerApp(CommonConfig.WECHAT_APP_ID);
     }
 
     @AfterViews
@@ -99,11 +103,18 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         initTitleBar();
         initCloudCard();
         initCashPreventCardVisibility(false);
+        if (SpUtils.getLoanStatus()) {
+            tvLoan.setVisibility(View.VISIBLE);
+            llLoan.setVisibility(View.VISIBLE);
+        }
         mPresenter.load();
     }
 
     private void initTitleBar() {
-        titleBar.getRightTextView().setOnClickListener(v -> ServiceManageActivity_.intent(mActivity).start());
+        titleBar.getRightTextView().setOnClickListener(v ->
+                WebViewCloudServiceActivity_.intent(mActivity)
+                        .mUrl(CommonConstants.H5_SERVICE_MANAGER)
+                        .params(WebViewParamsUtils.getUserInfoParams()).start());
     }
 
     @UiThread
@@ -161,6 +172,23 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         mPresenter.load();
     }
 
+    @Click(resName = "ll_online_course")
+    void onlineCourseClick() {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
+            return;
+        }
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_SERVICE_COURSE)
+                .params(WebViewParamsUtils.getUserInfoParams()).showTitleBar(true).start();
+    }
+
+    @Click(resName = "ll_loan")
+    void commerceBankClick() {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
+            return;
+        }
+        WebViewActivity_.intent(mActivity).url(CommonConstants.H5_LOAN).start();
+    }
+
     @Click(resName = "ll_cash_prevent")
     void cashPreventClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
@@ -184,7 +212,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         if (cashServiceInfoList.isEmpty()) {
             // 没有设备开通收银视频，进入开通页
             WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO)
-                    .params(WebViewParamsUtils.getCashVideoParams()).start();
+                    .params(WebViewParamsUtils.getCashVideoParams(null, 0)).start();
         } else if (hasCloudService) {
             // 有设备开通收银视频，并已经开通云存储服务，进入收银视频总览页
             Router.withApi(IpcApi.class)
@@ -213,13 +241,13 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
                 SunmiServiceConfig.WECHAT_MINI_PROGRAM_TYPE);
     }
 
-    @Click(resName = "tv_weBank")
+   /* @Click(resName = "tv_weBank")
     void weBankClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
         WebViewActivity_.intent(mActivity).url(SunmiServiceConfig.WE_BANK_HOST).start();
-    }
+    }*/
 
     @Click(resName = "tv_recruit")
     void recruitClick() {

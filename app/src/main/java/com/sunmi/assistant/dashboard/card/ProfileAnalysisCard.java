@@ -42,7 +42,6 @@ import sunmi.common.utils.CacheManager;
  */
 public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Model, CustomerHistoryDetailResp> {
 
-    private static final int NUM_10_THOUSANDS = 10000;
     private static final int MAX_ITEM_COUNT = 3;
 
     private static ProfileAnalysisCard sInstance;
@@ -243,11 +242,8 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
 
     private static class DetailListAdapter extends CommonAdapter<Item> {
 
-        private String mNum10Thousands;
-
         private DetailListAdapter(Context context) {
             super(context, R.layout.dashboard_item_profile_analysis_item);
-            mNum10Thousands = context.getString(R.string.str_num_10_thousands);
         }
 
         @Override
@@ -266,26 +262,23 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
             if (item.state == Item.STATE_ERROR) {
                 ivAvatar.setImageResource(R.mipmap.dashboard_customer_avatar_error);
                 tvTitle.setText(R.string.dashboard_card_customer_none);
-                tvCount.setText(DATA_ZERO);
-                tvRatio.setText(DATA_ZERO_RATIO);
-                tvOldRatio.setText(DATA_NONE);
-                tvFrequency.setText(DATA_NONE);
+                tvCount.setText(Utils.DATA_ZERO);
+                tvRatio.setText(Utils.DATA_ZERO_RATIO);
+                tvOldRatio.setText(Utils.DATA_ZERO_RATIO);
+                tvFrequency.setText(Utils.DATA_ZERO);
             } else {
                 float ratio = item.total > 0 ? (float) item.count / item.total : 0f;
                 float oldRatio = item.count > 0 ? (float) item.oldCount / item.count : 0f;
-                String count = item.count > NUM_10_THOUSANDS ?
-                        FORMAT_THOUSANDS_DOUBLE_DECIMAL.format((float) item.count / NUM_10_THOUSANDS)
-                                + mNum10Thousands : String.valueOf(item.count);
 
                 ivAvatar.setImageResource(item.gender == 1 ?
                         R.mipmap.dashboard_customer_avatar_male : R.mipmap.dashboard_customer_avatar_female);
                 tvTitle.setText(item.name);
-                tvCount.setText(count);
-                tvRatio.setText(Utils.createPercentText(ratio, false, true));
-                tvOldRatio.setText(Utils.createPercentText(oldRatio, false, true));
+                tvCount.setText(Utils.formatNumber(mContext, item.count, false, true));
+                tvRatio.setText(Utils.formatPercent(ratio, false, true));
+                tvOldRatio.setText(Utils.formatPercent(oldRatio, false, true));
 
                 float value = item.uniqueCount > 0 ? (float) item.count / item.uniqueCount : 0f;
-                tvFrequency.setText(Utils.createFrequencyText(mContext, item.period, value, true));
+                tvFrequency.setText(Utils.formatFrequency(mContext, value, item.period, true));
             }
         }
 

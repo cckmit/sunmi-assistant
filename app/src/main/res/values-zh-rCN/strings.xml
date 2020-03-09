@@ -70,6 +70,7 @@
     <string name="dashboard_card_tab_all">全部</string>
     <string name="dashboard_card_tab_new">新客</string>
     <string name="dashboard_card_tab_old">熟客</string>
+    <string name="dashboard_card_tab_unknown">未识别</string>
 
     <string name="dashboard_card_marker_time">时间</string>
     <string name="dashboard_card_male">男性</string>
@@ -77,7 +78,7 @@
     <string name="dashboard_card_age_label">岁</string>
     <string name="dashboard_card_pie_hole_ratio">%s占比</string>
 
-    <string name="dashboard_card_customer_tip">按照人数占比进行排列</string>
+    <string name="dashboard_card_customer_tip">基于人脸采集数据，按照客流占比排列</string>
     <string name="dashboard_card_customer_count">进店人数</string>
     <string name="dashboard_card_customer_ratio">总人数占比</string>
     <string name="dashboard_card_customer_old_ratio">熟客占比</string>
@@ -89,10 +90,17 @@
     <string name="dashboard_card_customer_frequency_marker_title">到店人数</string>
     <string name="dashboard_card_customer_frequency_marker_value">次数 %d次</string>
     <string name="dashboard_card_customer_frequency_marker_count_above">次数 %d次以上</string>
-    <string name="dashboard_card_customer_week_count">第%d周</string>
+
+    <string name="dashboard_card_customer_week_1">第1周</string>
+    <string name="dashboard_card_customer_week_2">第2周</string>
+    <string name="dashboard_card_customer_week_3">第3周</string>
+    <string name="dashboard_card_customer_week_4">第4周</string>
+    <string name="dashboard_card_customer_week_5">第5周</string>
+    <string name="dashboard_card_customer_week_6">第6周</string>
+
     <string name="dashboard_card_customer_none">暂无客流数据</string>
     <string name="dashboard_card_customer_group_frequency">客群到店频次</string>
-    <string name="dashboard_card_customer_avg_enter">时间段内顾客的平均到店次数</string>
+    <string name="dashboard_card_customer_avg_enter">基于人脸采集数据，时间段内顾客的平均到店次数</string>
     <string name="dashboard_card_customer_frequency_distribution">到店次数分布</string>
     <string name="dashborad_card_customer_week_frequency_trend">周到店频次趋势</string>
     <string name="dashborad_card_customer_month_frequency_trend">月到店频次趋势</string>
@@ -118,6 +126,8 @@
     <string name="dashboard_no_customer_wait_tip">客流数据会在次日01:00~02:00更新</string>
     <string name="dashboard_no_customer_fs_tip">您已解绑了门店中的摄像机设备</string>
     <string name="dashboard_no_customer_fs_add_btn">添加设备</string>
+
+    <string name="dashboard_tip_customer_distribution">基于人脸采集数据</string>
 
     <string name="str_platform_list">平台列表</string>
     <string name="str_platform_skip">跳过</string>
@@ -358,6 +368,7 @@
     <string name="str_logging_in">正在登录…</string>
     <string name="str_verification_code">校验验证码…</string>
     <string name="str_now_reset_psw">正在重置密码…</string>
+    <string name="dialog_protocol_and">和</string>
     <string name="dialog_protocol_title">商米用户协议及隐私政策</string>
     <string name="dialog_protocol_msg_1">我们将通过</string>
     <string name="dialog_protocol_msg_2">帮助您了解我们收集、使用、存储和共享个人信息的情况，以及您所享有的相关权利。您可在相关页面访问、更正、删除个人信息并管理您的权利。如您同意，请点击“同意”开始接受我们的服务。</string>

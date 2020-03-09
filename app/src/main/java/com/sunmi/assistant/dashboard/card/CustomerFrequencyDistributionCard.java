@@ -24,6 +24,7 @@ import com.sunmi.assistant.dashboard.ui.chart.BarChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.BarChartRoundEdgeRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.IMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisFrequencyDistributionFormatter;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
@@ -132,6 +133,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         barYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         barYAxis.setYOffset(-5f);
         barYAxis.setXOffset(-1f);
+        barYAxis.setValueFormatter(new YAxisVolumeLabelFormatter(context));
 
         // 设置Marker和Bar样式
         float barRadius = CommonHelper.dp2px(context, 2f);
@@ -185,12 +187,12 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         List<BarEntry> dataSet = model.dataSet;
         int maxValue = 0;
         float lastX = 0;
+        int index = 0;
         for (BarEntry entry : dataSet) {
-            if (entry.getX() > lastX) {
-                lastX = entry.getX();
-            }
             if (entry.getY() > maxValue) {
                 maxValue = (int) Math.ceil(entry.getY());
+                lastX = entry.getX();
+                index = dataSet.indexOf(entry);
             }
         }
 
@@ -222,7 +224,7 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
             data.setBarWidth(barWidthRatio);
             chart.setData(data);
         }
-        chart.highlightValue(lastX, 0);
+        chart.highlightValue(lastX, index);
         chart.animateY(300, Easing.EaseOutCubic);
 
     }

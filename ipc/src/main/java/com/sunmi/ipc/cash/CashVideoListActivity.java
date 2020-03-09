@@ -191,7 +191,7 @@ public class CashVideoListActivity extends BaseMvpActivity<CashVideoListPresente
         });
         dmTime.setAdapter(filterTimeAdapter);
         dmTime.getContent().findViewById(R.id.tv_ok).setOnClickListener(v -> {
-            int state = filterTimeAdapter.checkAndUpdateTime(select, System.currentTimeMillis());
+            int state = filterTimeAdapter.checkAndUpdateTime(select, startTime * 1000);
             if (state == CashDropdownTimeAdapter.STATE_SUCCESS) {
                 selectIndex = -1;
                 dmTime.dismiss(true);

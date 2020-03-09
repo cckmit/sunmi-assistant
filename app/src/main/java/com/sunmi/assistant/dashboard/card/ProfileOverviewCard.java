@@ -1,6 +1,5 @@
 package com.sunmi.assistant.dashboard.card;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -10,9 +9,7 @@ import android.widget.TextView;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
-
-import java.text.SimpleDateFormat;
-import java.util.Random;
+import com.sunmi.assistant.dashboard.Utils;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
@@ -29,12 +26,6 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     private static ProfileOverviewCard sInstance;
 
-    private static final int NUM_100_MILLION = 100000000;
-    private static final int NUM_10_THOUSANDS = 10000;
-
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat DATE_FORMAT_PARAMS = new SimpleDateFormat("yyyy-MM-dd");
-
     private ProfileOverviewCard(Presenter presenter, int source) {
         super(presenter, source);
     }
@@ -50,7 +41,6 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     @Override
     public void init(Context context) {
-        getModel().init(context);
     }
 
     @Override
@@ -71,8 +61,10 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     @Override
     protected void setupModel(Model model, CustomerDataResp response) {
-        model.customer = response.getLatestPassengerCount();
-        model.lastCustomer = response.getEarlyPassengerCount();
+        model.unknownCustomer = response.getLatestEntryHeadCount();
+        model.lastUnknownCustomer = response.getEarlyEntryHeadCount();
+        model.customer = response.getLatestPassengerCount() + model.unknownCustomer;
+        model.lastCustomer = response.getEarlyPassengerCount() + model.lastUnknownCustomer;
         model.newCustomer = response.getLatestStrangerPassengerCount();
         model.lastNewCustomer = response.getEarlyStrangerPassengerCount();
         model.oldCustomer = response.getLatestRegularPassengerCount();
@@ -92,6 +84,7 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         setupPeriod(holder, model.period);
+        Context context = holder.getContext();
 
         ProgressBar pb = holder.getView(R.id.bar_dashboard_main);
         TextView value = holder.getView(R.id.tv_dashboard_value);
@@ -100,21 +93,25 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         TextView newSubData = holder.getView(R.id.tv_dashboard_new_subdata);
         TextView oldValue = holder.getView(R.id.tv_dashboard_old);
         TextView oldSubData = holder.getView(R.id.tv_dashboard_old_subdata);
-        if (model.getCustomer() > 0) {
-            pb.setMax(model.getCustomer());
-            pb.setSecondaryProgress(model.getCustomer());
-            pb.setProgress(model.getNewCustomer());
+        TextView unknownValue = holder.getView(R.id.tv_dashboard_unknown);
+        TextView unknownSubData = holder.getView(R.id.tv_dashboard_unknown_subdata);
+        if (model.customer > 0) {
+            pb.setMax(model.customer);
+            pb.setSecondaryProgress(model.newCustomer + model.oldCustomer);
+            pb.setProgress(model.newCustomer);
         } else {
             pb.setMax(1);
             pb.setProgress(0);
             pb.setSecondaryProgress(0);
         }
-        value.setText(model.getCustomerString());
-        subData.setText(model.getLastCustomerString());
-        newValue.setText(model.getNewCustomerString());
-        newSubData.setText(model.getLastNewCustomerString());
-        oldValue.setText(model.getOldCustomerString());
-        oldSubData.setText(model.getLastOldCustomerString());
+        value.setText(Utils.formatNumber(context, model.customer, false, true));
+        subData.setText(Utils.formatNumber(context, model.lastCustomer, false, false));
+        newValue.setText(Utils.formatNumber(context, model.newCustomer, false, true));
+        newSubData.setText(Utils.formatNumber(context, model.lastNewCustomer, false, false));
+        oldValue.setText(Utils.formatNumber(context, model.oldCustomer, false, true));
+        oldSubData.setText(Utils.formatNumber(context, model.lastOldCustomer, false, false));
+        unknownValue.setText(Utils.formatNumber(context, model.unknownCustomer, false, true));
+        unknownSubData.setText(Utils.formatNumber(context, model.lastUnknownCustomer, false, false));
     }
 
     @Override
@@ -124,6 +121,7 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         holder.getView(R.id.layout_dashboard_main).setVisibility(View.INVISIBLE);
         holder.getView(R.id.layout_dashboard_new).setVisibility(View.INVISIBLE);
         holder.getView(R.id.layout_dashboard_old).setVisibility(View.INVISIBLE);
+        holder.getView(R.id.layout_dashboard_unknown).setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -137,12 +135,16 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         TextView newSubData = holder.getView(R.id.tv_dashboard_new_subdata);
         TextView oldValue = holder.getView(R.id.tv_dashboard_old);
         TextView oldSubData = holder.getView(R.id.tv_dashboard_old_subdata);
-        value.setText(DATA_NONE);
-        subData.setText(DATA_NONE);
-        newValue.setText(DATA_NONE);
-        newSubData.setText(DATA_NONE);
-        oldValue.setText(DATA_NONE);
-        oldSubData.setText(DATA_NONE);
+        TextView unknownValue = holder.getView(R.id.tv_dashboard_unknown);
+        TextView unknownSubData = holder.getView(R.id.tv_dashboard_unknown_subdata);
+        value.setText(Utils.DATA_NONE);
+        subData.setText(Utils.DATA_NONE);
+        newValue.setText(Utils.DATA_NONE);
+        newSubData.setText(Utils.DATA_NONE);
+        oldValue.setText(Utils.DATA_NONE);
+        oldSubData.setText(Utils.DATA_NONE);
+        unknownValue.setText(Utils.DATA_NONE);
+        unknownSubData.setText(Utils.DATA_NONE);
         pb.setMax(1);
         pb.setProgress(0);
         pb.setSecondaryProgress(0);
@@ -158,6 +160,7 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         holder.getView(R.id.layout_dashboard_main).setVisibility(View.VISIBLE);
         holder.getView(R.id.layout_dashboard_new).setVisibility(View.VISIBLE);
         holder.getView(R.id.layout_dashboard_old).setVisibility(View.VISIBLE);
+        holder.getView(R.id.layout_dashboard_unknown).setVisibility(View.VISIBLE);
 
         TextView subTitle = holder.getView(R.id.tv_dashboard_subtitle);
         TextView newCustomerSubTitle = holder.getView(R.id.tv_dashboard_new_subtitle);
@@ -189,108 +192,14 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     public static class Model extends BaseRefreshCard.BaseModel {
 
-        private String mNum100Million;
-        private String mNum10Thousands;
-
-        int customer;
-        int lastCustomer;
-        int newCustomer;
-        int lastNewCustomer;
-        int oldCustomer;
-        int lastOldCustomer;
-
-        public void init(Context context) {
-            mNum10Thousands = context.getString(R.string.str_num_10_thousands);
-            mNum100Million = context.getString(R.string.str_num_100_million);
-        }
-
-        public int getCustomer() {
-            return customer;
-        }
-
-        public int getNewCustomer() {
-            return newCustomer;
-        }
-
-        public int getOldCustomer() {
-            return oldCustomer;
-        }
-
-        public String getCustomerString() {
-            if (customer < 0) {
-                return DATA_NONE;
-            } else if (customer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) customer / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(customer);
-            }
-        }
-
-        public String getLastCustomerString() {
-            if (lastCustomer < 0) {
-                return DATA_NONE;
-            } else if (lastCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) lastCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(lastCustomer);
-            }
-        }
-
-        public String getNewCustomerString() {
-            if (newCustomer < 0) {
-                return DATA_NONE;
-            } else if (newCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) newCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(newCustomer);
-            }
-        }
-
-        public String getLastNewCustomerString() {
-            if (lastNewCustomer < 0) {
-                return DATA_NONE;
-            } else if (lastNewCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) lastNewCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(lastNewCustomer);
-            }
-        }
-
-        public String getOldCustomerString() {
-            if (oldCustomer < 0) {
-                return DATA_NONE;
-            } else if (oldCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) oldCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(oldCustomer);
-            }
-        }
-
-        public String getLastOldCustomerString() {
-            if (lastOldCustomer < 0) {
-                return DATA_NONE;
-            } else if (lastOldCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) lastOldCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(lastOldCustomer);
-            }
-        }
-
-        public void random() {
-            Random r = new Random(System.currentTimeMillis());
-            newCustomer = r.nextInt(100000000);
-            lastNewCustomer = r.nextInt(100000);
-            oldCustomer = r.nextInt(100000000);
-            lastOldCustomer = r.nextInt(100000);
-            customer = newCustomer + oldCustomer;
-            lastCustomer = lastNewCustomer + lastOldCustomer;
-        }
+        private int customer;
+        private int lastCustomer;
+        private int unknownCustomer;
+        private int lastUnknownCustomer;
+        private int newCustomer;
+        private int lastNewCustomer;
+        private int oldCustomer;
+        private int lastOldCustomer;
 
     }
 }

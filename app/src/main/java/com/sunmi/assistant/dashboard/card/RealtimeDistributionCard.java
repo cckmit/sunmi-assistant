@@ -43,6 +43,7 @@ import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CacheManager;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -322,7 +323,7 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
 
         // Handle empty data set
         if (isEmpty) {
-            pie.setCenterText(Utils.createPercentText(0f, false, true));
+            pie.setCenterText(Utils.formatPercent(0f, false, true));
             pie.setHighlightPerTapEnabled(false);
             mChart.setCenterTextOffset(0, 0);
         } else {
@@ -467,7 +468,7 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
             if (name == null) {
                 return new SpannableString("");
             }
-            CharSequence percent = Utils.createPercentText(total > 0 ? value / total : 0f, false, true);
+            CharSequence percent = Utils.formatPercent(total > 0 ? value / total : 0f, false, true);
             SpannableString s = new SpannableString(
                     new StringBuilder(name).append("\n").append(percent));
 
@@ -485,18 +486,11 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
         }
 
         private SpannableString createTotalText(Context context, float value) {
-            int unit = 1;
-            String count;
-            if (total > NUM_10_THOUSANDS) {
-                count = context.getString(R.string.str_num_10_thousands_people,
-                        FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                                (float) total / NUM_10_THOUSANDS));
-                unit = 2;
-            } else {
-                count = context.getString(R.string.str_num_people, total);
-            }
+            CharSequence countStr = Utils.formatNumber(context, total, false, false);
+            int unit = CommonHelper.isGooglePlay() || total <= Utils.THRESHOLD_10THOUSAND ? 0 : 1;
+
             SpannableString s = new SpannableString(
-                    new StringBuilder(totalTitle).append("\n").append(count));
+                    new StringBuilder(totalTitle).append("\n").append(countStr));
 
             int titleLength = totalTitle.length();
             s.setSpan(new RelativeSizeSpan(0.6f), 0, titleLength, 0);
@@ -506,8 +500,10 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
             s.setSpan(new StyleSpan(Typeface.BOLD), titleLength, s.length() - unit, 0);
             s.setSpan(new ForegroundColorSpan(0xFF525866), titleLength, s.length(), 0);
 
-            s.setSpan(new RelativeSizeSpan(0.6f), s.length() - unit, s.length(), 0);
-            s.setSpan(new StyleSpan(Typeface.NORMAL), s.length() - unit, s.length(), 0);
+            if (unit != 0) {
+                s.setSpan(new RelativeSizeSpan(0.6f), s.length() - unit, s.length(), 0);
+                s.setSpan(new StyleSpan(Typeface.NORMAL), s.length() - unit, s.length(), 0);
+            }
             return s;
         }
 

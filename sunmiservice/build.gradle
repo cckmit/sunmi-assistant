@@ -55,9 +55,6 @@ dependencies {
 
     annotationProcessor "org.androidannotations:androidannotations:${AAVersion}"
 
-    //wechat
-    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-
     annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
 
 }

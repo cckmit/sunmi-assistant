@@ -20,11 +20,11 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 import com.sunmi.assistant.dashboard.ui.chart.ChartEntry;
-import com.sunmi.assistant.dashboard.ui.chart.CustomerLineMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.LineChartMarkerView;
 import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
+import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 
 import java.util.ArrayList;
@@ -64,7 +64,6 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
     private XAxisLabelRenderer lineXAxisRenderer;
     private YAxisVolumeLabelsRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
-    private CustomerLineMarkerView mLineComplexMarker;
     private TimeMarkerFormatter mMarkerFormatter;
     private float mDashLength;
     private float mDashSpaceLength;
@@ -158,14 +157,13 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
         lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         lineYAxis.setYOffset(-5f);
         lineYAxis.setXOffset(-1f);
+        lineYAxis.setValueFormatter(new YAxisVolumeLabelFormatter(context));
 
         // 设置Line图
         mMarkerFormatter = new TimeMarkerFormatter(context);
         mLineChartMarker = new LineChartMarkerView(context, mMarkerFormatter);
-        mLineComplexMarker = new CustomerLineMarkerView(context);
         mLineChartMarker.setChartView(lineChart);
-        mLineComplexMarker.setChartView(lineChart);
-        lineChart.setMarker(mLineComplexMarker);
+        lineChart.setMarker(mLineChartMarker);
 
         return holder;
     }
@@ -278,7 +276,7 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             for (CustomerHistoryTrendResp.Item item : list) {
                 long time = item.getTime();
                 float x = Utils.encodeChartXAxisFloat(model.period, time);
-                allMap.put((int) x, new CustomerEntry(x, item.getTotalCount(), time,
+                allMap.put((int) x, new CustomerEntry(x, item.getTotalCount() + item.getEntryHeadCount(), time,
                         item.getStrangerCount(), item.getRegularCount()));
                 newMap.put((int) x, new ChartEntry(x, item.getStrangerCount(), time));
                 oldMap.put((int) x, new ChartEntry(x, item.getRegularCount(), time));
@@ -368,23 +366,17 @@ public class CustomerTrendCard extends BaseRefreshCard<CustomerTrendCard.Model, 
             markerTitle = R.string.dashboard_card_tab_old;
         } else {
             color = COLOR_ALL;
-            markerTitle = R.string.dashboard_card_tab_all;
+            markerTitle = R.string.dashboard_card_customer_all;
         }
 
         // Use correct chart marker & update it.
-        if (model.type == Constants.DATA_TYPE_ALL) {
-            line.setMarker(mLineComplexMarker);
-            mLineComplexMarker.setPointColor(color);
-            mLineComplexMarker.setPeriod(model.period);
+        line.setMarker(mLineChartMarker);
+        mLineChartMarker.setTitle(markerTitle);
+        mLineChartMarker.setPointColor(color);
+        if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
+            mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
         } else {
-            line.setMarker(mLineChartMarker);
-            mLineChartMarker.setTitle(markerTitle);
-            mLineChartMarker.setPointColor(color);
-            if (model.period == Constants.TIME_PERIOD_YESTERDAY || model.period == Constants.TIME_PERIOD_TODAY) {
-                mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_HOUR_SPAN);
-            } else {
-                mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
-            }
+            mMarkerFormatter.setTimeType(TimeMarkerFormatter.TIME_TYPE_DATE);
         }
 
         // Refresh data set

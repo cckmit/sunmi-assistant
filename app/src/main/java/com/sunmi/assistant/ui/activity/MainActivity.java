@@ -26,8 +26,11 @@ import com.sunmi.assistant.mine.MineFragment_;
 import com.sunmi.assistant.mine.contract.MainContract;
 import com.sunmi.assistant.mine.model.MessageCountBean;
 import com.sunmi.assistant.mine.presenter.MainPresenter;
+import com.sunmi.assistant.ui.AdLoanDialog;
 import com.sunmi.assistant.utils.MainTab;
 import com.sunmi.sunmiservice.SupportFragment;
+import com.sunmi.sunmiservice.WebViewActivity_;
+import com.sunmi.sunmiservice.cloud.WebViewCloudServiceActivity_;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xiaojinzi.component.anno.RouterAnno;
 import com.xiaojinzi.component.impl.Router;
@@ -39,10 +42,13 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
+import java.util.Set;
+
 import cn.bingoogolapple.badgeview.BGABadgeTextView;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.RouterConfig;
@@ -54,6 +60,7 @@ import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ThreadPool;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.view.MyFragmentTabHost;
 
 /**
@@ -71,6 +78,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
     int currentTabIndex;// 要显示的fragment的index
     private long mExitTime;
     private BGABadgeTextView mineTitle;
+    private String uid;
 
     @RouterAnno(
             path = RouterConfig.App.MAIN
@@ -87,10 +95,12 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
         mPresenter.attachView(this);
         if (!CommonHelper.isGooglePlay()) {
             mPresenter.getMessageCount();
+            mPresenter.getServiceList();
         }
         ThreadPool.getCachedThreadPool().submit(() -> mPresenter.syncIpcDevice());
         registerNetworkReceiver();
-        CrashReport.setUserId(SpUtils.getUID());
+        uid = SpUtils.getUID();
+        CrashReport.setUserId(uid);
 
         if (MyApplication.isCheckedToken) {
             MQTTManager.getInstance().createEmqToken(true);//初始化长连接
@@ -105,6 +115,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
             initMessageBadge();
             ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg()); //for 1.1.4+
         }
+
     }
 
     @Override
@@ -213,6 +224,21 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
 
     }
 
+    @Override
+    public void getLoanStatus(boolean status) {
+        // 弹出贷款广告对话框
+        Set<String> uids = SpUtils.getAdLoanUids();
+        if (!uids.contains(uid) && status) {
+            new AdLoanDialog.Builder(this)
+                    .setListener((dialog, which) -> {
+                        WebViewActivity_.intent(context).url(CommonConstants.H5_LOAN).start();
+                    })
+                    .create()
+                    .show();
+            SpUtils.addShowAdLoanUid(uid);
+        }
+    }
+
     //ipc初始化
     private void initIpc() {
         MqttManager.getInstance().createEmqToken(true);//初始化ipc长连接
@@ -308,9 +334,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenter>
     }
 
     private boolean isHideTab(int tabNameRes) {
-        return CommonHelper.isGooglePlay() &&
-                (TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_dashboard))
-                        || TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_support)));
+        return CommonHelper.isGooglePlay() && TextUtils.equals(getString(tabNameRes), getString(R.string.str_tab_support));
     }
 
 }

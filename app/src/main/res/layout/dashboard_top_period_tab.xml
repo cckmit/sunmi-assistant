@@ -6,7 +6,7 @@
     android:background="@color/c_white">
 
     <View
-        android:layout_width="@dimen/dp_172"
+        android:layout_width="@dimen/dp_226"
         android:layout_height="@dimen/dp_26"
         android:background="@drawable/dashboard_bg_period_tab_border"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,7 +16,7 @@
 
     <TextView
         android:id="@+id/tv_dashboard_top_today"
-        android:layout_width="@dimen/dp_56"
+        android:layout_width="@dimen/dp_74"
         android:layout_height="@dimen/dp_22"
         android:background="@drawable/dashboard_bg_period_tab_text"
         android:gravity="center"
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/tv_dashboard_top_yesterday"
-        android:layout_width="@dimen/dp_56"
+        android:layout_width="@dimen/dp_74"
         android:layout_height="@dimen/dp_22"
         android:background="@drawable/dashboard_bg_period_tab_text"
         android:gravity="center"
@@ -47,7 +47,7 @@
 
     <TextView
         android:id="@+id/tv_dashboard_top_week"
-        android:layout_width="@dimen/dp_56"
+        android:layout_width="@dimen/dp_74"
         android:layout_height="@dimen/dp_22"
         android:background="@drawable/dashboard_bg_period_tab_text"
         android:gravity="center"
@@ -61,7 +61,7 @@
 
     <TextView
         android:id="@+id/tv_dashboard_top_month"
-        android:layout_width="@dimen/dp_56"
+        android:layout_width="@dimen/dp_74"
         android:layout_height="@dimen/dp_22"
         android:background="@drawable/dashboard_bg_period_tab_text"
         android:gravity="center"

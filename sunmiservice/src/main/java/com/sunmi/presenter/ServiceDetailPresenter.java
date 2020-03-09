@@ -42,4 +42,24 @@ public class ServiceDetailPresenter extends BasePresenter<ServiceDetailContract.
         });
     }
 
+    @Override
+    public void getServiceDetailByServiceNo(String serviceNo) {
+        ServiceApi.getInstance().getServiceDetailByServiceNo(serviceNo, new RetrofitCallback<ServiceDetailBean>() {
+            @Override
+            public void onSuccess(int code, String msg, ServiceDetailBean data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.getServiceDetail(data);
+                }
+            }
+
+            @Override
+            public void onFail(int code, String msg, ServiceDetailBean data) {
+                if (isViewAttached()) {
+                    mView.hideLoadingDialog();
+                    mView.getServiceDetail(null);
+                }
+            }
+        });
+    }
 }

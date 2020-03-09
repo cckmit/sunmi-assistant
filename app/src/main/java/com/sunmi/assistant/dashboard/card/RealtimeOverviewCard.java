@@ -33,9 +33,6 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
 
     private static RealtimeOverviewCard sInstance;
 
-    private static final int NUM_100_MILLION = 100_000_000;
-    private static final int NUM_10_THOUSANDS = 10_000;
-
     private RealtimeOverviewCard(Presenter presenter, int source) {
         super(presenter, source);
     }
@@ -51,7 +48,6 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
 
     @Override
     public void init(Context context) {
-        getModel().init(context);
     }
 
     @Override
@@ -147,8 +143,8 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                             return;
                         }
                         Model model = getModel();
-                        model.customer = data.getLatestCount();
-                        model.lastCustomer = data.getEarlyCount();
+                        model.customer = data.getLatestCount() + data.getLatestEntryHeadCount();
+                        model.lastCustomer = data.getEarlyCount() + data.getEarlyEntryHeadCount();
                         if (hasAuth()) {
                             model.rate = model.customer == 0 ?
                                     0f : Math.min((float) model.volume / model.customer, 1f);
@@ -196,6 +192,8 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         setupVisible(holder, model.period);
+        Context context = holder.getContext();
+
         TextView value = holder.getView(R.id.tv_dashboard_value);
         TextView subdata = holder.getView(R.id.tv_dashboard_subdata);
         TextView volumeValue = holder.getView(R.id.tv_dashboard_volume);
@@ -205,20 +203,20 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
         TextView rateValue = holder.getView(R.id.tv_dashboard_rate);
         TextView rateSubdata = holder.getView(R.id.tv_dashboard_rate_subdata);
         if (hasAuth() && !hasFs()) {
-            value.setText(model.getSales());
-            subdata.setText(model.getLastSales());
-            volumeValue.setText(model.getVolume());
-            volumeSubdata.setText(model.getLastVolume());
+            value.setText(model.getSales(context));
+            subdata.setText(model.getLastSales(context));
+            volumeValue.setText(model.getVolume(context));
+            volumeSubdata.setText(model.getLastVolume(context));
         } else if (!hasAuth() && hasFs()) {
-            value.setText(model.getCustomer());
-            subdata.setText(model.getLastCustomer());
+            value.setText(model.getCustomer(context));
+            subdata.setText(model.getLastCustomer(context));
         } else {
-            value.setText(model.getSales());
-            subdata.setText(model.getLastSales());
-            volumeValue.setText(model.getVolume());
-            volumeSubdata.setText(model.getLastVolume());
-            customerValue.setText(model.getCustomer());
-            customerSubdata.setText(model.getLastCustomer());
+            value.setText(model.getSales(context));
+            subdata.setText(model.getLastSales(context));
+            volumeValue.setText(model.getVolume(context));
+            volumeSubdata.setText(model.getLastVolume(context));
+            customerValue.setText(model.getCustomer(context));
+            customerSubdata.setText(model.getLastCustomer(context));
             rateValue.setText(model.getRate());
             rateSubdata.setText(model.getLastRate());
         }
@@ -258,14 +256,14 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
         TextView customerSubdata = holder.getView(R.id.tv_dashboard_customer_subdata);
         TextView rateValue = holder.getView(R.id.tv_dashboard_rate);
         TextView rateSubdata = holder.getView(R.id.tv_dashboard_rate_subdata);
-        value.setText(DATA_NONE);
-        subdata.setText(DATA_NONE);
-        volumeValue.setText(DATA_NONE);
-        volumeSubdata.setText(DATA_NONE);
-        customerValue.setText(DATA_NONE);
-        customerSubdata.setText(DATA_NONE);
-        rateValue.setText(DATA_NONE);
-        rateSubdata.setText(DATA_NONE);
+        value.setText(Utils.DATA_NONE);
+        subdata.setText(Utils.DATA_NONE);
+        volumeValue.setText(Utils.DATA_NONE);
+        volumeSubdata.setText(Utils.DATA_NONE);
+        customerValue.setText(Utils.DATA_NONE);
+        customerSubdata.setText(Utils.DATA_NONE);
+        rateValue.setText(Utils.DATA_NONE);
+        rateSubdata.setText(Utils.DATA_NONE);
     }
 
     private void setupVisible(@NonNull BaseViewHolder<Model> holder, int period) {
@@ -333,9 +331,6 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
 
     public static class Model extends BaseRefreshCard.BaseModel {
 
-        private String mNum100Million;
-        private String mNum10Thousands;
-
         double sales;
         double lastSales;
         int volume;
@@ -345,69 +340,36 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
         float rate;
         float lastRate;
 
-        public void init(Context context) {
-            mNum10Thousands = context.getString(R.string.str_num_10_thousands);
-            mNum100Million = context.getString(R.string.str_num_100_million);
+        private CharSequence getSales(Context context) {
+            return Utils.formatNumber(context, sales, true, true);
         }
 
-        private String getSales() {
-            if (sales > NUM_100_MILLION) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(sales / NUM_100_MILLION) + mNum100Million;
-            } else {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(sales);
-            }
+        private CharSequence getLastSales(Context context) {
+            return Utils.formatNumber(context, lastSales, true, false);
         }
 
-        private String getLastSales() {
-            if (lastSales > NUM_100_MILLION) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(lastSales / NUM_100_MILLION) + mNum100Million;
-            } else {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(lastSales);
-            }
+        private CharSequence getVolume(Context context) {
+            return Utils.formatNumber(context, volume, false, true);
         }
 
-        private String getVolume() {
-            if (volume > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) volume / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(volume);
-            }
+        private CharSequence getLastVolume(Context context) {
+            return Utils.formatNumber(context, lastVolume, false, false);
         }
 
-        private String getLastVolume() {
-            if (lastVolume > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) lastVolume / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(lastVolume);
-            }
+        private CharSequence getCustomer(Context context) {
+            return Utils.formatNumber(context, customer, false, true);
         }
 
-        private String getCustomer() {
-            if (customer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) customer / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(customer);
-            }
-        }
-
-        private String getLastCustomer() {
-            if (lastCustomer > NUM_10_THOUSANDS) {
-                return FORMAT_THOUSANDS_DOUBLE_DECIMAL.format(
-                        (float) lastCustomer / NUM_10_THOUSANDS) + mNum10Thousands;
-            } else {
-                return FORMAT_THOUSANDS.format(lastCustomer);
-            }
+        private CharSequence getLastCustomer(Context context) {
+            return Utils.formatNumber(context, lastCustomer, false, false);
         }
 
         private CharSequence getRate() {
-            return Utils.createPercentText(rate, true, true);
+            return Utils.formatPercent(rate, true, true);
         }
 
         private CharSequence getLastRate() {
-            return Utils.createPercentText(lastRate, true, false);
+            return Utils.formatPercent(lastRate, true, false);
         }
 
     }

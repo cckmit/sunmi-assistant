@@ -60,21 +60,22 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
     @Override
     protected void setupModel(Model model, CustomerCountResp response) {
         model.passCustomer = response.getLatestPassCount();
-        model.customer = response.getLatestCount();
+        model.customer = response.getLatestCount() + response.getLatestEntryHeadCount();
     }
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        Context context = holder.getContext();
         TextView tvPassCustomer = holder.getView(R.id.tv_volume_pass_by);
         TextView tvCustomer = holder.getView(R.id.tv_volume_enter);
         TextView tvTotal = holder.getView(R.id.tv_volume_totals);
         TextView percentVolume = holder.getView(R.id.tv_customer_volume_percent);
         ProgressBar pbVolume = holder.getView(R.id.pb_volume);
 
-        tvPassCustomer.setText(model.getPassCustomer());
-        tvCustomer.setText(model.getCustomer());
-        tvTotal.setText(model.getTotal());
-        percentVolume.setText(Utils.createPercentText(model.getEnterRate(), true, true));
+        tvPassCustomer.setText(model.getPassCustomer(context));
+        tvCustomer.setText(model.getCustomer(context));
+        tvTotal.setText(model.getTotal(context));
+        percentVolume.setText(Utils.formatPercent(model.getEnterRate(), true, true));
         pbVolume.setProgress((int) (model.getEnterRate() * 100));
     }
 
@@ -91,10 +92,10 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
         TextView percentVolume = holder.getView(R.id.tv_customer_volume_percent);
         ProgressBar pbVolume = holder.getView(R.id.pb_volume);
 
-        tvPassCustomer.setText(DATA_NONE);
-        tvCustomer.setText(DATA_NONE);
-        tvTotal.setText(DATA_NONE);
-        percentVolume.setText(DATA_NONE);
+        tvPassCustomer.setText(Utils.DATA_NONE);
+        tvCustomer.setText(Utils.DATA_NONE);
+        tvTotal.setText(Utils.DATA_NONE);
+        percentVolume.setText(Utils.DATA_NONE);
         pbVolume.setProgress(0);
     }
 
@@ -104,35 +105,23 @@ public class RealtimeEnterRateCard extends BaseRefreshCard<RealtimeEnterRateCard
         //进店
         private int customer;
 
-        private String getPassCustomer() {
-            if (passCustomer < 0) {
-                return DATA_NONE;
-            } else {
-                return String.valueOf(passCustomer);
-            }
+        private CharSequence getPassCustomer(Context context) {
+            return Utils.formatNumber(context, passCustomer, false, true);
         }
 
-        private String getCustomer() {
-            if (customer < 0) {
-                return DATA_NONE;
-            } else {
-                return String.valueOf(customer);
-            }
+        private CharSequence getCustomer(Context context) {
+            return Utils.formatNumber(context, customer, false, true);
         }
 
-        private String getTotal() {
-            if (passCustomer < 0 || customer < 0) {
-                return DATA_NONE;
-            } else {
-                return String.valueOf(passCustomer + customer);
-            }
+        private CharSequence getTotal(Context context) {
+            return Utils.formatNumber(context, passCustomer + customer, false, true);
         }
 
         private float getEnterRate() {
-            if (customer < 0 || passCustomer < 0 || customer + passCustomer == 0) {
-                return 0f;
-            } else {
+            if (customer > 0 && passCustomer >= 0) {
                 return (float) customer / (passCustomer + customer);
+            } else {
+                return 0f;
             }
         }
     }
