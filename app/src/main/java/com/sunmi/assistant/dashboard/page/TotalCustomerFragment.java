@@ -34,8 +34,8 @@ import sunmi.common.view.dialog.BottomDialog;
  * @date 2019-10-11
  */
 @EFragment(R.layout.dashboard_fragment_list)
-public class TotalCustomerFragment extends BaseMvpFragment<TotalRealtimePresenter>
-        implements TotalRealtimeContract.View, RefreshLayout.RefreshLayoutDelegate {
+public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresenter>
+        implements TotalCustomerContract.View, RefreshLayout.RefreshLayoutDelegate {
 
     @ViewById(R.id.layout_dashboard_refresh)
     RefreshLayout mRefreshLayout;
@@ -65,7 +65,7 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalRealtimePresente
             return;
         }
         mParent = (DashboardContract.View) parent;
-        mPresenter = new TotalRealtimePresenter(mParent.getPresenter());
+        mPresenter = new TotalCustomerPresenter(mParent.getPresenter());
         mPresenter.attachView(this);
         initRefreshLayout(context);
         initRecycler(context);

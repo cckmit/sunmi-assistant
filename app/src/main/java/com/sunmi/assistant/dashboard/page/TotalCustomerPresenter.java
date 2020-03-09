@@ -18,11 +18,10 @@ import sunmi.common.model.Interval;
  * @author yinhui
  * @date 2019-10-14
  */
-public class TotalCustomerPresenter extends BasePresenter<TotalRealtimeContract.View>
-        implements TotalRealtimeContract.Presenter, BaseRefreshCard.Presenter {
+public class TotalCustomerPresenter extends BasePresenter<TotalCustomerContract.View>
+        implements TotalCustomerContract.Presenter, BaseRefreshCard.Presenter {
 
     private static final String TAG = TotalCustomerPresenter.class.getSimpleName();
-
 
     private PageContract.ParentPresenter mParent;
     private List<BaseRefreshCard> mList = new ArrayList<>();
