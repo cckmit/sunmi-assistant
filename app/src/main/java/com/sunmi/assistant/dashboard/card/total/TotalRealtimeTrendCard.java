@@ -184,7 +184,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
                             for (TotalRealtimeSalesTrendResp.Item item : list) {
                                 long time = Utils.parseTime(Utils.FORMAT_API_TIME, item.getTime());
                                 float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time);
-                                dataSet.add(new ChartEntry(x, (float) item.getOrderAmount(), time));
+                                dataSet.add(new ChartEntry(x, (float) Math.max(0, item.getOrderAmount()), time));
                             }
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -314,7 +314,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
 
         @Override
         public void init(DashboardCondition condition) {
-            type = TYPE_CUSTOMER;
+            type = condition.hasSaas ? TYPE_SALES : TYPE_CUSTOMER;
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();

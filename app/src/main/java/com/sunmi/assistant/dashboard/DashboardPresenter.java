@@ -60,7 +60,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void init() {
         model = DashboardModelImpl.get();
 
-        switchToTotalPerspective(false);
+        switchPerspective(CommonConstants.PERSPECTIVE_TOTAL, false);
         load(Constants.FLAG_ALL_MASK, false, false, true);
     }
 
@@ -171,11 +171,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void switchPerspective(int perspective) {
+    public void switchPerspective(int perspective, boolean refresh) {
+        if (isViewAttached()) {
+            mView.switchPerspective(perspective);
+        }
         if (perspective == CommonConstants.PERSPECTIVE_TOTAL) {
-            switchToTotalPerspective(true);
+            switchToTotalPerspective(refresh);
         } else if (perspective == CommonConstants.PERSPECTIVE_SHOP) {
-            switchToShopPerspective(true);
+            switchToShopPerspective(refresh);
         }
     }
 
