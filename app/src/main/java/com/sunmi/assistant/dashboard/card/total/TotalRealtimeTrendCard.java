@@ -25,21 +25,25 @@ import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.Interval;
+import sunmi.common.model.TotalRealtimeCustomerTrendResp;
+import sunmi.common.model.TotalRealtimeSalesTrendResp;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 /**
  * @author yinhui
  * @since 2019-07-01
  */
-public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCard.Model, CustomerHistoryTrendResp> {
+public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCard.Model, Object> {
 
     private static TotalRealtimeTrendCard sInstance;
 
@@ -119,10 +123,80 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
     }
 
     @Override
-    protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, Interval periodTime,
-                                                                CardCallback callback) {
-        // TODO: API
+    protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
+                                              CardCallback callback) {
+        if (mCondition.hasFs) {
+            loadCustomer(companyId, callback);
+        } else if (mCondition.hasSaas) {
+            loadSales(companyId, callback);
+        }
         return null;
+    }
+
+    private void loadCustomer(int companyId, CardCallback callback) {
+        SunmiStoreApi.getInstance().getTotalCustomerRealTimeTrend(companyId,
+                new RetrofitCallback<TotalRealtimeCustomerTrendResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, TotalRealtimeCustomerTrendResp data) {
+                        if (data == null || data.getList() == null) {
+                            onFail(code, msg, data);
+                            return;
+                        }
+                        List<ChartEntry> dataSet = getModel().dataSets.get(TYPE_CUSTOMER);
+                        dataSet.clear();
+                        List<TotalRealtimeCustomerTrendResp.Item> list = data.getList();
+                        try {
+                            for (TotalRealtimeCustomerTrendResp.Item item : list) {
+                                long time = Utils.parseTime(Utils.FORMAT_API_TIME, item.getTime());
+                                float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time);
+                                dataSet.add(new ChartEntry(x, item.getTotalCount(), time));
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        if (mCondition.hasSaas) {
+                            loadSales(companyId, callback);
+                        } else {
+                            callback.onSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, TotalRealtimeCustomerTrendResp data) {
+                        callback.onFail(code, msg, null);
+                    }
+                });
+    }
+
+    private void loadSales(int companyId, CardCallback callback) {
+        SunmiStoreApi.getInstance().getTotalSaleRealtimeTrend(companyId,
+                new RetrofitCallback<TotalRealtimeSalesTrendResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, TotalRealtimeSalesTrendResp data) {
+                        if (data == null || data.getList() == null) {
+                            onFail(code, msg, data);
+                            return;
+                        }
+                        List<ChartEntry> dataSet = getModel().dataSets.get(TYPE_SALES);
+                        dataSet.clear();
+                        List<TotalRealtimeSalesTrendResp.Item> list = data.getList();
+                        try {
+                            for (TotalRealtimeSalesTrendResp.Item item : list) {
+                                long time = Utils.parseTime(Utils.FORMAT_API_TIME, item.getTime());
+                                float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time);
+                                dataSet.add(new ChartEntry(x, (float) item.getOrderAmount(), time));
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        callback.onSuccess();
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, TotalRealtimeSalesTrendResp data) {
+                        callback.onFail(code, msg, null);
+                    }
+                });
     }
 
     @Override
@@ -131,17 +205,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
     }
 
     @Override
-    protected void setupModel(Model model, CustomerHistoryTrendResp response) {
-        List<ChartEntry> customerList = model.dataSets.get(TYPE_CUSTOMER);
-        List<ChartEntry> salesList = model.dataSets.get(TYPE_SALES);
-        customerList.clear();
-        salesList.clear();
-
-        if (response == null || response.getCountList() == null || response.getCountList().isEmpty()) {
-            return;
-        }
-
-        // TODO: API
+    protected void setupModel(Model model, Object response) {
     }
 
     @Override
@@ -227,11 +291,12 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
 
     private void setupLabelState(@NonNull BaseViewHolder<Model> holder, Model model) {
         // Get views
-        TextView title = holder.getView(R.id.tv_dashboard_title);
         TextView tabCustomer = holder.getView(R.id.tv_dashboard_customer);
         TextView tabSales = holder.getView(R.id.tv_dashboard_sales);
 
         // Set button selected
+        tabSales.setVisibility(mCondition.hasSaas ? View.VISIBLE : View.GONE);
+        tabCustomer.setVisibility(mCondition.hasFs ? View.VISIBLE : View.GONE);
         tabCustomer.setSelected(model.type == TYPE_CUSTOMER);
         tabCustomer.setTypeface(null, model.type == TYPE_CUSTOMER ? Typeface.BOLD : Typeface.NORMAL);
         tabSales.setSelected(model.type == TYPE_SALES);

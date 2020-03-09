@@ -16,10 +16,10 @@ import sunmi.common.model.CustomerHistoryDetailResp;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.CustomerRateResp;
-import sunmi.common.model.CustomerRealtimeTrendResp;
 import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.CustomerShopDistributionResp;
 import sunmi.common.model.TotalCustomerDataResp;
+import sunmi.common.model.TotalRealtimeCustomerTrendResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -140,7 +140,7 @@ public interface CustomerInterface {
      * @return
      */
     @POST(companyPath + "trend/getLatest")
-    Call<BaseResponse<CustomerRealtimeTrendResp>> getTotalCustomerRealTimeTrend(@Body BaseRequest request);
+    Call<BaseResponse<TotalRealtimeCustomerTrendResp>> getTotalCustomerRealTimeTrend(@Body BaseRequest request);
 
     /**
      * 获取总部实时分店客流量列表

@@ -3,9 +3,9 @@ package sunmi.common.rpc.cloud;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
-import sunmi.common.model.CustomerRealtimeTrendResp;
 import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.SaleDataResp;
+import sunmi.common.model.TotalRealtimeSalesTrendResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -26,7 +26,7 @@ public interface SaleInterFace {
      * @return
      */
     @POST(companyPath +"trend/getLatest")
-    Call<BaseResponse<CustomerRealtimeTrendResp>> getTotalSaleRealtimeTrend(@Body BaseRequest request);
+    Call<BaseResponse<TotalRealtimeSalesTrendResp>> getTotalSaleRealtimeTrend(@Body BaseRequest request);
 
     /**
      * 获取总部实时分店销售额列表

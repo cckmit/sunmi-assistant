@@ -15,6 +15,7 @@ import com.sunmi.assistant.dashboard.subpage.PerformanceRankActivity_;
 import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -23,8 +24,11 @@ import sunmi.common.base.adapter.ViewHolder;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerHistoryTrendResp;
+import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.Interval;
+import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
+import sunmi.common.rpc.retrofit.RetrofitCallback;
 
 /**
  * @author yinhui
@@ -69,8 +73,71 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     @Override
     protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, Interval periodTime,
                                                                 CardCallback callback) {
-        // TODO: API
+        if (mCondition.hasFs) {
+            loadCustomer(companyId, callback);
+        } else if (mCondition.hasSaas) {
+            loadSales(companyId, callback);
+        }
         return null;
+    }
+
+    private void loadCustomer(int companyId, CardCallback callback) {
+        SunmiStoreApi.getInstance().getTotalCustomerShopData(companyId,
+                new RetrofitCallback<CustomerShopDataResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, CustomerShopDataResp data) {
+                        if (data == null || data.getList() == null) {
+                            onFail(code, msg, data);
+                            return;
+                        }
+                        List<Item> dataSet = getModel().dataSets.get(TYPE_CUSTOMER);
+                        dataSet.clear();
+                        List<CustomerShopDataResp.Item> list = data.getList();
+                        Collections.sort(list, (o1, o2) -> o1.getTotalCount() - o2.getTotalCount());
+                        int max = Math.min(5, list.size());
+                        for (int i = 0; i < max; i++) {
+                            CustomerShopDataResp.Item item = list.get(i);
+                            dataSet.add(new Item(item.getShopName(), item.getTotalCount()));
+                        }
+                        if (mCondition.hasSaas) {
+                            loadSales(companyId, callback);
+                        } else {
+                            callback.onSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, CustomerShopDataResp data) {
+                        callback.onFail(code, msg, null);
+                    }
+                });
+    }
+
+    private void loadSales(int companyId, CardCallback callback) {
+        SunmiStoreApi.getInstance().getTotalSaleShopData(companyId, new RetrofitCallback<CustomerShopDataResp>() {
+            @Override
+            public void onSuccess(int code, String msg, CustomerShopDataResp data) {
+                if (data == null || data.getList() == null) {
+                    onFail(code, msg, data);
+                    return;
+                }
+                List<Item> dataSet = getModel().dataSets.get(TYPE_SALES);
+                dataSet.clear();
+                List<CustomerShopDataResp.Item> list = data.getList();
+                Collections.sort(list, (o1, o2) -> Double.compare(o1.getOrderAmount(), o2.getOrderAmount()));
+                int max = Math.min(5, list.size());
+                for (int i = 0; i < max; i++) {
+                    CustomerShopDataResp.Item item = list.get(i);
+                    dataSet.add(new Item(item.getShopName(), (float) item.getOrderAmount()));
+                }
+                callback.onSuccess();
+            }
+
+            @Override
+            public void onFail(int code, String msg, CustomerShopDataResp data) {
+                callback.onFail(code, msg, null);
+            }
+        });
     }
 
     @NonNull
@@ -104,16 +171,6 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
 
     @Override
     protected void setupModel(Model model, CustomerHistoryTrendResp response) {
-        List<Item> customerList = model.dataSets.get(TYPE_CUSTOMER);
-        List<Item> salesList = model.dataSets.get(TYPE_SALES);
-        customerList.clear();
-        salesList.clear();
-
-        if (response == null || response.getCountList() == null || response.getCountList().isEmpty()) {
-            return;
-        }
-
-        // TODO: API
     }
 
     @Override

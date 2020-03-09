@@ -30,7 +30,6 @@ import sunmi.common.model.CustomerHistoryDetailResp;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.CustomerRateResp;
-import sunmi.common.model.CustomerRealtimeTrendResp;
 import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.CustomerShopDistributionResp;
 import sunmi.common.model.HealthInfoBean;
@@ -45,6 +44,8 @@ import sunmi.common.model.ShopListResp;
 import sunmi.common.model.ShopRegionResp;
 import sunmi.common.model.SsoTokenResp;
 import sunmi.common.model.TotalCustomerDataResp;
+import sunmi.common.model.TotalRealtimeCustomerTrendResp;
+import sunmi.common.model.TotalRealtimeSalesTrendResp;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
@@ -1089,7 +1090,7 @@ public class SunmiStoreApi {
      * @param companyId
      * @param callback
      */
-    public void getTotalCustomerRealTimeTrend(int companyId, RetrofitCallback<CustomerRealtimeTrendResp> callback) {
+    public void getTotalCustomerRealTimeTrend(int companyId, RetrofitCallback<TotalRealtimeCustomerTrendResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1146,7 +1147,7 @@ public class SunmiStoreApi {
      * @param companyId
      * @param callback
      */
-    public void getTotalSaleRealtimeTrend(int companyId, RetrofitCallback<CustomerRealtimeTrendResp> callback) {
+    public void getTotalSaleRealtimeTrend(int companyId, RetrofitCallback<TotalRealtimeSalesTrendResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)

@@ -7,17 +7,17 @@ import java.util.List;
 public class CustomerShopDataResp {
 
     @SerializedName("shop_list")
-    private List<Item> shopList;
+    private List<Item> list;
 
     public static boolean isDesc;
     public static boolean isSortByCount;
 
-    public List<Item> getShopList() {
-        return shopList;
+    public List<Item> getList() {
+        return list;
     }
 
-    public void setShopList(List<Item> shopList) {
-        this.shopList = shopList;
+    public void setList(List<Item> list) {
+        this.list = list;
     }
 
 
@@ -33,7 +33,7 @@ public class CustomerShopDataResp {
         @SerializedName("shop_name")
         private String shopName;
         @SerializedName("total_count")
-        private String totalCount;
+        private int totalCount;
 
         @SerializedName("order_count")
         private int orderCount;
@@ -49,7 +49,7 @@ public class CustomerShopDataResp {
             return shopName;
         }
 
-        public String getTotalCount() {
+        public int getTotalCount() {
             return totalCount;
         }
 

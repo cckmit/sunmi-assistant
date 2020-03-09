@@ -112,9 +112,9 @@ public class PerformanceRankActivity extends BaseActivity
                 hideLoadingDialog();
                 layoutError.setVisibility(View.GONE);
                 refreshView.endRefreshing();
-                if (data != null && data.getShopList().size() > 0) {
+                if (data != null && data.getList().size() > 0) {
                     dataList.clear();
-                    dataList.addAll(data.getShopList());
+                    dataList.addAll(data.getList());
                     initAdapter();
                 }
             }

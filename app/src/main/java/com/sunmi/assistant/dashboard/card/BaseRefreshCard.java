@@ -247,6 +247,14 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
             this.periodTime = periodTime;
         }
 
+        public int getPeriod() {
+            return period;
+        }
+
+        public Interval getPeriodTime() {
+            return periodTime;
+        }
+
         @MainThread
         public void onSuccess() {
             LogCat.d(TAG, "Dashboard card load data pass. ");
