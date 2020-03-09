@@ -1,8 +1,10 @@
 package com.sunmi.assistant.dashboard.card.total;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
+import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ListView;
@@ -94,7 +96,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                         List<Item> dataSet = getModel().dataSets.get(TYPE_CUSTOMER);
                         dataSet.clear();
                         List<CustomerShopDataResp.Item> list = data.getList();
-                        Collections.sort(list, (o1, o2) -> o1.getTotalCount() - o2.getTotalCount());
+                        Collections.sort(list, (o1, o2) -> o2.getTotalCount() - o1.getTotalCount());
                         int max = Math.min(5, list.size());
                         for (int i = 0; i < max; i++) {
                             CustomerShopDataResp.Item item = list.get(i);
@@ -125,11 +127,11 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                 List<Item> dataSet = getModel().dataSets.get(TYPE_SALES);
                 dataSet.clear();
                 List<TotalRealTimeShopSalesResp.Item> list = data.getList();
-                Collections.sort(list, (o1, o2) -> Double.compare(o1.getOrderAmount(), o2.getOrderAmount()));
+                Collections.sort(list, (o1, o2) -> Double.compare(o2.getOrderAmount(), o1.getOrderAmount()));
                 int max = Math.min(5, list.size());
                 for (int i = 0; i < max; i++) {
                     TotalRealTimeShopSalesResp.Item item = list.get(i);
-                    dataSet.add(new Item(item.getShopName(), (float) item.getOrderAmount()));
+                    dataSet.add(new Item(item.getShopName(), (float) Math.max(0,item.getOrderAmount())));
                 }
                 callback.onSuccess();
             }
@@ -165,7 +167,8 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
 
         ListView lv = holder.getView(R.id.lv_dashboard_list);
         mAdapter = new DetailListAdapter(context);
-        lv.setDividerHeight(0);
+        lv.setDivider(ContextCompat.getDrawable(context, R.color.transparent));
+        lv.setDividerHeight((int) context.getResources().getDimension(R.dimen.dp_8));
         lv.setAdapter(mAdapter);
         return holder;
     }
@@ -177,6 +180,8 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         Context context = holder.getContext();
+        // 设置Tab样式
+        setupLabelState(holder, model);
         View view = holder.itemView;
         List<Item> items = model.dataSets.get(model.type);
         mAdapter.setType(model.type);
@@ -212,6 +217,20 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
         setupView(holder, model, position);
     }
 
+    private void setupLabelState(@NonNull BaseViewHolder<Model> holder, Model model) {
+        // Get views
+        TextView tabCustomer = holder.getView(R.id.tv_dashboard_customer);
+        TextView tabSales = holder.getView(R.id.tv_dashboard_sales);
+
+        // Set button selected
+        tabSales.setVisibility(mCondition.hasSaas ? View.VISIBLE : View.GONE);
+        tabCustomer.setVisibility(mCondition.hasFs ? View.VISIBLE : View.GONE);
+        tabCustomer.setSelected(model.type == TYPE_CUSTOMER);
+        tabCustomer.setTypeface(null, model.type == TYPE_CUSTOMER ? Typeface.BOLD : Typeface.NORMAL);
+        tabSales.setSelected(model.type == TYPE_SALES);
+        tabSales.setTypeface(null, model.type == TYPE_SALES ? Typeface.BOLD : Typeface.NORMAL);
+    }
+
     private static class DetailListAdapter extends CommonAdapter<Item> {
 
         private int type;
@@ -237,7 +256,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                 tvTitle.setText(Utils.DATA_NONE);
                 tvValue.setText(Utils.DATA_NONE);
             } else {
-                tvRank.setText(String.valueOf(holder.getPosition()));
+                tvRank.setText(String.valueOf(holder.getPosition() + 1));
                 tvTitle.setText(item.name);
                 tvValue.setText(Utils.formatNumber(mContext, item.value, type == TYPE_SALES, true));
             }
@@ -310,7 +329,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
 
         @Override
         public void init(DashboardCondition condition) {
-            type = TYPE_CUSTOMER;
+            type = condition.hasSaas ? TYPE_SALES : TYPE_CUSTOMER;
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();

@@ -42,7 +42,7 @@ public interface DashboardContract {
 
         void load(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading);
 
-        void switchPerspective(int perspective);
+        void switchPerspective(int perspective, boolean refresh);
 
         void switchPeriod(int period, Interval periodTime);
 

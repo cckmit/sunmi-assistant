@@ -15,6 +15,8 @@ import com.sunmi.assistant.dashboard.page.ProfileFragment;
 import com.sunmi.assistant.dashboard.page.ProfileFragment_;
 import com.sunmi.assistant.dashboard.page.RealtimeFragment;
 import com.sunmi.assistant.dashboard.page.RealtimeFragment_;
+import com.sunmi.assistant.dashboard.page.TotalCustomerFragment;
+import com.sunmi.assistant.dashboard.page.TotalCustomerFragment_;
 import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment;
 import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment_;
 import com.sunmi.assistant.dashboard.util.Constants;
@@ -58,7 +60,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void init() {
         model = DashboardModelImpl.get();
 
-        switchToTotalPerspective(false);
+        switchPerspective(CommonConstants.PERSPECTIVE_TOTAL, false);
         load(Constants.FLAG_ALL_MASK, false, false, true);
     }
 
@@ -169,11 +171,14 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     @Override
-    public void switchPerspective(int perspective) {
+    public void switchPerspective(int perspective, boolean refresh) {
+        if (isViewAttached()) {
+            mView.switchPerspective(perspective);
+        }
         if (perspective == CommonConstants.PERSPECTIVE_TOTAL) {
-            switchToTotalPerspective(true);
+            switchToTotalPerspective(refresh);
         } else if (perspective == CommonConstants.PERSPECTIVE_SHOP) {
-            switchToShopPerspective(true);
+            switchToShopPerspective(refresh);
         }
     }
 
@@ -188,6 +193,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         TotalRealtimeFragment totalRealtimeFragment = new TotalRealtimeFragment_();
         pages.add(new PageHost(R.string.dashboard_page_realtime_today, 0,
                 totalRealtimeFragment, Constants.PAGE_TOTAL_REALTIME));
+
+        TotalCustomerFragment totalCustomerFragment = new TotalCustomerFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_customer, 0,
+                totalCustomerFragment, Constants.PAGE_TOTAL_CUSTOMER));
 
         mPageType = Constants.PAGE_TOTAL_REALTIME;
         if (isViewAttached()) {
