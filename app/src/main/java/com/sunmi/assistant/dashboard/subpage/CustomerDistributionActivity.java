@@ -28,6 +28,7 @@ import java.util.List;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.DropdownAdapterNew;
@@ -112,6 +113,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         } else {
             dropdownTitle.setText(R.string.str_sort_asce);
         }
+        dropdownImg.setSelected(!isDesc);
     }
 
     private void initFilters() {

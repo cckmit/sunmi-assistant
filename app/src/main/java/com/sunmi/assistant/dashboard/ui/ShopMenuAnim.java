@@ -43,13 +43,14 @@ public class ShopMenuAnim implements DropdownMenuNew.Anim {
         TextView title = (TextView) titleHolder.getView(R.id.dropdown_item_title);
         ImageView arrow = (ImageView) titleHolder.getView(R.id.dropdown_item_arrow);
         title.setSelected(true);
-        menu.setTranslationY(0);
+        menu.setTranslationY(offset);
         overlay.setAlpha(1f);
         arrow.setRotation(180);
     }
 
     @Override
     public void onPreShow(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
+        menu.setVisibility(View.VISIBLE);
         overlay.setVisibility(View.VISIBLE);
     }
 
@@ -72,9 +73,10 @@ public class ShopMenuAnim implements DropdownMenuNew.Anim {
     @Override
     public void onPostDismiss(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
         ImageView arrow = (ImageView) titleHolder.getView(R.id.dropdown_item_arrow);
-        menu.setTranslationY(-menu.getHeight());
+        menu.setTranslationY(-menu.getHeight() + offset);
         overlay.setAlpha(0f);
         arrow.setRotation(0);
+        menu.setVisibility(View.INVISIBLE);
         overlay.setVisibility(View.INVISIBLE);
     }
 

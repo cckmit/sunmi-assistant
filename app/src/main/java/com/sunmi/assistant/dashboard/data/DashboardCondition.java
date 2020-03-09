@@ -1,5 +1,7 @@
 package com.sunmi.assistant.dashboard.data;
 
+import android.support.annotation.NonNull;
+
 import java.util.Objects;
 
 /**
@@ -11,7 +13,7 @@ public class DashboardCondition {
     public boolean hasImport;
     public boolean hasFs;
     public boolean hasCustomer;
-    public boolean isFloatingShow;
+    public boolean hasFloating;
 
     @Override
     public boolean equals(Object o) {
@@ -26,14 +28,15 @@ public class DashboardCondition {
                 hasImport == that.hasImport &&
                 hasFs == that.hasFs &&
                 hasCustomer == that.hasCustomer &&
-                isFloatingShow == that.isFloatingShow;
+                hasFloating == that.hasFloating;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hasSaas, hasImport, hasFs, hasCustomer, isFloatingShow);
+        return Objects.hash(hasSaas, hasImport, hasFs, hasCustomer, hasFloating);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "DashboardCondition{" +
@@ -41,7 +44,7 @@ public class DashboardCondition {
                 ", hasImport=" + hasImport +
                 ", hasFs=" + hasFs +
                 ", hasCustomer=" + hasCustomer +
-                ", isFloatingShow=" + isFloatingShow +
+                ", hasFloating=" + hasFloating +
                 '}';
     }
 }

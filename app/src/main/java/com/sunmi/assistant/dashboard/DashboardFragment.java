@@ -330,7 +330,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void setCondition(DashboardCondition condition) {
         mHasInit = true;
         mHasData = condition.hasSaas || condition.hasFs;
-        mNoFsTip.setVisibility(!condition.hasFs && condition.hasCustomer && !condition.isFloatingShow ?
+        mNoFsTip.setVisibility(!condition.hasFs && condition.hasCustomer && !condition.hasFloating ?
                 View.VISIBLE : View.INVISIBLE);
         showContent();
     }

@@ -24,6 +24,7 @@ import java.util.Objects;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.Interval;
 import sunmi.common.utils.CommonHelper;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * @author yinhui
@@ -55,8 +56,12 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
 
     @Override
     public void init() {
+        LogCat.d(Utils.TAG, TAG + ": INIT, Condition=" + mCondition);
         mPeriod = Constants.TIME_PERIOD_DAY;
         mPeriodTime = Utils.getPeriodTimestamp(mPeriod, 0);
+        if (isViewAttached()) {
+            mView.updateTab(mPeriod);
+        }
         if (isConditionChanged && mCondition != null) {
             refresh(true);
         }

@@ -41,16 +41,17 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
                 return;
             }
             last = model;
-
-            // 切换视角
-            if (isTotalPerspective) {
-                SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
-                BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
-            }
-            // 切换门店
             SpUtils.setShopId(model.getId());
             SpUtils.setShopName(model.getItemName());
-            BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
+
+            if (isTotalPerspective) {
+                // 切换视角
+                SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
+            } else {
+                // 切换门店
+                BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
+            }
 
             // 将选中的项移到第一个位置
             if (position == 0) {

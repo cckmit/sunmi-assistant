@@ -23,6 +23,7 @@ import java.util.Objects;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.Interval;
+import sunmi.common.utils.log.LogCat;
 
 
 /**
@@ -50,8 +51,12 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
 
     @Override
     public void init() {
+        LogCat.d(Utils.TAG, TAG + ": INIT, Condition=" + mCondition);
         mPeriod = Constants.TIME_PERIOD_DAY;
         mPeriodTime = Utils.getPeriodTimestamp(mPeriod, -1);
+        if (isViewAttached()) {
+            mView.updateTab(mPeriod);
+        }
         if (isConditionChanged && mCondition != null) {
             refresh(true);
         }

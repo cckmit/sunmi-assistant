@@ -71,7 +71,7 @@ public class RealtimeGapCard extends BaseRefreshCard<RealtimeGapCard.Model, Obje
         } else {
             color = 0xFFFFFFFF;
         }
-        if (mCondition.isFloatingShow) {
+        if (mCondition.hasFloating) {
             height = (int) context.getResources().getDimension(R.dimen.dp_80);
         } else if (mCondition.hasSaas && mCondition.hasFs) {
             height = (int) context.getResources().getDimension(R.dimen.dp_24);

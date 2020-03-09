@@ -49,6 +49,7 @@
     <string name="dashboard_time_last_day">上日</string>
     <string name="dashboard_time_last_week">上周</string>
     <string name="dashboard_time_last_month">上月</string>
+    <string name="dashboard_time_before_day">较前一日</string>
 
     <string name="dashboard_time_week_1">第1周</string>
     <string name="dashboard_time_week_2">第2周</string>
