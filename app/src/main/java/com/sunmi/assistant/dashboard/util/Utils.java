@@ -1,6 +1,7 @@
 package com.sunmi.assistant.dashboard.util;
 
 import android.content.Context;
+import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
@@ -328,6 +329,23 @@ public class Utils {
         s.setSpan(new RelativeSizeSpan(SMALL_TEXT_SIZE), 0, startLen, 0);
         s.setSpan(new RelativeSizeSpan(SMALL_TEXT_SIZE), s.length() - endLen, s.length(), 0);
         return s;
+    }
+
+    public static int getGradientColor(@ColorInt int startColor, @ColorInt int endColor, float fraction) {
+        fraction = Math.min(1f, Math.max(fraction, 0f));
+        int startAlpha = (startColor & 0xff000000) >>> 24;
+        int startRed = (startColor & 0xff0000) >>> 16;
+        int startGreen = (startColor & 0xff00) >>> 8;
+        int startBlue = (startColor & 0xff);
+        int endAlpha = (endColor & 0xff000000) >>> 24;
+        int endRed = (endColor & 0xff0000) >>> 16;
+        int endGreen = (endColor & 0xff00) >>> 8;
+        int endBlue = (endColor & 0xff);
+        int alpha = (int) (startAlpha + (endAlpha - startAlpha) * fraction) & 0xff;
+        int red = (int) (startRed + (endRed - startRed) * fraction) & 0xff;
+        int green = (int) (startGreen + (endGreen - startGreen) * fraction) & 0xff;
+        int blue = (int) (startBlue + (endBlue - startBlue) * fraction) & 0xff;
+        return alpha << 24 | red << 16 | green << 8 | blue;
     }
 
     public static void setupLineChart(LineChart chart) {

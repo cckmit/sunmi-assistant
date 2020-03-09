@@ -42,6 +42,7 @@
             android:layout_marginStart="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_24"
             app:tl_indicator_bounce_enable="false"
+            app:tl_indicator_color="@color/c_white"
             app:tl_indicator_corner_radius="@dimen/dp_1"
             app:tl_indicator_height="@dimen/dp_2"
             app:tl_indicator_width="@dimen/dp_16"
@@ -64,6 +65,16 @@
         android:paddingEnd="@dimen/dp_20"
         app:dm_layout="@layout/dashboard_dropdown_shop_content"
         app:dm_list="@id/rv_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_dashboard_top_mask"
+        android:layout_width="0dp"
+        android:alpha="0"
+        android:layout_height="@dimen/dp_54"
+        android:background="@color/c_white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

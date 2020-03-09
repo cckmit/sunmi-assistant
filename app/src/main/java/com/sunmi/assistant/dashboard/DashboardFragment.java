@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -65,6 +66,9 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @ViewById(R.id.cl_dashboard_content)
     ConstraintLayout mContent;
 
+    @ViewById(R.id.view_dashboard_top_mask)
+    View mBgTopWhiteMask;
+
     @ViewById(R.id.pager_dashboard_pager)
     ScrollableViewPager mPager;
     @ViewById(R.id.tab_dashboard_pager)
@@ -110,10 +114,19 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private int mTopRadiusHeight;
     private int mTopHeaderHeight;
 
+    private int mPerspective;
+
     private boolean mHasInit = false;
     private boolean mHasData = false;
     private boolean mIsStickyPeriodTop = false;
     private boolean mIsStickyShopMenu = false;
+
+    private int colorTop;
+    private int colorOrange;
+    private int colorWhite;
+    private int colorWhite60a;
+    private int colorTextMain;
+    private int colorTextCaption;
 
     @AfterViews
     void init() {
@@ -141,6 +154,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mTopPageTabHeight = (int) context.getResources().getDimension(R.dimen.dp_44);
         mTopRadiusHeight = (int) context.getResources().getDimension(R.dimen.dp_16);
         mTopHeaderHeight = mTopShopMenuHeight + mTopPageTabHeight + mStatusBarHeight;
+        colorTop = ContextCompat.getColor(context, R.color.text_main);
+        colorOrange = ContextCompat.getColor(context, R.color.common_orange);
+        colorWhite = ContextCompat.getColor(context, R.color.c_white);
+        colorWhite60a = ContextCompat.getColor(context, R.color.white_60a);
+        colorTextMain = ContextCompat.getColor(context, R.color.text_main);
+        colorTextCaption = ContextCompat.getColor(context, R.color.text_caption);
     }
 
     private void initTopBar(Context context) {
@@ -155,6 +174,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mTopStickyPeriodTab.setPadding(0, mStatusBarHeight, 0, 0);
         mTopShopMenu.getLayoutParams().height = mTopShopMenuHeight + mStatusBarHeight;
         mTopShopMenu.setPadding(0, mStatusBarHeight, 0, 0);
+        mBgTopWhiteMask.getLayoutParams().height = mTopShopMenuHeight + mStatusBarHeight;
 
         // 初始化设置顶部门店选择下拉列表
         mShopMenuAdapter = new ShopMenuAdapter(context);
@@ -293,6 +313,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void switchPerspective(int perspective) {
+        this.mPerspective = perspective;
         mShopMenuAdapter.switchPerspective(perspective);
     }
 
@@ -359,26 +380,38 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void updateTopPosition(int position) {
-        int offset = Math.min(position - mTopHeaderHeight, 0);
-        mTopShopMenu.setTranslationY(offset);
-        mTopPageTab.setTranslationY(offset);
-        mShopMenuAnim.setOffset(offset);
-
         if (debugEnable) {
-            LogCat.e(TAG, "position=" + position + "; offset=" + offset);
+            LogCat.e(TAG, "position=" + position);
         }
 
-        FragmentActivity activity = getActivity();
-        if (activity == null) {
-            return;
-        }
-        if (position > 0) {
-            if (mIsStickyPeriodTop) {
-                updateStickyPeriodTab(activity, false, true);
+        if (mPerspective == CommonConstants.PERSPECTIVE_TOTAL) {
+            int offset;
+            if (position > mTopHeaderHeight) {
+                offset = 0;
+            } else if (position <= mTopPageTabHeight + mStatusBarHeight) {
+                offset = -mTopShopMenuHeight;
+            } else {
+                offset = position - mTopHeaderHeight;
             }
+            float fraction = (float) -offset / mTopShopMenuHeight;
+            mTopShopMenu.setTranslationY(offset);
+            mTopPageTab.setTranslationY(offset);
+            mBgTopWhiteMask.setTranslationY(offset);
+            mBgTopWhiteMask.setAlpha(fraction);
+            mTopPageTab.setBackgroundColor(Utils.getGradientColor(colorTextMain, colorWhite, fraction));
+            mPageTab.setTextSelectColor(Utils.getGradientColor(colorWhite, colorTextMain, fraction));
+            mPageTab.setTextUnselectColor(Utils.getGradientColor(colorWhite60a, colorTextCaption, fraction));
+            mPageTab.setIndicatorColor(Utils.getGradientColor(colorWhite, colorOrange, fraction));
+            mShopMenuAnim.setOffset(offset);
         } else {
-            if (!mIsStickyPeriodTop) {
-                updateStickyPeriodTab(activity, true, true);
+            int offset = Math.min(position - mTopHeaderHeight, 0);
+            mTopShopMenu.setTranslationY(offset);
+            mShopMenuAnim.setOffset(offset);
+            mTopPageTab.setTranslationY(offset);
+            if (position > 0 && mIsStickyPeriodTop) {
+                updateStickyPeriodTab(getActivity(), false, true);
+            } else if (position <= 0 && !mIsStickyPeriodTop) {
+                updateStickyPeriodTab(getActivity(), true, true);
             }
         }
     }
@@ -511,6 +544,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             if (data.size() <= position) {
                 return;
             }
+            mPageTab.setCurrentTab(position);
             mPresenter.switchPage(data.get(position).getType());
             updateTab(mPresenter.getPageType(), mPresenter.getPeriod());
             resetTop();
