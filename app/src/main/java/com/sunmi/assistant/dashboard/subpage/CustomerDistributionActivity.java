@@ -66,8 +66,9 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     String startTime;
     @Extra
     int type;
+    @Extra
+    int dataType;
 
-    private int dataType;
     private List<NewOldCustomer> newOldCustomers = new ArrayList<>();
     private List<GenderCustomer> genderCustomers = new ArrayList<>();
     private List<AgeCustomer> ageCustomers = new ArrayList<>();

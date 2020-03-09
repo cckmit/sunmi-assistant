@@ -1,5 +1,7 @@
 package com.sunmi.assistant.dashboard.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import java.util.Objects;
@@ -8,7 +10,7 @@ import java.util.Objects;
  * @author yinhui
  * @date 2020-03-05
  */
-public class DashboardCondition {
+public class DashboardCondition implements Parcelable {
     public boolean hasSaas;
     public boolean hasImport;
     public boolean hasFs;
@@ -47,4 +49,41 @@ public class DashboardCondition {
                 ", hasFloating=" + hasFloating +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.hasSaas ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasImport ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasFs ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasCustomer ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.hasFloating ? (byte) 1 : (byte) 0);
+    }
+
+    public DashboardCondition() {
+    }
+
+    protected DashboardCondition(Parcel in) {
+        this.hasSaas = in.readByte() != 0;
+        this.hasImport = in.readByte() != 0;
+        this.hasFs = in.readByte() != 0;
+        this.hasCustomer = in.readByte() != 0;
+        this.hasFloating = in.readByte() != 0;
+    }
+
+    public static final Creator<DashboardCondition> CREATOR = new Creator<DashboardCondition>() {
+        @Override
+        public DashboardCondition createFromParcel(Parcel source) {
+            return new DashboardCondition(source);
+        }
+
+        @Override
+        public DashboardCondition[] newArray(int size) {
+            return new DashboardCondition[size];
+        }
+    };
 }

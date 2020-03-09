@@ -4,7 +4,12 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class CustomerShopDataResp {
+/**
+ * Description:
+ *
+ * @author linyuanpeng on 2020-03-09.
+ */
+public class TotalRealTimeShopSalesResp {
 
     @SerializedName("shop_list")
     private List<Item> list;
@@ -31,8 +36,11 @@ public class CustomerShopDataResp {
         private String shopId;
         @SerializedName("shop_name")
         private String shopName;
-        @SerializedName("total_count")
-        private int totalCount;
+
+        @SerializedName("order_count")
+        private int orderCount;
+        @SerializedName("order_amount")
+        private double orderAmount;
 
 
         public String getShopId() {
@@ -43,16 +51,20 @@ public class CustomerShopDataResp {
             return shopName;
         }
 
-        public int getTotalCount() {
-            return totalCount;
+        public int getOrderCount() {
+            return orderCount;
+        }
+
+        public double getOrderAmount() {
+            return orderAmount;
         }
 
         @Override
         public int compareTo(Item o) {
             if (isDesc) {
-                return o.totalCount-totalCount;
+                return Double.compare(o.orderAmount, orderAmount);
             } else {
-                return totalCount - o.totalCount;
+                return Double.compare(orderAmount, o.orderAmount);
             }
         }
     }
