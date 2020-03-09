@@ -22,7 +22,8 @@ import sunmi.common.utils.log.LogCat;
  * @date 2019-10-14
  */
 public class TotalCustomerPresenter extends BasePresenter<TotalCustomerContract.View>
-        implements TotalCustomerContract.Presenter, BaseRefreshCard.Presenter {
+        implements TotalCustomerContract.Presenter, BaseRefreshCard.Presenter,
+        TotalCustomerPeriodCard.OnTimeClickListener {
 
     private static final String TAG = TotalCustomerPresenter.class.getSimpleName();
 
@@ -73,6 +74,13 @@ public class TotalCustomerPresenter extends BasePresenter<TotalCustomerContract.
             card.refresh(true);
         }
         mView.setCards(mList);
+    }
+
+    @Override
+    public void onTimeClicked() {
+        if (isViewAttached()) {
+            mView.showTimeDialog(mPeriod, mPeriodTime.start);
+        }
     }
 
     @Override

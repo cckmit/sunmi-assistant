@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.card.total;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
+import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.ListView;
@@ -164,7 +165,8 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
 
         ListView lv = holder.getView(R.id.lv_dashboard_list);
         mAdapter = new DetailListAdapter(context);
-        lv.setDividerHeight(0);
+        lv.setDivider(ContextCompat.getDrawable(context, R.color.transparent));
+        lv.setDividerHeight((int) context.getResources().getDimension(R.dimen.dp_8));
         lv.setAdapter(mAdapter);
         return holder;
     }

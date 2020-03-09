@@ -15,6 +15,8 @@ import com.sunmi.assistant.dashboard.page.ProfileFragment;
 import com.sunmi.assistant.dashboard.page.ProfileFragment_;
 import com.sunmi.assistant.dashboard.page.RealtimeFragment;
 import com.sunmi.assistant.dashboard.page.RealtimeFragment_;
+import com.sunmi.assistant.dashboard.page.TotalCustomerFragment;
+import com.sunmi.assistant.dashboard.page.TotalCustomerFragment_;
 import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment;
 import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment_;
 import com.sunmi.assistant.dashboard.util.Constants;
@@ -188,6 +190,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         TotalRealtimeFragment totalRealtimeFragment = new TotalRealtimeFragment_();
         pages.add(new PageHost(R.string.dashboard_page_realtime_today, 0,
                 totalRealtimeFragment, Constants.PAGE_TOTAL_REALTIME));
+
+        TotalCustomerFragment totalCustomerFragment = new TotalCustomerFragment_();
+        pages.add(new PageHost(R.string.dashboard_page_customer, 0,
+                totalCustomerFragment, Constants.PAGE_TOTAL_CUSTOMER));
 
         mPageType = Constants.PAGE_TOTAL_REALTIME;
         if (isViewAttached()) {
