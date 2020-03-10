@@ -132,6 +132,7 @@
     <string name="str_support_manage">Service management</string>
     <string name="str_cloud_manage">Cloud storage management</string>
     <string name="str_remaining_validity_period">Remaining Validity:%s</string>
+    <string name="tip_validity_period">剩余有效期：%s\n请至服务管理进行续费</string>
     <string name="ipc_device_name">Device Name：%s</string>
     <string name="str_dev_sn">SN：%s</string>
     <string name="str_dev_mac">MAC：%s</string>
@@ -191,4 +192,6 @@
     <string name="str_refresh_loading">Loading…</string>
     <string name="service_cloud_7">Cloud Storage(7-Days)</string>
     <string name="service_cloud_30">Cloud Storage(30-Days)</string>
+    <string name="str_renew_now">立即续订</string>
+    <string name="tip_renew_service">服务已过期，请尽快续订</string>
 </resources>

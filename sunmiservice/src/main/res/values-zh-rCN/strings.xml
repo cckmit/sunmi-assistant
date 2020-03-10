@@ -9,7 +9,7 @@
     <string name="str_text_share">分享</string>
     <string name="str_text_edit_sharing_content">编辑分享内容</string>
     <string name="str_text_follow_official_weibo">关注官方微博</string>
-    <string name="str_renewal">续费</string>
+    <string name="str_renewal">续订</string>
     <string name="tip_device_unbind">原绑定设备已解绑</string>
     <string name="tip_not_open_cloud">您尚未开通云存储服务</string>
     <string name="service_go_open">去开通</string>
@@ -45,4 +45,9 @@
     <string name="str_fight_outbreak">抗击疫情</string>
     <string name="str_install_now">立即安装</string>
     <string name="dialog_title_install_alipay">此服务需安装支付宝客户端，请安装后重试。</string>
+    <string name="dialog_title_install_dingding">尚未安装钉钉，无法观看直播，请安装后重试。</string>
+    <string name="str_watch_course">观看课程</string>
+    <string name="sunmi_business_school">商米商学院</string>
+    <string name="str_watch_online_course">与商家一起修炼内功，助力门店转型升级</string>
+    <string name="str_online_course">在线课程</string>
 </resources>

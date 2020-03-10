@@ -11,8 +11,6 @@ import com.sunmi.assistant.dashboard.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.Constants;
 import com.sunmi.assistant.dashboard.Utils;
 
-import java.util.Random;
-
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
@@ -63,8 +61,10 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     @Override
     protected void setupModel(Model model, CustomerDataResp response) {
-        model.customer = response.getLatestPassengerCount();
-        model.lastCustomer = response.getEarlyPassengerCount();
+        model.unknownCustomer = response.getLatestEntryHeadCount();
+        model.lastUnknownCustomer = response.getEarlyEntryHeadCount();
+        model.customer = response.getLatestPassengerCount() + model.unknownCustomer;
+        model.lastCustomer = response.getEarlyPassengerCount() + model.lastUnknownCustomer;
         model.newCustomer = response.getLatestStrangerPassengerCount();
         model.lastNewCustomer = response.getEarlyStrangerPassengerCount();
         model.oldCustomer = response.getLatestRegularPassengerCount();
@@ -93,21 +93,25 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         TextView newSubData = holder.getView(R.id.tv_dashboard_new_subdata);
         TextView oldValue = holder.getView(R.id.tv_dashboard_old);
         TextView oldSubData = holder.getView(R.id.tv_dashboard_old_subdata);
-        if (model.getCustomer() > 0) {
-            pb.setMax(model.getCustomer());
-            pb.setSecondaryProgress(model.getCustomer());
-            pb.setProgress(model.getNewCustomer());
+        TextView unknownValue = holder.getView(R.id.tv_dashboard_unknown);
+        TextView unknownSubData = holder.getView(R.id.tv_dashboard_unknown_subdata);
+        if (model.customer > 0) {
+            pb.setMax(model.customer);
+            pb.setSecondaryProgress(model.newCustomer + model.oldCustomer);
+            pb.setProgress(model.newCustomer);
         } else {
             pb.setMax(1);
             pb.setProgress(0);
             pb.setSecondaryProgress(0);
         }
-        value.setText(model.getCustomerString(context));
-        subData.setText(model.getLastCustomerString(context));
-        newValue.setText(model.getNewCustomerString(context));
-        newSubData.setText(model.getLastNewCustomerString(context));
-        oldValue.setText(model.getOldCustomerString(context));
-        oldSubData.setText(model.getLastOldCustomerString(context));
+        value.setText(Utils.formatNumber(context, model.customer, false, true));
+        subData.setText(Utils.formatNumber(context, model.lastCustomer, false, false));
+        newValue.setText(Utils.formatNumber(context, model.newCustomer, false, true));
+        newSubData.setText(Utils.formatNumber(context, model.lastNewCustomer, false, false));
+        oldValue.setText(Utils.formatNumber(context, model.oldCustomer, false, true));
+        oldSubData.setText(Utils.formatNumber(context, model.lastOldCustomer, false, false));
+        unknownValue.setText(Utils.formatNumber(context, model.unknownCustomer, false, true));
+        unknownSubData.setText(Utils.formatNumber(context, model.lastUnknownCustomer, false, false));
     }
 
     @Override
@@ -117,6 +121,7 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         holder.getView(R.id.layout_dashboard_main).setVisibility(View.INVISIBLE);
         holder.getView(R.id.layout_dashboard_new).setVisibility(View.INVISIBLE);
         holder.getView(R.id.layout_dashboard_old).setVisibility(View.INVISIBLE);
+        holder.getView(R.id.layout_dashboard_unknown).setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -130,12 +135,16 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         TextView newSubData = holder.getView(R.id.tv_dashboard_new_subdata);
         TextView oldValue = holder.getView(R.id.tv_dashboard_old);
         TextView oldSubData = holder.getView(R.id.tv_dashboard_old_subdata);
+        TextView unknownValue = holder.getView(R.id.tv_dashboard_unknown);
+        TextView unknownSubData = holder.getView(R.id.tv_dashboard_unknown_subdata);
         value.setText(Utils.DATA_NONE);
         subData.setText(Utils.DATA_NONE);
         newValue.setText(Utils.DATA_NONE);
         newSubData.setText(Utils.DATA_NONE);
         oldValue.setText(Utils.DATA_NONE);
         oldSubData.setText(Utils.DATA_NONE);
+        unknownValue.setText(Utils.DATA_NONE);
+        unknownSubData.setText(Utils.DATA_NONE);
         pb.setMax(1);
         pb.setProgress(0);
         pb.setSecondaryProgress(0);
@@ -151,6 +160,7 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
         holder.getView(R.id.layout_dashboard_main).setVisibility(View.VISIBLE);
         holder.getView(R.id.layout_dashboard_new).setVisibility(View.VISIBLE);
         holder.getView(R.id.layout_dashboard_old).setVisibility(View.VISIBLE);
+        holder.getView(R.id.layout_dashboard_unknown).setVisibility(View.VISIBLE);
 
         TextView subTitle = holder.getView(R.id.tv_dashboard_subtitle);
         TextView newCustomerSubTitle = holder.getView(R.id.tv_dashboard_new_subtitle);
@@ -182,58 +192,14 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     public static class Model extends BaseRefreshCard.BaseModel {
 
-        int customer;
-        int lastCustomer;
-        int newCustomer;
-        int lastNewCustomer;
-        int oldCustomer;
-        int lastOldCustomer;
-
-        private int getCustomer() {
-            return customer;
-        }
-
-        private int getNewCustomer() {
-            return newCustomer;
-        }
-
-        private int getOldCustomer() {
-            return oldCustomer;
-        }
-
-        private CharSequence getCustomerString(Context context) {
-            return Utils.formatNumber(context, customer, false, true);
-        }
-
-        private CharSequence getLastCustomerString(Context context) {
-            return Utils.formatNumber(context, lastCustomer, false, false);
-        }
-
-        private CharSequence getNewCustomerString(Context context) {
-            return Utils.formatNumber(context, newCustomer, false, true);
-        }
-
-        private CharSequence getLastNewCustomerString(Context context) {
-            return Utils.formatNumber(context, lastNewCustomer, false, false);
-        }
-
-        private CharSequence getOldCustomerString(Context context) {
-            return Utils.formatNumber(context, oldCustomer, false, true);
-        }
-
-        private CharSequence getLastOldCustomerString(Context context) {
-            return Utils.formatNumber(context, lastOldCustomer, false, false);
-        }
-
-        private void random() {
-            Random r = new Random(System.currentTimeMillis());
-            newCustomer = r.nextInt(100000000);
-            lastNewCustomer = r.nextInt(100000);
-            oldCustomer = r.nextInt(100000000);
-            lastOldCustomer = r.nextInt(100000);
-            customer = newCustomer + oldCustomer;
-            lastCustomer = lastNewCustomer + lastOldCustomer;
-        }
+        private int customer;
+        private int lastCustomer;
+        private int unknownCustomer;
+        private int lastUnknownCustomer;
+        private int newCustomer;
+        private int lastNewCustomer;
+        private int oldCustomer;
+        private int lastOldCustomer;
 
     }
 }

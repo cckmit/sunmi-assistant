@@ -19,10 +19,12 @@ public class CustomerEnterRateTrendResp {
     }
 
     public static class Item {
+
         /**
-         * time : 2019-09-11 12:00
-         * passenger_count : 12
-         * pass_passenger_count : 12
+         * passenger_count : 0
+         * pass_passenger_count : 0
+         * entry_head_count : 0
+         * time : 2020-01-01 00:00
          */
 
         @SerializedName("time")
@@ -31,6 +33,8 @@ public class CustomerEnterRateTrendResp {
         private int passengerCount;
         @SerializedName("pass_passenger_count")
         private int passPassengerCount;
+        @SerializedName("entry_head_count")
+        private int entryHeadCount;
 
         public String getTime() {
             return time;
@@ -43,5 +47,10 @@ public class CustomerEnterRateTrendResp {
         public int getPassPassengerCount() {
             return passPassengerCount;
         }
+
+        public int getEntryHeadCount() {
+            return entryHeadCount;
+        }
+
     }
 }

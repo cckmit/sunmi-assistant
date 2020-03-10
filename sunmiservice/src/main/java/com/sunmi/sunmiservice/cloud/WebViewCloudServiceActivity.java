@@ -2,6 +2,8 @@ package com.sunmi.sunmiservice.cloud;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.CountDownTimer;
@@ -9,14 +11,14 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 
-import com.alipay.sdk.app.H5PayCallback;
 import com.alipay.sdk.app.PayTask;
-import com.alipay.sdk.util.H5PayResultModel;
 import com.sunmi.sunmiservice.JSCall;
 import com.sunmi.sunmiservice.R;
 import com.xiaojinzi.component.anno.RouterAnno;
@@ -29,7 +31,6 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,8 +39,8 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
+import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.webview.AndroidBug5497Workaround;
 import sunmi.common.view.webview.SMWebChromeClient;
 import sunmi.common.view.webview.SMWebView;
@@ -52,52 +53,49 @@ import sunmi.common.view.webview.SsConstants;
  * @author linyuanpeng on 2019-10-25.
  */
 @EActivity(resName = "activity_webview_cloud")
-public class WebViewCloudServiceActivity extends BaseActivity implements SMWebChromeClient.Callback {
+public class WebViewCloudServiceActivity extends BaseActivity
+        implements SMWebChromeClient.Callback, SMWebChromeClient.CustomViewListener {
 
     private static final String URL_PARAM_JOINER = "?";
+    private final static int timeout = 15_000;
 
-    private final int timeout = 15_000;
+    @ViewById(resName = "title_bar")
+    TitleBarView titleBar;
     @ViewById(resName = "webView")
     SMWebView webView;
     @ViewById(resName = "layout_network_error")
     View networkError;
-    @ViewById(resName = "title_bar")
-    TitleBarView titleBar;
+    @ViewById(resName = "flVideoContainer")
+    FrameLayout flVideoContainer;
 
     @Extra
     String mUrl;
     @Extra
-    ArrayList<String> snList;
-    @Extra
-    String productNo;
-    @Extra
     String params;
     @Extra
-    String sn;
+    boolean showTitleBar;
 
     private boolean hasSendDeviceInfo = false;
     private CountDownTimer countDownTimer;
     private int progress;
-    private SMWebChromeClient webChrome;
 
     /**
      * 路由启动Activity
-     *
-     * @param request
-     * @return
      */
     @RouterAnno(
             path = RouterConfig.SunmiService.WEB_VIEW_CLOUD
     )
     public static Intent start(@NonNull RouterRequest request) {
-        Intent intent = new Intent(request.getRawContext(), WebViewCloudServiceActivity_.class);
-        return intent;
+        return new Intent(request.getRawContext(), WebViewCloudServiceActivity_.class);
     }
 
     @AfterViews
     protected void init() {
         AndroidBug5497Workaround.assistActivity(this, true);
         StatusBarUtils.setStatusBarFullTransparent(this);//状态栏
+        if (showTitleBar) {
+            titleBar.setVisibility(View.VISIBLE);
+        }
         initWebView();
         StringBuilder sb = new StringBuilder(mUrl);
         if (mUrl.contains(URL_PARAM_JOINER)) {
@@ -115,7 +113,6 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             countDownTimer = new CountDownTimer(timeout, timeout) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-
                 }
 
                 @Override
@@ -161,8 +158,9 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
         // 可以运行JavaScript
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        webChrome = new SMWebChromeClient(this);
+        SMWebChromeClient webChrome = new SMWebChromeClient(this);
         webChrome.setCallback(this);
+        webChrome.setCustomViewListener(this);
         webView.setWebChromeClient(webChrome);
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
@@ -172,10 +170,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
                 //微信支付
                 if (url.startsWith("weixin://wap/pay?")) {
                     try {
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(url));
-                        startActivity(intent);
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                     } catch (Exception e) {
                         view.goBack();
                         shortTip(R.string.tip_wechat_not_installed);
@@ -183,35 +178,48 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
                     return true;
                 } else if (url.startsWith("https://wx.tenpay.com")) {
                     //H5微信支付要用，不然说"商家参数格式有误"
-                    Map<String, String> extraHeaders = new HashMap<String, String>();
+                    Map<String, String> extraHeaders = new HashMap<>();
                     extraHeaders.put("Referer", mUrl);//商户申请H5时提交的授权域名
                     view.loadUrl(url, extraHeaders);
+                    return true;
+                } else if (url.startsWith("intent://")) {
+                    try {
+                        startActivity(Intent.parseUri(url, Intent.URI_INTENT_SCHEME));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                } else if (url.startsWith("dingtalk://dingtalkclient/page/link")) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    } catch (Exception e) {
+                        try {
+                            new CommonDialog.Builder(context)
+                                    .setTitle(R.string.dialog_title_install_alipay)
+                                    .setConfirmButton(R.string.str_install_now, (dialog, which) -> {
+                                        startActivity(new Intent("android.intent.action.VIEW",
+                                                Uri.parse("https://www.dingtalk.com/android/d/lang=zh_CN")));
+                                    }).setCancelButton(R.string.sm_cancel).create().show();
+//                            WebViewActivity_.intent(context).url(
+//                                    URLDecoder.decode(url.substring(url.indexOf("?url=") + 5), "UTF-8")).start();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                        e.printStackTrace();
+                    }
                     return true;
                 }
                 //支付宝
                 final PayTask payTask = new PayTask(WebViewCloudServiceActivity.this);
-                boolean isIntercepted = payTask.payInterceptorWithUrl(url, true, new H5PayCallback() {
-                    @Override
-                    public void onPayResult(H5PayResultModel result) {
-                        final String url = result.getReturnUrl();
-                        if (!TextUtils.isEmpty(url)) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    view.loadUrl(url);
-                                }
-                            });
-                        }
-                        // 5000支付失败 6001重复请求 6002中途取消
-                        if ("5000".equals(result.getResultCode()) || "6001".equals(result.getResultCode())
-                                || "6002".equals(result.getResultCode())) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    view.loadUrl(CommonConstants.H5_ORDER_MANAGE);
-                                }
-                            });
-                        }
+                boolean isIntercepted = payTask.payInterceptorWithUrl(url, true, result -> {
+                    final String url1 = result.getReturnUrl();
+                    if (!TextUtils.isEmpty(url1)) {
+                        runOnUiThread(() -> view.loadUrl(url1));
+                    }
+                    // 5000支付失败 6001重复请求 6002中途取消
+                    if ("5000".equals(result.getResultCode()) || "6001".equals(result.getResultCode())
+                            || "6002".equals(result.getResultCode())) {
+                        runOnUiThread(() -> view.loadUrl(CommonConstants.H5_ORDER_MANAGE));
                     }
                 });
                 if (!isIntercepted) {
@@ -242,9 +250,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
                 loadError();
-                LogCat.e(TAG, "receiverError 111111" + " networkError");
             }
-
         });
     }
 
@@ -278,7 +284,7 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
     @Click(resName = "btn_refresh")
     void refreshClick() {
         networkError.setVisibility(View.GONE);
-        titleBar.setVisibility(View.GONE);
+        setTitleBarVisibility(View.GONE);
         if (webView != null) {
             webView.setVisibility(View.VISIBLE);
             webView.reload();
@@ -292,10 +298,17 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             webView.setVisibility(View.GONE);
         }
         networkError.setVisibility(View.VISIBLE);
-        titleBar.setVisibility(View.VISIBLE);
+        setTitleBarVisibility(View.VISIBLE);
         hasSendDeviceInfo = false;
         hideLoadingDialog();
         closeTimer();
+    }
+
+    private void setTitleBarVisibility(int visibility) {
+        if (showTitleBar) {
+            return;
+        }
+        titleBar.setVisibility(visibility);
     }
 
     @Override
@@ -316,7 +329,9 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
 
     @Override
     public void onReceivedTitle(String title) {
-
+        if (showTitleBar) {
+            titleBar.setAppTitle(title);
+        }
     }
 
     @Override
@@ -341,6 +356,29 @@ public class WebViewCloudServiceActivity extends BaseActivity implements SMWebCh
             webView = null;
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onShowCustomView(View view, WebChromeClient.CustomViewCallback callback) {
+        fullScreen();
+
+        webView.setVisibility(View.GONE);
+        flVideoContainer.setVisibility(View.VISIBLE);
+        flVideoContainer.addView(view);
+    }
+
+    @Override
+    public void onHideCustomView() {
+        fullScreen();
+
+        webView.setVisibility(View.VISIBLE);
+        flVideoContainer.setVisibility(View.GONE);
+        flVideoContainer.removeAllViews();
+    }
+
+    private void fullScreen() {
+        setRequestedOrientation(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
 }

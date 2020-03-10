@@ -54,7 +54,6 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     View layoutContent;
     @ViewById(resName = "layoutNetworkError")
     View layoutNetworkError;
-
     @ViewById(resName = "tv_cloud_storage")
     TextView tvCloudStorage;
     @ViewById(resName = "iv_tip_free")
@@ -91,9 +90,9 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
 
     private void regToWx() {
         // 通过WXAPIFactory工厂，获取IWXAPI的实例
-        api = WXAPIFactory.createWXAPI(mActivity, SunmiServiceConfig.WECHAT_APP_ID, true);
+        api = WXAPIFactory.createWXAPI(mActivity, CommonConfig.WECHAT_APP_ID, true);
         // 将应用的appId注册到微信
-        api.registerApp(SunmiServiceConfig.WECHAT_APP_ID);
+        api.registerApp(CommonConfig.WECHAT_APP_ID);
     }
 
     @AfterViews
@@ -104,7 +103,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         initTitleBar();
         initCloudCard();
         initCashPreventCardVisibility(false);
-        if (SpUtils.getLoanStatus()){
+        if (SpUtils.getLoanStatus()) {
             tvLoan.setVisibility(View.VISIBLE);
             llLoan.setVisibility(View.VISIBLE);
         }else {
@@ -115,7 +114,10 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     }
 
     private void initTitleBar() {
-        titleBar.getRightTextView().setOnClickListener(v -> ServiceManageActivity_.intent(mActivity).start());
+        titleBar.getRightTextView().setOnClickListener(v ->
+                WebViewCloudServiceActivity_.intent(mActivity)
+                        .mUrl(CommonConstants.H5_SERVICE_MANAGER)
+                        .params(WebViewParamsUtils.getUserInfoParams()).start());
     }
 
     @UiThread
@@ -173,8 +175,17 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         mPresenter.load();
     }
 
+    @Click(resName = "ll_online_course")
+    void onlineCourseClick() {
+        if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
+            return;
+        }
+        WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_SERVICE_COURSE)
+                .params(WebViewParamsUtils.getUserInfoParams()).start();
+    }
+
     @Click(resName = "ll_loan")
-    void commerceBankClick(){
+    void commerceBankClick() {
         if (isNetworkError() || isFastClick(FAST_CLICK_INTERVAL)) {
             return;
         }
@@ -204,7 +215,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         if (cashServiceInfoList.isEmpty()) {
             // 没有设备开通收银视频，进入开通页
             WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_CASH_VIDEO)
-                    .params(WebViewParamsUtils.getCashVideoParams()).start();
+                    .params(WebViewParamsUtils.getCashVideoParams(null, 0)).start();
         } else if (hasCloudService) {
             // 有设备开通收银视频，并已经开通云存储服务，进入收银视频总览页
             Router.withApi(IpcApi.class)

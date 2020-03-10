@@ -57,7 +57,7 @@
     <string name="dashboard_page_profile">Persona</string>
     <string name="dashboard_card_customer_pass">Passing Customers</string>
     <string name="dashboard_card_customer_all">All the Customers</string>
-    <string name="dashboard_card_customer_tip">Rank per proportion</string>
+    <string name="dashboard_card_customer_tip">基于人脸采集数据，按照客流占比排列</string>
     <string name="dashboard_card_customer_count">Customer Visits</string>
     <string name="dashboard_card_customer_ratio">Of the Total</string>
     <string name="dashboard_card_customer_old_ratio">Repeat</string>
@@ -78,7 +78,7 @@
     <string name="dashboard_card_customer_week_6">6th Week</string>
 
     <string name="dashboard_card_customer_group_frequency">Customer visits frequency</string>
-    <string name="dashboard_card_customer_avg_enter">The average number of customer visits to the store over a period of time</string>
+    <string name="dashboard_card_customer_avg_enter">基于人脸采集数据，时间段内顾客的平均到店次数</string>
     <string name="dashboard_card_customer_frequency_distribution">Store visits</string>
     <string name="dashborad_card_customer_week_frequency_trend">Trends in frequency of visits (Week)</string>
     <string name="dashborad_card_customer_month_frequency_trend">Trends in frequency of visits (Month)</string>
@@ -116,6 +116,8 @@
     <string name="dashboard_no_customer_wait_tip">Data will be updated from 1:00 to 2:00 the next day</string>
     <string name="dashboard_no_customer_fs_tip">The camera is untethered</string>
     <string name="dashboard_no_customer_fs_add_btn">Add Device</string>
+    <string name="dashboard_tip_customer_distribution">基于人脸采集数据</string>
+    <string name="dashboard_card_tab_unknown">未识别</string>
     <string name="str_platform_list">Platform list</string>
     <string name="str_platform_skip">Skip</string>
     <string name="str_button_check">Verification</string>

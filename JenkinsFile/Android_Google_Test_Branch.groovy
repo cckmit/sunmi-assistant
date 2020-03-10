@@ -72,7 +72,7 @@ pipeline{
           script{
             def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,hanruifeng@sunmi.com,ningrulin@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,simayujing@sunmi.com,linianhan@sunmi.com,liuxiaoliang@sunmi.com,chaoheng.nong@sunmi.com,lixuanzhen@sunmi.com,yangzhen@sunmi.com,zhaiyongqing@sunmi.com'
             def changeString = getChangeString()
-            emailext(attachLog: false, body: '''Download url:	https://fir.im/61d5<br/>更新内容：<br/>''' + changeString, mimeType: 'text/html', subject: 'Android Google Test Build Ready', to: recipient_list)
+            emailext(attachLog: false, body: '''Download url:	http://d.alphaqr.com/61d5<br/>更新内容：<br/>''' + changeString, mimeType: 'text/html', subject: 'Android Google Test Build Ready', to: recipient_list)
           }
         } 
       }
@@ -126,7 +126,7 @@ def NotifyBuild(String buildStatus = 'STARTED', String stage){
     colorCode = '#FF0000'
   }
 
-  def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,lvsiwen@sunmi.com,ningrulin@sunmi.com,lixuanzhen@sunmi.com,yangzhen@sunmi.com'
+  def recipient_list = 'lukai@sunmi.com,xiaoxinwu@sunmi.com,yangshijie@sunmi.com,yangjibin@sunmi.com,linyuanpeng@sunmi.com,yinhui@sunmi.com,ningrulin@sunmi.com,lixuanzhen@sunmi.com,yangzhen@sunmi.com'
 
   switch(stage){
     case 'build':

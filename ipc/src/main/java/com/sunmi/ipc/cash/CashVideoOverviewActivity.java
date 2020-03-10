@@ -328,7 +328,7 @@ public class CashVideoOverviewActivity extends BaseMvpActivity<CashOverviewPrese
     public void floatingClick() {
         Router.withApi(SunmiServiceApi.class)
                 .goToWebViewCloud(context, CommonConstants.H5_CASH_PREVENT_LOSS,
-                        WebViewParamsUtils.getCashPreventLossParams(serviceBeans.get(0).getDeviceSn())
+                        WebViewParamsUtils.getCashPreventLossParams(serviceBeans.get(0).getDeviceSn(), 0)
                         , new BiCallback<Intent>() {
                             @Override
                             public void onSuccess(@NonNull RouterResult result, @NonNull Intent intent) {
