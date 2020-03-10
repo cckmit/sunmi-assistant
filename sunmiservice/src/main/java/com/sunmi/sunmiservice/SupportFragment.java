@@ -104,8 +104,8 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         initCloudCard();
         initCashPreventCardVisibility(false);
         if (SpUtils.getLoanStatus()) {
-            tvLoan.setVisibility(View.VISIBLE);
             llLoan.setVisibility(View.VISIBLE);
+            tvLoan.setVisibility(View.VISIBLE);
         }
         mPresenter.load();
     }
