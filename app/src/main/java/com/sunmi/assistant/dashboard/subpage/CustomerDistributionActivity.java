@@ -99,15 +99,11 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         rvCustomer.init(R.drawable.shap_line_divider);
         adapter = new Adapter();
         rvCustomer.setAdapter(adapter);
-        initSort(true);
         initFilterData();
         initFilters();
     }
 
     private void initSort(boolean isDesc) {
-        NewOldCustomer.isDesc = isDesc;
-        GenderCustomer.isDesc = isDesc;
-        AgeCustomer.isDesc = isDesc;
         if (isDesc) {
             dropdownTitle.setText(R.string.str_sort_desc);
         } else {
@@ -181,6 +177,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
             mPresenter.getCustomerShopAgeDistribution();
         }
         switchType(DATA_TYPE_NEW_OLD);
+        initSort(NewOldCustomer.isDesc);
     }
 
     @Click(R.id.rb_gender)
@@ -190,6 +187,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
             mPresenter.getCustomerShopAgeGenderDistribution();
         }
         switchType(DATA_TYPE_GENDER);
+        initSort(GenderCustomer.isDesc);
     }
 
     @Click(R.id.rb_age)
@@ -203,15 +201,31 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
             mPresenter.getCustomerShopAgeDistribution();
         }
         switchType(DADA_TYPE_AGE);
+        initSort(GenderCustomer.isDesc);
     }
 
     @Click(R.id.dm_motion_sort)
     void sortClick() {
-        initSort(!NewOldCustomer.isDesc);
-        Collections.sort(newOldCustomers);
-        Collections.sort(genderCustomers);
-        if (ageFilters != null) {
-            Collections.sort(ageCustomers);
+        switch (dataType) {
+            case DATA_TYPE_NEW_OLD:
+                NewOldCustomer.isDesc = !NewOldCustomer.isDesc;
+                initSort(NewOldCustomer.isDesc);
+                Collections.sort(newOldCustomers);
+                break;
+            case DATA_TYPE_GENDER:
+                GenderCustomer.isDesc = !GenderCustomer.isDesc;
+                initSort(GenderCustomer.isDesc);
+                Collections.sort(genderCustomers);
+                break;
+            case DADA_TYPE_AGE:
+                if (ageFilters != null) {
+                    AgeCustomer.isDesc = !AgeCustomer.isDesc;
+                    initSort(AgeCustomer.isDesc);
+                    Collections.sort(ageCustomers);
+                }
+                break;
+            default:
+                break;
         }
         adapter.notifyDataSetChanged();
     }
