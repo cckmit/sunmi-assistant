@@ -218,8 +218,6 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
                         }
                     }
                 }
-
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
