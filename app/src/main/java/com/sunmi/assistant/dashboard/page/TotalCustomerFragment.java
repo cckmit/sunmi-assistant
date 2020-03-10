@@ -2,13 +2,17 @@ package com.sunmi.assistant.dashboard.page;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+import android.view.ViewGroup;
 
+import com.datelibrary.bean.DateType;
+import com.datelibrary.view.DatePicker;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
@@ -21,11 +25,14 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.model.Interval;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.BottomDialog;
 
@@ -50,8 +57,10 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
     private RefreshViewHolder mRefreshHeaderHolder;
 
     private Dialog mDialogTimeDay;
+    private DatePicker dayPicker;
     private Dialog mDialogTimeWeek;
     private Dialog mDialogTimeMonth;
+    private DatePicker monthPicker;
 
     @AfterViews
     void init() {
@@ -143,12 +152,30 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
 
     @Override
     public void showTimeDialog(int period, long periodTime) {
+        int margin = (int) getResources().getDimension(R.dimen.dp_20);
+        ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, margin, 0, margin);
         // TODO: Add dialog
         if (period == Constants.TIME_PERIOD_DAY) {
             if (mDialogTimeDay == null) {
+                dayPicker = new DatePicker(getActivity(), DateType.TYPE_YMD);
                 mDialogTimeDay = new BottomDialog.Builder(getActivity())
+                        .setTitle(R.string.str_select_time)
+                        .setCancelButton(R.string.sm_cancel)
+                        .setOkButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                long start = dayPicker.getSelectDate().getTime();
+                                Interval interval = new Interval(start, start + 3600000 * 24);
+                                mPresenter.setPeriod(mPresenter.getPeriod(), interval);
+                            }
+                        })
+                        .setContent(dayPicker, layoutParams)
                         .create();
             }
+            dayPicker.setStartDate(new Date(periodTime));
+            dayPicker.init();
             mDialogTimeDay.show();
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             if (mDialogTimeWeek == null) {
@@ -158,9 +185,26 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
             mDialogTimeWeek.show();
         } else if (period == Constants.TIME_PERIOD_MONTH) {
             if (mDialogTimeMonth == null) {
+                monthPicker = new DatePicker(getActivity(), DateType.TYPE_YM);
                 mDialogTimeMonth = new BottomDialog.Builder(getActivity())
+                        .setTitle(R.string.str_select_time)
+                        .setCancelButton(R.string.sm_cancel)
+                        .setOkButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                long start = monthPicker.getSelectDate().getTime();
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTimeInMillis(start);
+                                calendar.add(Calendar.MONTH, 1);
+                                Interval interval = new Interval(start, calendar.getTimeInMillis());
+                                mPresenter.setPeriod(mPresenter.getPeriod(), interval);
+                            }
+                        })
+                        .setContent(monthPicker, layoutParams)
                         .create();
             }
+            monthPicker.setStartDate(new Date(periodTime));
+            monthPicker.init();
             mDialogTimeMonth.show();
         }
     }

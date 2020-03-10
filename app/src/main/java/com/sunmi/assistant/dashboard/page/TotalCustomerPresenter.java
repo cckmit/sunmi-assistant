@@ -64,7 +64,9 @@ public class TotalCustomerPresenter extends BasePresenter<TotalCustomerContract.
 
     private void initList() {
         mList.clear();
-        mList.add(TotalCustomerPeriodCard.get(this,mCondition,mPeriod,mPeriodTime));
+        TotalCustomerPeriodCard periodCard = TotalCustomerPeriodCard.get(this, mCondition, mPeriod, mPeriodTime);
+        periodCard.setListener(this);
+        mList.add(periodCard);
         if (mCondition.hasFs) {
             mList.add(TotalCustomerOverviewCard.get(this, mCondition, mPeriod, mPeriodTime));
             mList.add(TotalCustomerDistributionCard.get(this, mCondition, mPeriod, mPeriodTime));
