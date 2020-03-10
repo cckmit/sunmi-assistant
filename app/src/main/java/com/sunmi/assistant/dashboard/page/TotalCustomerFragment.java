@@ -163,13 +163,10 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
                 mDialogTimeDay = new BottomDialog.Builder(getActivity())
                         .setTitle(R.string.str_select_time)
                         .setCancelButton(R.string.sm_cancel)
-                        .setOkButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                long start = dayPicker.getSelectDate().getTime();
-                                Interval interval = new Interval(start, start + 3600000 * 24);
-                                mPresenter.setPeriod(mPresenter.getPeriod(), interval);
-                            }
+                        .setOkButton(R.string.str_confirm, (dialog, which) -> {
+                            long start = dayPicker.getSelectDate().getTime();
+                            Interval interval = new Interval(start, start + 3600000 * 24);
+                            mPresenter.setPeriod(mPresenter.getPeriod(), interval);
                         })
                         .setContent(dayPicker, layoutParams)
                         .create();
@@ -189,16 +186,13 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
                 mDialogTimeMonth = new BottomDialog.Builder(getActivity())
                         .setTitle(R.string.str_select_time)
                         .setCancelButton(R.string.sm_cancel)
-                        .setOkButton(R.string.str_confirm, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                long start = monthPicker.getSelectDate().getTime();
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.setTimeInMillis(start);
-                                calendar.add(Calendar.MONTH, 1);
-                                Interval interval = new Interval(start, calendar.getTimeInMillis());
-                                mPresenter.setPeriod(mPresenter.getPeriod(), interval);
-                            }
+                        .setOkButton(R.string.str_confirm, (dialog, which) -> {
+                            long start = monthPicker.getSelectDate().getTime();
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTimeInMillis(start);
+                            calendar.add(Calendar.MONTH, 1);
+                            Interval interval = new Interval(start, calendar.getTimeInMillis());
+                            mPresenter.setPeriod(mPresenter.getPeriod(), interval);
                         })
                         .setContent(monthPicker, layoutParams)
                         .create();
