@@ -2,6 +2,7 @@ package com.sunmi.assistant.dashboard.card.total;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -175,16 +176,16 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
 
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
+        Context context = holder.getContext();
         View main = holder.getView(R.id.layout_dashboard_main);
         View amount = holder.getView(R.id.layout_sales_amount);
         View volume = holder.getView(R.id.layout_sales_volume);
         ImageView loading = holder.getView(R.id.iv_dashboard_loading);
-        loading.setImageResource(R.mipmap.dashboard_skeleton_multi);
         if (!mCondition.hasSaas && mCondition.hasFs) {
             main.setVisibility(View.INVISIBLE);
             volume.setVisibility(View.GONE);
             amount.setVisibility(View.GONE);
-            loading.setImageResource(R.mipmap.dashboard_skeleton_single);
+            loading.setImageResource(R.mipmap.dashboard_skeleton_single_three);
         } else {
             main.setVisibility(View.INVISIBLE);
             amount.setVisibility(View.INVISIBLE);

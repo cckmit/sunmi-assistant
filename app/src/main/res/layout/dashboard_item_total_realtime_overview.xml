@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_top_white_radius"
     android:minHeight="@dimen/dp_146"
+    android:maxHeight="@dimen/dp_222"
     android:paddingTop="@dimen/dp_12">
 
     <android.support.constraint.ConstraintLayout
