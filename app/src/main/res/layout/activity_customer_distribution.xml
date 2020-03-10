@@ -22,6 +22,15 @@
 
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
+    <sunmi.common.view.DropdownMenuNew
+        android:id="@+id/dm_motion_customer"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_44"
+        android:background="@color/c_white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/dm_motion_sort"
+        app:layout_constraintTop_toBottomOf="@+id/rg_type" />
 
     <LinearLayout
         android:id="@+id/dm_motion_sort"
@@ -54,18 +63,8 @@
 
     </LinearLayout>
 
-    <sunmi.common.view.DropdownMenuNew
-        android:id="@+id/dm_motion_customer"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_44"
-        android:background="@color/c_white"
-        app:dm_menuIndex="3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintEnd_toStartOf="@+id/dm_motion_sort"
-        app:layout_constraintTop_toBottomOf="@+id/rg_type" />
-
     <View
+        android:id="@+id/v_1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
         android:background="@color/c_divider"
@@ -112,6 +111,7 @@
     </RadioGroup>
 
     <View
+        android:id="@+id/v_2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0_5"
         android:background="@color/c_divider"
@@ -126,6 +126,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleText="dashboard_title_performance" />
+        app:titleText="@string/dashboard_title_performance" />
 
 </android.support.constraint.ConstraintLayout>

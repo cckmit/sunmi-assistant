@@ -119,11 +119,12 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
     private void initFilterData() {
         List<FilterItem> filterItems = new ArrayList<>(2);
         if (mCondition.hasFs) {
-            filterItems.add(new FilterItem(ID_COUNT, getString(R.string.dashboard_var_customer_volume), true));
+            filterItems.add(new FilterItem(ID_COUNT, getString(R.string.dashboard_var_customer_volume)));
         }
         if (mCondition.hasSaas) {
             filterItems.add(new FilterItem(ID_AMOUNT, getString(R.string.dashboard_var_sales_amount)));
         }
+        filterItems.get(0).setChecked(true);
         saleAdapter.setData(filterItems);
     }
 
