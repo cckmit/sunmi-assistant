@@ -16,6 +16,12 @@
     <sunmi.common.view.webview.SMWebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar" />
+
+    <FrameLayout
+        android:id="@+id/flVideoContainer"
+        android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <include

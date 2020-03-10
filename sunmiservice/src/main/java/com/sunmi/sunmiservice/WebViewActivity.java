@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.DownloadListener;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -36,6 +35,7 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.StatusBarUtils;
+import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
@@ -66,7 +66,6 @@ public class WebViewActivity extends BaseActivity
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
-        titleBar.getLeftImg().setOnClickListener(v -> onBackPressed());
         initWebView();
         webView.loadUrl(url);
         startTimer();
@@ -119,13 +118,9 @@ public class WebViewActivity extends BaseActivity
         webSettings.setUserAgentString(ua + ";sunmi");
         JSCall jsCall = new JSCall(this, webView);
         webView.addJavascriptInterface(jsCall, SsConstants.JS_INTERFACE_NAME);
-        webView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url, String userAgent, String contentDisposition,
-                                        String mimetype, long contentLength) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(intent);
-            }
+        webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
         });
 
         SMWebChromeClient smWebChromeClient = new SMWebChromeClient(this);
@@ -147,7 +142,13 @@ public class WebViewActivity extends BaseActivity
                                     startActivity(new Intent("android.intent.action.VIEW", alipayUrl));
                                 }).setCancelButton(R.string.sm_cancel).create().show();
                     }
-
+                    return true;
+                } else if (url.startsWith("intent://")) {
+                    try {
+                        startActivity(Intent.parseUri(url, Intent.URI_INTENT_SCHEME));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 }
                 if (!(url.startsWith("http") || url.startsWith("https"))) {
