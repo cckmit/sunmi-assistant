@@ -139,7 +139,7 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
     protected void initAdapter() {
         if (filterId == ID_COUNT) {
             Collections.sort(customerList);
-        }else {
+        } else {
             Collections.sort(saleList);
         }
         if (adapter == null) {
@@ -176,7 +176,7 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
     public void getCustomerSuccess(List<CustomerShopDataResp.Item> customers) {
         refreshView.endRefreshing();
         hideLoadingDialog();
-        if (layoutError.isShown()){
+        if (layoutError.isShown()) {
             layoutError.setVisibility(View.GONE);
         }
         customerList.clear();
@@ -186,7 +186,7 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
 
     @Override
     public void getCustomerFail(int code, String msg) {
-        if (filterId == ID_COUNT && customerList.size()<=0){
+        if (filterId == ID_COUNT && customerList.size() <= 0) {
             layoutError.setVisibility(View.VISIBLE);
         }
     }
@@ -195,7 +195,7 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
     public void getSaleSuccess(List<TotalRealTimeShopSalesResp.Item> sales) {
         refreshView.endRefreshing();
         hideLoadingDialog();
-        if (layoutError.isShown()){
+        if (layoutError.isShown()) {
             layoutError.setVisibility(View.GONE);
         }
         saleList.clear();
@@ -205,7 +205,7 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
 
     @Override
     public void getSaleFail(int code, String msg) {
-        if (filterId == ID_AMOUNT && saleList.size()<=0){
+        if (filterId == ID_AMOUNT && saleList.size() <= 0) {
             layoutError.setVisibility(View.GONE);
         }
     }
@@ -223,11 +223,11 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-            if (filterId == ID_COUNT){
+            if (filterId == ID_COUNT) {
                 CustomerShopDataResp.Item customer = customerList.get(i);
                 viewHolder.tvShopName.setText(customer.getShopName());
                 viewHolder.tvCount.setText(String.valueOf(customer.getTotalCount()));
-            }else {
+            } else {
                 TotalRealTimeShopSalesResp.Item sale = saleList.get(i);
                 viewHolder.tvShopName.setText(sale.getShopName());
                 viewHolder.tvCount.setText(String.valueOf(sale.getOrderAmount()));
@@ -236,9 +236,9 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
 
         @Override
         public int getItemCount() {
-            if (filterId == ID_COUNT){
+            if (filterId == ID_COUNT) {
                 return customerList.size();
-            }else {
+            } else {
                 return saleList.size();
             }
         }

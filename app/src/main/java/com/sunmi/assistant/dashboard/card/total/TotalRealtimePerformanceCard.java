@@ -85,7 +85,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     }
 
     private void loadCustomer(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalCustomerShopData(companyId,
+        SunmiStoreApi.getInstance().getTotalRealtimeCustomerByShop(companyId,
                 new RetrofitCallback<CustomerShopDataResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerShopDataResp data) {
@@ -117,7 +117,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     }
 
     private void loadSales(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalSaleShopData(companyId, new RetrofitCallback<TotalRealTimeShopSalesResp>() {
+        SunmiStoreApi.getInstance().getTotalRealtimeSalesByShop(companyId, new RetrofitCallback<TotalRealTimeShopSalesResp>() {
             @Override
             public void onSuccess(int code, String msg, TotalRealTimeShopSalesResp data) {
                 if (data == null || data.getList() == null) {
@@ -131,7 +131,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                 int max = Math.min(5, list.size());
                 for (int i = 0; i < max; i++) {
                     TotalRealTimeShopSalesResp.Item item = list.get(i);
-                    dataSet.add(new Item(item.getShopName(), (float) Math.max(0,item.getOrderAmount())));
+                    dataSet.add(new Item(item.getShopName(), (float) Math.max(0, item.getOrderAmount())));
                 }
                 callback.onSuccess();
             }

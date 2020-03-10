@@ -5,7 +5,6 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
-import android.text.format.DateFormat;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
@@ -37,8 +36,8 @@ import java.util.List;
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.model.CustomerAgeGenderResp;
-import sunmi.common.model.CustomerAgeNewOldResp;
+import sunmi.common.model.CountListBean;
+import sunmi.common.model.CustomerDistributionResp;
 import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -96,26 +95,25 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_realtime_distribution;
+        return R.layout.dashboard_item_total_customer_distribution;
     }
 
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
                                               CardCallback callback) {
-        String start = DateFormat.format(DATE_FORMAT, periodTime.start).toString();
-        String end = DateFormat.format(DATE_FORMAT, periodTime.end - 1).toString();
+        String time = Utils.formatTime(Utils.FORMAT_API_DATE, periodTime.start);
         if (mAgeList == null) {
-            loadAgeList(companyId, shopId, start, end, callback);
+            loadAgeList(companyId, period, time, callback);
         } else {
-            loadNewOld(companyId, shopId, start, end, callback);
+            loadNewOld(companyId, period, time, callback);
         }
         return null;
     }
 
-    private void loadAgeList(int companyId, int shopId, String start, String end, CardCallback callback) {
+    private void loadAgeList(int companyId, int period, String time, CardCallback callback) {
         mAgeList = CacheManager.get().get(CacheManager.CACHE_AGE_NAME);
         if (mAgeList != null) {
-            loadNewOld(companyId, shopId, start, end, callback);
+            loadNewOld(companyId, period, time, callback);
             return;
         }
         IpcCloudApi.getInstance().getFaceAgeRange(new RetrofitCallback<FaceAgeRangeResp>() {
@@ -133,7 +131,7 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
                     size += age.getName().length() * 2 + 8;
                 }
                 CacheManager.get().put(CacheManager.CACHE_AGE_NAME, mAgeList, size);
-                loadNewOld(companyId, shopId, start, end, callback);
+                loadNewOld(companyId, period, time, callback);
             }
 
             @Override
@@ -143,20 +141,16 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
         });
     }
 
-    private void loadNewOld(int companyId, int shopId, String start, String end, CardCallback callback) {
-        SunmiStoreApi.getInstance().getCustomerByAgeNewOld(companyId, shopId, start, end,
-                new RetrofitCallback<CustomerAgeNewOldResp>() {
+    private void loadNewOld(int companyId, int period, String time, CardCallback callback) {
+        SunmiStoreApi.getInstance().getTotalCustomerNewOldDistribution(companyId, time, period,
+                new RetrofitCallback<CustomerDistributionResp>() {
                     @Override
-                    public void onSuccess(int code, String msg, CustomerAgeNewOldResp data) {
-                        if (data == null) {
+                    public void onSuccess(int code, String msg, CustomerDistributionResp data) {
+                        if (data == null || data.getCountList() == null) {
                             onFail(code, msg, null);
                             return;
                         }
-                        List<CustomerAgeNewOldResp.CountListBean> list = data.getCountList();
-                        if (list == null) {
-                            onFail(code, msg, data);
-                            return;
-                        }
+                        List<CountListBean> list = data.getCountList();
                         Model model = getModel();
                         List<PieEntry> newOldList = model.dataSets.get(Constants.DATA_TYPE_NEW_OLD);
                         List<PieEntry> ageList = model.dataSets.get(Constants.DATA_TYPE_AGE);
@@ -164,34 +158,34 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
                         ageList.clear();
                         int newCount = 0;
                         int oldCount = 0;
-                        for (CustomerAgeNewOldResp.CountListBean bean : list) {
-                            newCount += bean.getStrangerCount();
-                            oldCount += bean.getRegularCount();
-                            int ageCount = bean.getRegularCount() + bean.getStrangerCount();
-                            ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode()).getName() + mAgeLabel));
+                        for (CountListBean item : list) {
+                            newCount += item.getStrangerUniqCount();
+                            oldCount += item.getRegularUniqCount();
+                            int ageCount = item.getStrangerUniqCount() + item.getRegularUniqCount();
+                            ageList.add(new PieEntry(ageCount, mAgeList.get(item.getAgeRangeCode()).getName() + mAgeLabel));
                         }
                         newOldList.add(new PieEntry(newCount, mNewLabel));
                         newOldList.add(new PieEntry(oldCount, mOldLabel));
-                        loadGender(companyId, shopId, start, end, callback);
+                        loadGender(companyId, period, time, callback);
                     }
 
                     @Override
-                    public void onFail(int code, String msg, CustomerAgeNewOldResp data) {
+                    public void onFail(int code, String msg, CustomerDistributionResp data) {
                         callback.onFail(code, msg, data);
                     }
                 });
     }
 
-    private void loadGender(int companyId, int shopId, String start, String end, CardCallback callback) {
-        SunmiStoreApi.getInstance().getCustomerByAgeGender(companyId, shopId, start, end,
-                new RetrofitCallback<CustomerAgeGenderResp>() {
+    private void loadGender(int companyId, int period, String time, CardCallback callback) {
+        SunmiStoreApi.getInstance().getTotalCustomerGenderDistribution(companyId, time, period,
+                new RetrofitCallback<CustomerDistributionResp>() {
                     @Override
-                    public void onSuccess(int code, String msg, CustomerAgeGenderResp data) {
+                    public void onSuccess(int code, String msg, CustomerDistributionResp data) {
                         if (data == null) {
                             onFail(code, msg, null);
                             return;
                         }
-                        List<CustomerAgeGenderResp.CountListBean> list = data.getCountList();
+                        List<CountListBean> list = data.getCountList();
                         if (list == null) {
                             onFail(code, msg, data);
                             return;
@@ -201,9 +195,13 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
                         genderList.clear();
                         int maleCount = 0;
                         int femaleCount = 0;
-                        for (CustomerAgeGenderResp.CountListBean bean : list) {
-                            maleCount += bean.getMaleCount();
-                            femaleCount += bean.getFemaleCount();
+                        for (CountListBean item : list) {
+                            int gender = item.getGender();
+                            if (gender == Constants.GENDER_MALE) {
+                                maleCount += item.getUniqCount();
+                            } else {
+                                femaleCount += item.getUniqCount();
+                            }
                         }
                         genderList.add(new PieEntry(maleCount, mMaleLabel));
                         genderList.add(new PieEntry(femaleCount, mFemaleLabel));
@@ -211,7 +209,7 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
                     }
 
                     @Override
-                    public void onFail(int code, String msg, CustomerAgeGenderResp data) {
+                    public void onFail(int code, String msg, CustomerDistributionResp data) {
                         callback.onFail(code, msg, data);
                     }
                 });
@@ -251,6 +249,9 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
         holder.addOnClickListener(R.id.tv_dashboard_age, (h, model, position) -> {
             model.type = Constants.DATA_TYPE_AGE;
             updateViews();
+        });
+        holder.addOnClickListener(R.id.btn_more, (holder1, model, position) -> {
+            // TODO: add get more.
         });
 
         return holder;

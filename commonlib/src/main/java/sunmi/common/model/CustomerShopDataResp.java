@@ -50,7 +50,7 @@ public class CustomerShopDataResp {
         @Override
         public int compareTo(Item o) {
             if (isDesc) {
-                return o.totalCount-totalCount;
+                return o.totalCount - totalCount;
             } else {
                 return totalCount - o.totalCount;
             }

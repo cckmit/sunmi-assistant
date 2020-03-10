@@ -3,7 +3,6 @@ package sunmi.common.rpc.cloud;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
-import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.SaleDataResp;
 import sunmi.common.model.TotalRealTimeShopSalesResp;
 import sunmi.common.model.TotalRealtimeSalesTrendResp;

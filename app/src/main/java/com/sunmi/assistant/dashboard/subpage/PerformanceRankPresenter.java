@@ -13,21 +13,21 @@ import sunmi.common.utils.SpUtils;
  * @author linyuanpeng on 2020-03-09.
  */
 public class PerformanceRankPresenter extends BasePresenter<PerformanceRankContract.View>
-        implements PerformanceRankContract.Presenter  {
+        implements PerformanceRankContract.Presenter {
 
     @Override
     public void getTotalCustomerShopData() {
-        SunmiStoreApi.getInstance().getTotalCustomerShopData(SpUtils.getCompanyId(), new RetrofitCallback<CustomerShopDataResp>() {
+        SunmiStoreApi.getInstance().getTotalRealtimeCustomerByShop(SpUtils.getCompanyId(), new RetrofitCallback<CustomerShopDataResp>() {
             @Override
             public void onSuccess(int code, String msg, CustomerShopDataResp data) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     mView.getCustomerSuccess(data.getList());
                 }
             }
 
             @Override
             public void onFail(int code, String msg, CustomerShopDataResp data) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     mView.getCustomerFail(code, msg);
                 }
             }
@@ -36,17 +36,17 @@ public class PerformanceRankPresenter extends BasePresenter<PerformanceRankContr
 
     @Override
     public void getTotalSaleShopData() {
-        SunmiStoreApi.getInstance().getTotalSaleShopData(SpUtils.getCompanyId(), new RetrofitCallback<TotalRealTimeShopSalesResp>() {
+        SunmiStoreApi.getInstance().getTotalRealtimeSalesByShop(SpUtils.getCompanyId(), new RetrofitCallback<TotalRealTimeShopSalesResp>() {
             @Override
             public void onSuccess(int code, String msg, TotalRealTimeShopSalesResp data) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     mView.getSaleSuccess(data.getList());
                 }
             }
 
             @Override
             public void onFail(int code, String msg, TotalRealTimeShopSalesResp data) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     mView.getSaleFail(code, msg);
                 }
             }

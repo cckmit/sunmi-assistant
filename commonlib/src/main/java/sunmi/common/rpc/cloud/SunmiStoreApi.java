@@ -1072,7 +1072,7 @@ public class SunmiStoreApi {
      * @param companyId
      * @param callback
      */
-    public void getTotalCustomerLatest(int companyId, RetrofitCallback<CustomerCountResp> callback) {
+    public void getTotalRealtimeCustomer(int companyId, RetrofitCallback<CustomerCountResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1091,7 +1091,7 @@ public class SunmiStoreApi {
      * @param companyId
      * @param callback
      */
-    public void getTotalCustomerRealTimeTrend(int companyId, RetrofitCallback<TotalRealtimeCustomerTrendResp> callback) {
+    public void getTotalRealtimeCustomerTrend(int companyId, RetrofitCallback<TotalRealtimeCustomerTrendResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1110,7 +1110,7 @@ public class SunmiStoreApi {
      * @param companyId
      * @param callback
      */
-    public void getTotalCustomerShopData(int companyId, RetrofitCallback<CustomerShopDataResp> callback) {
+    public void getTotalRealtimeCustomerByShop(int companyId, RetrofitCallback<CustomerShopDataResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1129,7 +1129,7 @@ public class SunmiStoreApi {
      * @param companyId
      * @param callback
      */
-    public void getTotalSaleData(int companyId, RetrofitCallback<SaleDataResp> callback) {
+    public void getTotalRealtimeSales(int companyId, RetrofitCallback<SaleDataResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1148,7 +1148,7 @@ public class SunmiStoreApi {
      * @param companyId
      * @param callback
      */
-    public void getTotalSaleRealtimeTrend(int companyId, RetrofitCallback<TotalRealtimeSalesTrendResp> callback) {
+    public void getTotalRealtimeSalesTrend(int companyId, RetrofitCallback<TotalRealtimeSalesTrendResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1167,7 +1167,7 @@ public class SunmiStoreApi {
      * @param companyId
      * @param callback
      */
-    public void getTotalSaleShopData(int companyId, RetrofitCallback<TotalRealTimeShopSalesResp> callback) {
+    public void getTotalRealtimeSalesByShop(int companyId, RetrofitCallback<TotalRealTimeShopSalesResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1188,8 +1188,8 @@ public class SunmiStoreApi {
      * @param type      1:日
      * @param callback
      */
-    public void getTotalHistorySaleData(int companyId, String startTime, int type,
-                                        RetrofitCallback<SaleDataResp> callback) {
+    public void getTotalSales(int companyId, String startTime, int type,
+                              RetrofitCallback<SaleDataResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1212,8 +1212,8 @@ public class SunmiStoreApi {
      * @param type      1:日 2:周 3:月
      * @param callback
      */
-    public void getTotalCustomerData(int companyId, String startTime, int type,
-                                     RetrofitCallback<TotalCustomerDataResp> callback) {
+    public void getTotalCustomer(int companyId, String startTime, int type,
+                                 RetrofitCallback<TotalCustomerDataResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1237,8 +1237,8 @@ public class SunmiStoreApi {
      * @param type      1:日 2:周 3:月
      * @param callback
      */
-    public void getCustomerAgeDistribution(int companyId, String startTime, int type,
-                                           RetrofitCallback<CustomerDistributionResp> callback) {
+    public void getTotalCustomerNewOldDistribution(int companyId, String startTime, int type,
+                                                   RetrofitCallback<CustomerDistributionResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1261,8 +1261,8 @@ public class SunmiStoreApi {
      * @param type      1:日 2:周 3:月
      * @param callback
      */
-    public void getCustomerAgeGenderDistribution(int companyId, String startTime, int type,
-                                           RetrofitCallback<CustomerDistributionResp> callback) {
+    public void getTotalCustomerGenderDistribution(int companyId, String startTime, int type,
+                                                   RetrofitCallback<CustomerDistributionResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1285,8 +1285,8 @@ public class SunmiStoreApi {
      * @param type      1:日 2:周 3:月
      * @param callback
      */
-    public void getCustomerShopAgeDistribution(int companyId, String startTime, int type,
-                                               RetrofitCallback<CustomerShopDistributionResp> callback){
+    public void getTotalCustomerNewOldDistributionByShop(int companyId, String startTime, int type,
+                                                         RetrofitCallback<CustomerShopDistributionResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -1309,8 +1309,8 @@ public class SunmiStoreApi {
      * @param type      1:日 2:周 3:月
      * @param callback
      */
-    public void getCustomerShopAgeGenderDistribution(int companyId, String startTime, int type,
-                                               RetrofitCallback<CustomerShopDistributionResp> callback){
+    public void getTotalCustomerGenderDistributionByShop(int companyId, String startTime, int type,
+                                                         RetrofitCallback<CustomerShopDistributionResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)

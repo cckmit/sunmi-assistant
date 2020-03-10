@@ -17,11 +17,11 @@ public interface PerformanceRankContract {
 
         void getCustomerSuccess(List<CustomerShopDataResp.Item> customers);
 
-        void getCustomerFail(int code,String msg);
+        void getCustomerFail(int code, String msg);
 
         void getSaleSuccess(List<TotalRealTimeShopSalesResp.Item> sales);
 
-        void getSaleFail(int code,String msg);
+        void getSaleFail(int code, String msg);
     }
 
     interface Presenter {

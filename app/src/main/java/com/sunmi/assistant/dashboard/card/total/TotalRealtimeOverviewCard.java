@@ -64,7 +64,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
 
     //今日总客流量
     private void loadCustomerLatest(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalCustomerLatest(companyId, new RetrofitCallback<CustomerCountResp>() {
+        SunmiStoreApi.getInstance().getTotalRealtimeCustomer(companyId, new RetrofitCallback<CustomerCountResp>() {
             @Override
             public void onSuccess(int code, String msg, CustomerCountResp data) {
                 Model model = getModel();
@@ -80,7 +80,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
     }
 
     private void loadCustomerYesterday(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalCustomerData(companyId, startTime, 1,
+        SunmiStoreApi.getInstance().getTotalCustomer(companyId, startTime, 1,
                 new RetrofitCallback<TotalCustomerDataResp>() {
             @Override
             public void onSuccess(int code, String msg, TotalCustomerDataResp data) {
@@ -102,7 +102,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
 
     //今日销售额和总交易数
     private void loadSaleData(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalSaleData(companyId, new RetrofitCallback<SaleDataResp>() {
+        SunmiStoreApi.getInstance().getTotalRealtimeSales(companyId, new RetrofitCallback<SaleDataResp>() {
             @Override
             public void onSuccess(int code, String msg, SaleDataResp data) {
                 Model model = getModel();
@@ -119,7 +119,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
     }
 
     private void loadSaleDataYesterday(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalHistorySaleData(companyId, startTime, 1, new RetrofitCallback<SaleDataResp>() {
+        SunmiStoreApi.getInstance().getTotalSales(companyId, startTime, 1, new RetrofitCallback<SaleDataResp>() {
             @Override
             public void onSuccess(int code, String msg, SaleDataResp data) {
                 Model model = getModel();

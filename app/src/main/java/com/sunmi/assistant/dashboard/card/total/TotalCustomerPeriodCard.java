@@ -111,7 +111,7 @@ public class TotalCustomerPeriodCard extends BaseRefreshCard<TotalCustomerPeriod
         } else if (model.period == Constants.TIME_PERIOD_MONTH) {
             pattern = context.getString(R.string.dashboard_unit_time_pattern_month);
         } else {
-            pattern = Utils.FORMAT_DATE;
+            pattern = Utils.FORMAT_API_DATE;
         }
         time.setText(Utils.formatTime(pattern, model.periodTime.start));
     }
