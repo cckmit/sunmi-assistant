@@ -7,7 +7,7 @@ public class AgeCustomer implements Comparable<AgeCustomer> {
     private String shopName;
     private SparseArray<Integer> count;
 
-    public static boolean isDesc;
+    public static boolean isDesc = true;
     public static int ageCode;
 
     public AgeCustomer(String shopName, SparseArray<Integer> count) {
