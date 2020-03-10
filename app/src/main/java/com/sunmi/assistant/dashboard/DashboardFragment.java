@@ -10,7 +10,6 @@ import android.support.constraint.Group;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -22,7 +21,6 @@ import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.ui.ScrollableViewPager;
 import com.sunmi.assistant.dashboard.ui.ShopMenuAdapter;
 import com.sunmi.assistant.dashboard.ui.ShopMenuAnim;
-import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.ipc.config.IpcConstants;
@@ -32,7 +30,6 @@ import com.xiaojinzi.component.impl.Router;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.LongClick;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 
@@ -47,7 +44,6 @@ import sunmi.common.router.IpcApi;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.WebViewParamsUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownMenuNew;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
@@ -68,6 +64,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @ViewById(R.id.view_dashboard_top_mask)
     View mBgTopWhiteMask;
+    @ViewById(R.id.view_tab_divider)
+    View mTabDivider;
 
     @ViewById(R.id.pager_dashboard_pager)
     ScrollableViewPager mPager;
@@ -230,26 +228,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         hideLoadingDialog();
     }
 
-    private boolean debugEnable = false;
-
-    @LongClick(R.id.debug)
-    void clickDebug() {
-        debugEnable = !debugEnable;
-        LogCat.e(TAG, "status h=" + mStatusBarHeight + "; top shop h=" + mTopShopMenuHeight + "; top page h=" + mTopPageTabHeight + "; top h=" + mTopHeaderHeight);
-        LogCat.e(TAG, "shop menu: v=" + mTopShopMenu.getVisibility() + "; h=" + mTopShopMenu.getHeight() + "; y=" + mTopShopMenu.getTranslationY());
-        LogCat.e(TAG, "page menu: v=" + mTopPageTab.getVisibility() + "; h=" + mTopPageTab.getHeight() + "; y=" + mTopPageTab.getTranslationY());
-        View refresh = mPager.getChildAt(0);
-        if (refresh instanceof RefreshLayout) {
-            View recycler = ((RefreshLayout) refresh).getChildAt(1);
-            if (recycler instanceof RecyclerView) {
-                View first = ((RecyclerView) recycler).getChildAt(0);
-                if (first != null) {
-                    LogCat.e(TAG, "card m=" + ((ViewGroup.MarginLayoutParams) first.getLayoutParams()).topMargin);
-                }
-            }
-        }
-    }
-
     @Click(R.id.tv_dashboard_top_today)
     void clickPeriodToday() {
         mPresenter.switchPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, 0));
@@ -381,10 +359,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void updateTopPosition(int position) {
-        if (debugEnable) {
-            LogCat.e(TAG, "position=" + position);
-        }
-
         if (mPerspective == CommonConstants.PERSPECTIVE_TOTAL) {
             int offset;
             if (position > mTopHeaderHeight) {
@@ -399,6 +373,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mTopPageTab.setTranslationY(offset);
             mBgTopWhiteMask.setTranslationY(offset);
             mBgTopWhiteMask.setAlpha(fraction);
+            mTabDivider.setAlpha(fraction);
             mTopPageTab.setBackgroundColor(Utils.getGradientColor(colorTextMain, colorWhite, fraction));
             mPageTab.setTextSelectColor(Utils.getGradientColor(colorWhite, colorTextMain, fraction));
             mPageTab.setTextUnselectColor(Utils.getGradientColor(colorWhite60a, colorTextCaption, fraction));
@@ -421,13 +396,14 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     public void resetTop() {
         mTopShopMenu.setTranslationY(0);
         mTopPageTab.setTranslationY(0);
-        mShopMenuAnim.setOffset(0);
         mTopPageTab.setBackgroundColor(colorTextMain);
         mPageTab.setTextSelectColor(colorWhite);
         mPageTab.setTextUnselectColor(colorWhite60a);
         mPageTab.setIndicatorColor(colorWhite);
         mBgTopWhiteMask.setTranslationY(0);
         mBgTopWhiteMask.setAlpha(0);
+        mTabDivider.setAlpha(0);
+        mShopMenuAnim.setOffset(0);
         updateStickyPeriodTab(getActivity(), false, false);
     }
 

@@ -167,6 +167,11 @@ public class TotalCustomerPresenter extends BasePresenter<TotalCustomerContract.
     }
 
     @Override
+    public Interval getPeriodTime() {
+        return mPeriodTime;
+    }
+
+    @Override
     public void release() {
         detachView();
     }

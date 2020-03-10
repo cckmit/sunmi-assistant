@@ -53,6 +53,8 @@ public interface PageContract {
 
         int getPeriod();
 
+        Interval getPeriodTime();
+
         void release();
     }
 }

@@ -218,6 +218,11 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
     }
 
     @Override
+    public Interval getPeriodTime() {
+        return mPeriodTime;
+    }
+
+    @Override
     public void release() {
         detachView();
     }

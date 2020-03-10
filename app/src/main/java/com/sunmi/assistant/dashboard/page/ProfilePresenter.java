@@ -163,6 +163,11 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
     }
 
     @Override
+    public Interval getPeriodTime() {
+        return mPeriodTime;
+    }
+
+    @Override
     public void release() {
         detachView();
     }

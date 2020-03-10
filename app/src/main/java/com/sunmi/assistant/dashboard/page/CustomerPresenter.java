@@ -188,6 +188,11 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     }
 
     @Override
+    public Interval getPeriodTime() {
+        return mPeriodTime;
+    }
+
+    @Override
     public void release() {
         detachView();
     }
