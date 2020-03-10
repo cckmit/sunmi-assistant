@@ -126,6 +126,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
                 default:
                     break;
             }
+            this.adapter.notifyDataSetChanged();
         });
         dmMotionSale.setAnim(new DropdownAnimNew());
         dmMotionSale.setAdapter(dropdownAdapter);
@@ -250,8 +251,9 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         String ageLabel = getString(R.string.dashboard_unit_age);
         for (int i = 0; i < size; i++) {
             FaceAge faceAge = ageMap.valueAt(i);
-            ageFilters.add(new FilterItem(faceAge.getCode(), faceAge.getName() + ageLabel, true));
+            ageFilters.add(new FilterItem(faceAge.getCode(), faceAge.getName() + ageLabel));
         }
+        ageFilters.get(0).setChecked(true);
         AgeCustomer.ageCode = ageFilters.get(0).getId();
     }
 

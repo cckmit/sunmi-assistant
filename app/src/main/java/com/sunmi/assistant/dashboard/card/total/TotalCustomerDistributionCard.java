@@ -252,7 +252,6 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
             updateViews();
         });
         holder.addOnClickListener(R.id.btn_more, (holder1, model, position) -> {
-            // TODO: add get more.
             CustomerDistributionActivity_.intent(context).startTime(model.periodTime.start).dataType(model.type).period(model.period).start();
         });
 
