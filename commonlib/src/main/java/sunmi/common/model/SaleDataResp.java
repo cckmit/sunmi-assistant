@@ -17,6 +17,7 @@ public class SaleDataResp {
     private int latestOrderCount;
     @SerializedName("latest_order_amount")
     private double latestOrderAmount;
+
     @SerializedName("order_count")
     private int orderCount;
     @SerializedName("early_order_count")

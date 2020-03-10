@@ -3,8 +3,8 @@ package sunmi.common.rpc.cloud;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
-import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.SaleDataResp;
+import sunmi.common.model.TotalRealTimeShopSalesResp;
 import sunmi.common.model.TotalRealtimeSalesTrendResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -34,7 +34,7 @@ public interface SaleInterFace {
      * @return
      */
     @POST(companyPath +"branch/getLatest")
-    Call<BaseResponse<CustomerShopDataResp>> getTotalSaleShopData(@Body BaseRequest request);
+    Call<BaseResponse<TotalRealTimeShopSalesResp>> getTotalSaleShopData(@Body BaseRequest request);
 
     /**
      * 获取总部T+1销售概况

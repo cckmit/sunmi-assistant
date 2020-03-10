@@ -44,6 +44,7 @@ import sunmi.common.model.ShopListResp;
 import sunmi.common.model.ShopRegionResp;
 import sunmi.common.model.SsoTokenResp;
 import sunmi.common.model.TotalCustomerDataResp;
+import sunmi.common.model.TotalRealTimeShopSalesResp;
 import sunmi.common.model.TotalRealtimeCustomerTrendResp;
 import sunmi.common.model.TotalRealtimeSalesTrendResp;
 import sunmi.common.model.UserAvatarResp;
@@ -1166,7 +1167,7 @@ public class SunmiStoreApi {
      * @param companyId
      * @param callback
      */
-    public void getTotalRealtimeSalesByShop(int companyId, RetrofitCallback<CustomerShopDataResp> callback) {
+    public void getTotalRealtimeSalesByShop(int companyId, RetrofitCallback<TotalRealTimeShopSalesResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)

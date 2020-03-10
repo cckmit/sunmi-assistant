@@ -28,6 +28,7 @@ import sunmi.common.base.recycle.ItemType;
 import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.Interval;
+import sunmi.common.model.TotalRealTimeShopSalesResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -116,27 +117,27 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     }
 
     private void loadSales(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalRealtimeSalesByShop(companyId, new RetrofitCallback<CustomerShopDataResp>() {
+        SunmiStoreApi.getInstance().getTotalRealtimeSalesByShop(companyId, new RetrofitCallback<TotalRealTimeShopSalesResp>() {
             @Override
-            public void onSuccess(int code, String msg, CustomerShopDataResp data) {
+            public void onSuccess(int code, String msg, TotalRealTimeShopSalesResp data) {
                 if (data == null || data.getList() == null) {
                     onFail(code, msg, data);
                     return;
                 }
                 List<Item> dataSet = getModel().dataSets.get(TYPE_SALES);
                 dataSet.clear();
-                List<CustomerShopDataResp.Item> list = data.getList();
+                List<TotalRealTimeShopSalesResp.Item> list = data.getList();
                 Collections.sort(list, (o1, o2) -> Double.compare(o2.getOrderAmount(), o1.getOrderAmount()));
                 int max = Math.min(5, list.size());
                 for (int i = 0; i < max; i++) {
-                    CustomerShopDataResp.Item item = list.get(i);
+                    TotalRealTimeShopSalesResp.Item item = list.get(i);
                     dataSet.add(new Item(item.getShopName(), (float) Math.max(0, item.getOrderAmount())));
                 }
                 callback.onSuccess();
             }
 
             @Override
-            public void onFail(int code, String msg, CustomerShopDataResp data) {
+            public void onFail(int code, String msg, TotalRealTimeShopSalesResp data) {
                 callback.onFail(code, msg, null);
             }
         });
@@ -161,7 +162,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
             }
         });
         holder.addOnClickListener(R.id.btn_more, (holder1, model, position) -> {
-            PerformanceRankActivity_.intent(context).start();
+            PerformanceRankActivity_.intent(context).mCondition(mCondition).start();
         });
 
         ListView lv = holder.getView(R.id.lv_dashboard_list);

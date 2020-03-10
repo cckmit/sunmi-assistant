@@ -28,7 +28,6 @@ import java.util.List;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.FilterItem;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.DropdownAdapterNew;
@@ -66,8 +65,9 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     String startTime;
     @Extra
     int type;
+    @Extra
+    int dataType;
 
-    private int dataType;
     private List<NewOldCustomer> newOldCustomers = new ArrayList<>();
     private List<GenderCustomer> genderCustomers = new ArrayList<>();
     private List<AgeCustomer> ageCustomers = new ArrayList<>();
