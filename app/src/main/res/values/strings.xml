@@ -35,6 +35,7 @@
     <string name="dashboard_title_customer_trend">Passenger flow trend</string>
     <string name="dashboard_title_enter_rate">Entering Rate</string>
     <string name="dashboard_title_customer_analysis">Passenger flow analysis</string>
+    <string name="dashboard_title_main_customer">主力客群</string>
     <string name="dashboard_title_frequency_trend_week">Trends in frequency of visits (Week)</string>
     <string name="dashboard_title_frequency_trend_month">Trends in frequency of visits (Month</string>
     <string name="dashboard_title_frequency_avg">Average frequency of store visits</string>

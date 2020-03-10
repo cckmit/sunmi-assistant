@@ -251,7 +251,7 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
             updateViews();
         });
         holder.addOnClickListener(R.id.btn_more, (holder1, model, position) -> {
-            // TODO: add get more.
+
         });
 
         return holder;

@@ -29,7 +29,8 @@ import sunmi.common.base.adapter.CommonAdapter;
 import sunmi.common.base.adapter.ViewHolder;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
-import sunmi.common.model.CustomerHistoryDetailResp;
+import sunmi.common.model.CountListBean;
+import sunmi.common.model.CustomerDistributionResp;
 import sunmi.common.model.Interval;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -40,7 +41,7 @@ import sunmi.common.utils.CacheManager;
  * @author yinhui
  * @since 2019-07-01
  */
-public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnalysisCard.Model, CustomerHistoryDetailResp> {
+public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnalysisCard.Model, CustomerDistributionResp> {
 
     private static final int MAX_ITEM_COUNT = 3;
 
@@ -80,20 +81,20 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
     }
 
     @Override
-    protected Call<BaseResponse<CustomerHistoryDetailResp>> load(int companyId, int shopId, int period, Interval periodTime,
-                                                                 CardCallback callback) {
+    protected Call<BaseResponse<CustomerDistributionResp>> load(int companyId, int shopId, int period, Interval periodTime,
+                                                                CardCallback callback) {
         if (mAgeList == null) {
-            loadAgeList(companyId, shopId, period, callback);
+            loadAgeList(companyId, period, periodTime, callback);
         } else {
-            loadDetail(companyId, shopId, period, callback);
+            loadDetail(companyId, period, periodTime, callback);
         }
         return null;
     }
 
-    private void loadAgeList(int companyId, int shopId, int period, CardCallback callback) {
+    private void loadAgeList(int companyId, int period, Interval periodTime, CardCallback callback) {
         mAgeList = CacheManager.get().get(CacheManager.CACHE_AGE_NAME);
         if (mAgeList != null) {
-            loadDetail(companyId, shopId, period, callback);
+            loadDetail(companyId, period, periodTime, callback);
             return;
         }
         IpcCloudApi.getInstance().getFaceAgeRange(new RetrofitCallback<FaceAgeRangeResp>() {
@@ -111,7 +112,7 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
                     size += age.getName().length() * 2 + 8;
                 }
                 CacheManager.get().put(CacheManager.CACHE_AGE_NAME, mAgeList, size);
-                loadDetail(companyId, shopId, period, callback);
+                loadDetail(companyId, period, periodTime, callback);
             }
 
             @Override
@@ -121,20 +122,17 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
         });
     }
 
-    private void loadDetail(int companyId, int shopId, int period, CardCallback callback) {
-        int type = period;
-        if (period == Constants.TIME_PERIOD_DAY) {
-            type = 4;
-        }
-        SunmiStoreApi.getInstance().getHistoryCustomerDetail(companyId, shopId, type,
-                new RetrofitCallback<CustomerHistoryDetailResp>() {
+    private void loadDetail(int companyId, int period, Interval periodTime, CardCallback callback) {
+        String time = Utils.formatTime(Utils.FORMAT_API_DATE, periodTime.start);
+        SunmiStoreApi.getInstance().getTotalCustomerGenderDistribution(companyId, time, period,
+                new RetrofitCallback<CustomerDistributionResp>() {
                     @Override
-                    public void onSuccess(int code, String msg, CustomerHistoryDetailResp data) {
+                    public void onSuccess(int code, String msg, CustomerDistributionResp data) {
                         callback.onSuccess(code, msg, data);
                     }
 
                     @Override
-                    public void onFail(int code, String msg, CustomerHistoryDetailResp data) {
+                    public void onFail(int code, String msg, CustomerDistributionResp data) {
                         if (code == Constants.NO_CUSTOMER_DATA) {
                             callback.onSuccess(code, msg, data);
                         } else {
@@ -162,25 +160,26 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
     }
 
     @Override
-    protected void setupModel(Model models, CustomerHistoryDetailResp response) {
+    protected void setupModel(Model models, CustomerDistributionResp response) {
         Model model = getModel();
         model.list.clear();
-        if (response != null && response.getList() != null && !response.getList().isEmpty()) {
-            List<CustomerHistoryDetailResp.Item> list = response.getList();
+        if (response != null && response.getCountList() != null && !response.getCountList().isEmpty()) {
+            List<CountListBean> list = response.getCountList();
             List<Item> result = new ArrayList<>();
             int total = 0;
-            for (CustomerHistoryDetailResp.Item item : list) {
-                if (item.getMaleCount() == 0 && item.getFemaleCount() == 0) {
+            for (CountListBean item : list) {
+                if (item.getUniqCount() == 0) {
                     continue;
                 }
                 String ageName = mAgeList.get(item.getAgeRangeCode()).getName();
-                String maleName = String.format("%s  |  %s%s", mMaleLabel, ageName, mAgeLabel);
-                String femaleName = String.format("%s  |  %s%s", mFemaleLabel, ageName, mAgeLabel);
-                result.add(new Item(model.period, item.getAgeRangeCode(), Constants.GENDER_MALE, maleName,
-                        item.getMaleCount(), item.getMaleRegularCount(), item.getMaleUniqCount()));
-                result.add(new Item(model.period, item.getAgeRangeCode(), Constants.GENDER_FEMALE, femaleName,
-                        item.getFemaleCount(), item.getFemaleRegularCount(), item.getFemaleUniqCount()));
-                total = total + item.getFemaleCount() + item.getMaleCount();
+                String name;
+                if (item.getGender() == Constants.GENDER_MALE) {
+                    name = String.format("%s  |  %s%s", mMaleLabel, ageName, mAgeLabel);
+                } else {
+                    name = String.format("%s  |  %s%s", mFemaleLabel, ageName, mAgeLabel);
+                }
+                result.add(new Item(item.getAgeRangeCode(), item.getGender(), name, item.getUniqCount(), item.getRegularUniqCount()));
+                total += item.getUniqCount();
             }
             Collections.sort(result, (o1, o2) -> o2.count - o1.count);
             if (result.size() > MAX_ITEM_COUNT) {
@@ -245,7 +244,7 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
     private static class DetailListAdapter extends CommonAdapter<Item> {
 
         private DetailListAdapter(Context context) {
-            super(context, R.layout.dashboard_item_profile_analysis_item);
+            super(context, R.layout.dashboard_item_total_customer_analysis_item);
         }
 
         @Override
@@ -260,14 +259,12 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
             TextView tvCount = holder.getView(R.id.tv_dashboard_count);
             TextView tvRatio = holder.getView(R.id.tv_dashboard_ratio);
             TextView tvOldRatio = holder.getView(R.id.tv_dashboard_old_ratio);
-            TextView tvFrequency = holder.getView(R.id.tv_dashboard_frequency);
             if (item.state == Item.STATE_ERROR) {
                 ivAvatar.setImageResource(R.mipmap.dashboard_customer_avatar_error);
                 tvTitle.setText(R.string.dashboard_tip_customer_none);
                 tvCount.setText(Utils.DATA_ZERO);
                 tvRatio.setText(Utils.DATA_ZERO_RATIO);
                 tvOldRatio.setText(Utils.DATA_ZERO_RATIO);
-                tvFrequency.setText(Utils.DATA_ZERO);
             } else {
                 float ratio = item.total > 0 ? (float) item.count / item.total : 0f;
                 float oldRatio = item.count > 0 ? (float) item.oldCount / item.count : 0f;
@@ -278,9 +275,6 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
                 tvCount.setText(Utils.formatNumber(mContext, item.count, false, true));
                 tvRatio.setText(Utils.formatPercent(ratio, false, true));
                 tvOldRatio.setText(Utils.formatPercent(oldRatio, false, true));
-
-                float value = item.uniqueCount > 0 ? (float) item.count / item.uniqueCount : 0f;
-                tvFrequency.setText(Utils.formatFrequency(mContext, value, item.period, true));
             }
         }
 
@@ -307,13 +301,11 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
         private static final int STATE_LOADING = 1;
         private static final int STATE_ERROR = 2;
 
-        private int period;
         private int age;
         private int gender;
         private String name;
         private int count;
         private int oldCount;
-        private int uniqueCount;
 
         private int total;
         private int state;
@@ -321,14 +313,12 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
         private Item() {
         }
 
-        private Item(int period, int age, int gender, String name, int count, int oldCount, int uniqueCount) {
-            this.period = period;
+        private Item(int age, int gender, String name, int count, int oldCount) {
             this.age = age;
             this.gender = gender;
             this.name = name;
             this.count = count;
             this.oldCount = oldCount;
-            this.uniqueCount = uniqueCount;
             this.state = STATE_NORMAL;
         }
 

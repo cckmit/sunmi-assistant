@@ -69,6 +69,7 @@
     <string name="dashboard_title_frequency_avg">客群平均到店频次</string>
     <string name="dashboard_title_enter_rate">进店率</string>
     <string name="dashboard_title_customer_analysis">客流分析</string>
+    <string name="dashboard_title_main_customer">主力客群</string>
     <string name="dashboard_title_frequency">客群到店频次</string>
     <string name="dashboard_title_frequency_distribution">到店次数分布</string>
     <string name="dashboard_title_import_saas">导入历史订单</string>
