@@ -5,6 +5,7 @@ import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.card.total.TotalCustomerAnalysisCard;
 import com.sunmi.assistant.dashboard.card.total.TotalCustomerDistributionCard;
+import com.sunmi.assistant.dashboard.card.total.TotalCustomerEmptyCard;
 import com.sunmi.assistant.dashboard.card.total.TotalCustomerOverviewCard;
 import com.sunmi.assistant.dashboard.card.total.TotalCustomerPeriodCard;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
@@ -64,9 +65,13 @@ public class TotalCustomerPresenter extends BasePresenter<TotalCustomerContract.
     private void initList() {
         mList.clear();
         mList.add(TotalCustomerPeriodCard.get(this,mCondition,mPeriod,mPeriodTime));
-        mList.add(TotalCustomerOverviewCard.get(this,mCondition,mPeriod,mPeriodTime));
-        mList.add(TotalCustomerDistributionCard.get(this, mCondition, mPeriod, mPeriodTime));
-        mList.add(TotalCustomerAnalysisCard.get(this, mCondition, mPeriod, mPeriodTime));
+        if (mCondition.hasFs) {
+            mList.add(TotalCustomerOverviewCard.get(this, mCondition, mPeriod, mPeriodTime));
+            mList.add(TotalCustomerDistributionCard.get(this, mCondition, mPeriod, mPeriodTime));
+            mList.add(TotalCustomerAnalysisCard.get(this, mCondition, mPeriod, mPeriodTime));
+        } else {
+            mList.add(TotalCustomerEmptyCard.get(this, mCondition, mPeriod, mPeriodTime));
+        }
     }
 
     private void load() {

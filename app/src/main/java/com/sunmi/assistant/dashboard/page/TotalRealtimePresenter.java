@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.page;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.card.total.TotalRealtimeEmptyCard;
 import com.sunmi.assistant.dashboard.card.total.TotalRealtimeOverviewCard;
 import com.sunmi.assistant.dashboard.card.total.TotalRealtimePerformanceCard;
 import com.sunmi.assistant.dashboard.card.total.TotalRealtimeTrendCard;
@@ -61,9 +62,13 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
 
     private void initList() {
         mList.clear();
-        mList.add(TotalRealtimeOverviewCard.get(this, mCondition, mPeriod, mPeriodTime));
-        mList.add(TotalRealtimeTrendCard.get(this, mCondition, mPeriod, mPeriodTime));
-        mList.add(TotalRealtimePerformanceCard.get(this, mCondition, mPeriod, mPeriodTime));
+        if (mCondition.hasSaas || mCondition.hasFs) {
+            mList.add(TotalRealtimeOverviewCard.get(this, mCondition, mPeriod, mPeriodTime));
+            mList.add(TotalRealtimeTrendCard.get(this, mCondition, mPeriod, mPeriodTime));
+            mList.add(TotalRealtimePerformanceCard.get(this, mCondition, mPeriod, mPeriodTime));
+        } else {
+            mList.add(TotalRealtimeEmptyCard.get(this, mCondition, mPeriod, mPeriodTime));
+        }
     }
 
     private void load() {

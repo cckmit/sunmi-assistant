@@ -129,6 +129,8 @@
     <string name="dashboard_tip_no_customer_wait">Data will be updated from 1:00 to 2:00 the next day</string>
     <string name="dashboard_tip_no_fs_floating">The camera is untethered</string>
     <string name="dashboard_tip_customer_distribution">基于人脸采集数据</string>
+    <string name="dashboard_tip_total_no_saas">请前往子门店添加AI识客摄像机并导入软件订单数据即可查看总部数据</string>
+    <string name="dashboard_tip_total_no_fs">请前往子门店添加AI识客摄像机即可查看总部数据</string>
     <string name="str_platform_list">Platform list</string>
     <string name="str_platform_skip">Skip</string>
     <string name="str_button_check">Verification</string>

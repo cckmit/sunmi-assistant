@@ -139,6 +139,8 @@
     <string name="dashboard_tip_no_customer_title">暂无客流数据，您可以尝试：</string>
     <string name="dashboard_tip_no_customer_wait">客流数据会在次日01:00~02:00更新</string>
     <string name="dashboard_tip_no_fs_floating">您已解绑了门店中的摄像机设备</string>
+    <string name="dashboard_tip_total_no_saas">请前往子门店添加AI识客摄像机并导入软件订单数据\n即可查看总部数据</string>
+    <string name="dashboard_tip_total_no_fs">请前往子门店添加AI识客摄像机即可查看总部数据</string>
 
     <string name="str_platform_list">平台列表</string>
     <string name="str_platform_skip">跳过</string>
