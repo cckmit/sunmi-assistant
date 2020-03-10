@@ -95,7 +95,6 @@
         <RadioButton
             android:id="@+id/rb_new_old"
             style="@style/TopTabTitle"
-            android:checked="true"
             android:text="@string/dashboard_var_new_old" />
 
         <RadioButton

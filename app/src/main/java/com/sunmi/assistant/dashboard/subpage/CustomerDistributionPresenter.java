@@ -95,8 +95,8 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
                                     newCount += stranger;
                                     ageCount.put(listBean.getAgeRangeCode(), regular + stranger);
                                 }
-                                newOldCustomers.add(new NewOldCustomer(bean.getShopName(), newCount, oldCount));
-                                ageCustomers.add(new AgeCustomer(bean.getShopName(), ageCount));
+                                newOldCustomers.add(new NewOldCustomer(bean.getShopId(), bean.getShopName(), newCount, oldCount));
+                                ageCustomers.add(new AgeCustomer(bean.getShopId(), bean.getShopName(), ageCount));
                             }
                         }
                         if (isViewAttached()) {
@@ -132,7 +132,7 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
                                         femaleCount += listBean.getUniqCount();
                                     }
                                 }
-                                genderCustomers.add(new GenderCustomer(bean.getShopName(), maleCount, femaleCount));
+                                genderCustomers.add(new GenderCustomer(bean.getShopId(),bean.getShopName(), maleCount, femaleCount));
                             }
                         }
                         if (isViewAttached()) {

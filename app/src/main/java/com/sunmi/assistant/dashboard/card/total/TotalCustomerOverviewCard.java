@@ -13,6 +13,8 @@ import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 
+import java.util.Locale;
+
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.model.Interval;
@@ -93,9 +95,9 @@ public class TotalCustomerOverviewCard extends BaseRefreshCard<TotalCustomerOver
         TextView rateSubData = holder.getView(R.id.tv_enter_rate_subdata);
         ImageView ivRate = holder.getView(R.id.iv_total_enter_rate);
         customer.setText(model.getCount(context));
-        customerSubData.setText(model.getCompareCount(context));
-        enterRate.setText(model.getEnterRate(context));
-        rateSubData.setText(model.getCompareRate(context));
+        customerSubData.setText(model.getCompareCount());
+        enterRate.setText(model.getEnterRate());
+        rateSubData.setText(model.getCompareRate());
         if (model.compareCount > 0) {
             customerSubData.setTextColor(ContextCompat.getColor(context, R.color.caution_primary));
             ivCustomer.setVisibility(View.VISIBLE);
@@ -184,16 +186,16 @@ public class TotalCustomerOverviewCard extends BaseRefreshCard<TotalCustomerOver
             return Utils.formatNumber(context, count, false, true);
         }
 
-        private CharSequence getEnterRate(Context context) {
+        private CharSequence getEnterRate() {
             return Utils.formatPercent(enterRate, true, true);
         }
 
-        private CharSequence getCompareCount(Context context) {
-            return Utils.formatPercent(Math.abs(compareCount), true, false);
+        private CharSequence getCompareCount() {
+            return String.format(Locale.getDefault(), "%.2f%%", Math.abs(compareCount) * 100);
         }
 
-        private CharSequence getCompareRate(Context context) {
-            return Utils.formatPercent(Math.abs(compareRate), true, false);
+        private CharSequence getCompareRate() {
+            return String.format(Locale.getDefault(), "%.2f%%", Math.abs(compareRate) * 100);
         }
     }
 }

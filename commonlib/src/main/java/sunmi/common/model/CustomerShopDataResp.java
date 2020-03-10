@@ -28,14 +28,14 @@ public class CustomerShopDataResp {
          */
 
         @SerializedName("shop_id")
-        private String shopId;
+        private int shopId;
         @SerializedName("shop_name")
         private String shopName;
         @SerializedName("total_count")
         private int totalCount;
 
 
-        public String getShopId() {
+        public int getShopId() {
             return shopId;
         }
 

@@ -33,7 +33,7 @@ public class TotalRealTimeShopSalesResp {
          */
 
         @SerializedName("shop_id")
-        private String shopId;
+        private int shopId;
         @SerializedName("shop_name")
         private String shopName;
 
@@ -43,7 +43,7 @@ public class TotalRealTimeShopSalesResp {
         private double orderAmount;
 
 
-        public String getShopId() {
+        public int getShopId() {
             return shopId;
         }
 

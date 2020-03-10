@@ -25,27 +25,20 @@ public class CustomerShopDistributionResp {
          */
 
         @SerializedName("shop_id")
-        private String shopId;
+        private int shopId;
         @SerializedName("shop_name")
         private String shopName;
         @SerializedName("count_list")
         private List<CountListBean> countList;
 
-        public String getShopId() {
+        public int getShopId() {
             return shopId;
-        }
-
-        public void setShopId(String shopId) {
-            this.shopId = shopId;
         }
 
         public String getShopName() {
             return shopName;
         }
 
-        public void setShopName(String shopName) {
-            this.shopName = shopName;
-        }
 
         public List<CountListBean> getCountList() {
             return countList;

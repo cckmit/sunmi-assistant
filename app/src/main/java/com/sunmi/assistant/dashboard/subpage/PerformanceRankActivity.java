@@ -25,14 +25,19 @@ import java.util.List;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.FilterItem;
 import sunmi.common.model.TotalRealTimeShopSalesResp;
+import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.DropdownAdapterNew;
 import sunmi.common.view.DropdownAnimNew;
 import sunmi.common.view.DropdownMenuNew;
 import sunmi.common.view.SmRecyclerView;
+import sunmi.common.view.dialog.CommonDialog;
 
 import static com.sunmi.assistant.R.layout.activity_performance_rank;
 
@@ -253,6 +258,24 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
                 super(itemView);
                 tvShopName = itemView.findViewById(R.id.tv_shop_name);
                 tvCount = itemView.findViewById(R.id.tv_count);
+                itemView.setOnClickListener(v -> new CommonDialog.Builder(context)
+                        .setTitle(R.string.ipc_setting_tip)
+                        .setMessage(R.string.dashboard_tip_subpage)
+                        .setCancelButton(R.string.sm_cancel)
+                        .setConfirmButton(R.string.sm_watch, (dialog, which) -> {
+                            if (filterId == ID_COUNT){
+                                CustomerShopDataResp.Item customer = customerList.get(getAdapterPosition());
+                                SpUtils.setShopId(customer.getShopId());
+                                SpUtils.setShopName(customer.getShopName());
+                            }else {
+                                TotalRealTimeShopSalesResp.Item sale = saleList.get(getAdapterPosition());
+                                SpUtils.setShopId(sale.getShopId());
+                                SpUtils.setShopName(sale.getShopName());
+                            }
+                            SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+                            BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
+                            finish();
+                        }).create().show());
             }
         }
     }

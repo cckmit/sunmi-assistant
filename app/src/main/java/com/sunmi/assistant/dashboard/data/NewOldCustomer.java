@@ -2,6 +2,7 @@ package com.sunmi.assistant.dashboard.data;
 
 public class NewOldCustomer implements Comparable<NewOldCustomer> {
 
+    private int shopId;
     private String shopName;
     private int newCount;
     private int oldCount;
@@ -9,10 +10,15 @@ public class NewOldCustomer implements Comparable<NewOldCustomer> {
     public static boolean isDesc = true;
     public static boolean isSortByNew;
 
-    public NewOldCustomer(String shopName, int newCount, int oldCount) {
+    public NewOldCustomer(int shopId, String shopName, int newCount, int oldCount) {
+        this.shopId = shopId;
         this.shopName = shopName;
         this.newCount = newCount;
         this.oldCount = oldCount;
+    }
+
+    public int getShopId() {
+        return shopId;
     }
 
     public String getShopName() {

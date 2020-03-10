@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
@@ -29,12 +30,17 @@ import java.util.List;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.FilterItem;
+import sunmi.common.notification.BaseNotification;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.DropdownAdapterNew;
 import sunmi.common.view.DropdownAnimNew;
 import sunmi.common.view.DropdownMenuNew;
 import sunmi.common.view.SmRecyclerView;
+import sunmi.common.view.dialog.CommonDialog;
 
 /**
  * Description: 客流分析-客群分布-下钻列表
@@ -55,6 +61,12 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     SmRecyclerView rvCustomer;
     @ViewById(R.id.layout_refresh)
     BGARefreshLayout refreshView;
+    @ViewById(R.id.rb_new_old)
+    RadioButton rbNewOld;
+    @ViewById(R.id.rb_gender)
+    RadioButton rbGender;
+    @ViewById(R.id.rb_age)
+    RadioButton rbAge;
     @ViewById(R.id.layout_error)
     View layoutError;
 
@@ -77,7 +89,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        dataType = Constants.DATA_TYPE_NEW_OLD;
         refreshView.setDelegate(this);
         // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
         BGANormalRefreshViewHolder refreshViewHolder =
@@ -87,6 +98,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         refreshViewHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
         refreshView.setRefreshViewHolder(refreshViewHolder); // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项
         refreshView.setIsShowLoadingMoreView(false);
+        initRadioButton();
         mPresenter = new CustomerDistributionPresenter(startTime, period);
         mPresenter.attachView(this);
         mPresenter.ageRange();
@@ -98,6 +110,22 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         rvCustomer.setAdapter(adapter);
         initFilterData();
         initFilters();
+    }
+
+    private void initRadioButton(){
+        switch (dataType) {
+            case Constants.DATA_TYPE_NEW_OLD:
+                rbNewOld.setChecked(true);
+                break;
+            case Constants.DATA_TYPE_GENDER:
+                rbGender.setChecked(true);
+                break;
+            case Constants.DATA_TYPE_AGE:
+                rbAge.setChecked(true);
+                break;
+            default:
+                break;
+        }
     }
 
     private void initSort(boolean isDesc) {
@@ -397,6 +425,35 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
                 super(itemView);
                 tvShopName = itemView.findViewById(R.id.tv_shop_name);
                 tvCount = itemView.findViewById(R.id.tv_count);
+                itemView.setOnClickListener(v -> new CommonDialog.Builder(context)
+                        .setTitle(R.string.ipc_setting_tip)
+                        .setMessage(R.string.dashboard_tip_subpage)
+                        .setCancelButton(R.string.sm_cancel)
+                        .setConfirmButton(R.string.sm_watch, (dialog, which) -> {
+                            int i = getAdapterPosition();
+                            switch (dataType) {
+                                case Constants.DATA_TYPE_NEW_OLD:
+                                    NewOldCustomer newOldCustomer = newOldCustomers.get(i);
+                                    SpUtils.setShopId(newOldCustomer.getShopId());
+                                    SpUtils.setShopName(newOldCustomer.getShopName());
+                                    break;
+                                case Constants.DATA_TYPE_GENDER:
+                                    GenderCustomer genderCustomer = genderCustomers.get(i);
+                                    SpUtils.setShopId(genderCustomer.getShopId());
+                                    SpUtils.setShopName(genderCustomer.getShopName());
+                                    break;
+                                case Constants.DATA_TYPE_AGE:
+                                    AgeCustomer ageCustomer = ageCustomers.get(i);
+                                    SpUtils.setShopId(ageCustomer.getShopId());
+                                    SpUtils.setShopName(ageCustomer.getShopName());
+                                    break;
+                                default:
+                                    break;
+                            }
+                            SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+                            BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
+                            finish();
+                        }).create().show());
             }
         }
     }

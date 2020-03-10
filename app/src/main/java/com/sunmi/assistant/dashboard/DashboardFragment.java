@@ -314,6 +314,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @Override
     public void switchPerspective(int perspective) {
         this.mPerspective = perspective;
+        resetTop();
         mShopMenuAdapter.switchPerspective(perspective);
     }
 
@@ -421,6 +422,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mTopShopMenu.setTranslationY(0);
         mTopPageTab.setTranslationY(0);
         mShopMenuAnim.setOffset(0);
+        mTopPageTab.setBackgroundColor(colorTextMain);
+        mPageTab.setTextSelectColor(colorWhite);
+        mPageTab.setTextUnselectColor(colorWhite60a);
+        mPageTab.setIndicatorColor(colorWhite);
+        mBgTopWhiteMask.setTranslationY(0);
+        mBgTopWhiteMask.setAlpha(0);
         updateStickyPeriodTab(getActivity(), false, false);
     }
 
