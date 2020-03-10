@@ -76,7 +76,7 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
 
     @Override
     public int getLayoutId(int type) {
-        return R.layout.dashboard_item_profile_analysis;
+        return R.layout.dashboard_item_total_customer_analysis;
     }
 
     @Override
@@ -203,9 +203,6 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
 
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        // Test data
-        // model.random(mAgeList, mAgeLabel, mMaleLabel, mFemaleLabel);
-
         Context context = holder.getContext();
         View view = holder.itemView;
         if (mCondition.hasFloating) {
