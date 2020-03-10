@@ -35,7 +35,6 @@ import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
 import sunmi.common.utils.StatusBarUtils;
-import sunmi.common.utils.WebViewParamsUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
@@ -66,6 +65,7 @@ public class WebViewActivity extends BaseActivity
     @AfterViews
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
+        titleBar.getLeftImg().setOnClickListener(v -> onBackPressed());
         initWebView();
         webView.loadUrl(url);
         startTimer();
