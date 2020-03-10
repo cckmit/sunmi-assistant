@@ -6,6 +6,7 @@ import android.util.SparseArray;
 import com.sunmi.assistant.dashboard.data.AgeCustomer;
 import com.sunmi.assistant.dashboard.data.GenderCustomer;
 import com.sunmi.assistant.dashboard.data.NewOldCustomer;
+import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -25,11 +26,11 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
         implements CustomerDistributionContract.Presenter {
 
     private String startTime;
-    private int type;
+    private int period;
 
-    public CustomerDistributionPresenter(String startTime, int type) {
-        this.startTime = startTime;
-        this.type = type;
+    public CustomerDistributionPresenter(long startTime, int period) {
+        this.startTime = Utils.formatTime(Utils.FORMAT_API_DATE, startTime);
+        this.period = period;
     }
 
     @Override
@@ -76,7 +77,7 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
     @Override
     public void getCustomerShopAgeDistribution() {
         SunmiStoreApi.getInstance().getTotalCustomerNewOldDistributionByShop(SpUtils.getCompanyId(), startTime,
-                type, new RetrofitCallback<CustomerShopDistributionResp>() {
+                period, new RetrofitCallback<CustomerShopDistributionResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerShopDistributionResp data) {
                         List<NewOldCustomer> newOldCustomers = new ArrayList<>();
@@ -115,7 +116,7 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
     @Override
     public void getCustomerShopAgeGenderDistribution() {
         SunmiStoreApi.getInstance().getTotalCustomerGenderDistributionByShop(SpUtils.getCompanyId(), startTime,
-                type, new RetrofitCallback<CustomerShopDistributionResp>() {
+                period, new RetrofitCallback<CustomerShopDistributionResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerShopDistributionResp data) {
                         List<GenderCustomer> genderCustomers = new ArrayList<>();

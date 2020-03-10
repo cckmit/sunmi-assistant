@@ -23,6 +23,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
+import com.sunmi.assistant.dashboard.subpage.CustomerDistributionActivity_;
 import com.sunmi.assistant.dashboard.ui.chart.PieChartMarkerView;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
@@ -252,6 +253,7 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
         });
         holder.addOnClickListener(R.id.btn_more, (holder1, model, position) -> {
             // TODO: add get more.
+            CustomerDistributionActivity_.intent(context).startTime(model.periodTime.start).dataType(model.type).period(model.period).start();
         });
 
         return holder;
