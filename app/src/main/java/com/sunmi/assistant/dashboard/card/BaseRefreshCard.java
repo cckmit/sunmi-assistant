@@ -39,8 +39,6 @@ public abstract class BaseRefreshCard<Model extends BaseRefreshCard.BaseModel, R
     private static final int STATE_FAILED = 11;
     private static final int STATE_CANCEL = 12;
 
-    protected static final CharSequence DATE_FORMAT = "yyyy-MM-dd";
-
     protected static final String FORMAT_FLOAT_NO_DECIMAL = "%.0f";
     protected static final String FORMAT_FLOAT_DOUBLE_DECIMAL = "%.2f";
     protected static final String FORMAT_FLOAT_SINGLE_DECIMAL = "%.1f";

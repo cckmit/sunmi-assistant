@@ -75,7 +75,7 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
     @SuppressLint("UseSparseArrays")
     @Override
     public void getCustomerShopAgeDistribution() {
-        SunmiStoreApi.getInstance().getCustomerShopAgeDistribution(SpUtils.getCompanyId(), startTime,
+        SunmiStoreApi.getInstance().getTotalCustomerNewOldDistributionByShop(SpUtils.getCompanyId(), startTime,
                 type, new RetrofitCallback<CustomerShopDistributionResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerShopDistributionResp data) {
@@ -114,7 +114,7 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
 
     @Override
     public void getCustomerShopAgeGenderDistribution() {
-        SunmiStoreApi.getInstance().getCustomerShopAgeGenderDistribution(SpUtils.getCompanyId(), startTime,
+        SunmiStoreApi.getInstance().getTotalCustomerGenderDistributionByShop(SpUtils.getCompanyId(), startTime,
                 type, new RetrofitCallback<CustomerShopDistributionResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CustomerShopDistributionResp data) {

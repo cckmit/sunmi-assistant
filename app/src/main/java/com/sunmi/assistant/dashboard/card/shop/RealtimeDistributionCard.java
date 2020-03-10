@@ -5,7 +5,6 @@ import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
-import android.text.format.DateFormat;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
@@ -102,8 +101,8 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     @Override
     protected Call<BaseResponse<Object>> load(int companyId, int shopId, int period, Interval periodTime,
                                               CardCallback callback) {
-        String start = DateFormat.format(DATE_FORMAT, periodTime.start).toString();
-        String end = DateFormat.format(DATE_FORMAT, periodTime.end - 1).toString();
+        String start = Utils.formatTime(Utils.FORMAT_API_DATE, periodTime.start);
+        String end = Utils.formatTime(Utils.FORMAT_API_DATE, periodTime.end - 1);
         if (mAgeList == null) {
             loadAgeList(companyId, shopId, start, end, callback);
         } else {
@@ -263,8 +262,6 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
 
     @Override
     protected void setupModel(Model model, Object response) {
-        // Test data
-//        models.get(0).random();
     }
 
     @Override

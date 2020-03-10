@@ -106,7 +106,7 @@ public class PerformanceRankActivity extends BaseActivity
     }
 
     private void getData() {
-        SunmiStoreApi.getInstance().getTotalSaleShopData(SpUtils.getCompanyId(), new RetrofitCallback<CustomerShopDataResp>() {
+        SunmiStoreApi.getInstance().getTotalRealtimeSalesByShop(SpUtils.getCompanyId(), new RetrofitCallback<CustomerShopDataResp>() {
             @Override
             public void onSuccess(int code, String msg, CustomerShopDataResp data) {
                 hideLoadingDialog();

@@ -134,7 +134,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
     }
 
     private void loadCustomer(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalCustomerRealTimeTrend(companyId,
+        SunmiStoreApi.getInstance().getTotalRealtimeCustomerTrend(companyId,
                 new RetrofitCallback<TotalRealtimeCustomerTrendResp>() {
                     @Override
                     public void onSuccess(int code, String msg, TotalRealtimeCustomerTrendResp data) {
@@ -169,7 +169,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
     }
 
     private void loadSales(int companyId, CardCallback callback) {
-        SunmiStoreApi.getInstance().getTotalSaleRealtimeTrend(companyId,
+        SunmiStoreApi.getInstance().getTotalRealtimeSalesTrend(companyId,
                 new RetrofitCallback<TotalRealtimeSalesTrendResp>() {
                     @Override
                     public void onSuccess(int code, String msg, TotalRealtimeSalesTrendResp data) {

@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.page;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.PageContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.card.total.TotalCustomerDistributionCard;
 import com.sunmi.assistant.dashboard.card.total.TotalCustomerOverviewCard;
 import com.sunmi.assistant.dashboard.card.total.TotalCustomerPeriodCard;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
@@ -63,6 +64,7 @@ public class TotalCustomerPresenter extends BasePresenter<TotalCustomerContract.
         mList.clear();
         mList.add(TotalCustomerPeriodCard.get(this,mCondition,mPeriod,mPeriodTime));
         mList.add(TotalCustomerOverviewCard.get(this,mCondition,mPeriod,mPeriodTime));
+        mList.add(TotalCustomerDistributionCard.get(this, mCondition, mPeriod, mPeriodTime));
     }
 
     private void load() {

@@ -49,8 +49,8 @@ public class TotalCustomerOverviewCard extends BaseRefreshCard<TotalCustomerOver
 
     @Override
     protected Call<BaseResponse<TotalCustomerDataResp>> load(int companyId, int shopId, int period, Interval periodTime, CardCallback callback) {
-        String startTime = Utils.formatTime(Utils.FORMAT_DATE, periodTime.start);
-        SunmiStoreApi.getInstance().getTotalCustomerData(companyId, startTime, period, callback);
+        String startTime = Utils.formatTime(Utils.FORMAT_API_DATE, periodTime.start);
+        SunmiStoreApi.getInstance().getTotalCustomer(companyId, startTime, period, callback);
         return null;
     }
 

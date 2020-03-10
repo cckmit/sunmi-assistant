@@ -170,10 +170,10 @@ public class DashboardRepoImpl implements DashboardRepo {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.MONTH, -1);
         c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1);
-        String startTime = Utils.formatTime(Utils.FORMAT_DATE, c.getTimeInMillis());
+        String startTime = Utils.formatTime(Utils.FORMAT_API_DATE, c.getTimeInMillis());
         c.add(Calendar.MONTH, 2);
         c.add(Calendar.DATE, -1);
-        String endTime = Utils.formatTime(Utils.FORMAT_DATE, c.getTimeInMillis());
+        String endTime = Utils.formatTime(Utils.FORMAT_API_DATE, c.getTimeInMillis());
         SunmiStoreApi.getInstance().getHistoryCustomer(companyId, shopId, startTime, endTime,
                 new RetrofitCallback<CustomerHistoryResp>() {
                     @Override
