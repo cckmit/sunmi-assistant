@@ -8,6 +8,7 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
+import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -40,6 +41,7 @@ public class SMWebChromeClient extends WebChromeClient {
     private JsCallJava mJsCallJava;
     private BottomPopMenu choosePhotoMenu;
     private Uri imgUri;
+    private CustomViewListener customViewListener;
 
     public SMWebChromeClient(BaseActivity activity) {
         mActivity = activity;
@@ -52,6 +54,26 @@ public class SMWebChromeClient extends WebChromeClient {
 
     public void setCallback(Callback callback) {
         this.callback = callback;
+    }
+
+    public void setCustomViewListener(CustomViewListener customViewListener) {
+        this.customViewListener = customViewListener;
+    }
+
+    @Override
+    public void onShowCustomView(View view, CustomViewCallback callback) {
+        if (customViewListener != null) {
+            customViewListener.onShowCustomView(view, callback);
+        }
+        super.onShowCustomView(view, callback);
+    }
+
+    @Override
+    public void onHideCustomView() {
+        if (customViewListener != null) {
+            customViewListener.onHideCustomView();
+        }
+        super.onHideCustomView();
     }
 
     @Override
@@ -236,6 +258,14 @@ public class SMWebChromeClient extends WebChromeClient {
         void onProgressComplete();
 
         void onReceivedTitle(String title);
+    }
+
+    public interface CustomViewListener {
+
+        void onShowCustomView(View view, CustomViewCallback callback);
+
+        void onHideCustomView();
+
     }
 
 }
