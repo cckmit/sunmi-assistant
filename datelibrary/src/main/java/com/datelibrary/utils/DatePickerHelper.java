@@ -34,6 +34,7 @@ public class DatePickerHelper {
     private Date startDate = new Date();
     //年份限制，上下5年
     private int yearLimt = 5;
+    private int yearEnd;
 
     private ArrayList<Integer> tem = new ArrayList<>();
     private ArrayList<String> dispalyTem = new ArrayList<>();
@@ -49,8 +50,9 @@ public class DatePickerHelper {
         MINUTE
     }
 
-    public DatePickerHelper(Context context) {
+    public DatePickerHelper(Context context, int yearEnd) {
         this.context = context;
+        this.yearEnd = yearEnd;
         init();
     }
 
@@ -127,11 +129,10 @@ public class DatePickerHelper {
     //生成年
     public Integer[] genYear() {
         tem.clear();
-        for (int i = YEAR_START - yearLimt; i < YEAR_START; i++) {
+        for (int i = yearEnd - yearLimt; i < yearEnd; i++) {
             tem.add(i);
         }
-        tem.add(YEAR_START);
-
+        tem.add(yearEnd);
         return tem.toArray(new Integer[0]);
     }
 

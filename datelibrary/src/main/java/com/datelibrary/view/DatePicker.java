@@ -40,6 +40,7 @@ public class DatePicker extends BaseWheelPick {
     private OnChangeListener onChangeListener;
     private int selectDay;
     private int selectWeek;
+    private int yearEnd;
 
     //选择时间回调
     public void setOnChangeListener(OnChangeListener onChangeListener) {
@@ -51,6 +52,7 @@ public class DatePicker extends BaseWheelPick {
         if (this.type != null) {
             this.type = type;
         }
+        yearEnd = DateUtils.getYear(new Date());
     }
 
     public void setStartDate(Date startDate) {
@@ -59,6 +61,10 @@ public class DatePicker extends BaseWheelPick {
 
     public void setYearLimt(int yearLimt) {
         this.yearLimt = yearLimt;
+    }
+
+    public void setYearEnd(int yearEnd) {
+        this.yearEnd = yearEnd;
     }
 
     //初始化值
@@ -70,7 +76,6 @@ public class DatePicker extends BaseWheelPick {
         this.monthView = findViewById(R.id.month);
         this.perWeekView = findViewById(R.id.per_week);
         this.yearView = findViewById(R.id.year);
-
         switch (type) {
             case TYPE_ALL:
                 this.minuteView.setVisibility(VISIBLE);
@@ -139,7 +144,7 @@ public class DatePicker extends BaseWheelPick {
                 break;
         }
 
-        datePicker = new DatePickerHelper(getContext());
+        datePicker = new DatePickerHelper(getContext(), yearEnd);
         datePicker.setStartDate(startDate, yearLimt);
 
         weekArr = datePicker.genWeek();
