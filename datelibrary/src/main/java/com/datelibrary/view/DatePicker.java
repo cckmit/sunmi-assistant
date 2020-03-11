@@ -4,8 +4,8 @@ import android.content.Context;
 import android.widget.TextView;
 
 import com.datelibrary.R;
-import com.datelibrary.bean.DateType;
 import com.datelibrary.adapter.WheelGeneralAdapter;
+import com.datelibrary.bean.DateType;
 import com.datelibrary.listener.OnChangeListener;
 import com.datelibrary.utils.DatePickerHelper;
 import com.datelibrary.utils.DateUtils;
@@ -18,6 +18,7 @@ import java.util.Date;
 public class DatePicker extends BaseWheelPick {
 
     private WheelView yearView;
+    private WheelView perWeekView;
     private WheelView monthView;
     private WheelView dayView;
     private TextView weekView;
@@ -25,6 +26,8 @@ public class DatePicker extends BaseWheelPick {
     private WheelView minuteView;
 
     private Integer[] yearArr, mothArr, dayArr, hourArr, minutArr;
+    private String[] weekArr;
+
     private DatePickerHelper datePicker;
 
     public DateType type = DateType.TYPE_ALL;
@@ -36,6 +39,7 @@ public class DatePicker extends BaseWheelPick {
 
     private OnChangeListener onChangeListener;
     private int selectDay;
+    private int selectWeek;
 
     //选择时间回调
     public void setOnChangeListener(OnChangeListener onChangeListener) {
@@ -64,6 +68,7 @@ public class DatePicker extends BaseWheelPick {
         this.weekView = findViewById(R.id.week);
         this.dayView = findViewById(R.id.day);
         this.monthView = findViewById(R.id.month);
+        this.perWeekView = findViewById(R.id.per_week);
         this.yearView = findViewById(R.id.year);
 
         switch (type) {
@@ -73,6 +78,16 @@ public class DatePicker extends BaseWheelPick {
                 this.weekView.setVisibility(VISIBLE);
                 this.dayView.setVisibility(VISIBLE);
                 this.monthView.setVisibility(VISIBLE);
+                this.perWeekView.setVisibility(GONE);
+                this.yearView.setVisibility(VISIBLE);
+                break;
+            case TYPE_YW:
+                this.minuteView.setVisibility(GONE);
+                this.hourView.setVisibility(GONE);
+                this.weekView.setVisibility(GONE);
+                this.dayView.setVisibility(GONE);
+                this.monthView.setVisibility(GONE);
+                this.perWeekView.setVisibility(VISIBLE);
                 this.yearView.setVisibility(VISIBLE);
                 break;
             case TYPE_YMDHM:
@@ -81,6 +96,7 @@ public class DatePicker extends BaseWheelPick {
                 this.weekView.setVisibility(GONE);
                 this.dayView.setVisibility(VISIBLE);
                 this.monthView.setVisibility(VISIBLE);
+                this.perWeekView.setVisibility(GONE);
                 this.yearView.setVisibility(VISIBLE);
                 break;
             case TYPE_YMDH:
@@ -89,6 +105,7 @@ public class DatePicker extends BaseWheelPick {
                 this.weekView.setVisibility(GONE);
                 this.dayView.setVisibility(VISIBLE);
                 this.monthView.setVisibility(VISIBLE);
+                this.perWeekView.setVisibility(GONE);
                 this.yearView.setVisibility(VISIBLE);
                 break;
             case TYPE_YMD:
@@ -97,6 +114,7 @@ public class DatePicker extends BaseWheelPick {
                 this.weekView.setVisibility(GONE);
                 this.dayView.setVisibility(VISIBLE);
                 this.monthView.setVisibility(VISIBLE);
+                this.perWeekView.setVisibility(GONE);
                 this.yearView.setVisibility(VISIBLE);
                 break;
             case TYPE_YM:
@@ -105,6 +123,7 @@ public class DatePicker extends BaseWheelPick {
                 this.weekView.setVisibility(GONE);
                 this.dayView.setVisibility(GONE);
                 this.monthView.setVisibility(VISIBLE);
+                this.perWeekView.setVisibility(GONE);
                 this.yearView.setVisibility(VISIBLE);
                 break;
             case TYPE_HM:
@@ -113,13 +132,17 @@ public class DatePicker extends BaseWheelPick {
                 this.weekView.setVisibility(GONE);
                 this.dayView.setVisibility(GONE);
                 this.monthView.setVisibility(GONE);
+                this.perWeekView.setVisibility(GONE);
                 this.yearView.setVisibility(GONE);
+                break;
+            default:
                 break;
         }
 
-        datePicker = new DatePickerHelper();
+        datePicker = new DatePickerHelper(getContext());
         datePicker.setStartDate(startDate, yearLimt);
 
+        weekArr = datePicker.genWeek();
         dayArr = datePicker.genDay();
         yearArr = datePicker.genYear();
         mothArr = datePicker.genMonth();
@@ -129,12 +152,14 @@ public class DatePicker extends BaseWheelPick {
         weekView.setText(datePicker.getDisplayStartWeek());
 
         setWheelListener(yearView, yearArr, false);
+        setWheelListener(perWeekView, weekArr, true);
         setWheelListener(monthView, mothArr, true);
         setWheelListener(dayView, dayArr, true);
         setWheelListener(hourView, hourArr, true);
         setWheelListener(minuteView, minutArr, true);
 
         yearView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.YEAR), yearArr));
+        perWeekView.setCurrentItem(datePicker.getToady(DatePickerHelper.Type.WEEK));
         monthView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.MOTH), mothArr));
         dayView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.DAY), dayArr));
         hourView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.HOUR), hourArr));
@@ -184,6 +209,17 @@ public class DatePicker extends BaseWheelPick {
         }
     }
 
+    private void setChangeWeekSelect(int year) {
+        weekArr = datePicker.genWeek(year);
+        WheelGeneralAdapter adapter = (WheelGeneralAdapter) perWeekView.getViewAdapter();
+        adapter.setData(weekArr);
+        if (selectWeek < DateUtils.getMaxWeekNumOfYear(year)) {
+            perWeekView.setCurrentItem(selectWeek);
+        } else {
+            perWeekView.setCurrentItem(0);
+        }
+    }
+
     @Override
     public void onChanged(WheelView wheel, int oldValue, int newValue) {
 
@@ -197,6 +233,12 @@ public class DatePicker extends BaseWheelPick {
             setChangeDaySelect(year, moth);
         } else {
             selectDay = day;
+        }
+
+        if (wheel == yearView) {
+            setChangeWeekSelect(year);
+        } else {
+            selectWeek = perWeekView.getCurrentItem();
         }
 
         if (wheel == yearView || wheel == monthView || wheel == dayView) {
@@ -219,11 +261,16 @@ public class DatePicker extends BaseWheelPick {
     //获取选中日期
     public Date getSelectDate() {
         int year = yearArr[yearView.getCurrentItem()];
+        int week = perWeekView.getCurrentItem();
         int moth = mothArr[monthView.getCurrentItem()];
         int day = dayArr[dayView.getCurrentItem()];
         int hour = hourArr[hourView.getCurrentItem()];
         int minut = minutArr[minuteView.getCurrentItem()];
-        return DateUtils.getDate(year, moth, day, hour, minut);
+        if (type == DateType.TYPE_YW) {
+            return DateUtils.getFirstDayOfWeek(year, week);
+        } else {
+            return DateUtils.getDate(year, moth, day, hour, minut);
+        }
     }
 
 }

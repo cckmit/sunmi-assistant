@@ -1,15 +1,23 @@
 package com.datelibrary.utils;
 
+import android.content.Context;
+
+import com.datelibrary.R;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+
+import sunmi.common.utils.DateTimeUtils;
 
 /**
  * Created by codbking on 2016/8/10.
  */
 public class DatePickerHelper {
 
+    private Context context;
     //开始年
     private int YEAR_START;
     //开始月
@@ -29,6 +37,7 @@ public class DatePickerHelper {
 
     private ArrayList<Integer> tem = new ArrayList<>();
     private ArrayList<String> dispalyTem = new ArrayList<>();
+    private List<String> week = new ArrayList<>(53);
     private String[] weeks = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
 
     public enum Type {
@@ -40,7 +49,8 @@ public class DatePickerHelper {
         MINUTE
     }
 
-    public DatePickerHelper() {
+    public DatePickerHelper(Context context) {
+        this.context = context;
         init();
     }
 
@@ -50,7 +60,7 @@ public class DatePickerHelper {
         YEAR_START = DateUtils.getYear(date);
         MONTH_START = DateUtils.getMoth(date);
         DAY_START = DateUtils.getDay(date);
-        WEEK_START = DateUtils.getWeek(date);
+        WEEK_START = DateUtils.getWeekOfYear(date);
         HOUR_START = DateUtils.getHour(date);
         MINUTE_START = DateUtils.getMinute(date);
     }
@@ -122,10 +132,23 @@ public class DatePickerHelper {
         }
         tem.add(YEAR_START);
 
-        for (int i = YEAR_START + 1; i < YEAR_START + yearLimt; i++) {
-            tem.add(i);
-        }
         return tem.toArray(new Integer[0]);
+    }
+
+    public String[] genWeek(int year) {
+        week.clear();
+        int count = DateUtils.getMaxWeekNumOfYear(year);
+        for (int i = 0; i < count; i++) {
+            String pattern = context.getString(R.string.pick_date_format_per_week);
+            String firstDay = DateTimeUtils.formatDate(pattern, DateUtils.getFirstDayOfWeek(year, i));
+            String endDay = DateTimeUtils.formatDate(pattern, DateUtils.getLastDayOfWeek(year, i));
+            week.add(context.getString(R.string.pick_per_week, i + 1, firstDay, endDay));
+        }
+        return week.toArray(new String[0]);
+    }
+
+    public String[] genWeek() {
+        return genWeek(YEAR_START);
     }
 
     public Integer[] genDay(int year, int moth) {
@@ -149,6 +172,7 @@ public class DatePickerHelper {
         }
         return -1;
     }
+
 
     public String getDisplayWeek(int year, int moth, int day) {
         return weeks[DateUtils.getWeek(year, moth, day) - 1];
