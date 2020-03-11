@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.page;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -135,8 +134,12 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
     }
 
     @Override
-    public void scrollToTop() {
-        mCardList.smoothScrollToPosition(0);
+    public void scrollToTop(boolean animated) {
+        if (animated) {
+            mCardList.smoothScrollToPosition(0);
+        } else {
+            mCardList.scrollToPosition(0);
+        }
     }
 
     @Override

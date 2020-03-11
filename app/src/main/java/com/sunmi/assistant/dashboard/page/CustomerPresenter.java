@@ -176,9 +176,9 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     }
 
     @Override
-    public void scrollToTop() {
+    public void scrollToTop(boolean animated) {
         if (isViewAttached()) {
-            mView.scrollToTop();
+            mView.scrollToTop(animated);
         }
     }
 

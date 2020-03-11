@@ -145,9 +145,9 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
     }
 
     @Override
-    public void scrollToTop() {
+    public void scrollToTop(boolean animated) {
         if (isViewAttached()) {
-            mView.scrollToTop();
+            mView.scrollToTop(animated);
         }
     }
 

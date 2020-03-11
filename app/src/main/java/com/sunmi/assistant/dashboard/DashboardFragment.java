@@ -1,10 +1,13 @@
 package com.sunmi.assistant.dashboard;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.v4.app.FragmentActivity;
@@ -126,6 +129,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private int colorTextMain;
     private int colorTextCaption;
 
+    private Dialog switchPageLoading;
+
     @AfterViews
     void init() {
         mPresenter = new DashboardPresenter();
@@ -204,7 +209,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     public void updateStatusBar() {
         resetTop();
-        mPresenter.scrollToTop();
+        mPresenter.scrollToTop(false);
         if (mTopShopMenu.isShowing()) {
             mTopShopMenu.dismiss(false);
         }
@@ -526,6 +531,18 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             if (data.size() <= position) {
                 return;
             }
+            FragmentActivity activity = getActivity();
+            if (activity != null && mPerspective == CommonConstants.PERSPECTIVE_TOTAL) {
+                if (switchPageLoading == null) {
+                    switchPageLoading = new TotalLoadingDialog(getActivity());
+                }
+                switchPageLoading.show();
+                mHandler.postDelayed(() -> {
+                    if (switchPageLoading != null && switchPageLoading.isShowing()) {
+                        switchPageLoading.dismiss();
+                    }
+                }, 500);
+            }
             mPageTab.setCurrentTab(position);
             mPresenter.switchPage(data.get(position).getType());
             updateTab(mPresenter.getPageType(), mPresenter.getPeriod());
@@ -534,6 +551,20 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
         @Override
         public void onPageScrollStateChanged(int i) {
+        }
+    }
+
+    private static class TotalLoadingDialog extends Dialog {
+
+        public TotalLoadingDialog(@NonNull Context context) {
+            super(context, R.style.DashboardLoadingDialog);
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.dashboard_dialog_loading);
+            setCanceledOnTouchOutside(false);
         }
     }
 

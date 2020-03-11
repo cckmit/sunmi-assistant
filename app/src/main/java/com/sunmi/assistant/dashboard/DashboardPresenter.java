@@ -263,15 +263,15 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void switchPage(int type) {
-        scrollToTop();
+        scrollToTop(mPerspective != CommonConstants.PERSPECTIVE_TOTAL);
         mPageType = type;
     }
 
     @Override
-    public void scrollToTop() {
+    public void scrollToTop(boolean animated) {
         PageContract.PagePresenter current = getCurrent();
         if (current != null) {
-            current.scrollToTop();
+            current.scrollToTop(animated);
         }
     }
 

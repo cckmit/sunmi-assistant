@@ -119,8 +119,12 @@ public class ProfileFragment extends BaseMvpFragment<ProfilePresenter>
     }
 
     @Override
-    public void scrollToTop() {
-        mCardList.smoothScrollToPosition(0);
+    public void scrollToTop(boolean animated) {
+        if (animated) {
+            mCardList.smoothScrollToPosition(0);
+        } else {
+            mCardList.scrollToPosition(0);
+        }
     }
 
     @Override
