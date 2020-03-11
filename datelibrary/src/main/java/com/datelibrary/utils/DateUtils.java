@@ -96,7 +96,7 @@ public class DateUtils {
         c.set(Calendar.DATE, 1);
 
         Calendar cal = (Calendar) c.clone();
-        cal.add(Calendar.DATE, (week - 1) * 7);
+        cal.add(Calendar.DATE, week * 7);
 
         return getFirstDayOfWeek(cal.getTime());
     }
@@ -111,7 +111,7 @@ public class DateUtils {
         c.set(Calendar.DATE, 1);
 
         Calendar cal = (Calendar) c.clone();
-        cal.add(Calendar.DATE, (week - 1) * 7);
+        cal.add(Calendar.DATE, week * 7);
 
         return getLastDayOfWeek(cal.getTime());
     }
