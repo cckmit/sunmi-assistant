@@ -453,10 +453,12 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
                 mPageTab.setTextSelectColor(colorTextMain);
                 mPageTab.setTextUnselectColor(colorTextCaption);
                 mPageTab.setIndicatorColor(colorOrange);
+                mShopMenuAnim.setOffset(-mTopShopMenuHeight);
             } else {
                 mTopPageTab.setVisibility(View.INVISIBLE);
                 mTopStickyPeriodTab.setVisibility(View.VISIBLE);
                 mTopStickyPeriodTab.setAlpha(1);
+                mShopMenuAnim.setOffset(-mTopHeaderHeight);
                 mPager.setScrollable(false);
             }
         } else if (fraction <= 0) {
@@ -467,6 +469,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mTopPageTab.setVisibility(View.VISIBLE);
             mTopPageTab.setTranslationY(0);
             mTopPageTab.setBackgroundColor(colorTextMain);
+            mShopMenuAnim.setOffset(0);
             if (mPerspective == CommonConstants.PERSPECTIVE_TOTAL) {
                 mBgTopWhiteMask.setTranslationY(0);
                 mBgTopWhiteMask.setAlpha(0);
