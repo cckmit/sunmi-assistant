@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.page;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -59,6 +58,7 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
     private Dialog mDialogTimeDay;
     private DatePicker dayPicker;
     private Dialog mDialogTimeWeek;
+    private DatePicker weekPicker;
     private Dialog mDialogTimeMonth;
     private DatePicker monthPicker;
 
@@ -156,7 +156,6 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
         ViewGroup.MarginLayoutParams layoutParams = new ViewGroup.MarginLayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, margin, 0, margin);
-        // TODO: Add dialog
         if (period == Constants.TIME_PERIOD_DAY) {
             if (mDialogTimeDay == null) {
                 dayPicker = new DatePicker(getActivity(), DateType.TYPE_YMD);
@@ -176,9 +175,23 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
             mDialogTimeDay.show();
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             if (mDialogTimeWeek == null) {
+                weekPicker = new DatePicker(getActivity(), DateType.TYPE_YW);
                 mDialogTimeWeek = new BottomDialog.Builder(getActivity())
+                        .setTitle(R.string.str_select_time)
+                        .setCancelButton(R.string.sm_cancel)
+                        .setOkButton(R.string.str_confirm, (dialog, which) -> {
+                            long start = weekPicker.getSelectDate().getTime();
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTimeInMillis(start);
+                            calendar.add(Calendar.DATE, 7);
+                            Interval interval = new Interval(start, calendar.getTimeInMillis());
+                            mPresenter.setPeriod(mPresenter.getPeriod(), interval);
+                        })
+                        .setContent(weekPicker, layoutParams)
                         .create();
             }
+            weekPicker.setStartDate(new Date(periodTime));
+            weekPicker.init();
             mDialogTimeWeek.show();
         } else if (period == Constants.TIME_PERIOD_MONTH) {
             if (mDialogTimeMonth == null) {
