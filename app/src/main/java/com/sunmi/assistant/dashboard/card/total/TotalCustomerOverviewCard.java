@@ -70,10 +70,15 @@ public class TotalCustomerOverviewCard extends BaseRefreshCard<TotalCustomerOver
         model.count = count;
         if (count > 0 && head >= 0) {
             model.enterRate = (float) count / (count + head);
-            model.compareCount = (float) (count - earlyCount) / count;
         } else {
             model.enterRate = 0;
-            model.compareCount = 0;
+        }
+        if (earlyCount > 0 && count >= 0) {
+            model.compareCount = (float) (count - earlyCount) / earlyCount;
+        } else if (count > 0) {
+            model.compareCount =1;
+        }else {
+            model.compareCount =0;
         }
         float earlyRate;
         if (earlyCount > 0 && earlHead >= 0) {

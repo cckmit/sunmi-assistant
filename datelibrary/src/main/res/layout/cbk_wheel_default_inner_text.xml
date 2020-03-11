@@ -8,6 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|center_horizontal"
-        android:textSize="18sp" />
+        android:textSize="@dimen/sp_16" />
 
 </LinearLayout>

@@ -143,12 +143,15 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
             switch (dataType) {
                 case Constants.DATA_TYPE_NEW_OLD:
                     NewOldCustomer.isSortByNew = (model.getId() == 1);
+                    Collections.sort(newOldCustomers);
                     break;
                 case Constants.DATA_TYPE_GENDER:
                     GenderCustomer.isSortByMale = (model.getId() == 1);
+                    Collections.sort(genderCustomers);
                     break;
                 case Constants.DATA_TYPE_AGE:
                     AgeCustomer.ageCode = model.getId();
+                    Collections.sort(ageCustomers);
                     break;
                 default:
                     break;
