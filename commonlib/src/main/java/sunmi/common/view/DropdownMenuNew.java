@@ -328,20 +328,9 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             // 创建和初始化Menu列表View
             menuContainer = (ViewGroup) LayoutInflater.from(context).inflate(
                     layoutId, menuParent, false);
-            menuParent.addView(menuContainer, menuIndex);
-            initContainer(menuParent);
-
-            // 创建和初始化Overlay
-            overlay = new View(context);
-            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            menuParent.addView(overlay, menuIndex, lp);
-            initOverlay(menuParent);
-
             // 查找并获取Menu列表中的RecyclerView对象
-            int count;
             if (listId == 0) {
-                count = menuContainer.getChildCount();
+                int count = menuContainer.getChildCount();
                 for (int i = 0; i < count; i++) {
                     View child = menuContainer.getChildAt(i);
                     if (child instanceof RecyclerView) {
@@ -356,6 +345,16 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             } else {
                 menuList = menuContainer.findViewById(listId);
             }
+
+            menuParent.addView(menuContainer, menuIndex);
+            initContainer(menuParent);
+
+            // 创建和初始化Overlay
+            overlay = new View(context);
+            ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            menuParent.addView(overlay, menuIndex, lp);
+            initOverlay(menuParent);
 
             // 初始化List动画和布局管理器
             if (dropdownAnim == null) {
@@ -378,7 +377,9 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 menuContainer.setId(View.generateViewId());
             }
             menuContainer.setBackgroundColor(ContextCompat.getColor(context, R.color.c_white));
-            menuContainer.setOnTouchListener((v, event) -> true);
+            if (menuContainer != menuList) {
+                menuContainer.setOnTouchListener((v, event) -> true);
+            }
             int menuTop = getBottom();
             if (parent instanceof FrameLayout) {
                 FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) layoutParams;
@@ -390,12 +391,14 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
                 ConstraintSet set = new ConstraintSet();
                 set.clone((ConstraintLayout) parent);
                 set.connect(menuContainer.getId(), ConstraintSet.TOP, menuTitleGroup.getId(), ConstraintSet.BOTTOM, 0);
+                set.connect(menuContainer.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0);
+                set.connect(menuContainer.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, 0);
+                set.connect(menuContainer.getId(), ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
+                set.setVerticalBias(menuContainer.getId(), 0f);
+                set.constrainHeight(menuContainer.getId(), ConstraintSet.MATCH_CONSTRAINT);
+                set.constrainWidth(menuContainer.getId(), ConstraintSet.MATCH_CONSTRAINT);
                 if (layoutParams.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
-                    set.connect(menuContainer.getId(), ConstraintSet.BOTTOM,
-                            ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM, 0);
-                    set.setVerticalBias(menuContainer.getId(), 0f);
                     set.constrainDefaultHeight(menuContainer.getId(), ConstraintSet.MATCH_CONSTRAINT_WRAP);
-                    set.constrainHeight(menuContainer.getId(), ConstraintSet.MATCH_CONSTRAINT);
                 }
                 set.applyTo((ConstraintLayout) parent);
             } else {

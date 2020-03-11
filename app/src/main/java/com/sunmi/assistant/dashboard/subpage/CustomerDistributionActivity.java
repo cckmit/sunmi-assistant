@@ -190,7 +190,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
             default:
                 break;
         }
-        dropdownAdapter.notifyDataSetChanged();
     }
 
     private void switchType(int type) {
