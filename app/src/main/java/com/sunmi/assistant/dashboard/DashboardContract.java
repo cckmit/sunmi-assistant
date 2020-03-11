@@ -48,7 +48,7 @@ public interface DashboardContract {
 
         void switchPage(int type);
 
-        void scrollToTop();
+        void scrollToTop(boolean animated);
 
         void closeFloatingAd();
 

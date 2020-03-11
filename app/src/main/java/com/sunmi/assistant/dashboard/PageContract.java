@@ -34,7 +34,7 @@ public interface PageContract {
 
         void setCards(List<BaseRefreshCard> data);
 
-        void scrollToTop();
+        void scrollToTop(boolean animated);
     }
 
     interface PagePresenter {
@@ -49,7 +49,7 @@ public interface PageContract {
 
         void setPeriod(int period, Interval periodTime);
 
-        void scrollToTop();
+        void scrollToTop(boolean animated);
 
         int getPeriod();
 

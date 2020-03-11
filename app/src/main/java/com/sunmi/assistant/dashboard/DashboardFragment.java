@@ -1,10 +1,13 @@
 package com.sunmi.assistant.dashboard;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.v4.app.FragmentActivity;
@@ -44,6 +47,7 @@ import sunmi.common.router.IpcApi;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.WebViewParamsUtils;
+import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.DropdownMenuNew;
 import sunmi.common.view.tablayout.CommonTabLayout;
 import sunmi.common.view.tablayout.listener.CustomTabEntity;
@@ -114,10 +118,14 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private int mPerspective;
 
-    private boolean mHasInit = false;
-    private boolean mHasData = false;
-    private boolean mIsStickyPeriodTop = false;
-    private boolean mIsStickyShopMenu = false;
+    private boolean isInit = false;
+    /**
+     * 吸顶过程。
+     * 0：完全滚动到顶部；
+     * 0~1：上滑过程；
+     * 1：完全吸顶。
+     */
+    private float stickyTopFraction;
 
     private int colorTop;
     private int colorOrange;
@@ -125,6 +133,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     private int colorWhite60a;
     private int colorTextMain;
     private int colorTextCaption;
+
+    private Dialog switchPageLoading;
 
     @AfterViews
     void init() {
@@ -204,14 +214,14 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     public void updateStatusBar() {
         resetTop();
-        mPresenter.scrollToTop();
+        mPresenter.scrollToTop(false);
         if (mTopShopMenu.isShowing()) {
             mTopShopMenu.dismiss(false);
         }
     }
 
     private void showContent() {
-        updateStickyPeriodTab(getActivity(), mIsStickyPeriodTop, false);
+        updateStickyTop(getActivity(), stickyTopFraction);
         mContentGroup.setVisibility(View.VISIBLE);
         mLayoutError.setVisibility(View.GONE);
         if (mTopShopMenu.isShowing()) {
@@ -328,8 +338,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void setCondition(DashboardCondition condition) {
-        mHasInit = true;
-        mHasData = condition.hasSaas || condition.hasFs;
+        isInit = true;
         mNoFsTip.setVisibility(!condition.hasFs && condition.hasCustomer && !condition.hasFloating ?
                 View.VISIBLE : View.INVISIBLE);
         showContent();
@@ -359,42 +368,36 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void updateTopPosition(int position) {
+        float fraction;
         if (mPerspective == CommonConstants.PERSPECTIVE_TOTAL) {
             int offset;
-            if (position > mTopHeaderHeight) {
-                offset = 0;
-            } else if (position <= mTopPageTabHeight + mStatusBarHeight) {
-                offset = -mTopShopMenuHeight;
+            if (position >= mTopHeaderHeight) {
+                fraction = 0;
+            } else if (position <= mTopHeaderHeight - mTopShopMenuHeight) {
+                fraction = 1;
             } else {
-                offset = position - mTopHeaderHeight;
+                fraction = (float) (mTopHeaderHeight - position) / mTopShopMenuHeight;
             }
-            float fraction = (float) -offset / mTopShopMenuHeight;
-            mTopShopMenu.setTranslationY(offset);
-            mTopPageTab.setTranslationY(offset);
-            mBgTopWhiteMask.setTranslationY(offset);
-            mBgTopWhiteMask.setAlpha(fraction);
-            mTabDivider.setAlpha(fraction);
-            mTopPageTab.setBackgroundColor(Utils.getGradientColor(colorTextMain, colorWhite, fraction));
-            mPageTab.setTextSelectColor(Utils.getGradientColor(colorWhite, colorTextMain, fraction));
-            mPageTab.setTextUnselectColor(Utils.getGradientColor(colorWhite60a, colorTextCaption, fraction));
-            mPageTab.setIndicatorColor(Utils.getGradientColor(colorWhite, colorOrange, fraction));
-            mShopMenuAnim.setOffset(offset);
+            LogCat.d(Utils.TAG, "Fraction:" + fraction + "; Old:" + stickyTopFraction);
+            updateStickyTop(getActivity(), fraction);
         } else {
-            int offset = Math.min(position - mTopHeaderHeight, 0);
-            mTopShopMenu.setTranslationY(offset);
-            mShopMenuAnim.setOffset(offset);
-            mTopPageTab.setTranslationY(offset);
-            if (position > 0 && mIsStickyPeriodTop) {
-                updateStickyPeriodTab(getActivity(), false, true);
-            } else if (position <= 0 && !mIsStickyPeriodTop) {
-                updateStickyPeriodTab(getActivity(), true, true);
+            if (position >= mTopHeaderHeight) {
+                fraction = 0;
+            } else if (position <= 0) {
+                fraction = 1;
+            } else {
+                fraction = (float) (mTopHeaderHeight - position) / mTopHeaderHeight;
             }
+            LogCat.d(Utils.TAG, "Fraction:" + fraction + "; Old:" + stickyTopFraction);
+            updateStickyTop(getActivity(), fraction);
         }
     }
 
     @Override
     public void resetTop() {
+        mTopShopMenu.setVisibility(View.VISIBLE);
         mTopShopMenu.setTranslationY(0);
+        mTopPageTab.setVisibility(View.VISIBLE);
         mTopPageTab.setTranslationY(0);
         mTopPageTab.setBackgroundColor(colorTextMain);
         mPageTab.setTextSelectColor(colorWhite);
@@ -404,12 +407,17 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mBgTopWhiteMask.setAlpha(0);
         mTabDivider.setAlpha(0);
         mShopMenuAnim.setOffset(0);
-        updateStickyPeriodTab(getActivity(), false, false);
+        mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
+        mPager.setScrollable(true);
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            StatusBarUtils.setStatusBarFullTransparent(activity);
+        }
     }
 
     @Override
     public void loadDataFailed() {
-        if (mHasInit) {
+        if (isInit) {
             hideLoadingDialog();
             shortTip(R.string.toast_network_error);
         } else {
@@ -427,24 +435,81 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         }
     }
 
-    private void updateStickyPeriodTab(Activity activity, boolean isShow, boolean animated) {
+    private void updateStickyTop(Activity activity, float fraction) {
         if (activity == null) {
             return;
         }
-        if (isShow) {
+        if (fraction >= 1) {
+            stickyTopFraction = 1;
             StatusBarUtils.setStatusBarColor(activity, StatusBarUtils.TYPE_DARK);
             mTopShopMenu.setVisibility(View.INVISIBLE);
-            mTopPageTab.setVisibility(View.INVISIBLE);
-            mTopStickyPeriodTab.setVisibility(View.VISIBLE);
-            mPager.setScrollable(false);
-            mIsStickyPeriodTop = true;
+            if (mPerspective == CommonConstants.PERSPECTIVE_TOTAL) {
+                mTopShopMenu.setTranslationY(-mTopShopMenuHeight);
+                mTopPageTab.setTranslationY(-mTopShopMenuHeight);
+                mTopPageTab.setBackgroundColor(colorWhite);
+                mBgTopWhiteMask.setTranslationY(-mTopShopMenuHeight);
+                mBgTopWhiteMask.setAlpha(1);
+                mTabDivider.setAlpha(1);
+                mPageTab.setTextSelectColor(colorTextMain);
+                mPageTab.setTextUnselectColor(colorTextCaption);
+                mPageTab.setIndicatorColor(colorOrange);
+                mShopMenuAnim.setOffset(-mTopShopMenuHeight);
+            } else {
+                mTopPageTab.setVisibility(View.INVISIBLE);
+                mTopStickyPeriodTab.setVisibility(View.VISIBLE);
+                mTopStickyPeriodTab.setAlpha(1);
+                mShopMenuAnim.setOffset(-mTopHeaderHeight);
+                mPager.setScrollable(false);
+            }
+        } else if (fraction <= 0) {
+            stickyTopFraction = 0;
+            StatusBarUtils.setStatusBarFullTransparent(activity);
+            mTopShopMenu.setVisibility(View.VISIBLE);
+            mTopShopMenu.setTranslationY(0);
+            mTopPageTab.setVisibility(View.VISIBLE);
+            mTopPageTab.setTranslationY(0);
+            mTopPageTab.setBackgroundColor(colorTextMain);
+            mShopMenuAnim.setOffset(0);
+            if (mPerspective == CommonConstants.PERSPECTIVE_TOTAL) {
+                mBgTopWhiteMask.setTranslationY(0);
+                mBgTopWhiteMask.setAlpha(0);
+                mTabDivider.setAlpha(0);
+                mPageTab.setTextSelectColor(colorWhite);
+                mPageTab.setTextUnselectColor(colorWhite60a);
+                mPageTab.setIndicatorColor(colorWhite);
+            } else {
+                mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
+                mPager.setScrollable(true);
+            }
         } else {
+            stickyTopFraction = fraction;
             StatusBarUtils.setStatusBarFullTransparent(activity);
             mTopShopMenu.setVisibility(View.VISIBLE);
             mTopPageTab.setVisibility(View.VISIBLE);
-            mTopStickyPeriodTab.setVisibility(View.INVISIBLE);
-            mPager.setScrollable(true);
-            mIsStickyPeriodTop = false;
+            if (mPerspective == CommonConstants.PERSPECTIVE_TOTAL) {
+                int offset = (int) (-fraction * mTopShopMenuHeight);
+                mTopShopMenu.setTranslationY(offset);
+                mTopPageTab.setTranslationY(offset);
+                mBgTopWhiteMask.setTranslationY(offset);
+                mShopMenuAnim.setOffset(offset);
+
+                mTopPageTab.setBackgroundColor(Utils.getGradientColor(colorTextMain, colorWhite, fraction));
+                mBgTopWhiteMask.setAlpha(fraction);
+                mTabDivider.setAlpha(fraction);
+                mPageTab.setTextSelectColor(Utils.getGradientColor(colorWhite, colorTextMain, fraction));
+                mPageTab.setTextUnselectColor(Utils.getGradientColor(colorWhite60a, colorTextCaption, fraction));
+                mPageTab.setIndicatorColor(Utils.getGradientColor(colorWhite, colorOrange, fraction));
+            } else {
+                int offset = (int) (-fraction * mTopHeaderHeight);
+                mTopShopMenu.setTranslationY(offset);
+                mTopPageTab.setTranslationY(offset);
+                mShopMenuAnim.setOffset(offset);
+
+                if (fraction > 0.8f) {
+                    mTopStickyPeriodTab.setVisibility(View.VISIBLE);
+                    mTopStickyPeriodTab.setAlpha((fraction - 0.8f) / 0.2f);
+                }
+            }
         }
     }
 
@@ -470,13 +535,13 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         if (id == CommonNotifications.netConnected) {
             mPresenter.load(Constants.FLAG_ALL_MASK, true, true, true);
         } else if (id == CommonNotifications.companySwitch) {
-            mHasInit = false;
+            isInit = false;
             mShopMenuAdapter.setCompanyName(SpUtils.getCompanyName());
             mPresenter.load(Constants.FLAG_ALL_MASK, true, true, true);
         } else if (id == CommonNotifications.companyNameChanged) {
             mShopMenuAdapter.setCompanyName(SpUtils.getCompanyName());
         } else if (id == CommonNotifications.shopSwitched) {
-            mHasInit = false;
+            isInit = false;
             mPresenter.load(Constants.FLAG_SAAS | Constants.FLAG_FS | Constants.FLAG_CUSTOMER | Constants.FLAG_BUNDLED_LIST,
                     true, true, true);
         } else if (id == CommonNotifications.shopNameChanged
@@ -526,6 +591,18 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             if (data.size() <= position) {
                 return;
             }
+            FragmentActivity activity = getActivity();
+            if (activity != null && mPerspective == CommonConstants.PERSPECTIVE_TOTAL) {
+                if (switchPageLoading == null) {
+                    switchPageLoading = new TotalLoadingDialog(getActivity());
+                }
+                switchPageLoading.show();
+                mHandler.postDelayed(() -> {
+                    if (switchPageLoading != null && switchPageLoading.isShowing()) {
+                        switchPageLoading.dismiss();
+                    }
+                }, 500);
+            }
             mPageTab.setCurrentTab(position);
             mPresenter.switchPage(data.get(position).getType());
             updateTab(mPresenter.getPageType(), mPresenter.getPeriod());
@@ -534,6 +611,20 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
         @Override
         public void onPageScrollStateChanged(int i) {
+        }
+    }
+
+    private static class TotalLoadingDialog extends Dialog {
+
+        public TotalLoadingDialog(@NonNull Context context) {
+            super(context, R.style.DashboardLoadingDialog);
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.dashboard_dialog_loading);
+            setCanceledOnTouchOutside(false);
         }
     }
 
