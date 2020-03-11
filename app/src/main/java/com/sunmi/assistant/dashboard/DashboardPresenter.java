@@ -91,15 +91,29 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 + "; Clear=" + clearCache + "; Current=" + onlyCurrentPage);
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
-        if (needLoadShop(flag)) {
-            loadShop(clearCache);
-        }
-        if (needLoadCondition(flag)) {
+        if (needLoadShop(flag) && needLoadCondition(flag)) {
+            loadShopAndCondition(flag, clearCache, onlyCurrentPage, showLoading);
+        } else if (needLoadShop(flag)) {
+            loadShop(clearCache, null);
+        } else if (needLoadCondition(flag)) {
             loadCondition(flag, clearCache, onlyCurrentPage, showLoading);
         }
     }
 
-    private void loadShop(boolean clearCache) {
+    private void loadShopAndCondition(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading) {
+        loadShop(clearCache, new Callback<Object>() {
+            @Override
+            public void onLoaded(Object result) {
+                loadCondition(flag, clearCache, onlyCurrentPage, showLoading);
+            }
+
+            @Override
+            public void onFail() {
+            }
+        });
+    }
+
+    private void loadShop(boolean clearCache, Callback<?> callback) {
         if (clearCache) {
             model.clearCache(Constants.FLAG_SHOP);
         }
@@ -114,12 +128,18 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 if (isViewAttached()) {
                     mView.setShopList(list);
                 }
+                if (callback != null) {
+                    callback.onLoaded(null);
+                }
             }
 
             @Override
             public void onFail() {
                 if (isViewAttached()) {
                     mView.loadDataFailed();
+                }
+                if (callback != null) {
+                    callback.onFail();
                 }
             }
         });
