@@ -83,7 +83,7 @@ public class DateUtils {
      * 获取当前时间所在年的最大周数
      */
     public static int getMaxWeekNumOfYear(int year) {
-        LocalDate date = LocalDate.of(year, 12, 31);
+        LocalDate date = LocalDate.of(year, 12, 28);
         return date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
     }
 
@@ -93,7 +93,7 @@ public class DateUtils {
     public static Date getFirstDayOfWeek(int year, int week) {
         LocalDate date = LocalDate.now()
                 .withYear(year)
-                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week + 1)
                 .with(ChronoField.DAY_OF_WEEK, 1);
         return new Date(date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
@@ -104,7 +104,7 @@ public class DateUtils {
     public static Date getLastDayOfWeek(int year, int week) {
         LocalDate date = LocalDate.now()
                 .withYear(year)
-                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week + 1)
                 .with(ChronoField.DAY_OF_WEEK, 7);
         return new Date(date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
