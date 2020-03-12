@@ -37,7 +37,6 @@ import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.DropdownAdapterNew;
-import sunmi.common.view.DropdownAnimNew;
 import sunmi.common.view.DropdownMenuNew;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.dialog.CommonDialog;
@@ -158,7 +157,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
             }
             this.adapter.notifyDataSetChanged();
         });
-        dmMotionSale.setAnim(new DropdownAnimNew());
         dmMotionSale.setAdapter(dropdownAdapter);
         setFilterData();
     }

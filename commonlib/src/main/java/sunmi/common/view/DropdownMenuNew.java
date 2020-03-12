@@ -820,6 +820,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
         @Override
         public void onPreShow(ViewHolder titleHolder, View menu, View overlay) {
+            menu.setVisibility(VISIBLE);
             overlay.setVisibility(VISIBLE);
         }
 
@@ -838,9 +839,10 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
         @Override
         public void onPostDismiss(ViewHolder titleHolder, View menu, View overlay) {
+            menu.setVisibility(INVISIBLE);
             menu.setTranslationY(-menu.getHeight());
-            overlay.setAlpha(0f);
             overlay.setVisibility(INVISIBLE);
+            overlay.setAlpha(0f);
         }
 
         @Override
