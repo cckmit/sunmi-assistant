@@ -76,9 +76,9 @@ public class TotalCustomerOverviewCard extends BaseRefreshCard<TotalCustomerOver
         if (earlyCount > 0 && count >= 0) {
             model.compareCount = (float) (count - earlyCount) / earlyCount;
         } else if (count > 0) {
-            model.compareCount = 1;
+            model.compareCount = null;
         } else {
-            model.compareCount = 0;
+            model.compareCount = 0f;
         }
         float earlyRate;
         if (earlyCount > 0 && earlHead >= 0) {
@@ -100,18 +100,24 @@ public class TotalCustomerOverviewCard extends BaseRefreshCard<TotalCustomerOver
         TextView rateSubData = holder.getView(R.id.tv_enter_rate_subdata);
         ImageView ivRate = holder.getView(R.id.iv_total_enter_rate);
         customer.setText(model.getCount(context));
-        customerSubData.setText(model.getCompareCount());
         enterRate.setText(model.getEnterRate());
         rateSubData.setText(model.getCompareRate());
-        if (model.compareCount > 0) {
+        if (model.compareCount == null) {
+            customerSubData.setTextColor(ContextCompat.getColor(context, R.color.text_caption));
+            ivCustomer.setVisibility(View.INVISIBLE);
+            customerSubData.setText(Utils.DATA_NONE);
+        } else if (model.compareCount > 0) {
+            customerSubData.setText(model.getCompareCount());
             customerSubData.setTextColor(ContextCompat.getColor(context, R.color.caution_primary));
             ivCustomer.setVisibility(View.VISIBLE);
             ivCustomer.setSelected(true);
         } else if (model.compareCount < 0) {
+            customerSubData.setText(model.getCompareCount());
             customerSubData.setTextColor(ContextCompat.getColor(context, R.color.success_primary));
             ivCustomer.setVisibility(View.VISIBLE);
             ivCustomer.setSelected(false);
         } else {
+            customerSubData.setText(model.getCompareCount());
             customerSubData.setTextColor(ContextCompat.getColor(context, R.color.text_caption));
             ivCustomer.setVisibility(View.INVISIBLE);
         }
@@ -184,7 +190,7 @@ public class TotalCustomerOverviewCard extends BaseRefreshCard<TotalCustomerOver
     public static class Model extends BaseRefreshCard.BaseModel {
         int count;
         float enterRate;
-        float compareCount;
+        Float compareCount;
         float compareRate;
 
         private CharSequence getCount(Context context) {

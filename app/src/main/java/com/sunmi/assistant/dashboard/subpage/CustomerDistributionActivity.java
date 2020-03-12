@@ -33,6 +33,7 @@ import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.FilterItem;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -84,6 +85,8 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     private List<FilterItem> ageFilters;
     private Adapter adapter;
     private DropdownAdapterNew dropdownAdapter;
+    private SparseArray<ShopInfo> shopInfoData;
+    private CommonDialog dialog;
 
     @AfterViews
     void init() {
@@ -100,6 +103,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         initRadioButton();
         mPresenter = new CustomerDistributionPresenter(startTime, period);
         mPresenter.attachView(this);
+        mPresenter.getShopList();
         mPresenter.ageRange();
         mPresenter.getCustomerShopAgeDistribution();
         mPresenter.getCustomerShopAgeGenderDistribution();
@@ -107,11 +111,12 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         rvCustomer.init(R.drawable.shap_line_divider);
         adapter = new Adapter();
         rvCustomer.setAdapter(adapter);
+        initDialog();
         initFilterData();
         initFilters();
     }
 
-    private void initRadioButton(){
+    private void initRadioButton() {
         switch (dataType) {
             case Constants.DATA_TYPE_NEW_OLD:
                 rbNewOld.setChecked(true);
@@ -190,6 +195,13 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         }
     }
 
+    private void initDialog() {
+        dialog = new CommonDialog.Builder(context)
+                .setTitle(R.string.ipc_setting_tip)
+                .setMessage(R.string.dashboard_tip_no_shop)
+                .setConfirmButton(R.string.str_confirm).create();
+    }
+
     private void switchType(int type) {
         if (dataType == type) {
             return;
@@ -262,6 +274,9 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
 
     @Click(R.id.btn_refresh)
     void refresh() {
+        if (shopInfoData == null) {
+            mPresenter.getShopList();
+        }
         if (dataType == Constants.DATA_TYPE_GENDER) {
             mPresenter.getCustomerShopAgeGenderDistribution();
         } else {
@@ -300,19 +315,19 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     public void getCustomerShopAgeSuccess(List<NewOldCustomer> newOldCustomers, List<AgeCustomer> ageCustomers) {
         hideLoadingDialog();
         refreshView.endRefreshing();
+        if (dataType == Constants.DATA_TYPE_AGE) {
+            if (ageFilters != null && shopInfoData != null) {
+                Collections.sort(this.ageCustomers);
+                layoutError.setVisibility(View.GONE);
+            }
+        } else if (shopInfoData != null) {
+            layoutError.setVisibility(View.GONE);
+        }
         this.newOldCustomers.clear();
         this.newOldCustomers.addAll(newOldCustomers);
         Collections.sort(this.newOldCustomers);
         this.ageCustomers.clear();
         this.ageCustomers.addAll(ageCustomers);
-        if (dataType == Constants.DATA_TYPE_AGE) {
-            if (ageFilters != null) {
-                Collections.sort(this.ageCustomers);
-                layoutError.setVisibility(View.GONE);
-            }
-        } else {
-            layoutError.setVisibility(View.GONE);
-        }
         adapter.notifyDataSetChanged();
     }
 
@@ -340,7 +355,9 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     public void getCustomerShopAgeGenderSuccess(List<GenderCustomer> genderCustomers) {
         hideLoadingDialog();
         refreshView.endRefreshing();
-        layoutError.setVisibility(View.GONE);
+        if (shopInfoData != null) {
+            layoutError.setVisibility(View.GONE);
+        }
         this.genderCustomers.clear();
         this.genderCustomers.addAll(genderCustomers);
         Collections.sort(this.genderCustomers);
@@ -356,6 +373,16 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         if (dataType == Constants.DATA_TYPE_GENDER && genderCustomers.size() <= 0) {
             layoutError.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void getShopListSuccess(SparseArray<ShopInfo> result) {
+        shopInfoData = result;
+    }
+
+    @Override
+    public void getShopListFail() {
+        layoutError.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -429,35 +456,47 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
                 super(itemView);
                 tvShopName = itemView.findViewById(R.id.tv_shop_name);
                 tvCount = itemView.findViewById(R.id.tv_count);
-                itemView.setOnClickListener(v -> new CommonDialog.Builder(context)
-                        .setTitle(R.string.ipc_setting_tip)
-                        .setMessage(R.string.dashboard_tip_subpage)
-                        .setCancelButton(R.string.sm_cancel)
-                        .setConfirmButton(R.string.sm_watch, (dialog, which) -> {
-                            int i = getAdapterPosition();
-                            switch (dataType) {
-                                case Constants.DATA_TYPE_NEW_OLD:
-                                    NewOldCustomer newOldCustomer = newOldCustomers.get(i);
-                                    SpUtils.setShopId(newOldCustomer.getShopId());
-                                    SpUtils.setShopName(newOldCustomer.getShopName());
-                                    break;
-                                case Constants.DATA_TYPE_GENDER:
-                                    GenderCustomer genderCustomer = genderCustomers.get(i);
-                                    SpUtils.setShopId(genderCustomer.getShopId());
-                                    SpUtils.setShopName(genderCustomer.getShopName());
-                                    break;
-                                case Constants.DATA_TYPE_AGE:
-                                    AgeCustomer ageCustomer = ageCustomers.get(i);
-                                    SpUtils.setShopId(ageCustomer.getShopId());
-                                    SpUtils.setShopName(ageCustomer.getShopName());
-                                    break;
-                                default:
-                                    break;
-                            }
-                            SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
-                            BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
-                            finish();
-                        }).create().show());
+                itemView.setOnClickListener(v -> {
+                    int i = getAdapterPosition();
+                    int shopId;
+                    String shopName;
+                    switch (dataType) {
+                        case Constants.DATA_TYPE_NEW_OLD:
+                            NewOldCustomer newOldCustomer = newOldCustomers.get(i);
+                            shopId = newOldCustomer.getShopId();
+                            shopName = newOldCustomer.getShopName();
+                            break;
+                        case Constants.DATA_TYPE_GENDER:
+                            GenderCustomer genderCustomer = genderCustomers.get(i);
+                            shopId = genderCustomer.getShopId();
+                            shopName = genderCustomer.getShopName();
+                            break;
+                        case Constants.DATA_TYPE_AGE:
+                            AgeCustomer ageCustomer = ageCustomers.get(i);
+                            shopId = ageCustomer.getShopId();
+                            shopName = ageCustomer.getShopName();
+                            break;
+                        default:
+                            shopId = SpUtils.getShopId();
+                            shopName = SpUtils.getShopName();
+                            break;
+                    }
+                    if (shopInfoData.get(shopId) != null) {
+                        new CommonDialog.Builder(context)
+                                .setTitle(R.string.ipc_setting_tip)
+                                .setMessage(R.string.dashboard_tip_subpage)
+                                .setCancelButton(R.string.sm_cancel)
+                                .setConfirmButton(R.string.sm_watch, (dialog, which) -> {
+                                    SpUtils.setShopId(shopId);
+                                    SpUtils.setShopName(shopName);
+                                    SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+                                    BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
+                                    finish();
+                                }).create().show();
+                    } else {
+                        dialog.show();
+                    }
+                });
             }
         }
     }

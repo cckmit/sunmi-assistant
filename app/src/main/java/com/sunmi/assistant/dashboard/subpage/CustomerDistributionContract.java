@@ -10,6 +10,7 @@ import com.sunmi.ipc.face.model.FaceAge;
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.ShopInfo;
 
 public interface CustomerDistributionContract {
 
@@ -26,6 +27,10 @@ public interface CustomerDistributionContract {
         void getCustomerShopAgeGenderSuccess(List<GenderCustomer> genderCustomers);
 
         void getCustomerShopAgeGenderFail(int code, String msg);
+
+        void getShopListSuccess(SparseArray<ShopInfo> result);
+
+        void getShopListFail();
     }
 
     interface Presenter {
@@ -34,5 +39,7 @@ public interface CustomerDistributionContract {
         void getCustomerShopAgeDistribution();
 
         void getCustomerShopAgeGenderDistribution();
+
+        void getShopList();
     }
 }
