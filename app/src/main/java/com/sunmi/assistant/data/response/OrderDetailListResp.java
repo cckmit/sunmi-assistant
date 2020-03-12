@@ -13,13 +13,13 @@ public class OrderDetailListResp {
     public static class DetailItem {
 
         private String name;
-        private int quantity;
+        private float quantity;
 
         public String getName() {
             return name;
         }
 
-        public int getQuantity() {
+        public float getQuantity() {
             return quantity;
         }
     }

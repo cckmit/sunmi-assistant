@@ -249,7 +249,9 @@ public class WebViewCloudServiceActivity extends BaseActivity
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                loadError();
+                if (request.isForMainFrame()) {
+                    loadError();
+                }
             }
         });
     }
