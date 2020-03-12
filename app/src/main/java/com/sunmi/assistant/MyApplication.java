@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.jakewharton.threetenabp.AndroidThreeTen;
 import com.sunmi.apmanager.rpc.mqtt.MQTTManager;
 import com.sunmi.assistant.config.BootLoader;
 import com.tencent.stat.StatService;
@@ -64,6 +65,8 @@ public class MyApplication extends BaseApplication {
         String testDeviceId = com.baidu.mobstat.StatService.getTestDeviceId(this);
         // 日志输出
         android.util.Log.d("BaiduMobStat", "Test DeviceId : " + testDeviceId);
+        // Java JSR-310 时间库
+        AndroidThreeTen.init(this);
     }
 
     class HhActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {

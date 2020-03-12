@@ -1,5 +1,11 @@
 package com.datelibrary.utils;
 
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.temporal.ChronoField;
+import org.threeten.bp.temporal.IsoFields;
+
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,14 +19,14 @@ public class DateUtils {
     public static int getHour(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        return calendar.get(calendar.HOUR_OF_DAY);
+        return calendar.get(Calendar.HOUR_OF_DAY);
     }
 
     //获取分钟
     public static int getMinute(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        return calendar.get(calendar.MINUTE);
+        return calendar.get(Calendar.MINUTE);
     }
 
     //获取周
@@ -41,21 +47,21 @@ public class DateUtils {
     public static int getYear(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        return calendar.get(calendar.YEAR);
+        return calendar.get(Calendar.YEAR);
     }
 
     //获取月
     public static int getMoth(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        return calendar.get(calendar.MONTH) + 1;
+        return calendar.get(Calendar.MONTH) + 1;
     }
 
     //获取日
     public static int getDay(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        return calendar.get(calendar.DATE);
+        return calendar.get(Calendar.DATE);
     }
 
     public static Date getDate(int year, int moth, int day, int hour, int minute) {
@@ -65,55 +71,42 @@ public class DateUtils {
     }
 
     /**
-     * TODO 获取当前时间所在年的第几周
+     * 获取当前时间所在年的第几周
      */
     public static int getWeekOfYear(Date date) {
-        Calendar c = Calendar.getInstance();
-        c.setFirstDayOfWeek(Calendar.MONDAY);
-        c.setMinimalDaysInFirstWeek(7);
-        c.setTime(date);
-
-        return c.get(Calendar.WEEK_OF_YEAR);
+        Instant time = Instant.ofEpochMilli(date.getTime());
+        LocalDate localDate = time.atZone(ZoneId.systemDefault()).toLocalDate();
+        return localDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
     }
 
     /**
-     * ToDO 获取当前时间所在年的最大周数
+     * 获取当前时间所在年的最大周数
      */
     public static int getMaxWeekNumOfYear(int year) {
-        Calendar c = Calendar.getInstance();
-        c.set(year, Calendar.DECEMBER, 31, 23, 59, 59);
-
-        return getWeekOfYear(c.getTime());
+        LocalDate date = LocalDate.of(year, 12, 31);
+        return date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
     }
 
     /**
-     * TODO 获取某年的第几周的开始日期
+     * 获取某年的第几周的开始日期
      */
     public static Date getFirstDayOfWeek(int year, int week) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, Calendar.JANUARY);
-        c.set(Calendar.DATE, 1);
-
-        Calendar cal = (Calendar) c.clone();
-        cal.add(Calendar.DATE, week * 7);
-
-        return getFirstDayOfWeek(cal.getTime());
+        LocalDate date = LocalDate.now()
+                .withYear(year)
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
+                .with(ChronoField.DAY_OF_WEEK, 1);
+        return new Date(date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
 
     /**
-     * TODO 获取某年的第几周的结束日期
+     * 获取某年的第几周的结束日期
      **/
     public static Date getLastDayOfWeek(int year, int week) {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, Calendar.JANUARY);
-        c.set(Calendar.DATE, 1);
-
-        Calendar cal = (Calendar) c.clone();
-        cal.add(Calendar.DATE, week * 7);
-
-        return getLastDayOfWeek(cal.getTime());
+        LocalDate date = LocalDate.now()
+                .withYear(year)
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
+                .with(ChronoField.DAY_OF_WEEK, 7);
+        return new Date(date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
 
     // 获取当前时间所在周的开始日期

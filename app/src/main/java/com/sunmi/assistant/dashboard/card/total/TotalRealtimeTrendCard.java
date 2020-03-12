@@ -25,7 +25,8 @@ import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 
-import java.text.ParseException;
+import org.threeten.bp.DateTimeException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -151,7 +152,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
                                 float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time);
                                 dataSet.add(new ChartEntry(x, item.getTotalCount(), time));
                             }
-                        } catch (ParseException e) {
+                        } catch (DateTimeException e) {
                             e.printStackTrace();
                         }
                         if (mCondition.hasSaas) {
@@ -186,7 +187,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
                                 float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time);
                                 dataSet.add(new ChartEntry(x, (float) Math.max(0, item.getOrderAmount()), time));
                             }
-                        } catch (ParseException e) {
+                        } catch (DateTimeException e) {
                             e.printStackTrace();
                         }
                         callback.onSuccess();

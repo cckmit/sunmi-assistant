@@ -37,7 +37,7 @@ import sunmi.common.utils.log.LogCat;
  * @author yinhui
  * @date 2020-03-04
  */
-public class DashboardRepoImpl implements DashboardRepo {
+public class DashboardRepoImpl implements DashboardRepo, BaseNotification.NotificationCenterDelegate {
 
     private static final String TAG = DashboardRepoImpl.class.getSimpleName();
 
@@ -56,6 +56,7 @@ public class DashboardRepoImpl implements DashboardRepo {
     }
 
     private DashboardRepoImpl() {
+        BaseNotification.newInstance().addStickObserver(this, CommonNotifications.logout);
     }
 
     @Override
@@ -276,4 +277,12 @@ public class DashboardRepoImpl implements DashboardRepo {
             bundledCloudInfo = null;
         }
     }
+
+    @Override
+    public void didReceivedNotification(int id, Object... args) {
+        if (id == CommonNotifications.logout) {
+            clearCache(Constants.FLAG_ALL_MASK);
+        }
+    }
+
 }

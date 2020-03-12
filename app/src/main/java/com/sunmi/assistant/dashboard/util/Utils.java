@@ -13,11 +13,14 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.sunmi.assistant.R;
 
+import org.threeten.bp.DateTimeException;
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.format.DateTimeFormatter;
+
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -73,22 +76,15 @@ public class Utils {
 
     private static Calendar temp = Calendar.getInstance();
 
-    private static ThreadLocal<Map<String, SimpleDateFormat>> sThreadLocal = new ThreadLocal<>();
+    private static Map<String, DateTimeFormatter> formatterMap = new HashMap<>();
 
-    private static SimpleDateFormat getTimeFormat(String pattern) {
-        Map<String, SimpleDateFormat> formatMap = sThreadLocal.get();
-
-        if (formatMap == null) {
-            formatMap = new HashMap<>(4);
-            sThreadLocal.set(formatMap);
+    private static DateTimeFormatter getTimeFormat(String pattern) {
+        DateTimeFormatter formatter = formatterMap.get(pattern);
+        if (formatter == null) {
+            formatter = DateTimeFormatter.ofPattern(pattern);
+            formatterMap.put(pattern, formatter);
         }
-
-        SimpleDateFormat format = formatMap.get(pattern);
-        if (format == null) {
-            format = new SimpleDateFormat(pattern, Locale.getDefault());
-            formatMap.put(pattern, format);
-        }
-        return format;
+        return formatter;
     }
 
     /**
@@ -97,10 +93,11 @@ public class Utils {
      * @param pattern 字符串模式
      * @param str     时间字符串
      * @return 时间戳
-     * @throws ParseException 解析异常
+     * @throws DateTimeException 解析异常
      */
-    public static long parseTime(String pattern, String str) throws ParseException {
-        return getTimeFormat(pattern).parse(str).getTime();
+    public static long parseTime(String pattern, String str) {
+        LocalDateTime time = LocalDateTime.parse(str, getTimeFormat(pattern));
+        return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
     }
 
     /**
@@ -111,7 +108,10 @@ public class Utils {
      * @return 格式化的时间字符串
      */
     public static String formatTime(String pattern, long timestamp) {
-        return getTimeFormat(pattern).format(new Date(timestamp));
+        Instant instant = Instant.ofEpochMilli(timestamp);
+        ZoneId zone = ZoneId.systemDefault();
+        LocalDateTime time = LocalDateTime.ofInstant(instant, zone);
+        return time.format(getTimeFormat(pattern));
     }
 
     /**
@@ -397,10 +397,6 @@ public class Utils {
         set.enableDashedHighlightLine(dashLength, dashSpaceLength, 0);
         set.setLineContinuous(false);
         set.setLinePhase(1f);
-    }
-
-    public static void clear() {
-        sThreadLocal.remove();
     }
 
 }
