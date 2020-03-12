@@ -164,7 +164,7 @@ public class DatePicker extends BaseWheelPick {
         setWheelListener(minuteView, minutArr, true);
 
         yearView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.YEAR), yearArr));
-        perWeekView.setCurrentItem(datePicker.getToady(DatePickerHelper.Type.WEEK));
+        perWeekView.setCurrentItem(datePicker.getToady(DatePickerHelper.Type.WEEK) - 1);
         monthView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.MOTH), mothArr));
         dayView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.DAY), dayArr));
         hourView.setCurrentItem(datePicker.findIndextByValue(datePicker.getToady(DatePickerHelper.Type.HOUR), hourArr));

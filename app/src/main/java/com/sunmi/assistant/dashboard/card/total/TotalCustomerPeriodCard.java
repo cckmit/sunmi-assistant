@@ -12,6 +12,11 @@ import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 
+import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.temporal.IsoFields;
+
 import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
@@ -91,29 +96,36 @@ public class TotalCustomerPeriodCard extends BaseRefreshCard<TotalCustomerPeriod
     @Override
     protected void setupView(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         Context context = holder.getContext();
-        TextView day = holder.getView(R.id.tv_dashboard_day);
-        TextView week = holder.getView(R.id.tv_dashboard_week);
-        TextView month = holder.getView(R.id.tv_dashboard_month);
-        TextView time = holder.getView(R.id.tv_dashboard_time);
+        TextView tvDay = holder.getView(R.id.tv_dashboard_day);
+        TextView tvWeek = holder.getView(R.id.tv_dashboard_week);
+        TextView tvMonth = holder.getView(R.id.tv_dashboard_month);
+        TextView tvTime = holder.getView(R.id.tv_dashboard_time);
 
-        day.setSelected(model.period == Constants.TIME_PERIOD_DAY);
-        day.setTypeface(null, model.period == Constants.TIME_PERIOD_DAY ? Typeface.BOLD : Typeface.NORMAL);
-        week.setSelected(model.period == Constants.TIME_PERIOD_WEEK);
-        week.setTypeface(null, model.period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
-        month.setSelected(model.period == Constants.TIME_PERIOD_MONTH);
-        month.setTypeface(null, model.period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
+        tvDay.setSelected(model.period == Constants.TIME_PERIOD_DAY);
+        tvDay.setTypeface(null, model.period == Constants.TIME_PERIOD_DAY ? Typeface.BOLD : Typeface.NORMAL);
+        tvWeek.setSelected(model.period == Constants.TIME_PERIOD_WEEK);
+        tvWeek.setTypeface(null, model.period == Constants.TIME_PERIOD_WEEK ? Typeface.BOLD : Typeface.NORMAL);
+        tvMonth.setSelected(model.period == Constants.TIME_PERIOD_MONTH);
+        tvMonth.setTypeface(null, model.period == Constants.TIME_PERIOD_MONTH ? Typeface.BOLD : Typeface.NORMAL);
 
         String pattern;
-        if (model.period == Constants.TIME_PERIOD_DAY) {
-            pattern = context.getString(R.string.dashboard_unit_time_pattern_day);
-        } else if (model.period == Constants.TIME_PERIOD_WEEK) {
+        if (model.period == Constants.TIME_PERIOD_WEEK) {
+            Instant instant = Instant.ofEpochMilli(model.periodTime.start);
+            LocalDate localDate = instant.atZone(ZoneId.systemDefault()).toLocalDate();
+            int year = localDate.get(IsoFields.WEEK_BASED_YEAR);
+            int week = localDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
             pattern = context.getString(R.string.dashboard_unit_time_pattern_week);
-        } else if (model.period == Constants.TIME_PERIOD_MONTH) {
-            pattern = context.getString(R.string.dashboard_unit_time_pattern_month);
+            tvTime.setText(String.format(pattern, year, week));
         } else {
-            pattern = Utils.FORMAT_API_DATE;
+            if (model.period == Constants.TIME_PERIOD_DAY) {
+                pattern = context.getString(R.string.dashboard_unit_time_pattern_day);
+            } else if (model.period == Constants.TIME_PERIOD_MONTH) {
+                pattern = context.getString(R.string.dashboard_unit_time_pattern_month);
+            } else {
+                pattern = Utils.FORMAT_API_DATE;
+            }
+            tvTime.setText(Utils.formatTime(pattern, model.periodTime.start));
         }
-        time.setText(Utils.formatTime(pattern, model.periodTime.start));
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
