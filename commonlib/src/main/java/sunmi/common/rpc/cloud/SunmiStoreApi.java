@@ -14,12 +14,14 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Callback;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.model.AuthorizeInfoResp;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CreateShopInfo;
 import sunmi.common.model.CustomerAgeGenderResp;
 import sunmi.common.model.CustomerAgeNewOldResp;
 import sunmi.common.model.CustomerCountResp;
 import sunmi.common.model.CustomerDataResp;
+import sunmi.common.model.CustomerDistributionResp;
 import sunmi.common.model.CustomerEnterRateTrendResp;
 import sunmi.common.model.CustomerFrequencyAvgResp;
 import sunmi.common.model.CustomerFrequencyDistributionResp;
@@ -28,17 +30,23 @@ import sunmi.common.model.CustomerHistoryDetailResp;
 import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.CustomerRateResp;
+import sunmi.common.model.CustomerShopDataResp;
+import sunmi.common.model.CustomerShopDistributionResp;
 import sunmi.common.model.HealthInfoBean;
 import sunmi.common.model.NetEventListBean;
 import sunmi.common.model.PlatformInfo;
+import sunmi.common.model.SaleDataResp;
 import sunmi.common.model.ServiceEnableResp;
 import sunmi.common.model.ServiceListResp;
-import sunmi.common.model.ShopAuthorizeInfoResp;
 import sunmi.common.model.ShopCategoryResp;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.ShopRegionResp;
 import sunmi.common.model.SsoTokenResp;
+import sunmi.common.model.TotalCustomerDataResp;
+import sunmi.common.model.TotalRealTimeShopSalesResp;
+import sunmi.common.model.TotalRealtimeCustomerTrendResp;
+import sunmi.common.model.TotalRealtimeSalesTrendResp;
 import sunmi.common.model.UserAvatarResp;
 import sunmi.common.model.UserInfoBean;
 import sunmi.common.rpc.mqtt.EmqTokenResp;
@@ -693,9 +701,9 @@ public class SunmiStoreApi {
     }
 
     /**
-     * 获取门店对接信息，包括授权状态，授权时间，数据导入状态
+     * 获取门店SaaS授权信息，包括授权状态，授权时间，数据导入状态
      */
-    public void getAuthorizeInfo(int companyId, int shopId, RetrofitCallback<ShopAuthorizeInfoResp> callback) {
+    public void getAuthorizeInfo(int companyId, int shopId, RetrofitCallback<AuthorizeInfoResp> callback) {
         try {
             String params = new JSONObject()
                     .put("company_id", companyId)
@@ -703,6 +711,22 @@ public class SunmiStoreApi {
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
                     .getAuthorizeInfo(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取商户下所有门店SaaS授权信息，包括授权状态，授权时间，数据导入状态
+     */
+    public void getAuthorizeInfo(int companyId, RetrofitCallback<AuthorizeInfoResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(ShopInterface.class)
+                    .getCompanyAuthorizeInfo(new BaseRequest(params))
                     .enqueue(callback);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1041,6 +1065,266 @@ public class SunmiStoreApi {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 获取总部实时客流概况
+     *
+     * @param companyId
+     * @param callback
+     */
+    public void getTotalRealtimeCustomer(int companyId, RetrofitCallback<CustomerCountResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getTotalCustomerLatest(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部实时客流量趋势
+     *
+     * @param companyId
+     * @param callback
+     */
+    public void getTotalRealtimeCustomerTrend(int companyId, RetrofitCallback<TotalRealtimeCustomerTrendResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getTotalCustomerRealTimeTrend(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部实时分店客流量列表
+     *
+     * @param companyId
+     * @param callback
+     */
+    public void getTotalRealtimeCustomerByShop(int companyId, RetrofitCallback<CustomerShopDataResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getTotalCustomerShopData(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部实时经营概况
+     *
+     * @param companyId
+     * @param callback
+     */
+    public void getTotalRealtimeSales(int companyId, RetrofitCallback<SaleDataResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(SaleInterFace.class)
+                    .getTotalSaleData(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部实时销售额趋势
+     *
+     * @param companyId
+     * @param callback
+     */
+    public void getTotalRealtimeSalesTrend(int companyId, RetrofitCallback<TotalRealtimeSalesTrendResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(SaleInterFace.class)
+                    .getTotalSaleRealtimeTrend(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部实时分店客流量列表
+     *
+     * @param companyId
+     * @param callback
+     */
+    public void getTotalRealtimeSalesByShop(int companyId, RetrofitCallback<TotalRealTimeShopSalesResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(SaleInterFace.class)
+                    .getTotalSaleShopData(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部T+1销售概况
+     *
+     * @param companyId
+     * @param startTime 时间 “YYYY-MM-DD”
+     * @param type      1:日
+     * @param callback
+     */
+    public void getTotalSales(int companyId, String startTime, int type,
+                              RetrofitCallback<SaleDataResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("start_time", startTime)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(SaleInterFace.class)
+                    .getTotalHistorySaleData(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部T+1客流概况
+     *
+     * @param companyId
+     * @param startTime 时间 “YYYY-MM-DD”
+     * @param type      1:日 2:周 3:月
+     * @param callback
+     */
+    public void getTotalCustomer(int companyId, String startTime, int type,
+                                 RetrofitCallback<TotalCustomerDataResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("start_time", startTime)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getTotalCustomerData(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * 获取总部T+1客群年龄生熟客分布
+     *
+     * @param companyId
+     * @param startTime 时间 “YYYY-MM-DD”
+     * @param type      1:日 2:周 3:月
+     * @param callback
+     */
+    public void getTotalCustomerNewOldDistribution(int companyId, String startTime, int type,
+                                                   RetrofitCallback<CustomerDistributionResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("start_time", startTime)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerAgeDistribution(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部T+1客群年龄性别分布
+     *
+     * @param companyId
+     * @param startTime 时间 “YYYY-MM-DD”
+     * @param type      1:日 2:周 3:月
+     * @param callback
+     */
+    public void getTotalCustomerGenderDistribution(int companyId, String startTime, int type,
+                                                   RetrofitCallback<CustomerDistributionResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("start_time", startTime)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerAgeGenderDistribution(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部T+1客群-年龄生熟客分布-分店列表
+     *
+     * @param companyId
+     * @param startTime 时间 “YYYY-MM-DD”
+     * @param type      1:日 2:周 3:月
+     * @param callback
+     */
+    public void getTotalCustomerNewOldDistributionByShop(int companyId, String startTime, int type,
+                                                         RetrofitCallback<CustomerShopDistributionResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("start_time", startTime)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerShopAgeDistribution(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取总部T+1客群年龄性别分布-分店列表
+     *
+     * @param companyId
+     * @param startTime 时间 “YYYY-MM-DD”
+     * @param type      1:日 2:周 3:月
+     * @param callback
+     */
+    public void getTotalCustomerGenderDistributionByShop(int companyId, String startTime, int type,
+                                                         RetrofitCallback<CustomerShopDistributionResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("start_time", startTime)
+                    .put("type", type)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CustomerInterface.class)
+                    .getCustomerShopAgeGenderDistribution(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * company_id	是	number	商户id

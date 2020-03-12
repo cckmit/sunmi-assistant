@@ -1,9 +1,12 @@
 package com.sunmi.assistant.dashboard;
 
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
 import sunmi.common.model.FilterItem;
+import sunmi.common.model.Interval;
 
 public interface DashboardContract {
 
@@ -15,7 +18,11 @@ public interface DashboardContract {
 
         void setShopList(List<FilterItem> list);
 
-        void setSource(int source);
+        void switchPerspective(int perspective);
+
+        void setPages(List<PageHost> pages, int perspective);
+
+        void setCondition(DashboardCondition condition);
 
         void updateTab(int page, int period);
 
@@ -33,17 +40,17 @@ public interface DashboardContract {
 
         void init();
 
-        void reload(int flag);
+        void load(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading);
 
-        void setShop(FilterItem shop);
+        void switchPerspective(int perspective, boolean refresh);
 
-        void setPeriod(int period);
+        void switchPeriod(int period, Interval periodTime);
 
-        void setPage(int type);
+        void switchPage(int type);
 
-        void scrollToTop();
+        void scrollToTop(boolean animated);
 
-        List<PageHost> createPages();
+        void closeFloatingAd();
 
         int getPageType();
 

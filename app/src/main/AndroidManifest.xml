@@ -208,6 +208,12 @@
         <activity
             android:name=".pos.PosGuaranteeActivity_"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.subpage.PerformanceRankActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.subpage.CustomerDistributionActivity_"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="ENV_DATA"

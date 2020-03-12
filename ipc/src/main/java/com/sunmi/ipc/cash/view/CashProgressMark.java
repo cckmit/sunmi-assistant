@@ -37,7 +37,7 @@ public class CashProgressMark extends View {
     private Rect mBarRect;
 
     private int mDuration;
-    private List<Interval<Integer>> mData = new ArrayList<>();
+    private List<Interval> mData = new ArrayList<>();
 
     public CashProgressMark(Context context) {
         this(context, null);
@@ -84,9 +84,9 @@ public class CashProgressMark extends View {
         Collections.sort(data, (o1, o2) -> o1.getStartTime() - o2.getStartTime());
         for (CashBox model : data) {
             if (mData.isEmpty() || mData.get(mData.size() - 1).end < model.getStartTime()) {
-                mData.add(new Interval<>(model.getStartTime(), model.getEndTime()));
+                mData.add(new Interval(model.getStartTime(), model.getEndTime()));
             } else {
-                Interval<Integer> last = mData.get(mData.size() - 1);
+                Interval last = mData.get(mData.size() - 1);
                 last.end = Math.max(last.end, model.getEndTime());
             }
         }
@@ -131,7 +131,7 @@ public class CashProgressMark extends View {
         if (mDuration == 0) {
             return;
         }
-        for (Interval<Integer> interval : mData) {
+        for (Interval interval : mData) {
             float startPx = (float) interval.start * mBarWidth / mDuration + mBarRect.left;
             float endPx = Math.min((float) interval.end * mBarWidth / mDuration + mBarRect.left, mBarRect.right);
             canvas.drawRect(startPx, mBarRect.top, endPx, mBarRect.bottom, mMarkPaint);
