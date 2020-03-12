@@ -6,7 +6,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -744,7 +743,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         private float maxCount;
         private float maxHeight;
 
-        private int height;
+//        private int height;
 
         private FixedLayoutManager(Context context, float count, float height) {
             super(context);
@@ -752,20 +751,20 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
             this.maxHeight = height;
         }
 
-        @Override
-        public void setMeasuredDimension(Rect childrenBounds, int wSpec, int hSpec) {
-            if (height > 0) {
-                super.setMeasuredDimension(childrenBounds, wSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-            } else {
-                super.setMeasuredDimension(childrenBounds, wSpec, hSpec);
-            }
-        }
+//        @Override
+//        public void setMeasuredDimension(Rect childrenBounds, int wSpec, int hSpec) {
+//            if (height > 0) {
+//                super.setMeasuredDimension(childrenBounds, wSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+//            } else {
+//                super.setMeasuredDimension(childrenBounds, wSpec, hSpec);
+//            }
+//        }
 
         @Override
         public void onMeasure(@NonNull RecyclerView.Recycler recycler,
                               @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
             if (getChildCount() == 0) {
-                height = -1;
+//                height = -1;
                 super.onMeasure(recycler, state, widthSpec, heightSpec);
                 return;
             }
@@ -777,6 +776,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
 
             int itemHeight = getChildHeight(recycler, widthSpec, heightSpec);
 
+            int height;
             if (maxCount > 0) {
                 height = getChildCount() > maxCount ?
                         (int) (itemHeight * maxCount) : itemHeight * getChildCount();
