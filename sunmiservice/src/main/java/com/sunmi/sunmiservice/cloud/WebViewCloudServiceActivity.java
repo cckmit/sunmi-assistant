@@ -39,7 +39,6 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.TitleBarView;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.webview.AndroidBug5497Workaround;
