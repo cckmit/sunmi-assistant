@@ -74,7 +74,7 @@
             android:id="@+id/tv_dashboard_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@mipmap/dropdown_ic_arrow_normal"
+            android:drawableEnd="@drawable/ic_arrow_down_small_gray"
             android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="parent"
