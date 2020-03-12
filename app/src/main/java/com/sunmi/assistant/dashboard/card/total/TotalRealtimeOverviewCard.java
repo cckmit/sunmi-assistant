@@ -176,7 +176,6 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
 
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
-        Context context = holder.getContext();
         View main = holder.getView(R.id.layout_dashboard_main);
         View amount = holder.getView(R.id.layout_sales_amount);
         View volume = holder.getView(R.id.layout_sales_volume);
