@@ -1,9 +1,12 @@
 package com.sunmi.assistant.dashboard.subpage;
 
+import android.util.SparseArray;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
 import sunmi.common.model.CustomerShopDataResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.TotalRealTimeShopSalesResp;
 
 /**
@@ -22,12 +25,18 @@ public interface PerformanceRankContract {
         void getSaleSuccess(List<TotalRealTimeShopSalesResp.Item> sales);
 
         void getSaleFail(int code, String msg);
+
+        void getShopListSuccess(SparseArray<ShopInfo> result);
+
+        void getShopListFail();
     }
 
     interface Presenter {
         void getTotalCustomerShopData();
 
         void getTotalSaleShopData();
+
+        void getShopList();
     }
 
 }

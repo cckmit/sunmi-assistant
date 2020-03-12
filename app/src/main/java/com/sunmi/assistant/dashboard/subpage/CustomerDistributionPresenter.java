@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.dashboard.data.AgeCustomer;
+import com.sunmi.assistant.dashboard.data.Callback;
+import com.sunmi.assistant.dashboard.data.DashboardModel;
+import com.sunmi.assistant.dashboard.data.DashboardModelImpl;
 import com.sunmi.assistant.dashboard.data.GenderCustomer;
 import com.sunmi.assistant.dashboard.data.NewOldCustomer;
 import com.sunmi.assistant.dashboard.util.Utils;
@@ -17,6 +20,7 @@ import java.util.List;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.CountListBean;
 import sunmi.common.model.CustomerShopDistributionResp;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.CacheManager;
@@ -27,10 +31,12 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
 
     private String startTime;
     private int period;
+    private DashboardModel model;
 
     public CustomerDistributionPresenter(long startTime, int period) {
         this.startTime = Utils.formatTime(Utils.FORMAT_API_DATE, startTime);
         this.period = period;
+        model = DashboardModelImpl.get();
     }
 
     @Override
@@ -132,7 +138,7 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
                                         femaleCount += listBean.getUniqCount();
                                     }
                                 }
-                                genderCustomers.add(new GenderCustomer(bean.getShopId(),bean.getShopName(), maleCount, femaleCount));
+                                genderCustomers.add(new GenderCustomer(bean.getShopId(), bean.getShopName(), maleCount, femaleCount));
                             }
                         }
                         if (isViewAttached()) {
@@ -147,5 +153,24 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
                         }
                     }
                 });
+    }
+
+    @Override
+    public void getShopList() {
+        model.loadShopList(SpUtils.getCompanyId(), new Callback<SparseArray<ShopInfo>>() {
+            @Override
+            public void onLoaded(SparseArray<ShopInfo> result) {
+                if (isViewAttached()) {
+                    mView.getShopListSuccess(result);
+                }
+            }
+
+            @Override
+            public void onFail() {
+                if (isViewAttached()) {
+                    mView.getShopListFail();
+                }
+            }
+        });
     }
 }

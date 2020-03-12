@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.subpage;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.FilterItem;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.TotalRealTimeShopSalesResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.SpUtils;
@@ -70,12 +72,15 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
     private List<CustomerShopDataResp.Item> customerList = new ArrayList<>();
     private List<TotalRealTimeShopSalesResp.Item> saleList = new ArrayList<>();
     private int filterId = -1;
+    private SparseArray<ShopInfo> shopInfoData;
+    private CommonDialog dialog;
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         mPresenter = new PerformanceRankPresenter();
         mPresenter.attachView(this);
+        mPresenter.getShopList();
         rvRank.init(R.drawable.shap_line_divider);
         initSort(true);
         refreshView.setDelegate(this);
@@ -93,6 +98,7 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
         if (mCondition.hasSaas && !mCondition.hasFs) {
             filterId = ID_AMOUNT;
         }
+        initDialog();
         initFilters();
         getData();
         showLoadingDialog();
@@ -133,6 +139,13 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
         saleAdapter.setData(filterItems);
     }
 
+    private void initDialog() {
+        dialog = new CommonDialog.Builder(context)
+                .setTitle(R.string.ipc_setting_tip)
+                .setMessage(R.string.dashboard_tip_no_shop)
+                .setConfirmButton(R.string.str_confirm).create();
+    }
+
     private void getData() {
         if (filterId == ID_COUNT) {
             mPresenter.getTotalCustomerShopData();
@@ -158,6 +171,9 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
 
     @Click(R.id.btn_refresh)
     void refresh() {
+        if (shopInfoData == null) {
+            mPresenter.getShopList();
+        }
         getData();
         showLoadingDialog();
     }
@@ -182,7 +198,7 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
     public void getCustomerSuccess(List<CustomerShopDataResp.Item> customers) {
         refreshView.endRefreshing();
         hideLoadingDialog();
-        if (layoutError.isShown()) {
+        if (layoutError.isShown() && shopInfoData != null) {
             layoutError.setVisibility(View.GONE);
         }
         customerList.clear();
@@ -201,7 +217,7 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
     public void getSaleSuccess(List<TotalRealTimeShopSalesResp.Item> sales) {
         refreshView.endRefreshing();
         hideLoadingDialog();
-        if (layoutError.isShown()) {
+        if (layoutError.isShown() && shopInfoData != null) {
             layoutError.setVisibility(View.GONE);
         }
         saleList.clear();
@@ -214,6 +230,16 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
         if (filterId == ID_AMOUNT && saleList.size() <= 0) {
             layoutError.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void getShopListSuccess(SparseArray<ShopInfo> result) {
+        shopInfoData = result;
+    }
+
+    @Override
+    public void getShopListFail() {
+        layoutError.setVisibility(View.VISIBLE);
     }
 
     private class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
@@ -258,24 +284,34 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
                 super(itemView);
                 tvShopName = itemView.findViewById(R.id.tv_shop_name);
                 tvCount = itemView.findViewById(R.id.tv_count);
-                itemView.setOnClickListener(v -> new CommonDialog.Builder(context)
-                        .setTitle(R.string.ipc_setting_tip)
-                        .setMessage(R.string.dashboard_tip_subpage)
-                        .setCancelButton(R.string.sm_cancel)
-                        .setConfirmButton(R.string.sm_watch, (dialog, which) -> {
-                            if (filterId == ID_COUNT){
-                                CustomerShopDataResp.Item customer = customerList.get(getAdapterPosition());
-                                SpUtils.setShopId(customer.getShopId());
-                                SpUtils.setShopName(customer.getShopName());
-                            }else {
-                                TotalRealTimeShopSalesResp.Item sale = saleList.get(getAdapterPosition());
-                                SpUtils.setShopId(sale.getShopId());
-                                SpUtils.setShopName(sale.getShopName());
-                            }
-                            SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
-                            BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
-                            finish();
-                        }).create().show());
+                itemView.setOnClickListener(v -> {
+                    int shopId;
+                    String shopName;
+                    if (filterId == ID_COUNT) {
+                        CustomerShopDataResp.Item customer = customerList.get(getAdapterPosition());
+                        shopId = customer.getShopId();
+                        shopName = customer.getShopName();
+                    } else {
+                        TotalRealTimeShopSalesResp.Item sale = saleList.get(getAdapterPosition());
+                        shopId = sale.getShopId();
+                        shopName = sale.getShopName();
+                    }
+                    if (shopInfoData.get(shopId) != null) {
+                        new CommonDialog.Builder(context)
+                                .setTitle(R.string.ipc_setting_tip)
+                                .setMessage(R.string.dashboard_tip_subpage)
+                                .setCancelButton(R.string.sm_cancel)
+                                .setConfirmButton(R.string.sm_watch, (dialog, which) -> {
+                                    SpUtils.setShopId(shopId);
+                                    SpUtils.setShopName(shopName);
+                                    SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+                                    BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
+                                    finish();
+                                }).create().show();
+                    } else {
+                        dialog.show();
+                    }
+                });
             }
         }
     }

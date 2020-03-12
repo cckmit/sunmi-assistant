@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import sunmi.common.utils.DateTimeUtils;
 
@@ -156,7 +157,7 @@ public class DatePickerHelper {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, moth, 1);
         calendar.add(Calendar.DATE, -1);
-        int day = Integer.parseInt(new SimpleDateFormat("d").format(calendar.getTime()));
+        int day = Integer.parseInt(new SimpleDateFormat("d", Locale.getDefault()).format(calendar.getTime()));
         return genArr(day, false);
     }
 
