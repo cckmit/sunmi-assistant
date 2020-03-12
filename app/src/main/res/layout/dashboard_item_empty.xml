@@ -22,7 +22,7 @@
         android:id="@+id/tv_dashboard_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dashboard_no_data_tip"
+        android:text="@string/dashboard_tip_no_data"
         android:textColor="@color/text_disable"
         android:textSize="@dimen/sp_12"
         app:layout_constraintEnd_toEndOf="parent"

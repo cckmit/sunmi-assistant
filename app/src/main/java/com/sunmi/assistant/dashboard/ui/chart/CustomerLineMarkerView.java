@@ -14,9 +14,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
-import com.sunmi.assistant.dashboard.Utils;
-import com.sunmi.assistant.dashboard.card.CustomerTrendCard;
+import com.sunmi.assistant.dashboard.card.shop.CustomerTrendCard;
+import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -47,8 +47,8 @@ public class CustomerLineMarkerView extends MarkerView {
      */
     public CustomerLineMarkerView(Context context) {
         super(context, R.layout.dashboard_chart_line_complex_marker);
-        mNewName = context.getString(R.string.dashboard_card_tab_new) + ":";
-        mOldName = context.getString(R.string.dashboard_card_tab_old) + ":";
+        mNewName = context.getString(R.string.dashboard_var_customer_new) + ":";
+        mOldName = context.getString(R.string.dashboard_var_customer_old) + ":";
         mTvTitle = findViewById(R.id.tv_dashboard_marker_title);
         mTvValue = findViewById(R.id.tv_dashboard_marker_value);
         mTvLabel1 = findViewById(R.id.tv_dashboard_marker_label1);
@@ -85,7 +85,7 @@ public class CustomerLineMarkerView extends MarkerView {
             String title = "";
             CustomerTrendCard.CustomerEntry entry = (CustomerTrendCard.CustomerEntry) e;
             long time = entry.getTime();
-            if (mPeriod == Constants.TIME_PERIOD_YESTERDAY) {
+            if (mPeriod == Constants.TIME_PERIOD_DAY) {
                 Calendar c = Calendar.getInstance();
                 c.setTimeInMillis(time);
                 int hour = c.get(Calendar.HOUR_OF_DAY);
@@ -94,10 +94,10 @@ public class CustomerLineMarkerView extends MarkerView {
                 Calendar c = Calendar.getInstance();
                 c.setTimeInMillis(time);
                 int timeIndex = c.get(Calendar.DAY_OF_WEEK) - 1;
-                title = Utils.formatDateTime("MM.dd", time) + " "
+                title = Utils.formatTime(Utils.FORMAT_DATE_MARKER, time) + " "
                         + Utils.getWeekName(getContext(), timeIndex);
             } else if (mPeriod == Constants.TIME_PERIOD_MONTH) {
-                title = Utils.formatDateTime("MM.dd", time);
+                title = Utils.formatTime(Utils.FORMAT_DATE_MARKER, time);
             }
             mTvTitle.setText(title);
             mTvValue.setText(String.valueOf((int) e.getY()));

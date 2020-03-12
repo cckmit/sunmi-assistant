@@ -7,7 +7,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Utils;
 import com.sunmi.assistant.data.response.OrderDetailListResp;
 import com.sunmi.assistant.order.model.OrderInfo;
 
@@ -64,7 +64,7 @@ public class OrderDetailActivity extends BaseMvpActivity<OrderDetailPresenter>
         mTvState.setText(mOrderInfo.isOrderNormal() ?
                 getResources().getString(R.string.order_success) : getResources().getString(R.string.order_refunds));
         mTvOrderNo.setText(String.valueOf(mOrderInfo.getNo()));
-        mTvTime.setText(Utils.getDateTime(mOrderInfo.getPurchaseTime()));
+        mTvTime.setText(Utils.formatTime(Utils.FORMAT_DATE_TIME, mOrderInfo.getPurchaseTime()));
         mTvType.setText(mOrderInfo.getPurchaseType());
         mDetailListAdapter = new DetailListAdapter(this);
         mDetailList.setDividerHeight(0);

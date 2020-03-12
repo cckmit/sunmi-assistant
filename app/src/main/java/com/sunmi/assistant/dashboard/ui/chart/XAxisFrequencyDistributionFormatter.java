@@ -5,7 +5,7 @@ import android.content.Context;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Constants;
+import com.sunmi.assistant.dashboard.util.Constants;
 
 /**
  * Description:
@@ -22,7 +22,7 @@ public class XAxisFrequencyDistributionFormatter extends ValueFormatter {
     }
 
     public void setPeriod(int period) {
-        if (period == Constants.TIME_PERIOD_YESTERDAY) {
+        if (period == Constants.TIME_PERIOD_DAY) {
             max = 4;
         } else {
             max = 10;
@@ -32,7 +32,7 @@ public class XAxisFrequencyDistributionFormatter extends ValueFormatter {
     @Override
     public String getAxisLabel(float value, AxisBase axis) {
         if (value > max) {
-            return context.getString(R.string.dashborad_card_customer_frequency_above, max);
+            return context.getString(R.string.dashboard_unit_frequency_count_above_abbr, max);
         } else {
             return String.valueOf((int) value);
         }

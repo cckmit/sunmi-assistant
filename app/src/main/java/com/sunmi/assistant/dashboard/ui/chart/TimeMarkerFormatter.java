@@ -3,7 +3,7 @@ package com.sunmi.assistant.dashboard.ui.chart;
 import android.content.Context;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -33,7 +33,7 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
 
     public TimeMarkerFormatter(Context context) {
         weekName = context.getResources().getStringArray(R.array.week_name);
-        timeLabel = context.getString(R.string.dashboard_card_marker_time);
+        timeLabel = context.getString(R.string.dashboard_var_time);
     }
 
     public void setValueType(int valueType) {

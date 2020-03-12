@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_24"
-        android:text="@string/dashboard_card_title_customer_enter_rate"
+        android:text="@string/dashboard_title_enter_rate"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"

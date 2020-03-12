@@ -5,6 +5,7 @@ import com.sunmi.ipc.model.IpcNewFirmwareResp;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
+import sunmi.common.model.CompanyIpcListResp;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
@@ -72,5 +73,11 @@ public interface DeviceInterface {
      */
     @POST(path + "getAuditSecurityPolicyList")
     Call<BaseResponse<ServiceResp>> getAuditSecurityPolicyList(@Body BaseRequest request);
+
+    /**
+     * 获取商户下所有门店的IPC设备列表
+     */
+    @POST(path + "company/getList")
+    Call<BaseResponse<CompanyIpcListResp>> getCompanyIpcList(@Body BaseRequest request);
 
 }

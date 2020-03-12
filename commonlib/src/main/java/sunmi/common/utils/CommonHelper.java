@@ -34,7 +34,9 @@ import java.util.Locale;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.UserInfoBean;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.mqtt.MqttManager;
 import sunmi.common.utils.log.LogCat;
 
@@ -445,6 +447,7 @@ public class CommonHelper {
         ShortcutBadger.applyCount(BaseApplication.getInstance(), 0);
 //        MQTTManager.getInstance().disconnect();
         MqttManager.getInstance().disconnect();
+        BaseNotification.newInstance().postNotificationName(CommonNotifications.logout);
     }
 
     public static boolean isGooglePlay() {
