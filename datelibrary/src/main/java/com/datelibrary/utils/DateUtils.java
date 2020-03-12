@@ -83,7 +83,7 @@ public class DateUtils {
      * 获取当前时间所在年的最大周数
      */
     public static int getMaxWeekNumOfYear(int year) {
-        LocalDate date = LocalDate.of(year, 12, 31);
+        LocalDate date = LocalDate.of(year, 12, 28);
         return date.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
     }
 
