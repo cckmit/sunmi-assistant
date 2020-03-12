@@ -109,22 +109,4 @@ public class DateUtils {
         return new Date(date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
 
-    // 获取当前时间所在周的开始日期
-    public static Date getFirstDayOfWeek(Date date) {
-        Calendar c = Calendar.getInstance();
-        c.setFirstDayOfWeek(Calendar.MONDAY);
-        c.setTime(date);
-        c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek()); // Monday
-        return c.getTime();
-    }
-
-    // 获取当前时间所在周的结束日期
-    public static Date getLastDayOfWeek(Date date) {
-        Calendar c = Calendar.getInstance();
-        c.setFirstDayOfWeek(Calendar.MONDAY);
-        c.setTime(date);
-        c.set(Calendar.DAY_OF_WEEK, c.getFirstDayOfWeek() + 6); // Sunday
-        return c.getTime();
-    }
-
 }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -262,7 +263,7 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
             } else {
                 TotalRealTimeShopSalesResp.Item sale = saleList.get(i);
                 viewHolder.tvShopName.setText(sale.getShopName());
-                viewHolder.tvCount.setText(String.valueOf(sale.getOrderAmount()));
+                viewHolder.tvCount.setText(Utils.formatNumber(context, sale.getOrderAmount(), true, false));
             }
         }
 

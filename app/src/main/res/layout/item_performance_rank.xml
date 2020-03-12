@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_48"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/c_white">
 
     <TextView
         android:id="@+id/tv_shop_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/sp_14"
-        android:textColor="@color/text_normal"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:singleLine="true"
         android:text="@string/ap_no_signal"
-        android:textStyle="bold"/>
+        android:textColor="@color/text_normal"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_count"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_count"
@@ -22,10 +28,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:textSize="@dimen/sp_16"
         android:layout_marginEnd="@dimen/dp_24"
+        android:singleLine="true"
         android:textColor="@color/common_orange"
+        android:textSize="@dimen/sp_16"
         android:textStyle="bold"
-        tools:text="1204"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="1204" />
 
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>
