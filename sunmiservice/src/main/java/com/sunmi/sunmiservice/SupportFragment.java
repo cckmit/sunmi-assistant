@@ -104,8 +104,8 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         initCloudCard();
         initCashPreventCardVisibility(false);
         if (SpUtils.getLoanStatus()) {
-            tvLoan.setVisibility(View.VISIBLE);
             llLoan.setVisibility(View.VISIBLE);
+            tvLoan.setVisibility(View.VISIBLE);
         }
         mPresenter.load();
     }
@@ -178,7 +178,7 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
             return;
         }
         WebViewCloudServiceActivity_.intent(mActivity).mUrl(CommonConstants.H5_SERVICE_COURSE)
-                .params(WebViewParamsUtils.getUserInfoParams()).showTitleBar(true).start();
+                .params(WebViewParamsUtils.getUserInfoParams()).start();
     }
 
     @Click(resName = "ll_loan")

@@ -40,6 +40,7 @@ import sunmi.common.constant.RouterConfig;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.view.TitleBarView;
+import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.webview.AndroidBug5497Workaround;
 import sunmi.common.view.webview.SMWebChromeClient;
 import sunmi.common.view.webview.SMWebView;
@@ -169,10 +170,7 @@ public class WebViewCloudServiceActivity extends BaseActivity
                 //微信支付
                 if (url.startsWith("weixin://wap/pay?")) {
                     try {
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(url));
-                        startActivity(intent);
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                     } catch (Exception e) {
                         view.goBack();
                         shortTip(R.string.tip_wechat_not_installed);
@@ -180,7 +178,7 @@ public class WebViewCloudServiceActivity extends BaseActivity
                     return true;
                 } else if (url.startsWith("https://wx.tenpay.com")) {
                     //H5微信支付要用，不然说"商家参数格式有误"
-                    Map<String, String> extraHeaders = new HashMap<String, String>();
+                    Map<String, String> extraHeaders = new HashMap<>();
                     extraHeaders.put("Referer", mUrl);//商户申请H5时提交的授权域名
                     view.loadUrl(url, extraHeaders);
                     return true;
@@ -188,6 +186,25 @@ public class WebViewCloudServiceActivity extends BaseActivity
                     try {
                         startActivity(Intent.parseUri(url, Intent.URI_INTENT_SCHEME));
                     } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                } else if (url.startsWith("dingtalk://dingtalkclient/page/link")) {
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    } catch (Exception e) {
+                        try {
+                            new CommonDialog.Builder(context)
+                                    .setTitle(R.string.dialog_title_install_alipay)
+                                    .setConfirmButton(R.string.str_install_now, (dialog, which) -> {
+                                        startActivity(new Intent("android.intent.action.VIEW",
+                                                Uri.parse("https://www.dingtalk.com/android/d/lang=zh_CN")));
+                                    }).setCancelButton(R.string.sm_cancel).create().show();
+//                            WebViewActivity_.intent(context).url(
+//                                    URLDecoder.decode(url.substring(url.indexOf("?url=") + 5), "UTF-8")).start();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                         e.printStackTrace();
                     }
                     return true;
@@ -232,7 +249,9 @@ public class WebViewCloudServiceActivity extends BaseActivity
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                loadError();
+                if (request.isForMainFrame()) {
+                    loadError();
+                }
             }
         });
     }

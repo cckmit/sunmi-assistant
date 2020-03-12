@@ -14,6 +14,7 @@ import com.xiaojinzi.component.impl.application.ModuleManager;
 import sunmi.common.base.BaseApplication;
 import sunmi.common.constant.RouterConfig;
 import sunmi.common.rpc.mqtt.MqttManager;
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
@@ -60,11 +61,10 @@ public class MyApplication extends BaseApplication {
         BootLoader bootLoader = new BootLoader(this);
         bootLoader.init();
         StatService.registerActivityLifecycleCallbacks(this);
-        com.baidu.mobstat.StatService.autoTrace(this);
-        // 获取测试设备ID
-        String testDeviceId = com.baidu.mobstat.StatService.getTestDeviceId(this);
-        // 日志输出
-        android.util.Log.d("BaiduMobStat", "Test DeviceId : " + testDeviceId);
+        if (!CommonHelper.isGooglePlay()) {
+            com.baidu.mobstat.StatService.autoTrace(this);
+            com.baidu.mobstat.StatService.enableDeviceMac(this, false);
+        }
         // Java JSR-310 时间库
         AndroidThreeTen.init(this);
     }
