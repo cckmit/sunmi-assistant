@@ -223,7 +223,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             mView.setPages(pages, mPerspective);
         }
         if (refresh) {
-            refresh(true, false, false, true);
+            refresh(true, true, false, true);
         }
     }
 
@@ -249,7 +249,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             mView.setPages(pages, mPerspective);
         }
         if (refresh) {
-            refresh(true, false, false, true);
+            refresh(true, true, false, true);
         }
     }
 
