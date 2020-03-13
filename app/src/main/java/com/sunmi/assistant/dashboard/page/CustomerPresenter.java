@@ -53,7 +53,7 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
     public void init() {
         LogCat.d(Utils.TAG, TAG + ": INIT, Condition=" + mCondition);
         mPeriod = Constants.TIME_PERIOD_DAY;
-        mPeriodTime = Utils.getPeriodTimestamp(mPeriod, -1);
+        mPeriodTime = Utils.getPeriodTimestamp(mPeriod, System.currentTimeMillis() - Utils.MILLIS_OF_DAY);
         if (isViewAttached()) {
             mView.updateTab(mPeriod);
         }

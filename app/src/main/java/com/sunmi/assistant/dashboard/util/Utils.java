@@ -46,11 +46,11 @@ public class Utils {
     public static final String DATA_ZERO = "0";
     public static final String DATA_ZERO_RATIO = "0%";
 
+    public static final long MILLIS_OF_DAY = 86_400_000;
+
     private static final DecimalFormat FORMAT_MAX_SINGLE_DECIMAL = new DecimalFormat("#.#");
     private static final DecimalFormat FORMAT_THOUSANDS_DOUBLE_DECIMAL = new DecimalFormat(",###,##0.00");
     private static final DecimalFormat FORMAT_THOUSANDS = new DecimalFormat(",###,###");
-
-    private static final Object LOCK = new Object();
 
     public static final float THRESHOLD_MILLION = 1_000_000;
 
@@ -117,23 +117,22 @@ public class Utils {
     /**
      * 根据时间维度计算该时间段的起止时间戳
      *
-     * @param period 时间维度
-     * @param offset 时间偏移，例：当时间维度为Day时，offset=0：表示今日；offset=-1：表示昨日。
-     * @return 起止时间戳
+     * @param period    时间维度
+     * @param timestamp 时间戳
+     * @return 返回时间戳所在时间维度的起止时间
      */
-    public static Interval getPeriodTimestamp(int period, int offset) {
-        temp.setTimeInMillis(System.currentTimeMillis());
+    public static Interval getPeriodTimestamp(int period, long timestamp) {
+        temp.setFirstDayOfWeek(Calendar.MONDAY);
+        temp.setTimeInMillis(timestamp);
         long timeStart;
         long timeEnd;
         int year = temp.get(Calendar.YEAR);
         int month = temp.get(Calendar.MONTH);
         int date = temp.get(Calendar.DATE);
         temp.clear();
-        temp.setFirstDayOfWeek(Calendar.MONDAY);
         temp.set(year, month, date);
 
         if (period == Constants.TIME_PERIOD_DAY) {
-            temp.add(Calendar.DATE, offset);
             timeStart = temp.getTimeInMillis();
             temp.add(Calendar.DATE, 1);
             timeEnd = temp.getTimeInMillis();
@@ -141,13 +140,11 @@ public class Utils {
             int dayOfWeek = temp.get(Calendar.DAY_OF_WEEK);
             int index = temp.getFirstDayOfWeek() - dayOfWeek;
             temp.add(Calendar.DATE, index > 0 ? index - DAYS_OF_WEEK : index);
-            temp.add(Calendar.DATE, DAYS_OF_WEEK * offset);
             timeStart = temp.getTimeInMillis();
             temp.add(Calendar.DATE, DAYS_OF_WEEK);
             timeEnd = temp.getTimeInMillis();
         } else {
             temp.set(Calendar.DATE, 1);
-            temp.add(Calendar.MONTH, offset);
             timeStart = temp.getTimeInMillis();
             temp.add(Calendar.MONTH, 1);
             timeEnd = temp.getTimeInMillis();

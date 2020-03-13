@@ -208,10 +208,10 @@ public class DashboardModelImpl implements DashboardModel {
         this.callback = callback;
 
         if ((this.loadFlag & Constants.FLAG_SAAS) != 0) {
-            hasSaasState(companyId, new CallbackSaas(condition));
+            hasSaasState(companyId, shopId, new CallbackSaas(condition));
         }
         if ((this.loadFlag & Constants.FLAG_FS) != 0) {
-            hasFs(companyId, new CallbackFs(condition));
+            hasFs(companyId, shopId, new CallbackFs(condition));
         }
         if ((this.loadFlag & Constants.FLAG_CUSTOMER) != 0) {
             hasCustomer(companyId, shopId, new CallbackCustomer(condition));

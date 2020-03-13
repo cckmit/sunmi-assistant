@@ -279,7 +279,8 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
                 CommonNotifications.cashVideoSubscribe,
                 CommonNotifications.shopSwitched,
                 CommonNotifications.cashPreventSubscribe,
-                CommonNotifications.cloudStorageChange
+                CommonNotifications.cloudStorageChange,
+                CommonNotifications.perspectiveSwitch
         };
     }
 
@@ -287,7 +288,9 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
     public void didReceivedNotification(int id, Object... args) {
         if (id == CommonNotifications.activeCloudChange) {
             initCloudCard();
-        } else if (id == CommonNotifications.cashVideoSubscribe || id == CommonNotifications.shopSwitched
+        } else if (id == CommonNotifications.cashVideoSubscribe
+                || id == CommonNotifications.shopSwitched
+                || id == CommonNotifications.perspectiveSwitch
                 || id == CommonNotifications.cashPreventSubscribe) {
             showDarkLoading();
             cashServiceInfoList.clear();

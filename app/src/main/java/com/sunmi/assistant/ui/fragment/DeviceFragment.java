@@ -431,7 +431,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.shopSwitched, CommonNotifications.netConnected,
+        return new int[]{CommonNotifications.perspectiveSwitch, CommonNotifications.shopSwitched, CommonNotifications.netConnected,
                 CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade, IpcConstants.refreshIpcList,
@@ -451,6 +451,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 || NotificationConstant.unBindRouterChanged == id
                 || CommonNotifications.ipcUpgradeComplete == id
                 || CommonNotifications.ipcUpgrade == id) {
+            loadData();
+        } else if (id == CommonNotifications.perspectiveSwitch) {
+            tvShopTitle.setText(SpUtils.getShopName());
             loadData();
         } else if (id == CommonNotifications.shopSwitched) {
             tvShopTitle.setText(SpUtils.getShopName());

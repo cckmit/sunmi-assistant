@@ -68,12 +68,13 @@ public class RealtimePeriodCard extends BaseRefreshCard<RealtimePeriodCard.Model
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
+        long today = System.currentTimeMillis();
         holder.addOnClickListener(R.id.tv_dashboard_today, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, 0)));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, today)));
         holder.addOnClickListener(R.id.tv_dashboard_week, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, 0)));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, today)));
         holder.addOnClickListener(R.id.tv_dashboard_month, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, 0)));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, today)));
         holder.getView(R.id.tv_dashboard_today).setVisibility(View.VISIBLE);
         return holder;
     }
