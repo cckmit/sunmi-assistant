@@ -27,8 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
-import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseMvpActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
@@ -49,7 +47,7 @@ import sunmi.common.view.dialog.CommonDialog;
  */
 @EActivity(R.layout.activity_customer_distribution)
 public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistributionPresenter>
-        implements CustomerDistributionContract.View, BGARefreshLayout.BGARefreshLayoutDelegate {
+        implements CustomerDistributionContract.View {
 
     @ViewById(R.id.dm_motion_customer)
     DropdownMenuNew dmMotionSale;
@@ -59,8 +57,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     ImageView dropdownImg;
     @ViewById(R.id.rv_customer)
     SmRecyclerView rvCustomer;
-    @ViewById(R.id.layout_refresh)
-    BGARefreshLayout refreshView;
     @ViewById(R.id.rb_new_old)
     RadioButton rbNewOld;
     @ViewById(R.id.rb_gender)
@@ -91,15 +87,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        refreshView.setDelegate(this);
-        // 设置下拉刷新和上拉加载更多的风格(参数1：应用程序上下文，参数2：是否具有上拉加载更多功能)
-        BGANormalRefreshViewHolder refreshViewHolder =
-                new BGANormalRefreshViewHolder(context, false);
-        refreshViewHolder.setRefreshingText(getString(R.string.str_refresh_loading));
-        refreshViewHolder.setPullDownRefreshText(getString(R.string.str_refresh_pull));
-        refreshViewHolder.setReleaseRefreshText(getString(R.string.str_refresh_release));
-        refreshView.setRefreshViewHolder(refreshViewHolder); // 为了增加下拉刷新头部和加载更多的通用性，提供了以下可选配置选项
-        refreshView.setIsShowLoadingMoreView(false);
         initRadioButton();
         mPresenter = new CustomerDistributionPresenter(startTime, period);
         mPresenter.attachView(this);
@@ -315,7 +302,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     @Override
     public void getCustomerShopAgeSuccess(List<NewOldCustomer> newOldCustomers, List<AgeCustomer> ageCustomers) {
         hideLoadingDialog();
-        refreshView.endRefreshing();
         if (dataType == Constants.DATA_TYPE_AGE) {
             if (ageFilters != null && shopInfoData != null) {
                 layoutError.setVisibility(View.GONE);
@@ -335,7 +321,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     @Override
     public void getCustomerShopAgeFail(int code, String msg) {
         hideLoadingDialog();
-        refreshView.endRefreshing();
         switch (dataType) {
             case Constants.DATA_TYPE_NEW_OLD:
                 if (newOldCustomers.size() <= 0) {
@@ -355,7 +340,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     @Override
     public void getCustomerShopAgeGenderSuccess(List<GenderCustomer> genderCustomers) {
         hideLoadingDialog();
-        refreshView.endRefreshing();
         if (shopInfoData != null) {
             layoutError.setVisibility(View.GONE);
         }
@@ -370,7 +354,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     @Override
     public void getCustomerShopAgeGenderFail(int code, String msg) {
         hideLoadingDialog();
-        refreshView.endRefreshing();
         if (dataType == Constants.DATA_TYPE_GENDER && genderCustomers.size() <= 0) {
             layoutError.setVisibility(View.VISIBLE);
         }
@@ -386,19 +369,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         layoutError.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
-        if (dataType == Constants.DATA_TYPE_GENDER) {
-            mPresenter.getCustomerShopAgeGenderDistribution();
-        } else {
-            mPresenter.getCustomerShopAgeDistribution();
-        }
-    }
-
-    @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout refreshLayout) {
-        return false;
-    }
 
     private class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
