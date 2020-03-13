@@ -5,22 +5,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
-        android:id="@+id/layout_refresh"
+    <sunmi.common.view.SmRecyclerView
+        android:id="@+id/rv_customer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/c_white"
+        android:overScrollMode="never"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dm_motion_customer">
-
-        <sunmi.common.view.SmRecyclerView
-            android:id="@+id/rv_customer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/c_white"
-            android:overScrollMode="never" />
-
-    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+        app:layout_constraintTop_toBottomOf="@+id/dm_motion_customer" />
 
     <sunmi.common.view.DropdownMenuNew
         android:id="@+id/dm_motion_customer"
