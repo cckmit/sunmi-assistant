@@ -182,8 +182,8 @@ public class DatePickerHelper {
             calendar.set(year, moth - 1, dayEnd);
         } else {
             calendar.set(year, moth, 1);
+            calendar.add(Calendar.DATE, -1);
         }
-        calendar.add(Calendar.DATE, -1);
         int day = Integer.parseInt(new SimpleDateFormat("d", Locale.getDefault()).format(calendar.getTime()));
         return genArr(day, false);
     }
