@@ -158,7 +158,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     private void loadData() {
-        mPresenter.getRouterList();
+        mPresenter.getRouterList(mActivity);
         mPresenter.getIpcList();
         if (!CommonHelper.isGooglePlay()) {
             mPresenter.getPrinterList();
@@ -311,6 +311,17 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     @Override
     public void gotoPrimaryRouteStartActivity() {
         openActivity(mActivity, PrimaryRouteStartActivity.class);
+    }
+
+    @Override
+    public void getRouterNameSuccess(String sn, String name) {
+        for (SunmiDevice device : routerList) {
+            if (TextUtils.equals(device.getDeviceid(), sn)) {
+                device.setName(name);
+                deviceListAdapter.notifyDataSetChanged();
+                break;
+            }
+        }
     }
 
     @Override
@@ -474,8 +485,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
 
     @Override
     public int[] getStickNotificationId() {
-        return new int[]{CommonNotifications.perspectiveSwitch, CommonNotifications.shopSwitched, CommonNotifications.netConnected,
-                CommonNotifications.netDisconnection, NotificationConstant.updateConnectComplete,
+        return new int[]{CommonNotifications.perspectiveSwitch, CommonNotifications.shopSwitched,
+                CommonNotifications.netConnected, CommonNotifications.netDisconnection,
+                NotificationConstant.updateConnectComplete, NotificationConstant.apGetRouter,
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade, IpcConstants.refreshIpcList,
                 CommonNotifications.companyNameChanged, CommonNotifications.companySwitch,
@@ -530,6 +542,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             //上线成功发送udp保存设备数据
             SunmiDevice bean = (SunmiDevice) args[0];
             SMDeviceDiscoverUtils.saveInfo(bean);
+        } else if (NotificationConstant.apGetRouter == id) {
+            mPresenter.setRouterInfo(routerList, (ResponseBean) args[0]);
         }
     }
 

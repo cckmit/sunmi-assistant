@@ -45,11 +45,13 @@ public interface DeviceContract {
         void getCheckApLoginFail(String type);
 
         void gotoPrimaryRouteStartActivity();
+
+        void getRouterNameSuccess(String sn, String name);
     }
 
     interface Presenter {
 
-        void getRouterList();
+        void getRouterList(Context context);
 
         void getIpcList();
 

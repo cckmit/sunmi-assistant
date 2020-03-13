@@ -47,7 +47,6 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -55,6 +54,7 @@ import sunmi.common.utils.log.LogCat;
  */
 public class DevicePresenter extends BasePresenter<DeviceContract.View>
         implements DeviceContract.Presenter {
+    Map<String, String> routerNames = new HashMap<>();
 
     /**
      * 校验路由器是否配置
@@ -190,7 +190,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @Override
-    public void getRouterList() {
+    public void getRouterList(Context context) {
         CloudApi.getBindDeviceList(SpUtils.getShopId(), new RpcCallback(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
@@ -200,7 +200,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     try {
                         JSONArray jsonArray = new JSONArray(data);
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            list.add(getRouterDevice((JSONObject) jsonArray.opt(i)));
+                            list.add(getRouterDevice(context, (JSONObject) jsonArray.opt(i)));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -254,7 +254,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 if (isViewAttached()) {
                     mView.shortTip(R.string.str_delete_success);
                     DBUtils.deleteSunmiDevice(sn);
-                    getRouterList();
+                    getRouterList(null);
                 }
             }
 
@@ -454,7 +454,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @NonNull
-    private SunmiDevice getRouterDevice(JSONObject object) throws JSONException {
+    private SunmiDevice getRouterDevice(Context context, JSONObject object) throws JSONException {
         SunmiDevice device = new SunmiDevice();
         device.setType("ROUTER");
         if (object.has("sn")) {
@@ -476,6 +476,13 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             device.setShopId(object.getInt("shop_id"));
         } else {
             device.setShopId(SpUtils.getShopId());
+        }
+        if (routerNames.containsKey(device.getDeviceid())) {
+            device.setName(routerNames.get(device.getDeviceid()));
+        }
+        if (context != null && !TextUtils.isEmpty(device.getDeviceid())
+                && device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
+            APCall.getInstance().getRouterForName(context, device.getDeviceid());
         }
         saveDevice(device);
         return device;
@@ -562,6 +569,29 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                         }
                     }
                 });
+    }
+
+    public void setRouterInfo(List<SunmiDevice> list, final ResponseBean res) {
+        try {
+            JSONObject jsonObject2 = res.getResult();
+            JSONObject jsonObject3 = jsonObject2.getJSONObject("sonconnect");
+            JSONArray jsonArray = jsonObject3.getJSONArray("devices");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject devices = jsonArray.getJSONObject(i);
+                routerNames.put(devices.getString("devid"), devices.getString("location"));
+            }
+            for (SunmiDevice sunmiDevice : list) {
+                if (routerNames.containsKey(sunmiDevice.getDeviceid())) {
+                    if (isViewAttached()) {
+                        mView.getRouterNameSuccess(sunmiDevice.getDeviceid(),
+                                routerNames.get(sunmiDevice.getDeviceid()));
+                        break;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
