@@ -209,6 +209,8 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
 
     @Override
     public void getCustomerFail(int code, String msg) {
+        refreshView.endRefreshing();
+        hideLoadingDialog();
         if (filterId == ID_COUNT && customerList.size() <= 0) {
             layoutError.setVisibility(View.VISIBLE);
         }
@@ -228,6 +230,8 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
 
     @Override
     public void getSaleFail(int code, String msg) {
+        refreshView.endRefreshing();
+        hideLoadingDialog();
         if (filterId == ID_AMOUNT && saleList.size() <= 0) {
             layoutError.setVisibility(View.GONE);
         }

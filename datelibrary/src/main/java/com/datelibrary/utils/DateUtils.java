@@ -109,4 +109,16 @@ public class DateUtils {
         return new Date(date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
 
+    /**
+     * 获取周视角的年份
+     *
+     * @param date
+     * @return
+     */
+    public static int getWeekYear(Date date) {
+        Instant time = Instant.ofEpochMilli(date.getTime());
+        LocalDate localDate = time.atZone(ZoneId.systemDefault()).toLocalDate();
+        return localDate.get(IsoFields.WEEK_BASED_YEAR);
+    }
+
 }
