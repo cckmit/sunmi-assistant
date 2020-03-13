@@ -199,6 +199,7 @@
     <string name="str_shop_platform_from">本数据由%s提供</string>
     <string name="str_cloud_printer">云打印机</string>
     <string name="str_cannot_manager_device">当前无法管理设备</string>
+    <string name="str_cannot_update_name">当前无法修改备注</string>
     <string name="tip_image_captcha_refresh_fail">图片验证码刷新失败</string>
     <string name="tip_get_captcha_too_often">发送短信验证码太频繁，请稍后再试</string>
     <string name="tip_get_captcha_fail">发送短信验证码失败</string>
@@ -392,4 +393,5 @@
     <string name="sunmi_login_agree">登录即表示您同意遵守</string>
     <string name="str_sort_desc">正序</string>
     <string name="str_sort_asce">倒序</string>
+    <string name="tip_input_comment_name">请备注名称</string>
 </resources>

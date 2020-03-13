@@ -65,10 +65,17 @@ public class DeviceSettingMenu extends PopupWindow {
             }
         });
         View divider = viewLayout.findViewById(R.id.divider);
-        View divider1 = viewLayout.findViewById(R.id.divider1);
-        TextView tvSetting = viewLayout.findViewById(R.id.tv_setting);
         if ("IPC".equalsIgnoreCase(device.getType())) {
-            divider1.setVisibility(View.VISIBLE);
+            TextView tvComment = viewLayout.findViewById(R.id.tv_comment);
+            tvComment.setVisibility(View.VISIBLE);
+            tvComment.setOnClickListener(v -> {
+                dismiss();
+                if (onSettingsClickListener != null) {
+                    onSettingsClickListener.onSettingsClick(device, 3);
+                }
+            });
+            viewLayout.findViewById(R.id.divider1).setVisibility(View.VISIBLE);
+            TextView tvSetting = viewLayout.findViewById(R.id.tv_setting);
             tvSetting.setVisibility(View.VISIBLE);
             tvSetting.setOnClickListener(v -> {
                 dismiss();
@@ -76,14 +83,10 @@ public class DeviceSettingMenu extends PopupWindow {
                     onSettingsClickListener.onSettingsClick(device, 2);
                 }
             });
+            viewLayout.findViewById(R.id.divider2).setVisibility(View.VISIBLE);
         } else if ("POS".equalsIgnoreCase(device.getType())) {
             divider.setVisibility(View.GONE);
-            divider1.setVisibility(View.GONE);
             tvDelete.setVisibility(View.GONE);
-            tvSetting.setVisibility(View.GONE);
-        } else {
-            divider1.setVisibility(View.GONE);
-            tvSetting.setVisibility(View.GONE);
         }
     }
 

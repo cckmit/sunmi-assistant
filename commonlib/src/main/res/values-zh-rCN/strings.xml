@@ -120,6 +120,7 @@
     <string name="sunmi_device_ss">智能看店摄像机</string>
     <string name="sunmi_device_more">更多支持设备\n敬请期待…</string>
     <string name="str_setting_detail">查看详情</string>
+    <string name="str_comment_name">修改备注</string>
     <string name="str_coming_soon">敬请期待</string>
     <string name="str_num_10_thousands">%.2f万</string>
     <string name="str_num_100_million">%.2f亿</string>
