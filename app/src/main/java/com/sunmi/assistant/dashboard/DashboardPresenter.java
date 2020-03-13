@@ -80,7 +80,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         for (int i = 0, size = mPages.size(); i < size; i++) {
             PageContract.PagePresenter page = mPages.valueAt(i);
             if (!onlyCurrentPage || page.getType() == mPageType) {
-                page.refresh(showLoading);
+                page.refresh(true, showLoading);
             }
         }
     }
@@ -166,7 +166,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                     LogCat.i(Utils.TAG, "Page:" + page.getType());
                     page.setCondition(mCondition.copy());
                     if (!onlyCurrentPage || page.getType() == mPageType) {
-                        page.refresh(showLoading);
+                        page.refresh(true, showLoading);
                     }
                 }
                 if (isViewAttached()) {
@@ -265,6 +265,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     public void switchPage(int type) {
         scrollToTop(mPerspective != CommonConstants.PERSPECTIVE_TOTAL);
         mPageType = type;
+        getCurrent().refresh(false, true);
     }
 
     @Override

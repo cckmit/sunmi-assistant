@@ -63,7 +63,7 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
             mView.updateTab(mPeriod);
         }
         if (isConditionChanged && mCondition != null) {
-            refresh(true);
+            refresh(false, true);
         }
     }
 
@@ -144,12 +144,12 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
     }
 
     @Override
-    public void refresh(boolean showLoading) {
+    public void refresh(boolean force, boolean showLoading) {
         if (isConditionChanged) {
             initList();
             load();
             isConditionChanged = false;
-        } else {
+        } else if (force) {
             for (BaseRefreshCard card : mList) {
                 card.refresh(showLoading);
             }
