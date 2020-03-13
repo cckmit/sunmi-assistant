@@ -150,7 +150,7 @@ public class DatePicker extends BaseWheelPick {
                 break;
         }
 
-        datePicker = new DatePickerHelper(getContext(), dateEnd);
+        datePicker = new DatePickerHelper(getContext(), dateEnd, type);
         datePicker.setStartDate(startDate, yearLimt);
 
         weekArr = datePicker.genWeek();
@@ -211,7 +211,7 @@ public class DatePicker extends BaseWheelPick {
         dayArr = datePicker.genDay(year, moth);
         WheelGeneralAdapter adapter = (WheelGeneralAdapter) dayView.getViewAdapter();
         adapter.setData(convertData(dayView, dayArr));
-
+        adapter.notifyDataChangedEvent();
         int indxt = datePicker.findIndextByValue(selectDay, dayArr);
         if (indxt == -1) {
             dayView.setCurrentItem(0);
@@ -224,7 +224,8 @@ public class DatePicker extends BaseWheelPick {
         weekArr = datePicker.genWeek(year);
         WheelGeneralAdapter adapter = (WheelGeneralAdapter) perWeekView.getViewAdapter();
         adapter.setData(weekArr);
-        if (selectWeek < DateUtils.getMaxWeekNumOfYear(year)) {
+        adapter.notifyDataChangedEvent();
+        if (selectWeek < datePicker.getMaxWeek(year)) {
             perWeekView.setCurrentItem(selectWeek);
         } else {
             perWeekView.setCurrentItem(0);
@@ -235,7 +236,7 @@ public class DatePicker extends BaseWheelPick {
         mothArr = datePicker.genMonth(year);
         WheelGeneralAdapter adapter = (WheelGeneralAdapter) monthView.getViewAdapter();
         adapter.setData(convertData(monthView, mothArr));
-
+        adapter.notifyDataChangedEvent();
         int indext = datePicker.findIndextByValue(selectMonth, mothArr);
         if (indext == -1) {
             monthView.setCurrentItem(0);

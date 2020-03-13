@@ -59,6 +59,8 @@ public interface DeviceContract {
 
         void unbind(SunmiDevice device);
 
+        void updateName(SunmiDevice device, final String name);
+
         void getShopList();
 
         void getPosList();

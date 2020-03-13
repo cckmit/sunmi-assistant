@@ -47,6 +47,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
+import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -231,6 +232,17 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 break;
             case "PRINTER":
                 unbindPrinter(device.getDeviceid());
+                break;
+        }
+    }
+
+    @Override
+    public void updateName(SunmiDevice device, final String name) {
+        switch (device.getType()) {
+            case "ROUTER":
+                break;
+            case "IPC":
+                changeIPCName(device, name);
                 break;
         }
     }
@@ -529,4 +541,27 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     private void saveDevice(SunmiDevice device) {
         device.saveOrUpdate("deviceid=?", device.getDeviceid());
     }
+
+    private void changeIPCName(SunmiDevice device, final String name) {
+        IpcCloudApi.getInstance().updateBaseInfo(SpUtils.getCompanyId(), SpUtils.getShopId(),
+                device.getId(), name, new RetrofitCallback<Object>() {
+                    @Override
+                    public void onSuccess(int code, String msg, Object data) {
+                        getIpcList();
+                        if (isViewAttached()) {
+                            mView.hideLoadingDialog();
+                            mView.shortTip(R.string.ipc_setting_success);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int code, String msg, Object data) {
+                        if (isViewAttached()) {
+                            mView.hideLoadingDialog();
+                            mView.shortTip(R.string.ipc_setting_fail);
+                        }
+                    }
+                });
+    }
+
 }

@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -37,6 +39,7 @@ import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.litepal.crud.DataSupport;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -404,6 +407,46 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 IpcSettingActivity_.intent(mActivity).mDevice(device).start();
             } else {
                 shortTip(getString(R.string.str_cannot_manager_device));
+            }
+        } else if (type == 3) {
+            if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
+                new InputDialog.Builder(mActivity)
+                        .setTitle(R.string.str_comment_name)
+                        .setHint(R.string.tip_input_comment_name)
+                        .setInitInputContent(device.getName())
+                        .setInputWatcher(new InputDialog.TextChangeListener() {
+                            @Override
+                            public void onTextChange(EditText view, Editable s) {
+                                if (TextUtils.isEmpty(s.toString())) {
+                                    return;
+                                }
+                                String name = s.toString().trim();
+                                if (name.getBytes(Charset.defaultCharset()).length > 36) {
+                                    shortTip(R.string.ipc_setting_tip_name_length);
+                                    do {
+                                        name = name.substring(0, name.length() - 1);
+                                    } while (name.getBytes(Charset.defaultCharset()).length > 36);
+                                    view.setText(name);
+                                    view.setSelection(name.length());
+                                }
+                            }
+                        })
+                        .setCancelButton(R.string.sm_cancel)
+                        .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
+                            if (input.trim().getBytes(Charset.defaultCharset()).length > 36) {
+                                shortTip(R.string.ipc_setting_tip_name_length);
+                                return;
+                            }
+                            if (input.trim().length() == 0) {
+                                shortTip(R.string.ipc_setting_tip_name_empty);
+                                return;
+                            }
+                            showLoadingDialog();
+                            mPresenter.updateName(device, input);
+                            dialog.dismiss();
+                        }).create().show();
+            } else {
+                shortTip(R.string.str_cannot_update_name);
             }
         }
     }

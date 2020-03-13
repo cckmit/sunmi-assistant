@@ -120,6 +120,7 @@
     <string name="sunmi_device_ss">Store Sense Camera</string>
     <string name="sunmi_device_more">Coming soon</string>
     <string name="str_setting_detail">View</string>
+    <string name="str_comment_name">修改备注</string>
     <string name="str_coming_soon">Coming Soon</string>
     <string name="str_num_10_thousands">%.2f万</string>
     <string name="str_num_100_million">%.2f亿</string>

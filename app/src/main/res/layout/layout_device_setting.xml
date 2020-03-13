@@ -23,20 +23,22 @@
         android:background="@color/white_10a" />
 
     <TextView
-        android:id="@+id/tv_delete"
+        android:id="@+id/tv_comment"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
         android:gravity="center"
         android:singleLine="true"
-        android:text="@string/str_setting_delete_device"
+        android:text="@string/str_comment_name"
         android:textColor="@color/c_white"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone" />
 
     <View
         android:id="@+id/divider1"
         android:layout_width="@dimen/dp_102"
         android:layout_height="@dimen/dp_0_5"
-        android:background="@color/white_10a" />
+        android:background="@color/white_10a"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_setting"
@@ -45,6 +47,24 @@
         android:gravity="center"
         android:singleLine="true"
         android:text="@string/str_setting_ipc_camera"
+        android:textColor="@color/c_white"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="@dimen/dp_102"
+        android:layout_height="@dimen/dp_0_5"
+        android:background="@color/white_10a"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="@string/str_setting_delete_device"
         android:textColor="@color/c_white"
         android:textSize="@dimen/sp_14" />
 
