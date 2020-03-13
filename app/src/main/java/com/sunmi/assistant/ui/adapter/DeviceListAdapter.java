@@ -38,7 +38,11 @@ public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHol
             model = item.getModel();
         }
         holder.setText(R.id.tv_name, model);
-        holder.setText(R.id.tv_sn, item.getDeviceid());
+        if (TextUtils.isEmpty(item.getName())) {
+            holder.setText(R.id.tv_sn, item.getDeviceid());
+        } else {
+            holder.setText(R.id.tv_sn, item.getName());
+        }
         holder.setImageResource(R.id.iv_device, DeviceTypeUtils.getInstance().getSunmiDeviceImage(item.getModel()));
         showStatus(holder, item);
         holder.getView(R.id.rl_device_item).setOnClickListener(v -> {
