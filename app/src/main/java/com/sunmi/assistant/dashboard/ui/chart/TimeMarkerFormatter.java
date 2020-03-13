@@ -19,6 +19,7 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
 
     public static final int TIME_TYPE_HOUR = 1;
     public static final int TIME_TYPE_HOUR_SPAN = 2;
+    public static final int TIME_TYPE_HOUR_TOTAL_SPAN = 21;
     public static final int TIME_TYPE_WEEK = 3;
     public static final int TIME_TYPE_DATE = 4;
     public static final int TIME_TYPE_DATE_SPAN = 5;
@@ -78,6 +79,10 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
             case TIME_TYPE_HOUR_SPAN:
                 hour = temp.get(Calendar.HOUR_OF_DAY);
                 valueStr = String.format(Locale.getDefault(), "%02d:00-%02d:00", hour, hour + 1);
+                break;
+            case TIME_TYPE_HOUR_TOTAL_SPAN:
+                hour = temp.get(Calendar.HOUR_OF_DAY);
+                valueStr = String.format(Locale.getDefault(), "00:00-%02d:00", hour);
                 break;
             case TIME_TYPE_WEEK:
                 valueStr = weekName[temp.get(Calendar.DAY_OF_WEEK) - 1];
