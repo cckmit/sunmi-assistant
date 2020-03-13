@@ -3,6 +3,7 @@ package com.datelibrary.utils;
 import android.content.Context;
 
 import com.datelibrary.R;
+import com.datelibrary.bean.DateType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,6 +36,9 @@ public class DatePickerHelper {
     private Date startDate = new Date();
     //年份限制，上下5年
     private int yearLimt = 5;
+
+    public DateType type = DateType.TYPE_ALL;
+
     private int yearEnd;
     private int weekEnd;
     private int monthEnd;
@@ -54,19 +58,28 @@ public class DatePickerHelper {
         MINUTE
     }
 
-    public DatePickerHelper(Context context, Date date) {
+    public DatePickerHelper(Context context, Date date, DateType type) {
         this.context = context;
-        this.yearEnd = DateUtils.getYear(date);
+        if (type == DateType.TYPE_YW) {
+            this.yearEnd = DateUtils.getWeekYear(date);
+        } else {
+            this.yearEnd = DateUtils.getYear(date);
+        }
         this.weekEnd = DateUtils.getWeekOfYear(date);
         this.monthEnd = DateUtils.getMoth(date);
         this.dayEnd = DateUtils.getDay(date);
+        this.type = type;
         init();
     }
 
     private void init() {
         Date date = startDate;
         //获取年 月 日 时 分
-        YEAR_START = DateUtils.getYear(date);
+        if (type == DateType.TYPE_YW) {
+            YEAR_START = DateUtils.getWeekYear(date);
+        } else {
+            YEAR_START = DateUtils.getYear(date);
+        }
         MONTH_START = DateUtils.getMoth(date);
         DAY_START = DateUtils.getDay(date);
         WEEK_START = DateUtils.getWeekOfYear(date);
@@ -102,6 +115,14 @@ public class DatePickerHelper {
                 return MINUTE_START;
         }
         return 0;
+    }
+
+    public int getMaxWeek(int year) {
+        if (year == yearEnd) {
+            return weekEnd;
+        } else {
+            return DateUtils.getMaxWeekNumOfYear(year);
+        }
     }
 
     public String[] getDisplayValue(Integer[] arr, String per) {

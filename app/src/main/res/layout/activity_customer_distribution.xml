@@ -27,6 +27,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_44"
         android:background="@color/c_white"
+        app:dm_maxHeightCount="7.5"
         app:layout_constraintEnd_toStartOf="@+id/dm_motion_sort"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

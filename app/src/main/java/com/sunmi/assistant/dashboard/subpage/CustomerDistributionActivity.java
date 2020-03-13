@@ -285,6 +285,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
                 mPresenter.ageRange();
             }
         }
+        showLoadingDialog();
     }
 
     @Override
