@@ -569,6 +569,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         } else if (id == CommonNotifications.cloudStorageChange) {
             mPresenter.load(Constants.FLAG_BUNDLED_LIST, true, true, true);
         } else if (id == CommonNotifications.perspectiveSwitch) {
+            isInit = false;
             mPresenter.switchPerspective(SpUtils.getPerspective(), true);
         }
     }
