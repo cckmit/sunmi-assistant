@@ -391,6 +391,7 @@ public class WheelView extends View {
                 }
                 index %= itemCount;
             } else {
+                currentItem = itemCount;
                 return; // throw?
             }
         }
