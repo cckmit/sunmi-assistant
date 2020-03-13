@@ -84,7 +84,7 @@ public class TotalRealtimePresenter extends BasePresenter<TotalRealtimeContract.
 
     @Override
     public void refresh(boolean force, boolean showLoading) {
-        if (isConditionChanged) {
+        if (isConditionChanged && mCondition != null) {
             initList();
             load();
             isConditionChanged = false;

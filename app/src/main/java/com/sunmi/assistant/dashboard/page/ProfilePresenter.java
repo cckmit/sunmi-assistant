@@ -90,7 +90,7 @@ public class ProfilePresenter extends BasePresenter<ProfileContract.View>
 
     @Override
     public void refresh(boolean force, boolean showLoading) {
-        if (isConditionChanged) {
+        if (isConditionChanged && mCondition != null) {
             initList();
             load();
             isConditionChanged = false;
