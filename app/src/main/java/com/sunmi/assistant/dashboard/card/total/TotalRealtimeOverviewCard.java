@@ -68,7 +68,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
             @Override
             public void onSuccess(int code, String msg, CustomerCountResp data) {
                 Model model = getModel();
-                model.count = data.getLatestCount();
+                model.customerCount = data.getLatestCount();
                 loadCustomerYesterday(companyId, callback);
             }
 
@@ -85,7 +85,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
                     @Override
                     public void onSuccess(int code, String msg, TotalCustomerDataResp data) {
                         Model model = getModel();
-                        model.earlCount = data.getPassengerCount();
+                        model.customerCountLast = data.getPassengerCount();
                         if (mCondition.hasSaas) {
                             loadSaleData(companyId, callback);
                         } else {
@@ -106,8 +106,8 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
             @Override
             public void onSuccess(int code, String msg, SaleDataResp data) {
                 Model model = getModel();
-                model.amount = data.getLatestOrderAmount();
-                model.volume = data.getLatestOrderCount();
+                model.salesAmount = data.getLatestOrderAmount();
+                model.salesVolume = data.getLatestOrderCount();
                 loadSaleDataYesterday(companyId, callback);
             }
 
@@ -123,8 +123,8 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
             @Override
             public void onSuccess(int code, String msg, SaleDataResp data) {
                 Model model = getModel();
-                model.earlAmount = data.getOrderAmount();
-                model.earlCount = data.getOrderCount();
+                model.salesAmountLast = data.getOrderAmount();
+                model.salesVolumeLast = data.getOrderCount();
                 callback.onSuccess();
             }
 
@@ -156,20 +156,20 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
         TextView volume = holder.getView(R.id.tv_sales_volume);
         TextView volumeSubData = holder.getView(R.id.tv_sales_volume_subdata);
         if (mCondition.hasSaas && !mCondition.hasFs) {
-            amount.setText(model.getAmount(context));
-            amountSubData.setText(model.getEarlAmount(context));
-            volume.setText(model.getVolume(context));
-            volumeSubData.setText(model.getEarlVolume(context));
+            amount.setText(model.getSalesAmount(context));
+            amountSubData.setText(model.getSalesAmountLast(context));
+            volume.setText(model.getSalesVolume(context));
+            volumeSubData.setText(model.getSalesVolumeLast(context));
         } else if (!mCondition.hasSaas && mCondition.hasFs) {
-            value.setText(model.getCount(context));
-            subValue.setText(model.getEarlCount(context));
+            value.setText(model.getCustomerCount(context));
+            subValue.setText(model.getCustomerCountLast(context));
         } else {
-            value.setText(model.getCount(context));
-            subValue.setText(model.getEarlCount(context));
-            amount.setText(model.getAmount(context));
-            amountSubData.setText(model.getEarlAmount(context));
-            volume.setText(model.getVolume(context));
-            volumeSubData.setText(model.getEarlVolume(context));
+            value.setText(model.getCustomerCount(context));
+            subValue.setText(model.getCustomerCountLast(context));
+            amount.setText(model.getSalesAmount(context));
+            amountSubData.setText(model.getSalesAmountLast(context));
+            volume.setText(model.getSalesVolume(context));
+            volumeSubData.setText(model.getSalesVolumeLast(context));
         }
     }
 
@@ -231,35 +231,35 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
     }
 
     public static class Model extends BaseRefreshCard.BaseModel {
-        int count;
-        int earlCount;
-        double amount;
-        double earlAmount;
-        int volume;
-        int earlVolume;
+        int customerCount;
+        int customerCountLast;
+        double salesAmount;
+        double salesAmountLast;
+        int salesVolume;
+        int salesVolumeLast;
 
-        private CharSequence getCount(Context context) {
-            return Utils.formatNumber(context, count, false, true);
+        private CharSequence getCustomerCount(Context context) {
+            return Utils.formatNumber(context, customerCount, false, true);
         }
 
-        private CharSequence getEarlCount(Context context) {
-            return Utils.formatNumber(context, earlCount, false, false);
+        private CharSequence getCustomerCountLast(Context context) {
+            return Utils.formatNumber(context, customerCountLast, false, false);
         }
 
-        private CharSequence getAmount(Context context) {
-            return Utils.formatNumber(context, amount, true, true);
+        private CharSequence getSalesAmount(Context context) {
+            return Utils.formatNumber(context, salesAmount, true, true);
         }
 
-        private CharSequence getEarlAmount(Context context) {
-            return Utils.formatNumber(context, earlAmount, true, false);
+        private CharSequence getSalesAmountLast(Context context) {
+            return Utils.formatNumber(context, salesAmountLast, true, false);
         }
 
-        private CharSequence getVolume(Context context) {
-            return Utils.formatNumber(context, volume, false, true);
+        private CharSequence getSalesVolume(Context context) {
+            return Utils.formatNumber(context, salesVolume, false, true);
         }
 
-        private CharSequence getEarlVolume(Context context) {
-            return Utils.formatNumber(context, earlVolume, false, false);
+        private CharSequence getSalesVolumeLast(Context context) {
+            return Utils.formatNumber(context, salesVolumeLast, false, false);
         }
     }
 }

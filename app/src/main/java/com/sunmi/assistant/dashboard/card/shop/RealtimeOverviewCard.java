@@ -317,7 +317,7 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
     }
 
     private void goToOrderList(Context context) {
-        Interval periodTimestamp = Utils.getPeriodTimestamp(mPeriod, 0);
+        Interval periodTimestamp = Utils.getPeriodTimestamp(mPeriod, System.currentTimeMillis());
         OrderListActivity_.intent(context)
                 .mTimeStart(periodTimestamp.start)
                 .mTimeEnd(periodTimestamp.end)
