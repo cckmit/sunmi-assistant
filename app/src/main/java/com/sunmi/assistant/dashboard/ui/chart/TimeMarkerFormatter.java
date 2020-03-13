@@ -15,7 +15,8 @@ import java.util.Locale;
 public class TimeMarkerFormatter implements IMarkerFormatter {
 
     public static final int VALUE_TYPE_INTEGER = 0;
-    public static final int VALUE_TYPE_RATE = 1;
+    public static final int VALUE_TYPE_FLOAT = 1;
+    public static final int VALUE_TYPE_RATE = 2;
 
     public static final int TIME_TYPE_HOUR = 1;
     public static final int TIME_TYPE_HOUR_SPAN = 2;
@@ -51,6 +52,9 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
         switch (valueType) {
             case VALUE_TYPE_INTEGER:
                 result = String.format(Locale.getDefault(), "%.0f", value);
+                break;
+            case VALUE_TYPE_FLOAT:
+                result = String.format(Locale.getDefault(), "%.2f", value);
                 break;
             case VALUE_TYPE_RATE:
                 result = Utils.formatPercent(value, true, true);

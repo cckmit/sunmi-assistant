@@ -264,9 +264,11 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
         if (model.type == TYPE_SALES) {
             color = COLOR_SALES;
             markerTitle = R.string.dashboard_var_sales_amount;
+            mMarkerFormatter.setValueType(TimeMarkerFormatter.VALUE_TYPE_FLOAT);
         } else {
             color = COLOR_CUSTOMER;
             markerTitle = R.string.dashboard_var_customer_volume;
+            mMarkerFormatter.setValueType(TimeMarkerFormatter.VALUE_TYPE_INTEGER);
         }
 
         // Use correct chart marker & update it.
