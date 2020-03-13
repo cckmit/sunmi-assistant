@@ -2,7 +2,6 @@ package com.sunmi.assistant.dashboard.card.total;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -83,22 +82,22 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
     private void loadCustomerYesterday(int companyId, CardCallback callback) {
         SunmiStoreApi.getInstance().getTotalCustomer(companyId, startTime, 1,
                 new RetrofitCallback<TotalCustomerDataResp>() {
-            @Override
-            public void onSuccess(int code, String msg, TotalCustomerDataResp data) {
-                Model model = getModel();
-                model.earlCount = data.getPassengerCount();
-                if (mCondition.hasSaas) {
-                    loadSaleData(companyId, callback);
-                } else {
-                    callback.onSuccess();
-                }
-            }
+                    @Override
+                    public void onSuccess(int code, String msg, TotalCustomerDataResp data) {
+                        Model model = getModel();
+                        model.earlCount = data.getPassengerCount();
+                        if (mCondition.hasSaas) {
+                            loadSaleData(companyId, callback);
+                        } else {
+                            callback.onSuccess();
+                        }
+                    }
 
-            @Override
-            public void onFail(int code, String msg, TotalCustomerDataResp data) {
-                callback.onFail(code, msg, data);
-            }
-        });
+                    @Override
+                    public void onFail(int code, String msg, TotalCustomerDataResp data) {
+                        callback.onFail(code, msg, data);
+                    }
+                });
     }
 
     //今日销售额和总交易数
@@ -180,16 +179,16 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
         View amount = holder.getView(R.id.layout_sales_amount);
         View volume = holder.getView(R.id.layout_sales_volume);
         ImageView loading = holder.getView(R.id.iv_dashboard_loading);
-        if (!mCondition.hasSaas && mCondition.hasFs) {
-            main.setVisibility(View.INVISIBLE);
-            volume.setVisibility(View.GONE);
-            amount.setVisibility(View.GONE);
-            loading.setImageResource(R.mipmap.dashboard_skeleton_single_three);
-        } else {
+        if (mCondition.hasSaas && mCondition.hasFs) {
             main.setVisibility(View.INVISIBLE);
             amount.setVisibility(View.INVISIBLE);
             volume.setVisibility(View.INVISIBLE);
             loading.setImageResource(R.mipmap.dashboard_skeleton_multi);
+        } else {
+            main.setVisibility(View.INVISIBLE);
+            volume.setVisibility(View.GONE);
+            amount.setVisibility(View.GONE);
+            loading.setImageResource(R.mipmap.dashboard_skeleton_single_three);
         }
         loading.setVisibility(View.VISIBLE);
     }

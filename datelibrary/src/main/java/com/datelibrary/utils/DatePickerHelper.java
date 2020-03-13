@@ -36,6 +36,9 @@ public class DatePickerHelper {
     //年份限制，上下5年
     private int yearLimt = 5;
     private int yearEnd;
+    private int weekEnd;
+    private int monthEnd;
+    private int dayEnd;
 
     private ArrayList<Integer> tem = new ArrayList<>();
     private ArrayList<String> dispalyTem = new ArrayList<>();
@@ -51,9 +54,12 @@ public class DatePickerHelper {
         MINUTE
     }
 
-    public DatePickerHelper(Context context, int yearEnd) {
+    public DatePickerHelper(Context context, Date date) {
         this.context = context;
-        this.yearEnd = yearEnd;
+        this.yearEnd = DateUtils.getYear(date);
+        this.weekEnd = DateUtils.getWeekOfYear(date);
+        this.monthEnd = DateUtils.getMoth(date);
+        this.dayEnd = DateUtils.getDay(date);
         init();
     }
 
@@ -107,8 +113,20 @@ public class DatePickerHelper {
         return dispalyTem.toArray(new String[0]);
     }
 
+    public Integer[] genMonth(int year) {
+        if (year == yearEnd) {
+            List<Integer> months = new ArrayList<>();
+            for (int i = 0; i < monthEnd; i++) {
+                months.add(i + 1);
+            }
+            return months.toArray(new Integer[0]);
+        } else {
+            return new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        }
+    }
+
     public Integer[] genMonth() {
-        return new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        return genMonth(YEAR_START);
     }
 
     public Integer[] genHour() {
@@ -139,7 +157,12 @@ public class DatePickerHelper {
 
     public String[] genWeek(int year) {
         week.clear();
-        int count = DateUtils.getMaxWeekNumOfYear(year);
+        int count;
+        if (year == yearEnd) {
+            count = weekEnd;
+        } else {
+            count = DateUtils.getMaxWeekNumOfYear(year);
+        }
         for (int i = 0; i < count; i++) {
             String pattern = context.getString(R.string.pick_date_format_per_week);
             String firstDay = DateTimeUtils.formatDate(pattern, DateUtils.getFirstDayOfWeek(year, i));
@@ -155,7 +178,11 @@ public class DatePickerHelper {
 
     public Integer[] genDay(int year, int moth) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(year, moth, 1);
+        if (year == yearEnd && moth == monthEnd) {
+            calendar.set(year, moth - 1, dayEnd);
+        } else {
+            calendar.set(year, moth, 1);
+        }
         calendar.add(Calendar.DATE, -1);
         int day = Integer.parseInt(new SimpleDateFormat("d", Locale.getDefault()).format(calendar.getTime()));
         return genArr(day, false);
