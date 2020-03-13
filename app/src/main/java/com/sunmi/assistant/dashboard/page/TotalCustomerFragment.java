@@ -32,6 +32,7 @@ import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.model.Interval;
+import sunmi.common.utils.DateTimeUtils;
 import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.dialog.BottomDialog;
 
@@ -163,6 +164,7 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
         if (period == Constants.TIME_PERIOD_DAY) {
             if (mDialogTimeDay == null) {
                 dayPicker = new DatePicker(getActivity(), DateType.TYPE_YMD);
+                dayPicker.setDateEnd(DateTimeUtils.getYesterday());
                 mDialogTimeDay = new BottomDialog.Builder(getActivity())
                         .setTitle(R.string.str_select_time)
                         .setCancelButton(R.string.sm_cancel)
@@ -180,6 +182,7 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
         } else if (period == Constants.TIME_PERIOD_WEEK) {
             if (mDialogTimeWeek == null) {
                 weekPicker = new DatePicker(getActivity(), DateType.TYPE_YW);
+                weekPicker.setDateEnd(DateTimeUtils.getYesterday());
                 mDialogTimeWeek = new BottomDialog.Builder(getActivity())
                         .setTitle(R.string.str_select_time)
                         .setCancelButton(R.string.sm_cancel)
@@ -200,6 +203,7 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
         } else if (period == Constants.TIME_PERIOD_MONTH) {
             if (mDialogTimeMonth == null) {
                 monthPicker = new DatePicker(getActivity(), DateType.TYPE_YM);
+                monthPicker.setDateEnd(DateTimeUtils.getYesterday());
                 mDialogTimeMonth = new BottomDialog.Builder(getActivity())
                         .setTitle(R.string.str_select_time)
                         .setCancelButton(R.string.sm_cancel)

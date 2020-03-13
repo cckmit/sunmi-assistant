@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:text="@string/dashboard_var_customer_count"
             android:textColor="@color/text_normal"
-            android:textSize="@dimen/sp_10" />
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_dashboard_count"
@@ -97,7 +97,7 @@
             android:layout_height="wrap_content"
             android:text="@string/dashboard_var_customer_total_ratio"
             android:textColor="@color/text_normal"
-            android:textSize="@dimen/sp_10" />
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_dashboard_ratio"
@@ -128,7 +128,7 @@
             android:layout_height="wrap_content"
             android:text="@string/dashboard_var_customer_old_ratio"
             android:textColor="@color/text_normal"
-            android:textSize="@dimen/sp_10" />
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_dashboard_old_ratio"
@@ -159,7 +159,7 @@
             android:layout_height="wrap_content"
             android:text="@string/dashboard_var_frequency"
             android:textColor="@color/text_normal"
-            android:textSize="@dimen/sp_10" />
+            android:textSize="@dimen/sp_12" />
 
         <TextView
             android:id="@+id/tv_dashboard_frequency"

@@ -48,8 +48,8 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
 
     private static TotalRealtimeTrendCard sInstance;
 
-    private static final int COLOR_CUSTOMER = 0xFF00BC7D;
-    private static final int COLOR_SALES = 0xFF00BC7D;
+    private static final int COLOR_CUSTOMER = 0xFF4B7AFA;
+    private static final int COLOR_SALES = 0xFFFF6000;
 
     private static final int TYPE_CUSTOMER = 0;
     private static final int TYPE_SALES = 1;

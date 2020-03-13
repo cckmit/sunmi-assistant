@@ -743,16 +743,28 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         private float maxCount;
         private float maxHeight;
 
+//        private int height;
+
         private FixedLayoutManager(Context context, float count, float height) {
             super(context);
             this.maxCount = count;
             this.maxHeight = height;
         }
 
+//        @Override
+//        public void setMeasuredDimension(Rect childrenBounds, int wSpec, int hSpec) {
+//            if (height > 0) {
+//                super.setMeasuredDimension(childrenBounds, wSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+//            } else {
+//                super.setMeasuredDimension(childrenBounds, wSpec, hSpec);
+//            }
+//        }
+
         @Override
         public void onMeasure(@NonNull RecyclerView.Recycler recycler,
                               @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
             if (getChildCount() == 0) {
+//                height = -1;
                 super.onMeasure(recycler, state, widthSpec, heightSpec);
                 return;
             }

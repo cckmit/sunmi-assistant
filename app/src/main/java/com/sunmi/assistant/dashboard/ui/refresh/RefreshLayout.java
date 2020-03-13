@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import java.lang.reflect.Field;
@@ -48,8 +48,9 @@ public class RefreshLayout extends FrameLayout {
     private BaseRefreshViewHolder mRefreshViewHolder;
     /**
      * 整个头部控件，下拉刷新控件mRefreshHeaderView和下拉刷新控件下方的自定义组件mCustomHeaderView的父控件
+     * fix:改为RelativeLayout，因为在6.0及以下的版本上内部无法设置margin
      */
-    private LinearLayout mWholeHeaderView;
+    private RelativeLayout mWholeHeaderView;
     /**
      * 下拉刷新控件
      */
@@ -153,9 +154,8 @@ public class RefreshLayout extends FrameLayout {
      * 初始化整个头部控件
      */
     private void initWholeHeaderView() {
-        mWholeHeaderView = new LinearLayout(getContext());
+        mWholeHeaderView = new RelativeLayout(getContext());
         mWholeHeaderView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        mWholeHeaderView.setOrientation(LinearLayout.VERTICAL);
         addView(mWholeHeaderView);
     }
 
@@ -212,7 +212,7 @@ public class RefreshLayout extends FrameLayout {
     private void initRefreshHeaderView(int marginTop) {
         mRefreshHeaderView = mRefreshViewHolder.getRefreshHeaderView();
         if (mRefreshHeaderView != null) {
-            LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
             params.topMargin = marginTop;
             mRefreshHeaderView.setLayoutParams(params);
 

@@ -32,7 +32,7 @@
     <string name="str_selected">请选择</string>
     <string name="tip_addr_empty">请输入详细地址</string>
 
-    <string name="dashboard_shop_menu_tip">以下是该旗下的各门店</string>
+    <string name="dashboard_shop_menu_tip">以下是本企业的各个子门店</string>
 
     <string name="dashboard_page_realtime_data">实时数据</string>
     <string name="dashboard_page_realtime_today">今日实时</string>

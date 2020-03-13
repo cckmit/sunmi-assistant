@@ -58,7 +58,7 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
     public void init() {
         LogCat.d(Utils.TAG, TAG + ": INIT, Condition=" + mCondition);
         mPeriod = Constants.TIME_PERIOD_DAY;
-        mPeriodTime = Utils.getPeriodTimestamp(mPeriod, 0);
+        mPeriodTime = Utils.getPeriodTimestamp(mPeriod, System.currentTimeMillis());
         if (isViewAttached()) {
             mView.updateTab(mPeriod);
         }

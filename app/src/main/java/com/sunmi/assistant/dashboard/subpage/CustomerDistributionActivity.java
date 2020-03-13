@@ -285,6 +285,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
                 mPresenter.ageRange();
             }
         }
+        showLoadingDialog();
     }
 
     @Override
@@ -317,8 +318,10 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         refreshView.endRefreshing();
         if (dataType == Constants.DATA_TYPE_AGE) {
             if (ageFilters != null && shopInfoData != null) {
-                Collections.sort(this.ageCustomers);
                 layoutError.setVisibility(View.GONE);
+                this.ageCustomers.clear();
+                this.ageCustomers.addAll(ageCustomers);
+                Collections.sort(this.ageCustomers);
             }
         } else if (shopInfoData != null) {
             layoutError.setVisibility(View.GONE);
@@ -326,8 +329,6 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         this.newOldCustomers.clear();
         this.newOldCustomers.addAll(newOldCustomers);
         Collections.sort(this.newOldCustomers);
-        this.ageCustomers.clear();
-        this.ageCustomers.addAll(ageCustomers);
         adapter.notifyDataSetChanged();
     }
 

@@ -433,7 +433,7 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
         PieChartMarkerView marker = new PieChartMarkerView(pie.getContext());
         marker.setChartView(pie);
         set.setValueMarker(marker);
-        set.setDrawValuesAbove(0.095f);
+        set.setDrawValuesAbove(0.05f);
     }
 
     public static class OnPieSelectedListener implements OnChartValueSelectedListener {

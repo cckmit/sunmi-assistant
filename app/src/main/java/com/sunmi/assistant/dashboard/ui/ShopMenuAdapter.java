@@ -145,6 +145,16 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
             SettingItemLayout silName = content.getView(R.id.sil_company);
             silName.setChecked(false);
         }
+        List<FilterItem> list = getData();
+        int shopId = SpUtils.getShopId();
+        for (int i = 0, size = list.size(); i < size; i++) {
+            FilterItem item = list.get(i);
+            if (item.getId() == shopId) {
+                setSelected(i);
+                break;
+            }
+        }
+
     }
 
 }

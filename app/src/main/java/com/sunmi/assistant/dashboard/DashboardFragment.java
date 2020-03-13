@@ -240,22 +240,36 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Click(R.id.tv_dashboard_top_today)
     void clickPeriodToday() {
-        mPresenter.switchPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, 0));
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_DAY,
+                Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, System.currentTimeMillis()));
     }
 
     @Click(R.id.tv_dashboard_top_yesterday)
     void clickPeriodYesterday() {
-        mPresenter.switchPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, -1));
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_DAY,
+                Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, System.currentTimeMillis() - Utils.MILLIS_OF_DAY));
     }
 
     @Click(R.id.tv_dashboard_top_week)
     void clickPeriodWeek() {
-        mPresenter.switchPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, 0));
+        long time;
+        if (mPresenter.getPageType() == Constants.PAGE_OVERVIEW || mPresenter.getPageType() == Constants.PAGE_TOTAL_REALTIME) {
+            time = System.currentTimeMillis();
+        } else {
+            time = System.currentTimeMillis() - Utils.MILLIS_OF_DAY;
+        }
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, time));
     }
 
     @Click(R.id.tv_dashboard_top_month)
     void clickPeriodMonth() {
-        mPresenter.switchPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, 0));
+        long time;
+        if (mPresenter.getPageType() == Constants.PAGE_OVERVIEW || mPresenter.getPageType() == Constants.PAGE_TOTAL_REALTIME) {
+            time = System.currentTimeMillis();
+        } else {
+            time = System.currentTimeMillis() - Utils.MILLIS_OF_DAY;
+        }
+        mPresenter.switchPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, time));
     }
 
     @Click(R.id.btn_dashboard_tip_add_fs)
@@ -555,6 +569,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         } else if (id == CommonNotifications.cloudStorageChange) {
             mPresenter.load(Constants.FLAG_BUNDLED_LIST, true, true, true);
         } else if (id == CommonNotifications.perspectiveSwitch) {
+            isInit = false;
             mPresenter.switchPerspective(SpUtils.getPerspective(), true);
         }
     }

@@ -79,12 +79,13 @@ public class TotalCustomerPeriodCard extends BaseRefreshCard<TotalCustomerPeriod
     @Override
     public BaseViewHolder<Model> onCreateViewHolder(@NonNull View view, @NonNull ItemType<Model, BaseViewHolder<Model>> type) {
         BaseViewHolder<Model> holder = super.onCreateViewHolder(view, type);
+        long yesterday = System.currentTimeMillis() - Utils.MILLIS_OF_DAY;
         holder.addOnClickListener(R.id.tv_dashboard_day, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, -1)));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_DAY, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_DAY, yesterday)));
         holder.addOnClickListener(R.id.tv_dashboard_week, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, 0)));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_WEEK, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_WEEK, yesterday)));
         holder.addOnClickListener(R.id.tv_dashboard_month, (h, model, position) ->
-                mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, 0)));
+                mPresenter.setPeriod(Constants.TIME_PERIOD_MONTH, Utils.getPeriodTimestamp(Constants.TIME_PERIOD_MONTH, yesterday)));
         holder.addOnClickListener(R.id.tv_dashboard_time, (h, model, position) -> {
             if (listener != null) {
                 listener.onTimeClicked();

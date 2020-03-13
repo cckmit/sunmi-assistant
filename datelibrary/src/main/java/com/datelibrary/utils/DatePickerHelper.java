@@ -3,6 +3,7 @@ package com.datelibrary.utils;
 import android.content.Context;
 
 import com.datelibrary.R;
+import com.datelibrary.bean.DateType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +36,13 @@ public class DatePickerHelper {
     private Date startDate = new Date();
     //年份限制，上下5年
     private int yearLimt = 5;
+
+    public DateType type = DateType.TYPE_ALL;
+
     private int yearEnd;
+    private int weekEnd;
+    private int monthEnd;
+    private int dayEnd;
 
     private ArrayList<Integer> tem = new ArrayList<>();
     private ArrayList<String> dispalyTem = new ArrayList<>();
@@ -51,16 +58,28 @@ public class DatePickerHelper {
         MINUTE
     }
 
-    public DatePickerHelper(Context context, int yearEnd) {
+    public DatePickerHelper(Context context, Date date, DateType type) {
         this.context = context;
-        this.yearEnd = yearEnd;
+        if (type == DateType.TYPE_YW) {
+            this.yearEnd = DateUtils.getWeekYear(date);
+        } else {
+            this.yearEnd = DateUtils.getYear(date);
+        }
+        this.weekEnd = DateUtils.getWeekOfYear(date);
+        this.monthEnd = DateUtils.getMoth(date);
+        this.dayEnd = DateUtils.getDay(date);
+        this.type = type;
         init();
     }
 
     private void init() {
         Date date = startDate;
         //获取年 月 日 时 分
-        YEAR_START = DateUtils.getYear(date);
+        if (type == DateType.TYPE_YW) {
+            YEAR_START = DateUtils.getWeekYear(date);
+        } else {
+            YEAR_START = DateUtils.getYear(date);
+        }
         MONTH_START = DateUtils.getMoth(date);
         DAY_START = DateUtils.getDay(date);
         WEEK_START = DateUtils.getWeekOfYear(date);
@@ -98,6 +117,14 @@ public class DatePickerHelper {
         return 0;
     }
 
+    public int getMaxWeek(int year) {
+        if (year == yearEnd) {
+            return weekEnd;
+        } else {
+            return DateUtils.getMaxWeekNumOfYear(year);
+        }
+    }
+
     public String[] getDisplayValue(Integer[] arr, String per) {
         dispalyTem.clear();
         for (Integer i : arr) {
@@ -107,8 +134,20 @@ public class DatePickerHelper {
         return dispalyTem.toArray(new String[0]);
     }
 
+    public Integer[] genMonth(int year) {
+        if (year == yearEnd) {
+            List<Integer> months = new ArrayList<>();
+            for (int i = 0; i < monthEnd; i++) {
+                months.add(i + 1);
+            }
+            return months.toArray(new Integer[0]);
+        } else {
+            return new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        }
+    }
+
     public Integer[] genMonth() {
-        return new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        return genMonth(YEAR_START);
     }
 
     public Integer[] genHour() {
@@ -139,7 +178,12 @@ public class DatePickerHelper {
 
     public String[] genWeek(int year) {
         week.clear();
-        int count = DateUtils.getMaxWeekNumOfYear(year);
+        int count;
+        if (year == yearEnd) {
+            count = weekEnd;
+        } else {
+            count = DateUtils.getMaxWeekNumOfYear(year);
+        }
         for (int i = 0; i < count; i++) {
             String pattern = context.getString(R.string.pick_date_format_per_week);
             String firstDay = DateTimeUtils.formatDate(pattern, DateUtils.getFirstDayOfWeek(year, i));
@@ -155,8 +199,12 @@ public class DatePickerHelper {
 
     public Integer[] genDay(int year, int moth) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(year, moth, 1);
-        calendar.add(Calendar.DATE, -1);
+        if (year == yearEnd && moth == monthEnd) {
+            calendar.set(year, moth - 1, dayEnd);
+        } else {
+            calendar.set(year, moth, 1);
+            calendar.add(Calendar.DATE, -1);
+        }
         int day = Integer.parseInt(new SimpleDateFormat("d", Locale.getDefault()).format(calendar.getTime()));
         return genArr(day, false);
     }
