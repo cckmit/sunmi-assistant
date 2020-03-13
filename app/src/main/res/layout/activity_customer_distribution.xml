@@ -125,6 +125,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:leftDefaultClickEnable="true"
         app:leftIcon="@drawable/ic_back_dark"
-        app:titleText="@string/dashboard_title_performance" />
+        app:titleText="@string/dashboard_title_distribution" />
 
 </android.support.constraint.ConstraintLayout>
