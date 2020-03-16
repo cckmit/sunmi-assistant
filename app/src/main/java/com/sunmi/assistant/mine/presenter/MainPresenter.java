@@ -11,6 +11,7 @@ import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.enums.DeviceType;
 import sunmi.common.model.ServiceListResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.model.IpcListResp;
@@ -55,7 +56,7 @@ public class MainPresenter extends BasePresenter<MainContract.View>
                 new RetrofitCallback<IpcListResp>() {
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
-                        DBUtils.deleteSunmiDeviceByType("IPC");
+                        DBUtils.deleteSunmiDeviceByType(DeviceType.IPC);
                         if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                             for (IpcListResp.SsListBean bean : data.getFs_list()) {
                                  getIpcDevice(bean);
@@ -108,7 +109,7 @@ public class MainPresenter extends BasePresenter<MainContract.View>
 
     private void getIpcDevice(IpcListResp.SsListBean bean) {
         SunmiDevice device = new SunmiDevice();
-        device.setType("IPC");
+        device.setType(DeviceType.IPC);
         device.setStatus(bean.getActive_status());
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());

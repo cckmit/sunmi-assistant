@@ -46,7 +46,7 @@ public interface DeviceContract {
 
         void gotoPrimaryRouteStartActivity();
 
-        void getRouterNameSuccess(String sn, String name);
+        void getRouterNameSuccess(String sn, String name, String mac);
     }
 
     interface Presenter {
@@ -61,7 +61,7 @@ public interface DeviceContract {
 
         void unbind(SunmiDevice device);
 
-        void updateName(SunmiDevice device, final String name);
+        void updateName(Context context, SunmiDevice device, final String name);
 
         void getShopList();
 
