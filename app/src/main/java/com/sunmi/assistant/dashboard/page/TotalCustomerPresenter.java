@@ -53,7 +53,7 @@ public class TotalCustomerPresenter extends BasePresenter<TotalCustomerContract.
             mView.updateTab(mPeriod);
         }
         if (isConditionChanged && mCondition != null) {
-            refresh(true);
+            refresh(false, true);
         }
     }
 
@@ -95,12 +95,12 @@ public class TotalCustomerPresenter extends BasePresenter<TotalCustomerContract.
     }
 
     @Override
-    public void refresh(boolean showLoading) {
-        if (isConditionChanged) {
+    public void refresh(boolean force, boolean showLoading) {
+        if (isConditionChanged && mCondition != null) {
             initList();
             load();
             isConditionChanged = false;
-        } else {
+        } else if (force) {
             for (BaseRefreshCard card : mList) {
                 card.refresh(showLoading);
             }

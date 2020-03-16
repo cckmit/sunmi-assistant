@@ -63,6 +63,7 @@
     <string name="dashboard_title_business_trend">经营趋势</string>
     <string name="dashboard_title_distribution">客群分布</string>
     <string name="dashboard_title_customer_trend">客流趋势</string>
+    <string name="dashboard_title_data_trend">数据趋势</string>
     <string name="dashboard_title_performance">业绩排行</string>
     <string name="dashboard_title_frequency_trend_week">周到店频次趋势</string>
     <string name="dashboard_title_frequency_trend_month">月到店频次趋势</string>

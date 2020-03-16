@@ -33,6 +33,7 @@
     <string name="str_selected">Please select</string>
     <string name="tip_addr_empty">Please enter the detailed address</string>
     <string name="dashboard_title_customer_trend">Passenger flow trend</string>
+    <string name="dashboard_title_data_trend">数据趋势</string>
     <string name="dashboard_title_enter_rate">Entering Rate</string>
     <string name="dashboard_title_customer_analysis">Passenger flow analysis</string>
     <string name="dashboard_title_main_customer">主力客群</string>
