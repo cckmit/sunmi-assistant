@@ -6,6 +6,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -116,7 +117,7 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         }
 
         // 列表最大高度所展示的列表元素个数 / 列表最大高度限定，元素个数优先级高
-        float count = a.getFloat(R.styleable.DropdownMenuNew_dm_maxHeightCount, 6.5f);
+        float count = a.getFloat(R.styleable.DropdownMenuNew_dm_maxHeightCount, 7.5f);
         float height = a.getDimension(R.styleable.DropdownMenuNew_dm_maxHeight, -1);
         manager = new FixedLayoutManager(context, count, height);
 
@@ -743,68 +744,31 @@ public class DropdownMenuNew extends FrameLayout implements View.OnClickListener
         private float maxCount;
         private float maxHeight;
 
-//        private int height;
-
         private FixedLayoutManager(Context context, float count, float height) {
             super(context);
             this.maxCount = count;
             this.maxHeight = height;
         }
 
-//        @Override
-//        public void setMeasuredDimension(Rect childrenBounds, int wSpec, int hSpec) {
-//            if (height > 0) {
-//                super.setMeasuredDimension(childrenBounds, wSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-//            } else {
-//                super.setMeasuredDimension(childrenBounds, wSpec, hSpec);
-//            }
-//        }
-
         @Override
-        public void onMeasure(@NonNull RecyclerView.Recycler recycler,
-                              @NonNull RecyclerView.State state, int widthSpec, int heightSpec) {
-            if (getChildCount() == 0) {
-//                height = -1;
-                super.onMeasure(recycler, state, widthSpec, heightSpec);
+        public void setMeasuredDimension(Rect childrenBounds, int wSpec, int hSpec) {
+            boolean requestLimit = maxCount > 0 || maxHeight > 0;
+            int count = getChildCount();
+            if (!requestLimit || count == 0) {
+                super.setMeasuredDimension(childrenBounds, wSpec, hSpec);
                 return;
             }
-
-            final int widthMode = View.MeasureSpec.getMode(widthSpec);
-            final int heightMode = View.MeasureSpec.getMode(heightSpec);
-            final int widthSize = View.MeasureSpec.getSize(widthSpec);
-            final int heightSize = View.MeasureSpec.getSize(heightSpec);
-
-            int itemHeight = getChildHeight(recycler, widthSpec, heightSpec);
-
-            int height;
-            if (maxCount > 0) {
-                height = getChildCount() > maxCount ?
-                        (int) (itemHeight * maxCount) : itemHeight * getChildCount();
+            if (maxCount > 0 && count > maxCount) {
+                int height = childrenBounds.bottom - childrenBounds.top;
+                height = (int) (height * maxCount / count);
+                childrenBounds.bottom = childrenBounds.top + height;
+                super.setMeasuredDimension(childrenBounds, wSpec, hSpec);
+            } else if (maxHeight > 0 && childrenBounds.bottom - childrenBounds.top > maxHeight) {
+                childrenBounds.bottom = (int) (childrenBounds.top + maxHeight);
+                super.setMeasuredDimension(childrenBounds, wSpec, hSpec);
             } else {
-                height = Math.min(itemHeight * getChildCount(), (int) maxHeight);
+                super.setMeasuredDimension(childrenBounds, wSpec, hSpec);
             }
-
-            setMeasuredDimension(View.MeasureSpec.getSize(widthSpec), height);
-        }
-
-        private int getChildHeight(RecyclerView.Recycler recycler, int widthSpec, int heightSpec) {
-            if (getChildCount() == 0) {
-                return 0;
-            }
-            View child = recycler.getViewForPosition(0);
-
-            RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) child.getLayoutParams();
-
-            int childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,
-                    getPaddingLeft() + getPaddingRight(), p.width);
-
-            int childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec,
-                    getPaddingTop() + getPaddingBottom(), p.height);
-
-            child.measure(childWidthSpec, childHeightSpec);
-            int height = child.getMeasuredHeight() + p.bottomMargin + p.topMargin;
-            recycler.recycleView(child);
-            return height;
         }
 
     }

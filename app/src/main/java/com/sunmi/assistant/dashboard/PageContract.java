@@ -43,7 +43,7 @@ public interface PageContract {
 
         int getType();
 
-        void refresh(boolean showLoading);
+        void refresh(boolean force, boolean showLoading);
 
         void setCondition(DashboardCondition condition);
 

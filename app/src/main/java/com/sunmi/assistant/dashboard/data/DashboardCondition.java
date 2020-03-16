@@ -17,6 +17,21 @@ public class DashboardCondition implements Parcelable {
     public boolean hasCustomer;
     public boolean hasFloating;
 
+    public DashboardCondition() {
+    }
+
+    public DashboardCondition(boolean hasSaas, boolean hasImport, boolean hasFs, boolean hasCustomer, boolean hasFloating) {
+        this.hasSaas = hasSaas;
+        this.hasImport = hasImport;
+        this.hasFs = hasFs;
+        this.hasCustomer = hasCustomer;
+        this.hasFloating = hasFloating;
+    }
+
+    public DashboardCondition copy() {
+        return new DashboardCondition(hasSaas, hasImport, hasFs, hasCustomer, hasFloating);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -62,9 +77,6 @@ public class DashboardCondition implements Parcelable {
         dest.writeByte(this.hasFs ? (byte) 1 : (byte) 0);
         dest.writeByte(this.hasCustomer ? (byte) 1 : (byte) 0);
         dest.writeByte(this.hasFloating ? (byte) 1 : (byte) 0);
-    }
-
-    public DashboardCondition() {
     }
 
     protected DashboardCondition(Parcel in) {

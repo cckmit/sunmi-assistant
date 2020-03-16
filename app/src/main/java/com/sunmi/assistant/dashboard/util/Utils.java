@@ -47,6 +47,7 @@ public class Utils {
     public static final String DATA_ZERO_RATIO = "0%";
 
     public static final long MILLIS_OF_DAY = 86_400_000;
+    public static final long MILLIS_OF_HOUR = 3_600_000;
 
     private static final DecimalFormat FORMAT_MAX_SINGLE_DECIMAL = new DecimalFormat("#.#");
     private static final DecimalFormat FORMAT_THOUSANDS_DOUBLE_DECIMAL = new DecimalFormat(",###,##0.00");
