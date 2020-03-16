@@ -226,9 +226,7 @@ public class Utils {
      */
     public static CharSequence formatNumber(Context context, double value, boolean isFloat, boolean highlight) {
         String result;
-        if (value < 0) {
-            result = DATA_NONE;
-        } else if (!CommonHelper.isGooglePlay()) {
+        if (!CommonHelper.isGooglePlay()) {
             // 国内版数据展示规则
             if (value > THRESHOLD_100MILLION) {
                 result = context.getString(R.string.str_num_100_million, value / THRESHOLD_100MILLION);
