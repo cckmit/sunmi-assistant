@@ -486,7 +486,6 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         }
         if (routerMacs.containsKey(device.getDeviceid())) {
             device.setMac(routerMacs.get(device.getDeviceid()));
-//            LogCat.e("dp", "888888 dev = " + DataSupport.where("deviceid = ?", device.getDeviceid()).find(SunmiDevice.class).toString());
             saveDevice(device);
         }
         if (context != null && !TextUtils.isEmpty(device.getDeviceid())

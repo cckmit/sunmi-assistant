@@ -46,10 +46,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_more"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/dp_30"
         android:layout_marginEnd="@dimen/dp_20"
+        android:layout_toEndOf="@+id/iv_device"
         android:ellipsize="end"
-        android:maxLength="20"
-        android:singleLine="true"
+        android:gravity="end"
+        android:maxLines="1"
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_14" />
 
