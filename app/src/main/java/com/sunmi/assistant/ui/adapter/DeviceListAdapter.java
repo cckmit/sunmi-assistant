@@ -10,6 +10,7 @@ import com.sunmi.assistant.R;
 import java.util.List;
 
 import sunmi.common.constant.enums.DeviceStatus;
+import sunmi.common.constant.enums.DeviceType;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.DeviceTypeUtils;
 
@@ -32,7 +33,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHol
     @Override
     protected void convert(BaseViewHolder holder, SunmiDevice item) {
         String model;
-        if ("POS".equals(item.getType()) && !TextUtils.isEmpty(item.getDisplayModel())) {
+        if (DeviceType.POS.equals(item.getType()) && !TextUtils.isEmpty(item.getDisplayModel())) {
             model = item.getDisplayModel();
         } else {
             model = item.getModel();

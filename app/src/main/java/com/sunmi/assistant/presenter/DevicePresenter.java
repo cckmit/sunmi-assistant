@@ -35,6 +35,7 @@ import sunmi.common.base.BaseApplication;
 import sunmi.common.base.BasePresenter;
 import sunmi.common.constant.CommonConfig;
 import sunmi.common.constant.enums.DeviceStatus;
+import sunmi.common.constant.enums.DeviceType;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.ShopListResp;
 import sunmi.common.model.SunmiDevice;
@@ -47,7 +48,6 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DBUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
-import sunmi.common.utils.log.LogCat;
 
 /**
  * Description:
@@ -55,6 +55,8 @@ import sunmi.common.utils.log.LogCat;
  */
 public class DevicePresenter extends BasePresenter<DeviceContract.View>
         implements DeviceContract.Presenter {
+    private Map<String, String> routerNames = new HashMap<>();
+    private Map<String, String> routerMacs = new HashMap<>();
 
     /**
      * 校验路由器是否配置
@@ -127,7 +129,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     device.setShopId(shopId);
                     device.setName("SUNMI-W1");
                     device.setModel("W1");
-                    device.setType("ROUTER");
+                    device.setType(DeviceType.ROUTER);
                     map.put(bean.getSn(), device);
                 }
             }
@@ -190,17 +192,17 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @Override
-    public void getRouterList() {
+    public void getRouterList(Context context) {
         CloudApi.getBindDeviceList(SpUtils.getShopId(), new RpcCallback(null) {
             @Override
             public void onSuccess(int code, String msg, String data) {
                 ThreadPool.getCachedThreadPool().submit(() -> {
-                    DBUtils.deleteSunmiDeviceByType("ROUTER");
+                    DBUtils.deleteSunmiDeviceByType(DeviceType.ROUTER);
                     List<SunmiDevice> list = new ArrayList<>();
                     try {
                         JSONArray jsonArray = new JSONArray(data);
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            list.add(getRouterDevice((JSONObject) jsonArray.opt(i)));
+                            list.add(getRouterDevice(context, (JSONObject) jsonArray.opt(i)));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -224,24 +226,26 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     @Override
     public void unbind(SunmiDevice device) {
         switch (device.getType()) {
-            case "ROUTER":
+            case DeviceType.ROUTER:
                 unbindRouter(device.getDeviceid());
                 break;
-            case "IPC":
+            case DeviceType.IPC:
                 unbindIPC(device.getId());
                 break;
-            case "PRINTER":
+            case DeviceType.PRINTER:
                 unbindPrinter(device.getDeviceid());
                 break;
         }
     }
 
     @Override
-    public void updateName(SunmiDevice device, final String name) {
+    public void updateName(Context context, SunmiDevice device, final String name) {
         switch (device.getType()) {
-            case "ROUTER":
+            case DeviceType.ROUTER:
+                APCall.getInstance().updateRouterName(context,
+                        device.getDeviceid(), device.getMac(), name);
                 break;
-            case "IPC":
+            case DeviceType.IPC:
                 changeIPCName(device, name);
                 break;
         }
@@ -254,7 +258,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 if (isViewAttached()) {
                     mView.shortTip(R.string.str_delete_success);
                     DBUtils.deleteSunmiDevice(sn);
-                    getRouterList();
+                    getRouterList(null);
                 }
             }
 
@@ -274,7 +278,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     @Override
                     public void onSuccess(int code, String msg, IpcListResp data) {
                         ThreadPool.getCachedThreadPool().submit(() -> {
-                            DBUtils.deleteSunmiDeviceByType("IPC");
+                            DBUtils.deleteSunmiDeviceByType(DeviceType.IPC);
                             List<SunmiDevice> list = new ArrayList<>();
                             if (data.getFs_list() != null && data.getFs_list().size() > 0) {
                                 for (IpcListResp.SsListBean bean : data.getFs_list()) {
@@ -334,7 +338,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             public void onSuccess(int code, String msg, String data) {
                 if (isViewAttached()) {
                     mView.endRefresh();
-                    DBUtils.deleteSunmiDeviceByType("PRINTER");
+                    DBUtils.deleteSunmiDeviceByType(DeviceType.PRINTER);
                     mView.getPrinterListSuccess(getList(data));
                 }
             }
@@ -354,7 +358,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             @Override
             public void onSuccess(int code, String msg, PosListResp data) {
                 ThreadPool.getCachedThreadPool().submit(() -> {
-                    DBUtils.deleteSunmiDeviceByType("POS");
+                    DBUtils.deleteSunmiDeviceByType(DeviceType.POS);
                     List<SunmiDevice> posList = new ArrayList<>();
                     if (data.getDeviceList().size() > 0) {
                         for (PosListResp.DeviceListBean bean : data.getDeviceList()) {
@@ -454,9 +458,9 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     }
 
     @NonNull
-    private SunmiDevice getRouterDevice(JSONObject object) throws JSONException {
+    private SunmiDevice getRouterDevice(Context context, JSONObject object) throws JSONException {
         SunmiDevice device = new SunmiDevice();
-        device.setType("ROUTER");
+        device.setType(DeviceType.ROUTER);
         if (object.has("sn")) {
             device.setDeviceid(object.getString("sn"));
         }
@@ -477,14 +481,25 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         } else {
             device.setShopId(SpUtils.getShopId());
         }
-        saveDevice(device);
+        if (routerNames.containsKey(device.getDeviceid())) {
+            device.setName(routerNames.get(device.getDeviceid()));
+        }
+        if (routerMacs.containsKey(device.getDeviceid())) {
+            device.setMac(routerMacs.get(device.getDeviceid()));
+//            LogCat.e("dp", "888888 dev = " + DataSupport.where("deviceid = ?", device.getDeviceid()).find(SunmiDevice.class).toString());
+            saveDevice(device);
+        }
+        if (context != null && !TextUtils.isEmpty(device.getDeviceid())
+                && device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
+            APCall.getInstance().getRouterForName(context, device.getDeviceid());
+        }
         return device;
     }
 
     @NonNull
     private SunmiDevice getIpcDevice(IpcListResp.SsListBean bean) {
         SunmiDevice device = new SunmiDevice();
-        device.setType("IPC");
+        device.setType(DeviceType.IPC);
         device.setStatus(bean.getActive_status());
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());
@@ -501,7 +516,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     @NonNull
     private SunmiDevice getPrinterDevice(JSONObject object) throws JSONException {
         SunmiDevice device = new SunmiDevice();
-        device.setType("PRINTER");
+        device.setType(DeviceType.PRINTER);
         device.setName(BaseApplication.getContext().getString(R.string.str_cloud_printer));
         device.setModel("NT211");
         if (object.has("msn")) {
@@ -525,7 +540,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
     @NonNull
     private SunmiDevice getPosDevice(PosListResp.DeviceListBean bean) {
         SunmiDevice device = new SunmiDevice();
-        device.setType("POS");
+        device.setType(DeviceType.POS);
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());
         device.setDisplayModel(bean.getDisplayModel());
@@ -562,6 +577,31 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                         }
                     }
                 });
+    }
+
+    public void setRouterInfo(List<SunmiDevice> list, final ResponseBean res) {
+        try {
+            JSONObject jsonObject2 = res.getResult();
+            JSONObject jsonObject3 = jsonObject2.getJSONObject("sonconnect");
+            JSONArray jsonArray = jsonObject3.getJSONArray("devices");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject devices = jsonArray.getJSONObject(i);
+                routerNames.put(devices.getString("devid"), devices.getString("location"));
+                routerMacs.put(devices.getString("devid"), devices.getString("mac"));
+            }
+            for (SunmiDevice sunmiDevice : list) {
+                if (routerNames.containsKey(sunmiDevice.getDeviceid())) {
+                    if (isViewAttached()) {
+                        mView.getRouterNameSuccess(sunmiDevice.getDeviceid(),
+                                routerNames.get(sunmiDevice.getDeviceid()),
+                                routerMacs.get(sunmiDevice.getDeviceid()));
+                        break;
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
