@@ -18,11 +18,13 @@ public interface DashboardContract {
 
         void setShopList(List<FilterItem> list);
 
-        void switchPerspective(int perspective);
-
         void setPages(List<PageHost> pages, int perspective);
 
         void setCondition(DashboardCondition condition);
+
+        void switchPerspective(int perspective, int shopId);
+
+        void switchShop(int shopId);
 
         void updateTab(int page, int period);
 
@@ -42,7 +44,9 @@ public interface DashboardContract {
 
         void load(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading);
 
-        void switchPerspective(int perspective, boolean refresh);
+        void switchPerspective(int perspective, int shopId, boolean refresh);
+
+        void switchShop(int shopId);
 
         void switchPeriod(int period, Interval periodTime);
 

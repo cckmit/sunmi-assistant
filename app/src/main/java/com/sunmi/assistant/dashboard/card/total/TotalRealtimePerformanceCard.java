@@ -329,7 +329,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
 
         @Override
         public void init(DashboardCondition condition) {
-            type = condition.hasSaas ? TYPE_SALES : TYPE_CUSTOMER;
+            type = condition.hasFs ? TYPE_CUSTOMER : TYPE_SALES;
             for (int i = 0, size = dataSets.size(); i < size; i++) {
                 int key = dataSets.keyAt(i);
                 dataSets.get(key).clear();

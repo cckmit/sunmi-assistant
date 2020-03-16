@@ -314,13 +314,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void switchPerspective(int perspective) {
-        this.mPerspective = perspective;
-        resetTop();
-        mShopMenuAdapter.switchPerspective(perspective);
-    }
-
-    @Override
     public void setPages(List<PageHost> pages, int perspective) {
         ArrayList<CustomTabEntity> tabs = new ArrayList<>(pages.size());
         for (PageHost page : pages) {
@@ -356,6 +349,18 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
         mNoFsTip.setVisibility(!condition.hasFs && condition.hasCustomer && !condition.hasFloating ?
                 View.VISIBLE : View.INVISIBLE);
         showContent();
+    }
+
+    @Override
+    public void switchPerspective(int perspective, int shopId) {
+        this.mPerspective = perspective;
+        resetTop();
+        mShopMenuAdapter.switchPerspective(perspective, shopId);
+    }
+
+    @Override
+    public void switchShop(int shopId) {
+        mShopMenuAdapter.switchShop(shopId);
     }
 
     @Override
@@ -556,8 +561,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mShopMenuAdapter.setCompanyName(SpUtils.getCompanyName());
         } else if (id == CommonNotifications.shopSwitched) {
             isInit = false;
-            mPresenter.load(Constants.FLAG_SAAS | Constants.FLAG_FS | Constants.FLAG_CUSTOMER | Constants.FLAG_BUNDLED_LIST,
-                    true, true, true);
+            mPresenter.switchShop(SpUtils.getShopId());
         } else if (id == CommonNotifications.shopNameChanged
                 || id == CommonNotifications.importShop
                 || id == CommonNotifications.shopCreate) {
@@ -570,7 +574,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
             mPresenter.load(Constants.FLAG_BUNDLED_LIST, true, true, true);
         } else if (id == CommonNotifications.perspectiveSwitch) {
             isInit = false;
-            mPresenter.switchPerspective(SpUtils.getPerspective(), true);
+            mPresenter.switchPerspective(SpUtils.getPerspective(), SpUtils.getShopId(), true);
         }
     }
 
