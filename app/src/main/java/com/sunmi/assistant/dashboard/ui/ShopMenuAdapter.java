@@ -104,12 +104,16 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
         }
     }
 
-    public void switchPerspective(int perspective) {
+    public void switchPerspective(int perspective, int shopId) {
         if (perspective == CommonConstants.PERSPECTIVE_TOTAL) {
             switchToTotalPerspective();
         } else if (perspective == CommonConstants.PERSPECTIVE_SHOP) {
-            switchToShopPerspective();
+            switchToShopPerspective(shopId);
         }
+    }
+
+    public void switchShop(int shopId) {
+        updateShopSelected(shopId);
     }
 
     /**
@@ -118,43 +122,43 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
     private void switchToTotalPerspective() {
         LogCat.d("yinhui", "adapter: switch to total.");
         isTotalPerspective = true;
-        getSelected().clear();
-        List<FilterItem> data = getData();
-        for (FilterItem item : data) {
-            item.setChecked(false);
-        }
-        notifyDataSetChanged();
-
+        updateShopSelected(-1);
+        updateCompanySelected(true);
         TextView title = getTitle().getView(R.id.dropdown_item_title);
         title.setText(SpUtils.getCompanyName());
-        DropdownMenuNew.ViewHolder<FilterItem> content = getContent();
-        if (content != null) {
-            SettingItemLayout silName = content.getView(R.id.sil_company);
-            silName.setChecked(true);
-        }
     }
 
     /**
      * 切换到门店视角
+     * @param shopId 门店ID
      */
-    private void switchToShopPerspective() {
+    private void switchToShopPerspective(int shopId) {
         LogCat.d("yinhui", "adapter: switch to shop.");
         isTotalPerspective = false;
+        updateShopSelected(shopId);
+        updateCompanySelected(false);
+    }
+
+    private void updateCompanySelected(boolean isSelected) {
         DropdownMenuNew.ViewHolder<FilterItem> content = getContent();
         if (content != null) {
             SettingItemLayout silName = content.getView(R.id.sil_company);
-            silName.setChecked(false);
+            silName.setChecked(isSelected);
         }
+    }
+
+    private void updateShopSelected(int shopId) {
+        getSelected().clear();
         List<FilterItem> list = getData();
-        int shopId = SpUtils.getShopId();
         for (int i = 0, size = list.size(); i < size; i++) {
             FilterItem item = list.get(i);
+            item.setChecked(false);
             if (item.getId() == shopId) {
                 setSelected(i);
-                break;
+                return;
             }
         }
-
+        notifyDataSetChanged();
     }
 
 }
