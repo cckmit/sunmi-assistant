@@ -193,7 +193,7 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
         if (dataType == type) {
             return;
         }
-        dmMotionSale.dismiss(true);
+        dmMotionSale.dismiss(false);
         dataType = type;
         setFilterData();
         adapter.notifyDataSetChanged();
