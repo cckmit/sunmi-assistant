@@ -19,6 +19,7 @@ import com.sunmi.ipc.view.activity.setting.IpcSettingSdcardActivity_;
 import java.util.List;
 import java.util.Map;
 
+import sunmi.common.constant.enums.DeviceType;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -198,7 +199,7 @@ public class MsgDetailAdapter extends BaseQuickAdapter<MessageListBean.MsgListBe
     @NonNull
     private SunmiDevice getIpcDevice(IpcListResp.SsListBean bean) {
         SunmiDevice device = new SunmiDevice();
-        device.setType("IPC");
+        device.setType(DeviceType.IPC);
         device.setStatus(bean.getActive_status());
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());
