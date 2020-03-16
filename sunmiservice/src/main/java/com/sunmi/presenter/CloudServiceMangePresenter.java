@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
+import sunmi.common.constant.enums.DeviceType;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.IpcCloudApiAnno;
 import sunmi.common.router.model.IpcListResp;
@@ -33,7 +34,7 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
     private HashMap<String, String> nameMap;
 
     public CloudServiceMangePresenter() {
-        devices = DataSupport.where("type=?", "IPC").find(SunmiDevice.class);
+        devices = DataSupport.where("type=?", DeviceType.IPC).find(SunmiDevice.class);
     }
 
     @Override
@@ -147,7 +148,7 @@ public class CloudServiceMangePresenter extends BasePresenter<CloudServiceMangeC
 
     private void getIpcDevice(IpcListResp.SsListBean bean) {
         SunmiDevice device = new SunmiDevice();
-        device.setType("IPC");
+        device.setType(DeviceType.IPC);
         device.setStatus(bean.getActive_status());
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());
