@@ -42,6 +42,7 @@ import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.model.IpcListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.http.HttpCallback;
+import sunmi.common.rpc.http.RpcCallback;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.DBUtils;
@@ -192,41 +193,34 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
 
     @Override
     public void getRouterList(Context context) {
-        CloudApi.getBindDeviceList(SpUtils.getShopId(), new HttpCallback<Object>(null) {
+        CloudApi.getBindDeviceList(SpUtils.getShopId(), new RpcCallback(null) {
             @Override
-            public void onSuccess(int code, String msg, Object data) {
+            public void onSuccess(int code, String msg, String data) {
+                ThreadPool.getCachedThreadPool().submit(() -> {
+                    DBUtils.deleteSunmiDeviceByType(DeviceType.ROUTER);
+                    List<SunmiDevice> list = new ArrayList<>();
+                    try {
+                        JSONArray jsonArray = new JSONArray(data);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            list.add(getRouterDevice(context, (JSONObject) jsonArray.opt(i)));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (isViewAttached()) {
+                        mView.endRefresh();
+                        mView.getRouterListSuccess(list);
+                    }
+                });
+            }
 
+            @Override
+            public void onError(int code, String msg, String data) {
+                if (isViewAttached()) {
+                    mView.endRefresh();
+                }
             }
         });
-
-//        new RpcCallback(null) {
-//            @Override
-//            public void onSuccess(int code, String msg, String data) {
-//                ThreadPool.getCachedThreadPool().submit(() -> {
-//                    DBUtils.deleteSunmiDeviceByType(DeviceType.ROUTER);
-//                    List<SunmiDevice> list = new ArrayList<>();
-//                    try {
-//                        JSONArray jsonArray = new JSONArray(data);
-//                        for (int i = 0; i < jsonArray.length(); i++) {
-//                            list.add(getRouterDevice(context, (JSONObject) jsonArray.opt(i)));
-//                        }
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (isViewAttached()) {
-//                        mView.endRefresh();
-//                        mView.getRouterListSuccess(list);
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onError(int code, String msg, String data) {
-//                if (isViewAttached()) {
-//                    mView.endRefresh();
-//                }
-//            }
-//        }
     }
 
     @Override
