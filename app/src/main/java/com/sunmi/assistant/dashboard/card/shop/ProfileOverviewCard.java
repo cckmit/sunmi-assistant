@@ -68,14 +68,14 @@ public class ProfileOverviewCard extends BaseRefreshCard<ProfileOverviewCard.Mod
 
     @Override
     protected void setupModel(Model model, CustomerDataResp response) {
-        model.unknownCustomer = response.getLatestEntryHeadCount();
-        model.lastUnknownCustomer = response.getEarlyEntryHeadCount();
-        model.customer = response.getLatestPassengerCount() + model.unknownCustomer;
-        model.lastCustomer = response.getEarlyPassengerCount() + model.lastUnknownCustomer;
-        model.newCustomer = response.getLatestStrangerPassengerCount();
-        model.lastNewCustomer = response.getEarlyStrangerPassengerCount();
-        model.oldCustomer = response.getLatestRegularPassengerCount();
-        model.lastOldCustomer = response.getEarlyRegularPassengerCount();
+        model.unknownCustomer = Math.max(0, response.getLatestEntryHeadCount());
+        model.lastUnknownCustomer = Math.max(0, response.getEarlyEntryHeadCount());
+        model.customer = Math.max(0, response.getLatestPassengerCount() + model.unknownCustomer);
+        model.lastCustomer = Math.max(0, response.getEarlyPassengerCount() + model.lastUnknownCustomer);
+        model.newCustomer = Math.max(0, response.getLatestStrangerPassengerCount());
+        model.lastNewCustomer = Math.max(0, response.getEarlyStrangerPassengerCount());
+        model.oldCustomer = Math.max(0, response.getLatestRegularPassengerCount());
+        model.lastOldCustomer = Math.max(0, response.getEarlyRegularPassengerCount());
     }
 
     @NonNull

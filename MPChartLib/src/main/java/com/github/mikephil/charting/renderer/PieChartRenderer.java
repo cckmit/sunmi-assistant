@@ -512,7 +512,7 @@ public class PieChartRenderer extends DataRenderer {
                 float value = mChart.isUsePercentValuesEnabled() ? entry.getY()
                         / yValueSum * 100f : entry.getY();
                 float valuePercent = entry.getY() / yValueSum;
-                if (valuePercent < dataSet.getDrawValuesAbove()) {
+                if (valuePercent <= dataSet.getDrawValuesAbove()) {
                     xIndex++;
                     continue;
                 }

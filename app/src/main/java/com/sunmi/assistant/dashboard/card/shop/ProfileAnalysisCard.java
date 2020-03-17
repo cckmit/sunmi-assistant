@@ -329,9 +329,9 @@ public class ProfileAnalysisCard extends BaseRefreshCard<ProfileAnalysisCard.Mod
             this.age = age;
             this.gender = gender;
             this.name = name;
-            this.count = count;
-            this.oldCount = oldCount;
-            this.uniqueCount = uniqueCount;
+            this.count = Math.max(0, count);
+            this.oldCount = Math.max(0, oldCount);
+            this.uniqueCount = Math.max(0, uniqueCount);
             this.state = STATE_NORMAL;
         }
 

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.widget.TextView;
 
 import com.sunmi.assistant.R;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.List;
 
@@ -120,7 +121,7 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
      * 切换到总部视角
      */
     private void switchToTotalPerspective() {
-        LogCat.d("yinhui", "adapter: switch to total.");
+        LogCat.i(Utils.TAG, "adapter: switch to total.");
         isTotalPerspective = true;
         updateShopSelected(-1);
         updateCompanySelected(true);
@@ -133,7 +134,7 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
      * @param shopId 门店ID
      */
     private void switchToShopPerspective(int shopId) {
-        LogCat.d("yinhui", "adapter: switch to shop.");
+        LogCat.i(Utils.TAG, "adapter: switch to shop.");
         isTotalPerspective = false;
         updateShopSelected(shopId);
         updateCompanySelected(false);
