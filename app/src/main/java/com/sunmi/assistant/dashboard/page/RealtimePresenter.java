@@ -177,7 +177,7 @@ public class RealtimePresenter extends BasePresenter<RealtimeContract.View>
         mPeriod = period;
         mPeriodTime = periodTime;
         for (BaseRefreshCard card : mList) {
-            card.setPeriod(period, periodTime, false);
+            card.setPeriod(period, periodTime, true);
         }
         if (isViewAttached()) {
             mView.updateTab(period);
