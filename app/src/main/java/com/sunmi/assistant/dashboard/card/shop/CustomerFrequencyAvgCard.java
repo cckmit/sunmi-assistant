@@ -213,7 +213,6 @@ public class CustomerFrequencyAvgCard extends BaseRefreshCard<CustomerFrequencyA
             list.add(model.ageMap.valueAt(i));
         }
         mAdapter.setData(list);
-        mAdapter.notifyDataSetChanged();
         holder.itemView.post(() -> {
             mAdapter.notifyDataSetChanged();
             holder.getView(R.id.lv_dashboard_list).requestLayout();
