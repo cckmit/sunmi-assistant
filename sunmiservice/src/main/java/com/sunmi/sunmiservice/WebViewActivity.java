@@ -129,8 +129,7 @@ public class WebViewActivity extends BaseActivity
         webView.setWebViewClient(new SMWebViewClient(this) {
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("alipays:") || url.startsWith("alipay")) {
                     try {
                         startActivity(new Intent("android.intent.action.VIEW", Uri.parse(url)));

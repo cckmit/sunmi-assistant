@@ -138,8 +138,7 @@ public class PrinterManageActivity extends BaseActivity implements SMWebChromeCl
         // 不用启动客户端的浏览器来加载未加载出来的数据
         webView.setWebViewClient(new SMWebViewClient(this) {
             @Override
-            public boolean shouldOverrideUrlLoading(final WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.contains(CommonConfig.SERVICE_H5_URL)) {
                     titleBar.setVisibility(View.GONE);
                 } else {

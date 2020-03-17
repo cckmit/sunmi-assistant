@@ -2,7 +2,6 @@ package com.sunmi.assistant.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -17,7 +16,7 @@ import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
-import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity;
+import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity_;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
@@ -89,6 +88,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     RelativeLayout rlShopTitle;
     @ViewById(R.id.tv_shop_title)
     TextView tvShopTitle;
+
     private RelativeLayout rlNoDevice;
     private ShopTitlePopupWindow popupWindow;
     private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
@@ -98,6 +98,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private InputDialog dialogPassword = null;
     private String password = "";    //路由管理密码
     private SunmiDevice clickedDevice;
+    private String routerSn, routerNewName;//保存路由器的sn和名称，用户本地更新列表
 
     private List<SunmiDevice> routerList = new ArrayList<>();
     private List<SunmiDevice> ipcList = new ArrayList<>();
@@ -422,50 +423,14 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 shortTip(getString(R.string.str_cannot_manager_device));
             }
         } else if (type == 3) {
-            if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
-                updateDeviceName(device);
-            } else {
+            if ((TextUtils.equals(device.getType(), DeviceType.ROUTER)
+                    && device.getStatus() != DeviceStatus.ONLINE.ordinal())
+                    || !IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
                 shortTip(R.string.str_cannot_update_name);
+            } else {
+                updateDeviceName(device);
             }
         }
-    }
-
-    private void updateDeviceName(SunmiDevice device) {
-        new InputDialog.Builder(mActivity)
-                .setTitle(R.string.str_comment_name)
-                .setHint(R.string.tip_input_comment_name)
-                .setInitInputContent(device.getName())
-                .setInputWatcher(new InputDialog.TextChangeListener() {
-                    @Override
-                    public void onTextChange(EditText view, Editable s) {
-                        if (TextUtils.isEmpty(s.toString())) {
-                            return;
-                        }
-                        String name = s.toString().trim();
-                        if (name.getBytes(Charset.defaultCharset()).length > 36) {
-                            shortTip(R.string.ipc_setting_tip_name_length);
-                            do {
-                                name = name.substring(0, name.length() - 1);
-                            } while (name.getBytes(Charset.defaultCharset()).length > 36);
-                            view.setText(name);
-                            view.setSelection(name.length());
-                        }
-                    }
-                })
-                .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
-                    if (input.trim().getBytes(Charset.defaultCharset()).length > 36) {
-                        shortTip(R.string.ipc_setting_tip_name_length);
-                        return;
-                    }
-                    if (input.trim().length() == 0) {
-                        shortTip(R.string.ipc_setting_tip_name_empty);
-                        return;
-                    }
-                    showLoadingDialog();
-                    mPresenter.updateName(mActivity, device, input);
-                    dialog.dismiss();
-                }).create().show();
     }
 
     @Override
@@ -554,10 +519,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             hideLoadingDialog();
             ResponseBean res = (ResponseBean) args[0];
             if (TextUtils.equals("0", res.getErrCode())) {
-                mPresenter.getRouterList(mActivity);
+                mPresenter.updateCacheData(routerSn, routerNewName);
             } else {
                 shortTip(R.string.ipc_setting_fail);
             }
+            routerSn = "";
+            routerNewName = "";
         }
     }
 
@@ -679,11 +646,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     private void gotoRouterManager(String sn, int status) {
-        Bundle bundle = new Bundle();
-        bundle.putString("shopId", SpUtils.getShopId() + "");
-        bundle.putString("sn", sn);
-        bundle.putInt("status", status);
-        openActivity(mActivity, RouterManagerActivity.class, bundle);
+        RouterManagerActivity_.intent(mActivity).shopId(SpUtils.getShopId()).sn(sn).status(status).start();
     }
 
     private void deleteDevice(SunmiDevice device) {
@@ -716,6 +679,46 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         new CommonDialog.Builder(mActivity)
                 .setTitle(R.string.str_dialog_net_disconnected)
                 .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss()).create().show();
+    }
+
+    private void updateDeviceName(SunmiDevice device) {
+        new InputDialog.Builder(mActivity)
+                .setTitle(R.string.str_comment_name)
+                .setHint(R.string.str_tip_input32)
+                .setInitInputContent(device.getName())
+                .setInputWatcher(new InputDialog.TextChangeListener() {
+                    @Override
+                    public void onTextChange(EditText view, Editable s) {
+                        if (TextUtils.isEmpty(s.toString())) {
+                            return;
+                        }
+                        String name = s.toString().trim();
+                        if (name.getBytes(Charset.defaultCharset()).length > 32) {
+                            shortTip(R.string.ipc_setting_tip_name_length);
+                            do {
+                                name = name.substring(0, name.length() - 1);
+                            } while (name.getBytes(Charset.defaultCharset()).length > 32);
+                            view.setText(name);
+                            view.setSelection(name.length());
+                        }
+                    }
+                })
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
+                    if (input.trim().getBytes(Charset.defaultCharset()).length > 32) {
+                        shortTip(R.string.ipc_setting_tip_name_length);
+                        return;
+                    }
+                    if (input.trim().length() == 0) {
+                        shortTip(R.string.ipc_setting_tip_name_empty);
+                        return;
+                    }
+                    showLoadingDialog();
+                    routerSn = device.getDeviceid();
+                    routerNewName = input;
+                    mPresenter.updateName(mActivity, device, input);
+                    dialog.dismiss();
+                }).create().show();
     }
 
 }

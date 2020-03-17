@@ -127,7 +127,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     device.setDeviceid(bean.getSn());
                     device.setStatus(bean.getActiveStatus());
                     device.setShopId(shopId);
-                    device.setName("SUNMI-W1");
+                    device.setName(bean.getSn());
                     device.setModel("W1");
                     device.setType(DeviceType.ROUTER);
                     map.put(bean.getSn(), device);
@@ -463,6 +463,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         device.setType(DeviceType.ROUTER);
         if (object.has("sn")) {
             device.setDeviceid(object.getString("sn"));
+            device.setName(object.getString("sn"));
         }
         if (object.has("active_status")) {
             device.setStatus(object.getInt("active_status"));
@@ -474,7 +475,6 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         }
         if (object.has("model")) {
             device.setModel(object.getString("model"));
-            device.setName(object.getString("model"));
         }
         if (object.has("shop_id")) {
             device.setShopId(object.getInt("shop_id"));
@@ -600,6 +600,18 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 更新路由器名称
+     */
+    public void updateCacheData(String sn, String newName) {
+        if (routerNames.containsKey(sn)) {
+            routerNames.put(sn, newName);
+        }
+        if (isViewAttached()) {
+            mView.getRouterNameSuccess(sn, newName, "");
         }
     }
 
