@@ -241,7 +241,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
         new InputDialog.Builder(context)
                 .setTitle(R.string.dialog_title_input_ipc_name)
-                .setHint(R.string.tip_input_len_36)
+                .setHint(R.string.str_tip_input32)
                 .setInitInputContent(mDevice.getName())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
