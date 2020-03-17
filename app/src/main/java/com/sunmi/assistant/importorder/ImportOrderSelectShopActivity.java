@@ -89,8 +89,8 @@ public class ImportOrderSelectShopActivity extends BaseActivity {
                         if (importOrderType == CommonConstants.IMPORT_ORDER_FROM_COMMON) {
                             Router.withApi(AppApi.class).goToMain(context);
                         } else {
-                            Router.withApi(SunmiServiceApi.class)
-                                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams());
+                            Router.withApi(SunmiServiceApi.class).goToWebViewCloudSingle(context,
+                                    CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams(null, 0));
                         }
                     }
 

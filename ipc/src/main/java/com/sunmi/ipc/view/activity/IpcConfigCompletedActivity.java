@@ -32,6 +32,7 @@ import java.util.List;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.enums.DeviceType;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.AppApi;
@@ -149,7 +150,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             } else {
                 if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
                     Router.withApi(SunmiServiceApi.class)
-                            .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams());
+                            .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO,
+                                    WebViewParamsUtils.getCashVideoParams(null, 0));
                 } else {
                     Router.withApi(AppApi.class).goToMain(context);
                 }
@@ -161,7 +163,8 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     void finishClick() {
         if (source == CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO) {
             Router.withApi(SunmiServiceApi.class)
-                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO, WebViewParamsUtils.getCashVideoParams());
+                    .goToWebViewCloudSingle(context, CommonConstants.H5_CASH_VIDEO,
+                            WebViewParamsUtils.getCashVideoParams(null, 0));
         } else {
             Router.withApi(AppApi.class).goToMain(context, this::finish);
         }
@@ -411,7 +414,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     private SunmiDevice getSunmiDevice(IpcListResp.SsListBean bean) {
         SunmiDevice device = new SunmiDevice();
-        device.setType("IPC");
+        device.setType(DeviceType.IPC);
         device.setStatus(bean.getActive_status());
         device.setDeviceid(bean.getSn());
         device.setModel(bean.getModel());

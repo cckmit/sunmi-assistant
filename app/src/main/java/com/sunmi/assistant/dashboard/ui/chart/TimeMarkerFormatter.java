@@ -3,7 +3,7 @@ package com.sunmi.assistant.dashboard.ui.chart;
 import android.content.Context;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.Utils;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -15,10 +15,12 @@ import java.util.Locale;
 public class TimeMarkerFormatter implements IMarkerFormatter {
 
     public static final int VALUE_TYPE_INTEGER = 0;
-    public static final int VALUE_TYPE_RATE = 1;
+    public static final int VALUE_TYPE_FLOAT = 1;
+    public static final int VALUE_TYPE_RATE = 2;
 
     public static final int TIME_TYPE_HOUR = 1;
     public static final int TIME_TYPE_HOUR_SPAN = 2;
+    public static final int TIME_TYPE_HOUR_TOTAL_SPAN = 21;
     public static final int TIME_TYPE_WEEK = 3;
     public static final int TIME_TYPE_DATE = 4;
     public static final int TIME_TYPE_DATE_SPAN = 5;
@@ -33,7 +35,7 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
 
     public TimeMarkerFormatter(Context context) {
         weekName = context.getResources().getStringArray(R.array.week_name);
-        timeLabel = context.getString(R.string.dashboard_card_marker_time);
+        timeLabel = context.getString(R.string.dashboard_var_time);
     }
 
     public void setValueType(int valueType) {
@@ -50,6 +52,9 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
         switch (valueType) {
             case VALUE_TYPE_INTEGER:
                 result = String.format(Locale.getDefault(), "%.0f", value);
+                break;
+            case VALUE_TYPE_FLOAT:
+                result = String.format(Locale.getDefault(), "%.2f", value);
                 break;
             case VALUE_TYPE_RATE:
                 result = Utils.formatPercent(value, true, true);
@@ -78,6 +83,10 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
             case TIME_TYPE_HOUR_SPAN:
                 hour = temp.get(Calendar.HOUR_OF_DAY);
                 valueStr = String.format(Locale.getDefault(), "%02d:00-%02d:00", hour, hour + 1);
+                break;
+            case TIME_TYPE_HOUR_TOTAL_SPAN:
+                hour = temp.get(Calendar.HOUR_OF_DAY);
+                valueStr = String.format(Locale.getDefault(), "00:00-%02d:00", hour);
                 break;
             case TIME_TYPE_WEEK:
                 valueStr = weekName[temp.get(Calendar.DAY_OF_WEEK) - 1];

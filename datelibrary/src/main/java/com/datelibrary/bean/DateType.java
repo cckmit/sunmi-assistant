@@ -10,7 +10,9 @@ public enum DateType {
     TYPE_YMDHM("yyyy-MM-dd hh:mm"),//年、月、日、时、分
     TYPE_YMDH("yyyy-MM-dd hh"),//年、月、日、时
     TYPE_YMD("yyyy-MM-dd"),//年、月、日
-    TYPE_HM("hh:mm");//时、分
+    TYPE_YM("yyyy-MM"),//年,月
+    TYPE_HM("hh:mm"),//时、分
+    TYPE_YW("yyyy-ww"); //年，周
 
     private String format;
 

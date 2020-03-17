@@ -170,6 +170,7 @@ dependencies {
     implementation project(':apmanager')
     implementation project(':cloudprinter')
     implementation project(':MPChartLib')
+    implementation project(':datelibrary')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
@@ -181,9 +182,6 @@ dependencies {
     implementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
 
     implementation 'com.youth.banner:banner:1.4.10'  //最新版本
-
-    //wechat
-    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
 
     annotationProcessor "com.github.xiaojinzi123.Component:component-compiler:${CVersion}"
 

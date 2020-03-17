@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_24"
-        android:text="@string/dashboard_card_title_distribution"
+        android:text="@string/dashboard_title_distribution"
         android:textColor="@color/text_main"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
@@ -19,12 +19,24 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/tv_dashboard_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_2"
+        android:text="@string/dashboard_tip_customer_distribution"
+        android:textColor="@color/text_caption"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
+
+    <TextView
         android:id="@+id/tv_dashboard_new_old"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_12"
         android:gravity="center"
-        android:text="@string/dashboard_card_tab_new_old"
+        android:text="@string/dashboard_var_new_old"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
@@ -36,7 +48,7 @@
         android:layout_height="@dimen/dp_32"
         android:layout_marginEnd="@dimen/dp_12"
         android:gravity="center"
-        android:text="@string/dashboard_card_tab_gender"
+        android:text="@string/dashboard_var_gender"
         android:textColor="@color/dashboard_btn_chart_text"
         android:textSize="@dimen/sp_12"
         app:layout_constraintBaseline_toBaselineOf="@+id/tv_dashboard_title"
@@ -64,6 +76,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_dashboard_tip" />
 
 </android.support.constraint.ConstraintLayout>

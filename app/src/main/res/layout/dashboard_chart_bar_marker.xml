@@ -15,7 +15,7 @@
         android:id="@+id/tv_dashboard_marker_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dashboard_card_tab_rate"
+        android:text="@string/dashboard_var_transaction_rate_abbr"
         android:textColor="@color/text_caption"
         android:textSize="@dimen/sp_10" />
 

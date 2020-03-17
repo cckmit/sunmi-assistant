@@ -16,6 +16,12 @@ public class CommonConstants {
             CommonHelper.getAppPackageName(BaseApplication.getContext()) + ".fileprovider";
     public static Map<String, SunmiDevice> SUNMI_DEVICE_MAP = new ConcurrentHashMap<>();
 
+    /**
+     * 视角（总部视角/门店视角）
+     */
+    public static final int PERSPECTIVE_TOTAL = 1;
+    public static final int PERSPECTIVE_SHOP = 2;
+
     public static long LONGITUDE;//精度
     public static long LATITUDE;//纬度
 
@@ -68,8 +74,8 @@ public class CommonConstants {
     public static final int RESULT_FAIL = 0;
 
     //服务类型
-    public static final int SERVICE_TYPE_CLOUD_7 =1;
-    public static final int SERVICE_TYPE_CLOUD_30 =2;
+    public static final int SERVICE_TYPE_CLOUD_7 = 1;
+    public static final int SERVICE_TYPE_CLOUD_30 = 2;
     public static final int SERVICE_TYPE_LOAN = 6;
 
     public static final int SERVICE_STATUS_UNABLE = 1;
@@ -82,5 +88,10 @@ public class CommonConstants {
     public static final String H5_CLOUD_RENEW = CommonConfig.SERVICE_H5_URL + "cloudStorage/subscribeService";
     public static final String H5_AGREEMENT = CommonConfig.SERVICE_H5_URL + "privacyManagement";
     public static final String H5_CASH_PREVENT_LOSS = CommonConfig.SERVICE_H5_URL + "cashPreventLoss";
-    public static final String H5_LOAN = CommonConfig.SUNMI_H5_URL +"jie/";
+    public static final String H5_LOAN = CommonConfig.SUNMI_H5_URL + "jie/";
+    public static final String H5_SERVICE_MANAGER = CommonConfig.SERVICE_H5_URL + "serviceManagement";
+    public static final String H5_CASH_VIDEO_RENEW = CommonConfig.SERVICE_H5_URL + "cashvideo/service";
+    public static final String H5_CASH_PREVENT_RENEW = CommonConfig.SERVICE_H5_URL + "cashPreventLoss/confirmOrder";
+    public static final String H5_SERVICE_COURSE = CommonConfig.SERVICE_H5_URL + "dinglive/dinghome";
+
 }

@@ -2,6 +2,7 @@ package sunmi.common.view.webview;
 
 import android.app.Activity;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Message;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
@@ -68,6 +69,9 @@ public abstract class SMWebViewClient extends WebViewClient {
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            LogCat.e("smwebviewclient", "onReceivedError error = " + error.getDescription().toString());
+        }
         receiverError(view, request, error);
     }
 

@@ -54,6 +54,7 @@ public class DropdownAnimNew implements DropdownMenuNew.Anim {
 
     @Override
     public void onPreShow(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
+        menu.setVisibility(View.VISIBLE);
         overlay.setVisibility(View.VISIBLE);
         if (menus != null) {
             for (DropdownMenuNew item : menus) {
@@ -81,10 +82,11 @@ public class DropdownAnimNew implements DropdownMenuNew.Anim {
     @Override
     public void onPostDismiss(DropdownMenuNew.ViewHolder titleHolder, View menu, View overlay) {
         ImageView arrow = (ImageView) titleHolder.getView(R.id.dropdown_arrow);
+        menu.setVisibility(View.INVISIBLE);
         menu.setTranslationY(-menu.getHeight());
+        overlay.setVisibility(View.INVISIBLE);
         overlay.setAlpha(0f);
         arrow.setRotation(0);
-        overlay.setVisibility(View.INVISIBLE);
     }
 
     @Override

@@ -21,6 +21,7 @@ import com.sunmi.assistant.R;
 
 import java.util.List;
 
+import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.notification.BaseNotification;
@@ -164,8 +165,13 @@ public class ShopTitlePopupWindow extends PopupWindow implements View.OnTouchLis
                 mSetTitleView.setText(shopInfo.getShopName());
                 SpUtils.setShopId(shopInfo.getShopId());
                 SpUtils.setShopName(shopInfo.getShopName());
-                BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
-                BaseNotification.newInstance().postNotificationName(CommonNotifications.shopNameChanged);
+                if (SpUtils.getPerspective() == CommonConstants.PERSPECTIVE_TOTAL) {
+                    SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
+                } else {
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.shopSwitched);
+                    BaseNotification.newInstance().postNotificationName(CommonNotifications.shopNameChanged);
+                }
                 dismiss();
                 setImageBackground();
             });
