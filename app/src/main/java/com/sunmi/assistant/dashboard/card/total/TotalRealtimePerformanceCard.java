@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.Callback;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
+import com.sunmi.assistant.dashboard.data.DashboardModelImpl;
 import com.sunmi.assistant.dashboard.subpage.PerformanceRankActivity_;
 import com.sunmi.assistant.dashboard.util.Utils;
 
@@ -25,13 +27,19 @@ import sunmi.common.base.adapter.CommonAdapter;
 import sunmi.common.base.adapter.ViewHolder;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
+import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CustomerHistoryTrendResp;
 import sunmi.common.model.CustomerShopDataResp;
 import sunmi.common.model.Interval;
+import sunmi.common.model.ShopInfo;
 import sunmi.common.model.TotalRealTimeShopSalesResp;
+import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
+import sunmi.common.view.dialog.CommonDialog;
 
 /**
  * @author yinhui
@@ -45,6 +53,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     private static final int TYPE_SALES = 1;
 
     private DetailListAdapter mAdapter;
+    private SparseArray<ShopInfo> shopList;
 
     private TotalRealtimePerformanceCard(Presenter presenter, DashboardCondition condition, int period, Interval periodTime) {
         super(presenter, condition, period, periodTime);
@@ -76,11 +85,22 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     @Override
     protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, Interval periodTime,
                                                                 CardCallback callback) {
-        if (mCondition.hasFs) {
-            loadCustomer(companyId, callback);
-        } else if (mCondition.hasSaas) {
-            loadSales(companyId, callback);
-        }
+        DashboardModelImpl.get().loadShopList(companyId, new Callback<SparseArray<ShopInfo>>() {
+            @Override
+            public void onLoaded(SparseArray<ShopInfo> result) {
+                shopList = result;
+                if (mCondition.hasFs) {
+                    loadCustomer(companyId, callback);
+                } else if (mCondition.hasSaas) {
+                    loadSales(companyId, callback);
+                }
+            }
+
+            @Override
+            public void onFail() {
+                callback.onFail(-1, "Load shop list failed.", null);
+            }
+        });
         return null;
     }
 
@@ -100,7 +120,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                         int max = Math.min(5, list.size());
                         for (int i = 0; i < max; i++) {
                             CustomerShopDataResp.Item item = list.get(i);
-                            dataSet.add(new Item(item.getShopName(), Math.max(0, item.getTotalCount())));
+                            dataSet.add(new Item(item.getShopId(), item.getShopName(), Math.max(0, item.getTotalCount())));
                         }
                         if (mCondition.hasSaas) {
                             loadSales(companyId, callback);
@@ -131,7 +151,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                 int max = Math.min(5, list.size());
                 for (int i = 0; i < max; i++) {
                     TotalRealTimeShopSalesResp.Item item = list.get(i);
-                    dataSet.add(new Item(item.getShopName(), (float) item.getOrderAmount()));
+                    dataSet.add(new Item(item.getShopId(), item.getShopName(), (float) item.getOrderAmount()));
                 }
                 callback.onSuccess();
             }
@@ -161,12 +181,11 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                 updateViews();
             }
         });
-        holder.addOnClickListener(R.id.btn_more, (holder1, model, position) -> {
-            PerformanceRankActivity_.intent(context).mCondition(mCondition).start();
-        });
+        holder.addOnClickListener(R.id.btn_more, (holder1, model, position) ->
+                PerformanceRankActivity_.intent(context).mCondition(mCondition).start());
 
         ListView lv = holder.getView(R.id.lv_dashboard_list);
-        mAdapter = new DetailListAdapter(context);
+        mAdapter = new DetailListAdapter(context, shopList);
         lv.setDivider(ContextCompat.getDrawable(context, R.color.transparent));
         lv.setDividerHeight((int) context.getResources().getDimension(R.dimen.dp_8));
         lv.setAdapter(mAdapter);
@@ -234,9 +253,17 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     private static class DetailListAdapter extends CommonAdapter<Item> {
 
         private int type;
+        private final SparseArray<ShopInfo> shopList;
 
-        private DetailListAdapter(Context context) {
+        private CommonDialog denyDialog;
+
+        private DetailListAdapter(Context context, SparseArray<ShopInfo> shopList) {
             super(context, R.layout.dashboard_item_total_realtime_performance_item);
+            this.shopList = shopList;
+            denyDialog = new CommonDialog.Builder(context)
+                    .setTitle(R.string.ipc_setting_tip)
+                    .setMessage(R.string.dashboard_tip_no_shop)
+                    .setConfirmButton(R.string.str_confirm).create();
         }
 
         @Override
@@ -246,6 +273,22 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                 return;
             }
             showContent(holder);
+            holder.getConvertView().setOnClickListener(v -> {
+                if (shopList.indexOfKey(item.shopId) < 0) {
+                    denyDialog.show();
+                } else {
+                    new CommonDialog.Builder(v.getContext())
+                            .setTitle(R.string.ipc_setting_tip)
+                            .setMessage(R.string.dashboard_tip_subpage)
+                            .setCancelButton(R.string.sm_cancel)
+                            .setConfirmButton(R.string.sm_watch, (dialog, which) -> {
+                                SpUtils.setShopId(item.shopId);
+                                SpUtils.setShopName(item.shopName);
+                                SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+                                BaseNotification.newInstance().postNotificationName(CommonNotifications.perspectiveSwitch);
+                            }).create().show();
+                }
+            });
 
             TextView tvRank = holder.getView(R.id.tv_rank);
             TextView tvTitle = holder.getView(R.id.tv_title);
@@ -261,7 +304,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                 tvValue.setText(Utils.DATA_NONE);
             } else {
                 tvRank.setText(String.valueOf(holder.getPosition() + 1));
-                tvTitle.setText(item.name);
+                tvTitle.setText(item.shopName);
                 tvValue.setText(Utils.formatNumber(mContext, item.value, type == TYPE_SALES, true));
             }
         }
@@ -282,6 +325,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
             View skeleton = holder.getView(R.id.view_skeleton);
             content.setVisibility(View.INVISIBLE);
             skeleton.setVisibility(View.VISIBLE);
+            holder.getConvertView().setOnClickListener(null);
         }
     }
 
@@ -293,14 +337,16 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
 
         private int state = STATE_NORMAL;
 
-        private String name;
+        private int shopId;
+        private String shopName;
         private float value;
 
         private Item() {
         }
 
-        public Item(String name, float value) {
-            this.name = name;
+        public Item(int shopId, String shopName, float value) {
+            this.shopId = shopId;
+            this.shopName = shopName;
             this.value = value;
         }
 
@@ -312,11 +358,12 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
             this.state = STATE_ERROR;
         }
 
-        @NonNull
         @Override
+        @NonNull
         public String toString() {
             return "Item{" +
-                    "name='" + name + '\'' +
+                    "shopId=" + shopId +
+                    ", shopName='" + shopName + '\'' +
                     ", value=" + value +
                     '}';
         }
