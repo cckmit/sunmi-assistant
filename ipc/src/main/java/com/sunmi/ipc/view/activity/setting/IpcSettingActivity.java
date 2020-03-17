@@ -57,7 +57,7 @@ import sunmi.common.view.dialog.InputDialog;
 public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         implements IpcSettingContract.View {
 
-    private static final int IPC_NAME_MAX_LENGTH = 36;
+    private static final int IPC_NAME_MAX_LENGTH = 32;
     private static final int REQUEST_CODE_WIFI = 1004;
     private static final int REQUEST_CODE_ROTATE = 1005;
     private static final int REQUEST_COMPLETE = 1000;

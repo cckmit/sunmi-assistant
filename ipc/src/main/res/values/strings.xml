@@ -41,8 +41,8 @@
     <string name="ipc_setting_open">Open</string>
     <string name="ipc_setting_close">Close</string>
     <string name="ipc_setting_name">IPC Name</string>
-    <string name="ipc_setting_tip_name_length">Camera name cannot exceed 36 characters</string>
-    <string name="ipc_setting_tip_name_empty">Camera name cannot be empty or blank</string>
+    <string name="ipc_setting_tip_name_length">Name cannot exceed 32 characters</string>
+    <string name="ipc_setting_tip_name_empty">Name cannot be empty or blank</string>
     <string name="ipc_setting_detail">IPC Details</string>
     <string name="ipc_setting_detail_model">IPC Model</string>
     <string name="ipc_setting_detail_sn">IPC SN</string>

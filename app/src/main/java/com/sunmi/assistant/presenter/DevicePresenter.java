@@ -463,6 +463,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         device.setType(DeviceType.ROUTER);
         if (object.has("sn")) {
             device.setDeviceid(object.getString("sn"));
+            device.setName(object.getString("sn"));
         }
         if (object.has("active_status")) {
             device.setStatus(object.getInt("active_status"));
@@ -474,7 +475,6 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         }
         if (object.has("model")) {
             device.setModel(object.getString("model"));
-            device.setName(object.getString("model"));
         }
         if (object.has("shop_id")) {
             device.setShopId(object.getInt("shop_id"));

@@ -89,6 +89,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     RelativeLayout rlShopTitle;
     @ViewById(R.id.tv_shop_title)
     TextView tvShopTitle;
+
     private RelativeLayout rlNoDevice;
     private ShopTitlePopupWindow popupWindow;
     private List<SunmiDevice> deviceList = new ArrayList<>();//设备列表全集
@@ -430,44 +431,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         }
     }
 
-    private void updateDeviceName(SunmiDevice device) {
-        new InputDialog.Builder(mActivity)
-                .setTitle(R.string.str_comment_name)
-                .setHint(R.string.tip_input_comment_name)
-                .setInitInputContent(device.getName())
-                .setInputWatcher(new InputDialog.TextChangeListener() {
-                    @Override
-                    public void onTextChange(EditText view, Editable s) {
-                        if (TextUtils.isEmpty(s.toString())) {
-                            return;
-                        }
-                        String name = s.toString().trim();
-                        if (name.getBytes(Charset.defaultCharset()).length > 36) {
-                            shortTip(R.string.ipc_setting_tip_name_length);
-                            do {
-                                name = name.substring(0, name.length() - 1);
-                            } while (name.getBytes(Charset.defaultCharset()).length > 36);
-                            view.setText(name);
-                            view.setSelection(name.length());
-                        }
-                    }
-                })
-                .setCancelButton(R.string.sm_cancel)
-                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
-                    if (input.trim().getBytes(Charset.defaultCharset()).length > 36) {
-                        shortTip(R.string.ipc_setting_tip_name_length);
-                        return;
-                    }
-                    if (input.trim().length() == 0) {
-                        shortTip(R.string.ipc_setting_tip_name_empty);
-                        return;
-                    }
-                    showLoadingDialog();
-                    mPresenter.updateName(mActivity, device, input);
-                    dialog.dismiss();
-                }).create().show();
-    }
-
     @Override
     public void onBGARefreshLayoutBeginRefreshing(BGARefreshLayout refreshLayout) {
         loadData();
@@ -716,6 +679,44 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         new CommonDialog.Builder(mActivity)
                 .setTitle(R.string.str_dialog_net_disconnected)
                 .setCancelButton(R.string.str_confirm, (dialog, which) -> dialog.dismiss()).create().show();
+    }
+
+    private void updateDeviceName(SunmiDevice device) {
+        new InputDialog.Builder(mActivity)
+                .setTitle(R.string.str_comment_name)
+                .setHint(R.string.tip_input_comment_name)
+                .setInitInputContent(device.getName())
+                .setInputWatcher(new InputDialog.TextChangeListener() {
+                    @Override
+                    public void onTextChange(EditText view, Editable s) {
+                        if (TextUtils.isEmpty(s.toString())) {
+                            return;
+                        }
+                        String name = s.toString().trim();
+                        if (name.getBytes(Charset.defaultCharset()).length > 32) {
+                            shortTip(R.string.ipc_setting_tip_name_length);
+                            do {
+                                name = name.substring(0, name.length() - 1);
+                            } while (name.getBytes(Charset.defaultCharset()).length > 32);
+                            view.setText(name);
+                            view.setSelection(name.length());
+                        }
+                    }
+                })
+                .setCancelButton(R.string.sm_cancel)
+                .setConfirmButton(R.string.str_confirm, (dialog, input) -> {
+                    if (input.trim().getBytes(Charset.defaultCharset()).length > 32) {
+                        shortTip(R.string.ipc_setting_tip_name_length);
+                        return;
+                    }
+                    if (input.trim().length() == 0) {
+                        shortTip(R.string.ipc_setting_tip_name_empty);
+                        return;
+                    }
+                    showLoadingDialog();
+                    mPresenter.updateName(mActivity, device, input);
+                    dialog.dismiss();
+                }).create().show();
     }
 
 }
