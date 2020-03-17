@@ -177,6 +177,11 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
             }
         }
         model.dataSet.add(new BarEntry(max + 1, count));
+        if (model.period == Constants.TIME_PERIOD_DAY) {
+            model.setPadding(0, 0, 0, paddingBottom);
+        } else {
+            model.setPadding(0, 0, 0, 0);
+        }
     }
 
     @Override
@@ -185,11 +190,9 @@ public class CustomerFrequencyDistributionCard extends BaseRefreshCard<CustomerF
         ConstraintLayout layout = holder.getView(R.id.layout_frequency_chart);
         if (model.period == Constants.TIME_PERIOD_DAY) {
             layout.setBackgroundResource(R.drawable.dashboard_bg_white_radius);
-            model.setPadding(0, 0, 0, paddingBottom);
             chart.getXAxis().setAxisMinimum(0f);
         } else {
             layout.setBackgroundResource(R.drawable.dashboard_bg_top_white_radius);
-            model.setPadding(0, 0, 0, 0);
             chart.getXAxis().setAxisMinimum(-0.5f);
         }
         List<BarEntry> dataSet = model.dataSet;
