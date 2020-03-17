@@ -344,11 +344,13 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
             set.setColors(colors);
             set.setDrawValues(!isEmpty);
             set.setValues(values);
+            set.setDrawValuesAbove(model.type == Constants.DATA_TYPE_AGE ? 0.05f : 0f);
             data.notifyDataChanged();
             pie.notifyDataSetChanged();
         } else {
             set = new PieDataSet(values, "data");
             setupDataSet(pie, set, colors, isEmpty);
+            set.setDrawValuesAbove(model.type == Constants.DATA_TYPE_AGE ? 0.05f : 0f);
             data = new PieData(set);
             pie.setData(data);
         }
@@ -431,7 +433,6 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
         PieChartMarkerView marker = new PieChartMarkerView(pie.getContext());
         marker.setChartView(pie);
         set.setValueMarker(marker);
-        set.setDrawValuesAbove(0.05f);
     }
 
     public static class OnPieSelectedListener implements OnChartValueSelectedListener {
