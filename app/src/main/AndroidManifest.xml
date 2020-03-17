@@ -127,9 +127,6 @@
             android:name=".ui.activity.login.LoginChooseShopActivity_"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.ChooseShopActivity_"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.activity.merchant.CreateCompanyActivity_"
             android:screenOrientation="portrait" />
         <activity

@@ -21,7 +21,6 @@ import com.sunmi.assistant.dashboard.ui.chart.TimeMarkerFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelFormatter;
 import com.sunmi.assistant.dashboard.ui.chart.XAxisLabelRenderer;
 import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelFormatter;
-import com.sunmi.assistant.dashboard.ui.chart.YAxisVolumeLabelsRenderer;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
 
@@ -57,7 +56,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
     private static final int TYPE_SALES = 1;
 
     private XAxisLabelRenderer lineXAxisRenderer;
-    private YAxisVolumeLabelsRenderer lineYAxisRenderer;
+    //    private YAxisVolumeLabelsRenderer lineYAxisRenderer;
     private LineChartMarkerView mLineChartMarker;
     private TimeMarkerFormatter mMarkerFormatter;
 
@@ -109,9 +108,9 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
         // 设置图表渲染器，格式化器，自定义浮窗
         lineXAxisRenderer = new XAxisLabelRenderer(lineChart);
         lineXAxisRenderer.setPeriod(Constants.TIME_PERIOD_DAY, 0);
-        lineYAxisRenderer = new YAxisVolumeLabelsRenderer(lineChart);
         lineChart.setXAxisRenderer(lineXAxisRenderer);
-        lineChart.setRendererLeftYAxis(lineYAxisRenderer);
+//        lineYAxisRenderer = new YAxisVolumeLabelsRenderer(lineChart);
+//        lineChart.setRendererLeftYAxis(lineYAxisRenderer);
 
         lineChart.getXAxis().setValueFormatter(new XAxisLabelFormatter(context));
         lineChart.getAxisLeft().setValueFormatter(new YAxisVolumeLabelFormatter(context));
@@ -194,7 +193,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
                             for (TotalRealtimeSalesTrendResp.Item item : list) {
                                 long time = Utils.parseTime(Utils.FORMAT_API_TIME, item.getTime()) + Utils.MILLIS_OF_HOUR;
                                 float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time);
-                                dataSet.add(new ChartEntry(x, (float) Math.max(0, item.getOrderAmount()), time));
+                                dataSet.add(new ChartEntry(x, (float) item.getOrderAmount(), time));
                             }
                         } catch (DateTimeException e) {
                             e.printStackTrace();
@@ -254,8 +253,14 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
         Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(Constants.TIME_PERIOD_DAY);
         line.getXAxis().setAxisMinimum(xAxisRange.first);
         line.getXAxis().setAxisMaximum(xAxisRange.second + 1);
-        float maxAxis = lineYAxisRenderer.setMaxValue(max);
-        line.getAxisLeft().setAxisMaximum(maxAxis);
+        if (model.type == TYPE_CUSTOMER) {
+            line.getAxisLeft().setAxisMinimum(0f);
+        } else {
+            line.getAxisLeft().resetAxisMinimum();
+        }
+//        float maxAxis = lineYAxisRenderer.setMaxValue(max);
+//        line.getAxisLeft().setAxisMaximum(maxAxis);
+//        line.getAxisLeft().setAxisMinimum();
 
         // Get color of line
         int color;

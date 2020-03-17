@@ -63,17 +63,17 @@ public class TotalCustomerOverviewCard extends BaseRefreshCard<TotalCustomerOver
 
     @Override
     protected void setupModel(Model model, TotalCustomerDataResp response) {
-        int count = response.getPassengerCount();
-        int earlyCount = response.getEarlyPassengerCount();
-        int head = response.getPassHeadCount();
-        int earlHead = response.getEarlyPassHeadCount();
+        int count = Math.max(0, response.getPassengerCount());
+        int earlyCount = Math.max(0, response.getEarlyPassengerCount());
+        int head = Math.max(0, response.getPassHeadCount());
+        int earlHead = Math.max(0, response.getEarlyPassHeadCount());
         model.count = count;
-        if (count > 0 && head >= 0) {
+        if (count > 0) {
             model.enterRate = (float) count / (count + head);
         } else {
             model.enterRate = 0;
         }
-        if (earlyCount > 0 && count >= 0) {
+        if (earlyCount > 0) {
             model.compareCount = (float) (count - earlyCount) / earlyCount;
         } else if (count > 0) {
             model.compareCount = null;
@@ -81,7 +81,7 @@ public class TotalCustomerOverviewCard extends BaseRefreshCard<TotalCustomerOver
             model.compareCount = 0f;
         }
         float earlyRate;
-        if (earlyCount > 0 && earlHead >= 0) {
+        if (earlyCount > 0) {
             earlyRate = (float) earlyCount / (earlyCount + earlHead);
         } else {
             earlyRate = 0;

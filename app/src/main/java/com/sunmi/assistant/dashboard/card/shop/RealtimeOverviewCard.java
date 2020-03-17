@@ -110,14 +110,14 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                         }
                         Model model = getModel();
                         if (period == Constants.TIME_PERIOD_DAY) {
-                            model.volume = data.getDayCount();
-                            model.lastVolume = data.getYesterdayCount();
+                            model.volume = Math.max(0, data.getDayCount());
+                            model.lastVolume = Math.max(0, data.getYesterdayCount());
                         } else if (period == Constants.TIME_PERIOD_WEEK) {
-                            model.volume = data.getWeekCount();
-                            model.lastVolume = data.getLastWeekCount();
+                            model.volume = Math.max(0, data.getWeekCount());
+                            model.lastVolume = Math.max(0, data.getLastWeekCount());
                         } else {
-                            model.volume = data.getMonthCount();
-                            model.lastVolume = data.getLastMonthCount();
+                            model.volume = Math.max(0, data.getMonthCount());
+                            model.lastVolume = Math.max(0, data.getLastMonthCount());
                         }
                         if (mCondition.hasFs) {
                             loadCustomer(companyId, shopId, period, periodTime, callback);
@@ -143,8 +143,8 @@ public class RealtimeOverviewCard extends BaseRefreshCard<RealtimeOverviewCard.M
                             return;
                         }
                         Model model = getModel();
-                        model.customer = data.getLatestCount() + data.getLatestEntryHeadCount();
-                        model.lastCustomer = data.getEarlyCount() + data.getEarlyEntryHeadCount();
+                        model.customer = Math.max(0, data.getLatestCount() + data.getLatestEntryHeadCount());
+                        model.lastCustomer = Math.max(0, data.getEarlyCount() + data.getEarlyEntryHeadCount());
                         if (mCondition.hasSaas) {
                             model.rate = model.customer == 0 ?
                                     0f : Math.min((float) model.volume / model.customer, 1f);

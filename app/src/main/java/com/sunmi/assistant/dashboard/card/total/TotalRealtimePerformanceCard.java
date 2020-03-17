@@ -100,7 +100,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                         int max = Math.min(5, list.size());
                         for (int i = 0; i < max; i++) {
                             CustomerShopDataResp.Item item = list.get(i);
-                            dataSet.add(new Item(item.getShopName(), item.getTotalCount()));
+                            dataSet.add(new Item(item.getShopName(), Math.max(0, item.getTotalCount())));
                         }
                         if (mCondition.hasSaas) {
                             loadSales(companyId, callback);
@@ -131,7 +131,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                 int max = Math.min(5, list.size());
                 for (int i = 0; i < max; i++) {
                     TotalRealTimeShopSalesResp.Item item = list.get(i);
-                    dataSet.add(new Item(item.getShopName(), (float) Math.max(0, item.getOrderAmount())));
+                    dataSet.add(new Item(item.getShopName(), (float) item.getOrderAmount()));
                 }
                 callback.onSuccess();
             }
@@ -250,6 +250,10 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
             TextView tvRank = holder.getView(R.id.tv_rank);
             TextView tvTitle = holder.getView(R.id.tv_title);
             TextView tvValue = holder.getView(R.id.tv_value);
+
+            tvRank.setSelected(holder.getPosition() == 0);
+            tvTitle.setSelected(holder.getPosition() == 0);
+            tvValue.setSelected(holder.getPosition() == 0);
 
             if (item.state == Item.STATE_ERROR) {
                 tvRank.setText(Utils.DATA_NONE);

@@ -161,16 +161,18 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
                         List<PieEntry> ageList = model.dataSets.get(Constants.DATA_TYPE_AGE);
                         newOldList.clear();
                         ageList.clear();
-                        int newCount = 0;
-                        int oldCount = 0;
+                        int totalNew = 0;
+                        int totalOld = 0;
                         for (CustomerAgeNewOldResp.CountListBean bean : list) {
-                            newCount += bean.getStrangerCount();
-                            oldCount += bean.getRegularCount();
-                            int ageCount = bean.getRegularCount() + bean.getStrangerCount();
+                            int newCount = Math.max(0, bean.getStrangerCount());
+                            int oldCount = Math.max(0, bean.getRegularCount());
+                            totalNew += newCount;
+                            totalOld += oldCount;
+                            int ageCount = newCount + oldCount;
                             ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode()).getName() + mAgeLabel));
                         }
-                        newOldList.add(new PieEntry(newCount, mNewLabel));
-                        newOldList.add(new PieEntry(oldCount, mOldLabel));
+                        newOldList.add(new PieEntry(totalNew, mNewLabel));
+                        newOldList.add(new PieEntry(totalOld, mOldLabel));
                         loadGender(companyId, shopId, start, end, callback);
                     }
 
@@ -198,14 +200,14 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
                         Model model = getModel();
                         List<PieEntry> genderList = model.dataSets.get(Constants.DATA_TYPE_GENDER);
                         genderList.clear();
-                        int maleCount = 0;
-                        int femaleCount = 0;
+                        int totalMale = 0;
+                        int totalFemale = 0;
                         for (CustomerAgeGenderResp.CountListBean bean : list) {
-                            maleCount += bean.getMaleCount();
-                            femaleCount += bean.getFemaleCount();
+                            totalMale += Math.max(0, bean.getMaleCount());
+                            totalFemale += Math.max(0, bean.getFemaleCount());
                         }
-                        genderList.add(new PieEntry(maleCount, mMaleLabel));
-                        genderList.add(new PieEntry(femaleCount, mFemaleLabel));
+                        genderList.add(new PieEntry(totalMale, mMaleLabel));
+                        genderList.add(new PieEntry(totalFemale, mFemaleLabel));
                         callback.onSuccess();
                     }
 
@@ -342,11 +344,13 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
             set.setColors(colors);
             set.setDrawValues(!isEmpty);
             set.setValues(values);
+            set.setDrawValuesAbove(model.type == Constants.DATA_TYPE_AGE ? 0.05f : 0f);
             data.notifyDataChanged();
             pie.notifyDataSetChanged();
         } else {
             set = new PieDataSet(values, "data");
             setupDataSet(pie, set, colors, isEmpty);
+            set.setDrawValuesAbove(model.type == Constants.DATA_TYPE_AGE ? 0.05f : 0f);
             data = new PieData(set);
             pie.setData(data);
         }
@@ -361,8 +365,6 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = mPeriod;
-        model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
         PieData data = pie.getData();
@@ -387,8 +389,6 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = mPeriod;
-        model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
         PieData data = pie.getData();
@@ -433,7 +433,6 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
         PieChartMarkerView marker = new PieChartMarkerView(pie.getContext());
         marker.setChartView(pie);
         set.setValueMarker(marker);
-        set.setDrawValuesAbove(0.05f);
     }
 
     public static class OnPieSelectedListener implements OnChartValueSelectedListener {
@@ -528,18 +527,14 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
             }
         }
 
-        public void random() {
-            List<PieEntry> entries = dataSets.get(Constants.DATA_TYPE_NEW_OLD);
-            for (PieEntry entry : entries) {
-                entry.setY((int) (Math.random() * 1000));
+        @NonNull
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("RealtimeDistributionModel:").append(super.toString()).append("\n");
+            for (int i = 0, size = dataSets.size(); i < size; i++) {
+                sb.append(dataSets.keyAt(i)).append(": ").append(dataSets.valueAt(i)).append("\n");
             }
-
-            dataSets.get(Constants.DATA_TYPE_GENDER).clear();
-
-            entries = dataSets.get(Constants.DATA_TYPE_AGE);
-            for (PieEntry entry : entries) {
-                entry.setY((int) (Math.random() * 1000));
-            }
+            return sb.toString();
         }
     }
 }
