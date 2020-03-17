@@ -69,23 +69,23 @@ public class CustomerOverviewCard extends BaseRefreshCard<CustomerOverviewCard.M
 
     @Override
     protected void setupModel(Model model, CustomerDataResp response) {
-        int latestCount = response.getLatestPassengerCount();
-        int latestHeadCount = response.getLatestEntryHeadCount();
-        int earlyCount = response.getEarlyPassengerCount();
-        int earlyHeadCount = response.getEarlyEntryHeadCount();
-        int latestPassCount = response.getLatestPassPassengerCount();
-        int earlyPassCont = response.getEarlyPassPassengerCount();
-        int latestUniq = response.getLatestUniqPassengerCount();
-        int earlyUniq = response.getEarlyUniqPassengerCount();
+        int latestCount = Math.max(0, response.getLatestPassengerCount());
+        int latestHeadCount = Math.max(0, response.getLatestEntryHeadCount());
+        int earlyCount = Math.max(0, response.getEarlyPassengerCount());
+        int earlyHeadCount = Math.max(0, response.getEarlyEntryHeadCount());
+        int latestPassCount = Math.max(0, response.getLatestPassPassengerCount());
+        int earlyPassCont = Math.max(0, response.getEarlyPassPassengerCount());
+        int latestUniq = Math.max(0, response.getLatestUniqPassengerCount());
+        int earlyUniq = Math.max(0, response.getEarlyUniqPassengerCount());
 
         model.latestCount = latestCount + latestHeadCount;
         model.earlyCount = earlyCount + earlyHeadCount;
-        if (model.latestCount > 0 && latestPassCount >= 0) {
+        if (model.latestCount > 0) {
             model.latestEnterRate = (float) model.latestCount / (model.latestCount + latestPassCount);
         } else {
             model.latestEnterRate = 0;
         }
-        if (model.earlyCount > 0 && earlyPassCont >= 0) {
+        if (model.earlyCount > 0) {
             model.earlyEnterRate = (float) model.earlyCount / (model.earlyCount + earlyPassCont);
         } else {
             model.earlyEnterRate = 0;

@@ -100,7 +100,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                         int max = Math.min(5, list.size());
                         for (int i = 0; i < max; i++) {
                             CustomerShopDataResp.Item item = list.get(i);
-                            dataSet.add(new Item(item.getShopName(), item.getTotalCount()));
+                            dataSet.add(new Item(item.getShopName(), Math.max(0, item.getTotalCount())));
                         }
                         if (mCondition.hasSaas) {
                             loadSales(companyId, callback);
@@ -131,7 +131,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
                 int max = Math.min(5, list.size());
                 for (int i = 0; i < max; i++) {
                     TotalRealTimeShopSalesResp.Item item = list.get(i);
-                    dataSet.add(new Item(item.getShopName(), (float) Math.max(0, item.getOrderAmount())));
+                    dataSet.add(new Item(item.getShopName(), (float) item.getOrderAmount()));
                 }
                 callback.onSuccess();
             }

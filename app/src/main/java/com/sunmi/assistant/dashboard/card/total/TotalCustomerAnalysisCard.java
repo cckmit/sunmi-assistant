@@ -173,13 +173,15 @@ public class TotalCustomerAnalysisCard extends BaseRefreshCard<TotalCustomerAnal
                 }
                 String ageName = mAgeList.get(item.getAgeRangeCode()).getName();
                 String name;
+                int count = Math.max(0, item.getUniqCount());
+                int oldCount = Math.max(0, item.getRegularUniqCount());
                 if (item.getGender() == Constants.GENDER_MALE) {
                     name = String.format("%s  |  %s%s", mMaleLabel, ageName, mAgeLabel);
                 } else {
                     name = String.format("%s  |  %s%s", mFemaleLabel, ageName, mAgeLabel);
                 }
-                result.add(new Item(item.getAgeRangeCode(), item.getGender(), name, item.getUniqCount(), item.getRegularUniqCount()));
-                total += item.getUniqCount();
+                result.add(new Item(item.getAgeRangeCode(), item.getGender(), name, count, oldCount));
+                total += count;
             }
             Collections.sort(result, (o1, o2) -> o2.count - o1.count);
             if (result.size() > MAX_ITEM_COUNT) {

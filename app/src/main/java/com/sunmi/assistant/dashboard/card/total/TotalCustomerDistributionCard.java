@@ -157,16 +157,18 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
                         List<PieEntry> ageList = model.dataSets.get(Constants.DATA_TYPE_AGE);
                         newOldList.clear();
                         ageList.clear();
-                        int newCount = 0;
-                        int oldCount = 0;
-                        for (CountListBean item : list) {
-                            newCount += item.getStrangerUniqCount();
-                            oldCount += item.getRegularUniqCount();
-                            int ageCount = item.getStrangerUniqCount() + item.getRegularUniqCount();
-                            ageList.add(new PieEntry(ageCount, mAgeList.get(item.getAgeRangeCode()).getName() + mAgeLabel));
+                        int totalNew = 0;
+                        int totalOld = 0;
+                        for (CountListBean bean : list) {
+                            int newCount = Math.max(0, bean.getStrangerUniqCount());
+                            int oldCount = Math.max(0, bean.getRegularUniqCount());
+                            totalNew += newCount;
+                            totalOld += oldCount;
+                            int ageCount = newCount + oldCount;
+                            ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode()).getName() + mAgeLabel));
                         }
-                        newOldList.add(new PieEntry(newCount, mNewLabel));
-                        newOldList.add(new PieEntry(oldCount, mOldLabel));
+                        newOldList.add(new PieEntry(totalNew, mNewLabel));
+                        newOldList.add(new PieEntry(totalOld, mOldLabel));
                         loadGender(companyId, period, time, callback);
                     }
 
@@ -199,9 +201,9 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
                         for (CountListBean item : list) {
                             int gender = item.getGender();
                             if (gender == Constants.GENDER_MALE) {
-                                maleCount += item.getUniqCount();
+                                maleCount += Math.max(0, item.getUniqCount());
                             } else {
-                                femaleCount += item.getUniqCount();
+                                femaleCount += Math.max(0, item.getUniqCount());
                             }
                         }
                         genderList.add(new PieEntry(maleCount, mMaleLabel));

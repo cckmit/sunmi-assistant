@@ -161,16 +161,18 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
                         List<PieEntry> ageList = model.dataSets.get(Constants.DATA_TYPE_AGE);
                         newOldList.clear();
                         ageList.clear();
-                        int newCount = 0;
-                        int oldCount = 0;
+                        int totalNew = 0;
+                        int totalOld = 0;
                         for (CustomerAgeNewOldResp.CountListBean bean : list) {
-                            newCount += bean.getStrangerCount();
-                            oldCount += bean.getRegularCount();
-                            int ageCount = bean.getRegularCount() + bean.getStrangerCount();
+                            int newCount = Math.max(0, bean.getStrangerCount());
+                            int oldCount = Math.max(0, bean.getRegularCount());
+                            totalNew += newCount;
+                            totalOld += oldCount;
+                            int ageCount = newCount + oldCount;
                             ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode()).getName() + mAgeLabel));
                         }
-                        newOldList.add(new PieEntry(newCount, mNewLabel));
-                        newOldList.add(new PieEntry(oldCount, mOldLabel));
+                        newOldList.add(new PieEntry(totalNew, mNewLabel));
+                        newOldList.add(new PieEntry(totalOld, mOldLabel));
                         loadGender(companyId, shopId, start, end, callback);
                     }
 
@@ -198,14 +200,14 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
                         Model model = getModel();
                         List<PieEntry> genderList = model.dataSets.get(Constants.DATA_TYPE_GENDER);
                         genderList.clear();
-                        int maleCount = 0;
-                        int femaleCount = 0;
+                        int totalMale = 0;
+                        int totalFemale = 0;
                         for (CustomerAgeGenderResp.CountListBean bean : list) {
-                            maleCount += bean.getMaleCount();
-                            femaleCount += bean.getFemaleCount();
+                            totalMale += Math.max(0, bean.getMaleCount());
+                            totalFemale += Math.max(0, bean.getFemaleCount());
                         }
-                        genderList.add(new PieEntry(maleCount, mMaleLabel));
-                        genderList.add(new PieEntry(femaleCount, mFemaleLabel));
+                        genderList.add(new PieEntry(totalMale, mMaleLabel));
+                        genderList.add(new PieEntry(totalFemale, mFemaleLabel));
                         callback.onSuccess();
                     }
 
