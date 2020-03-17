@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_8"
-            android:text="@string/dashboard_card_title_customer_frequency_trend_week"
+            android:text="@string/dashboard_title_frequency_trend_week"
             android:textColor="@color/text_normal"
             android:textSize="@dimen/sp_12"
             app:layout_constraintStart_toStartOf="parent"

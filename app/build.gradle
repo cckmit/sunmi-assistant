@@ -170,6 +170,7 @@ dependencies {
     implementation project(':apmanager')
     implementation project(':cloudprinter')
     implementation project(':MPChartLib')
+    implementation project(':datelibrary')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

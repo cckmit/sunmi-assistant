@@ -2,9 +2,13 @@ package com.sunmi.assistant.dashboard;
 
 import android.content.Context;
 
+import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.data.DashboardCondition;
+
 import java.util.List;
 
 import sunmi.common.base.BaseView;
+import sunmi.common.model.Interval;
 
 /**
  * @author yinhui
@@ -14,9 +18,9 @@ public interface PageContract {
 
     interface ParentPresenter {
 
-        void onChildCreate(int pageType, PagePresenter presenter);
+        DashboardCondition onChildCreate(PagePresenter presenter);
 
-        void refresh(boolean forceReload, boolean showLoading);
+        void refresh(boolean reloadCondition, boolean clearCache, boolean onlyCurrentPage, boolean showLoading);
 
     }
 
@@ -24,28 +28,32 @@ public interface PageContract {
 
         Context getContext();
 
+        int getPerspective();
+
         void updateTab(int period);
 
         void setCards(List<BaseRefreshCard> data);
 
-        void scrollToTop();
+        void scrollToTop(boolean animated);
     }
 
     interface PagePresenter {
 
-        void load();
-
-        void setSource(int source, boolean showLoading);
-
-        void setPeriod(int period);
-
-        void scrollToTop();
-
-        void refresh(boolean showLoading);
+        void init();
 
         int getType();
 
+        void refresh(boolean force, boolean showLoading);
+
+        void setCondition(DashboardCondition condition);
+
+        void setPeriod(int period, Interval periodTime);
+
+        void scrollToTop(boolean animated);
+
         int getPeriod();
+
+        Interval getPeriodTime();
 
         void release();
     }

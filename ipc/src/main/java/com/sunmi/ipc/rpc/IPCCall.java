@@ -110,7 +110,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = OpcodeConstants.fsZoom;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize(), 18);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -131,7 +131,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = OpcodeConstants.fsFocus;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize(), 13);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -163,7 +163,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = OpcodeConstants.fsAutoFocus;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize(), 13);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -186,7 +186,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = OpcodeConstants.fsReset;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize(), 18);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -205,7 +205,7 @@ public class IPCCall extends BaseIpcApi {
             object.put("sn", sn);
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize(), 8);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -231,7 +231,7 @@ public class IPCCall extends BaseIpcApi {
             int opCode = OpcodeConstants.fsSetLine;
             RequestBean requestBean = new RequestBean(Utils.getMsgId(),
                     "0x" + Integer.toHexString(opCode), object);
-            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize());
+            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize(), 8);
         } catch (Exception e) {
             e.printStackTrace();
         }

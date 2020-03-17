@@ -195,7 +195,7 @@ public class WebViewCloudServiceActivity extends BaseActivity
                     } catch (Exception e) {
                         try {
                             new CommonDialog.Builder(context)
-                                    .setTitle(R.string.dialog_title_install_alipay)
+                                    .setTitle(R.string.dialog_title_install_dingding)
                                     .setConfirmButton(R.string.str_install_now, (dialog, which) -> {
                                         startActivity(new Intent("android.intent.action.VIEW",
                                                 Uri.parse("https://www.dingtalk.com/android/d/lang=zh_CN")));
@@ -249,7 +249,9 @@ public class WebViewCloudServiceActivity extends BaseActivity
 
             @Override
             protected void receiverError(WebView view, WebResourceRequest request, WebResourceError error) {
-                loadError();
+                if (request.isForMainFrame()) {
+                    loadError();
+                }
             }
         });
     }

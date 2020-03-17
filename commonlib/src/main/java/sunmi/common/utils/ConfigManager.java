@@ -39,6 +39,7 @@ public class ConfigManager implements BaseNotification.NotificationCenterDelegat
         clearLoaded();
         BaseNotification.newInstance().addStickObserver(this, CommonNotifications.shopSwitched);
         BaseNotification.newInstance().addStickObserver(this, CommonNotifications.companySwitch);
+        BaseNotification.newInstance().addStickObserver(this, CommonNotifications.perspectiveSwitch);
     }
 
     public void load(@Nullable Callback<?> callback) {
@@ -94,7 +95,9 @@ public class ConfigManager implements BaseNotification.NotificationCenterDelegat
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.shopSwitched || id == CommonNotifications.companySwitch) {
+        if (id == CommonNotifications.shopSwitched
+                || id == CommonNotifications.companySwitch
+                || id == CommonNotifications.perspectiveSwitch) {
             load(null);
         }
     }

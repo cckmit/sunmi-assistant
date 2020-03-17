@@ -1,21 +1,23 @@
 package sunmi.common.model;
 
-import org.jetbrains.annotations.NotNull;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.Objects;
 
 /**
- * 时间区间Model类
+ * 区间Model类，多表示时间戳
  *
  * @author yinhui
  * @date 2019-12-24
  */
-public class Interval<T> {
+public class Interval implements Parcelable {
 
-    public T start;
-    public T end;
+    public long start;
+    public long end;
 
-    public Interval(T start, T end) {
+    public Interval(long start, long end) {
         this.start = start;
         this.end = end;
     }
@@ -25,21 +27,53 @@ public class Interval<T> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Interval)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Interval<?> i = (Interval<?>) o;
-        return Objects.equals(start, i.start) && Objects.equals(end, i.end);
+        Interval interval = (Interval) o;
+        return start == interval.start && end == interval.end;
     }
 
     @Override
     public int hashCode() {
-        return (start == null ? 0 : start.hashCode() << 16) ^ (end == null ? 0 : end.hashCode());
+        return Objects.hash(start, end);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public String toString() {
-        return "Interval{start=" + start + ", end=" + end + '}';
+        return "Interval{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
     }
+
+    protected Interval(Parcel in) {
+        start = in.readLong();
+        end = in.readLong();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(start);
+        dest.writeLong(end);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Interval> CREATOR = new Creator<Interval>() {
+        @Override
+        public Interval createFromParcel(Parcel in) {
+            return new Interval(in);
+        }
+
+        @Override
+        public Interval[] newArray(int size) {
+            return new Interval[size];
+        }
+    };
+
 }

@@ -127,9 +127,6 @@
             android:name=".ui.activity.login.LoginChooseShopActivity_"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activity.ChooseShopActivity_"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ui.activity.merchant.CreateCompanyActivity_"
             android:screenOrientation="portrait" />
         <activity
@@ -207,6 +204,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".pos.PosGuaranteeActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.subpage.PerformanceRankActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".dashboard.subpage.CustomerDistributionActivity_"
             android:screenOrientation="portrait" />
 
         <meta-data

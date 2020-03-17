@@ -46,6 +46,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import sunmi.common.constant.CommonConfig;
+import sunmi.common.model.CompanyIpcListResp;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.router.IpcCloudApiAnno;
 import sunmi.common.router.model.IpcListResp;
@@ -168,6 +169,25 @@ public class IpcCloudApi implements IpcCloudApiAnno {
     }
 
     /**
+     * 获取商户下所有门店的IPC列表
+     *
+     * @param companyId 商户ID
+     * @param callback  回调
+     */
+    public void getCompanyIpcList(int companyId, RetrofitCallback<CompanyIpcListResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
+                    .getCompanyIpcList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 更新IPC名称
      *
      * @param companyId  是	int64	商户id
@@ -269,19 +289,10 @@ public class IpcCloudApi implements IpcCloudApiAnno {
     /**
      * -------------------- 人脸库相关 --------------------
      */
-    public void getFaceAgeRange(int companyId, int shopId,
-                                RetrofitCallback<FaceAgeRangeResp> callback) {
-        try {
-            String params = new JSONObject()
-                    .put("company_id", companyId)
-                    .put("shop_id", shopId)
-                    .toString();
-            SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
-                    .getAgeRange(new BaseRequest(params))
-                    .enqueue(callback);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+    public void getFaceAgeRange(RetrofitCallback<FaceAgeRangeResp> callback) {
+        SunmiStoreRetrofitClient.getInstance().create(FaceInterface.class)
+                .getAgeRange(new BaseRequest(""))
+                .enqueue(callback);
     }
 
     public Call<BaseResponse<FaceListResp>> getFaceList(

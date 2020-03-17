@@ -16,6 +16,12 @@ public class CommonConstants {
             CommonHelper.getAppPackageName(BaseApplication.getContext()) + ".fileprovider";
     public static Map<String, SunmiDevice> SUNMI_DEVICE_MAP = new ConcurrentHashMap<>();
 
+    /**
+     * 视角（总部视角/门店视角）
+     */
+    public static final int PERSPECTIVE_TOTAL = 1;
+    public static final int PERSPECTIVE_SHOP = 2;
+
     public static long LONGITUDE;//精度
     public static long LATITUDE;//纬度
 

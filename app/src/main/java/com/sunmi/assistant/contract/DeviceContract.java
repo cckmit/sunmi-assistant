@@ -45,11 +45,13 @@ public interface DeviceContract {
         void getCheckApLoginFail(String type);
 
         void gotoPrimaryRouteStartActivity();
+
+        void getRouterNameSuccess(String sn, String name, String mac);
     }
 
     interface Presenter {
 
-        void getRouterList();
+        void getRouterList(Context context);
 
         void getIpcList();
 
@@ -58,6 +60,8 @@ public interface DeviceContract {
         void getPrinterStatus(String sn);
 
         void unbind(SunmiDevice device);
+
+        void updateName(Context context, SunmiDevice device, final String name);
 
         void getShopList();
 

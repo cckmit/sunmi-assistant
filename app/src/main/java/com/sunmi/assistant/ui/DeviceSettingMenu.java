@@ -2,6 +2,7 @@ package com.sunmi.assistant.ui;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 
+import sunmi.common.constant.enums.DeviceType;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.utils.CommonHelper;
 
@@ -65,10 +67,17 @@ public class DeviceSettingMenu extends PopupWindow {
             }
         });
         View divider = viewLayout.findViewById(R.id.divider);
-        View divider1 = viewLayout.findViewById(R.id.divider1);
-        TextView tvSetting = viewLayout.findViewById(R.id.tv_setting);
-        if ("IPC".equalsIgnoreCase(device.getType())) {
-            divider1.setVisibility(View.VISIBLE);
+        if (DeviceType.IPC.equalsIgnoreCase(device.getType())) {
+            TextView tvComment = viewLayout.findViewById(R.id.tv_comment);
+            tvComment.setVisibility(View.VISIBLE);
+            tvComment.setOnClickListener(v -> {
+                dismiss();
+                if (onSettingsClickListener != null) {
+                    onSettingsClickListener.onSettingsClick(device, 3);
+                }
+            });
+            viewLayout.findViewById(R.id.divider1).setVisibility(View.VISIBLE);
+            TextView tvSetting = viewLayout.findViewById(R.id.tv_setting);
             tvSetting.setVisibility(View.VISIBLE);
             tvSetting.setOnClickListener(v -> {
                 dismiss();
@@ -76,23 +85,30 @@ public class DeviceSettingMenu extends PopupWindow {
                     onSettingsClickListener.onSettingsClick(device, 2);
                 }
             });
-        } else if ("POS".equalsIgnoreCase(device.getType())) {
+            viewLayout.findViewById(R.id.divider2).setVisibility(View.VISIBLE);
+        } else if (DeviceType.ROUTER.equalsIgnoreCase(device.getType())
+                && !TextUtils.isEmpty(device.getMac())) {
+            TextView tvComment = viewLayout.findViewById(R.id.tv_comment);
+            tvComment.setVisibility(View.VISIBLE);
+            tvComment.setOnClickListener(v -> {
+                dismiss();
+                if (onSettingsClickListener != null) {
+                    onSettingsClickListener.onSettingsClick(device, 3);
+                }
+            });
+            viewLayout.findViewById(R.id.divider1).setVisibility(View.VISIBLE);
+        } else if (DeviceType.POS.equalsIgnoreCase(device.getType())) {
             divider.setVisibility(View.GONE);
-            divider1.setVisibility(View.GONE);
             tvDelete.setVisibility(View.GONE);
-            tvSetting.setVisibility(View.GONE);
-        } else {
-            divider1.setVisibility(View.GONE);
-            tvSetting.setVisibility(View.GONE);
         }
     }
 
     public void show(View parent) {
         int width = llRoot.getMeasuredWidth();
         int height = llRoot.getMeasuredHeight();
-        if ("POS".equalsIgnoreCase(device.getType())) {
+        if (DeviceType.POS.equalsIgnoreCase(device.getType())) {
             height = height - CommonHelper.dp2px(context, 48) * 2;
-        } else if (!"IPC".equalsIgnoreCase(device.getType())) {
+        } else if (!DeviceType.IPC.equalsIgnoreCase(device.getType())) {
             height = height - CommonHelper.dp2px(context, 48);
         }
         int[] outLocation = new int[2];//锚点view的位置
