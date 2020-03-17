@@ -361,8 +361,6 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = mPeriod;
-        model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
         PieData data = pie.getData();
@@ -387,8 +385,6 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = mPeriod;
-        model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
         PieData data = pie.getData();
@@ -528,18 +524,14 @@ public class RealtimeDistributionCard extends BaseRefreshCard<RealtimeDistributi
             }
         }
 
-        public void random() {
-            List<PieEntry> entries = dataSets.get(Constants.DATA_TYPE_NEW_OLD);
-            for (PieEntry entry : entries) {
-                entry.setY((int) (Math.random() * 1000));
+        @NonNull
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("RealtimeDistributionModel:").append(super.toString()).append("\n");
+            for (int i = 0, size = dataSets.size(); i < size; i++) {
+                sb.append(dataSets.keyAt(i)).append(": ").append(dataSets.valueAt(i)).append("\n");
             }
-
-            dataSets.get(Constants.DATA_TYPE_GENDER).clear();
-
-            entries = dataSets.get(Constants.DATA_TYPE_AGE);
-            for (PieEntry entry : entries) {
-                entry.setY((int) (Math.random() * 1000));
-            }
+            return sb.toString();
         }
     }
 }
