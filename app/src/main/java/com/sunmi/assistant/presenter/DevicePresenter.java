@@ -127,7 +127,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                     device.setDeviceid(bean.getSn());
                     device.setStatus(bean.getActiveStatus());
                     device.setShopId(shopId);
-                    device.setName("SUNMI-W1");
+                    device.setName(bean.getSn());
                     device.setModel("W1");
                     device.setType(DeviceType.ROUTER);
                     map.put(bean.getSn(), device);
