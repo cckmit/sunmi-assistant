@@ -374,8 +374,6 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = mPeriod;
-        model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
         PieData data = pie.getData();
@@ -400,8 +398,6 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = mPeriod;
-        model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
         PieData data = pie.getData();

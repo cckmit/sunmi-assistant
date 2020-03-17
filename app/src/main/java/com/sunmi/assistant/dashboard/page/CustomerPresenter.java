@@ -19,6 +19,7 @@ import com.sunmi.assistant.dashboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 
 import sunmi.common.base.BasePresenter;
@@ -129,27 +130,45 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
         if (mPeriod == period && Objects.equals(mPeriodTime, periodTime)) {
             return;
         }
-        // TODO: Update.
-        if (mPeriod != period && mCondition.hasCustomer
-                && mPeriod == Constants.TIME_PERIOD_DAY) {
-            // 从昨日变为本周或本月，增加卡片
-            List<BaseRefreshCard> list = new ArrayList<>(2);
-            list.add(CustomerFrequencyTrendCard.get(this, mCondition, mPeriod, periodTime));
-            list.add(CustomerFrequencyAvgCard.get(this, mCondition, mPeriod, periodTime));
-            for (BaseRefreshCard card : list) {
-                card.init(mView.getContext());
-            }
-            mList.addAll(list);
-            mView.addFrequencyCard(list);
-        } else if (mPeriod != period && mCondition.hasCustomer
-                && period == Constants.TIME_PERIOD_DAY) {
-            // 从本周本月变为昨日，删除卡片
-            mList.remove(mList.size() - 1);
-            mList.remove(mList.size() - 1);
-            mView.removeFrequencyCard();
-        }
         mPeriod = period;
         mPeriodTime = periodTime;
+        if (mCondition.hasCustomer) {
+            // 更新到店频次卡片
+            if (period == Constants.TIME_PERIOD_DAY) {
+                ListIterator<BaseRefreshCard> it = mList.listIterator();
+                while (it.hasNext()) {
+                    BaseRefreshCard card = it.next();
+                    if (card instanceof CustomerFrequencyTrendCard || card instanceof CustomerFrequencyAvgCard) {
+                        it.remove();
+                    }
+                }
+                if (isViewAttached()) {
+                    mView.removeFrequencyCard();
+                }
+            } else {
+                boolean hasFrequencyTrendCard = false;
+                boolean hasFrequencyAvgCard = false;
+                for (BaseRefreshCard card : mList) {
+                    if (card instanceof CustomerFrequencyTrendCard) {
+                        hasFrequencyTrendCard = true;
+                    }
+                    if (card instanceof CustomerFrequencyAvgCard) {
+                        hasFrequencyAvgCard = true;
+                    }
+                }
+                List<BaseRefreshCard> list = new ArrayList<>(2);
+                if (!hasFrequencyTrendCard) {
+                    list.add(CustomerFrequencyTrendCard.get(this, mCondition, mPeriod, mPeriodTime));
+                }
+                if (!hasFrequencyAvgCard) {
+                    list.add(CustomerFrequencyAvgCard.get(this, mCondition, mPeriod, mPeriodTime));
+                }
+                mList.addAll(list);
+                if (isViewAttached()) {
+                    mView.addFrequencyCard(list);
+                }
+            }
+        }
         for (BaseRefreshCard card : mList) {
             card.setPeriod(period, periodTime, false);
         }
