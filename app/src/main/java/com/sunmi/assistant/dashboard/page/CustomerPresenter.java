@@ -75,6 +75,10 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
             mList.add(CustomerTrendCard.get(this, mCondition, mPeriod, mPeriodTime));
             mList.add(CustomerEnterRateCard.get(this, mCondition, mPeriod, mPeriodTime));
             mList.add(CustomerFrequencyDistributionCard.get(this, mCondition, mPeriod, mPeriodTime));
+            if (mPeriod != Constants.TIME_PERIOD_DAY) {
+                mList.add(CustomerFrequencyTrendCard.get(this, mCondition, mPeriod, mPeriodTime));
+                mList.add(CustomerFrequencyAvgCard.get(this, mCondition, mPeriod, mPeriodTime));
+            }
         } else if (mCondition.hasFs) {
             mList.add(CustomerWaitDataCard.get(this, mCondition, mPeriod, mPeriodTime));
         } else {

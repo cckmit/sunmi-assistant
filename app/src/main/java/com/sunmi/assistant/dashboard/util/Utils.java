@@ -372,7 +372,6 @@ public class Utils {
         lineYAxis.setGranularity(1f);
         lineYAxis.setTextSize(10f);
         lineYAxis.setTextColor(ContextCompat.getColor(context, R.color.text_disable));
-        lineYAxis.setAxisMinimum(0f);
         lineYAxis.setDrawGridLines(true);
         lineYAxis.setGridColor(ContextCompat.getColor(context, R.color.black_10));
         lineYAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);

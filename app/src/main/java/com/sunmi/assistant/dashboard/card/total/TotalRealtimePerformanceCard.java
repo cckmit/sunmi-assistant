@@ -251,6 +251,10 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
             TextView tvTitle = holder.getView(R.id.tv_title);
             TextView tvValue = holder.getView(R.id.tv_value);
 
+            tvRank.setSelected(holder.getPosition() == 0);
+            tvTitle.setSelected(holder.getPosition() == 0);
+            tvValue.setSelected(holder.getPosition() == 0);
+
             if (item.state == Item.STATE_ERROR) {
                 tvRank.setText(Utils.DATA_NONE);
                 tvTitle.setText(Utils.DATA_NONE);
