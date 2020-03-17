@@ -166,7 +166,7 @@
     <string name="ipc_face_group_black_desc">当黑名单的人员出现时，会向用户推送告警消息</string>
     <string name="tip_ipc_config_fail">Configuration Failed</string>
     <string name="tip_error_company_or_shop_id">错误的商户id或者店铺id</string>
-    <string name="tip_adjust_first">为了能正常使用人脸识别功能，请点击下方\n【调整画面】按钮</string>
+    <string name="tip_adjust_first">To use face recognition, please click \n“Adjust the screen image”.</string>
     <string name="str_choose_fs_adjust">Please select a camera</string>
     <string name="tip_no_tf_card">No Memory Card Inserted</string>
     <string name="tip_tf_uninitalized">未格式化</string>
