@@ -68,7 +68,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
             @Override
             public void onSuccess(int code, String msg, CustomerCountResp data) {
                 Model model = getModel();
-                model.customerCount = data.getLatestCount();
+                model.customerCount = Math.max(0, data.getLatestCount());
                 loadCustomerYesterday(companyId, callback);
             }
 
@@ -85,7 +85,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
                     @Override
                     public void onSuccess(int code, String msg, TotalCustomerDataResp data) {
                         Model model = getModel();
-                        model.customerCountLast = data.getPassengerCount();
+                        model.customerCountLast = Math.max(0, data.getPassengerCount());
                         if (mCondition.hasSaas) {
                             loadSaleData(companyId, callback);
                         } else {
@@ -107,7 +107,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
             public void onSuccess(int code, String msg, SaleDataResp data) {
                 Model model = getModel();
                 model.salesAmount = data.getLatestOrderAmount();
-                model.salesVolume = data.getLatestOrderCount();
+                model.salesVolume = Math.max(0, data.getLatestOrderCount());
                 loadSaleDataYesterday(companyId, callback);
             }
 
@@ -124,7 +124,7 @@ public class TotalRealtimeOverviewCard extends BaseRefreshCard<TotalRealtimeOver
             public void onSuccess(int code, String msg, SaleDataResp data) {
                 Model model = getModel();
                 model.salesAmountLast = data.getOrderAmount();
-                model.salesVolumeLast = data.getOrderCount();
+                model.salesVolumeLast = Math.max(0, data.getOrderCount());
                 callback.onSuccess();
             }
 

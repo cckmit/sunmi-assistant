@@ -157,16 +157,18 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
                         List<PieEntry> ageList = model.dataSets.get(Constants.DATA_TYPE_AGE);
                         newOldList.clear();
                         ageList.clear();
-                        int newCount = 0;
-                        int oldCount = 0;
-                        for (CountListBean item : list) {
-                            newCount += item.getStrangerUniqCount();
-                            oldCount += item.getRegularUniqCount();
-                            int ageCount = item.getStrangerUniqCount() + item.getRegularUniqCount();
-                            ageList.add(new PieEntry(ageCount, mAgeList.get(item.getAgeRangeCode()).getName() + mAgeLabel));
+                        int totalNew = 0;
+                        int totalOld = 0;
+                        for (CountListBean bean : list) {
+                            int newCount = Math.max(0, bean.getStrangerUniqCount());
+                            int oldCount = Math.max(0, bean.getRegularUniqCount());
+                            totalNew += newCount;
+                            totalOld += oldCount;
+                            int ageCount = newCount + oldCount;
+                            ageList.add(new PieEntry(ageCount, mAgeList.get(bean.getAgeRangeCode()).getName() + mAgeLabel));
                         }
-                        newOldList.add(new PieEntry(newCount, mNewLabel));
-                        newOldList.add(new PieEntry(oldCount, mOldLabel));
+                        newOldList.add(new PieEntry(totalNew, mNewLabel));
+                        newOldList.add(new PieEntry(totalOld, mOldLabel));
                         loadGender(companyId, period, time, callback);
                     }
 
@@ -199,9 +201,9 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
                         for (CountListBean item : list) {
                             int gender = item.getGender();
                             if (gender == Constants.GENDER_MALE) {
-                                maleCount += item.getUniqCount();
+                                maleCount += Math.max(0, item.getUniqCount());
                             } else {
-                                femaleCount += item.getUniqCount();
+                                femaleCount += Math.max(0, item.getUniqCount());
                             }
                         }
                         genderList.add(new PieEntry(maleCount, mMaleLabel));
@@ -351,11 +353,13 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
             set.setColors(colors);
             set.setDrawValues(!isEmpty);
             set.setValues(values);
+            set.setDrawValuesAbove(model.type == Constants.DATA_TYPE_AGE ? 0.05f : 0f);
             data.notifyDataChanged();
             pie.notifyDataSetChanged();
         } else {
             set = new PieDataSet(values, "data");
             setupDataSet(pie, set, colors, isEmpty);
+            set.setDrawValuesAbove(model.type == Constants.DATA_TYPE_AGE ? 0.05f : 0f);
             data = new PieData(set);
             pie.setData(data);
         }
@@ -370,8 +374,6 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
     @Override
     protected void showLoading(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = mPeriod;
-        model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
         PieData data = pie.getData();
@@ -396,8 +398,6 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
     @Override
     protected void showError(@NonNull BaseViewHolder<Model> holder, Model model, int position) {
         PieChart pie = holder.getView(R.id.view_dashboard_pie_chart);
-        model.period = mPeriod;
-        model.dataSets.get(model.type).clear();
         pie.setCenterText("");
         PieDataSet set;
         PieData data = pie.getData();
@@ -442,7 +442,6 @@ public class TotalCustomerDistributionCard extends BaseRefreshCard<TotalCustomer
         PieChartMarkerView marker = new PieChartMarkerView(pie.getContext());
         marker.setChartView(pie);
         set.setValueMarker(marker);
-        set.setDrawValuesAbove(0.05f);
     }
 
     public static class OnPieSelectedListener implements OnChartValueSelectedListener {

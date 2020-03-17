@@ -11,6 +11,8 @@ import android.view.View;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.DashboardContract;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
+import com.sunmi.assistant.dashboard.card.shop.CustomerFrequencyAvgCard;
+import com.sunmi.assistant.dashboard.card.shop.CustomerFrequencyTrendCard;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshViewHolder;
 
@@ -20,6 +22,7 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.base.recycle.BaseArrayAdapter;
@@ -140,11 +143,26 @@ public class CustomerFragment extends BaseMvpFragment<CustomerPresenter>
 
     @Override
     public void removeFrequencyCard() {
+        if (mAdapter == null || mAdapter.getData().isEmpty()) {
+            return;
+        }
         List<Object> data = mAdapter.getData();
-        int from = data.size() - 2;
-        data.remove(from);
-        data.remove(from);
-        mAdapter.notifyItemRangeRemoved(from, 2);
+        int min = data.size() - 1;
+        int max = 0;
+        int index = 0;
+        ListIterator<Object> it = data.listIterator();
+        while (it.hasNext()) {
+            Object item = it.next();
+            if (item instanceof CustomerFrequencyTrendCard.Model || item instanceof CustomerFrequencyAvgCard.Model) {
+                it.remove();
+                min = Math.min(min, index);
+                max = Math.max(max, index);
+            }
+            index++;
+        }
+        if (max >= min) {
+            mAdapter.notifyItemRangeRemoved(min, max - min + 1);
+        }
     }
 
     @Override
