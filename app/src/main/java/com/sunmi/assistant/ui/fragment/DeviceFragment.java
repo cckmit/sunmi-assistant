@@ -99,6 +99,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private InputDialog dialogPassword = null;
     private String password = "";    //路由管理密码
     private SunmiDevice clickedDevice;
+    private String routerSn, routerNewName;//保存路由器的sn和名称，用户本地更新列表
 
     private List<SunmiDevice> routerList = new ArrayList<>();
     private List<SunmiDevice> ipcList = new ArrayList<>();
@@ -425,7 +426,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (type == 3) {
             if ((TextUtils.equals(device.getType(), DeviceType.ROUTER)
                     && device.getStatus() != DeviceStatus.ONLINE.ordinal())
-                    || IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
+                    || !IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
                 shortTip(R.string.str_cannot_update_name);
             } else {
                 updateDeviceName(device);
@@ -519,10 +520,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             hideLoadingDialog();
             ResponseBean res = (ResponseBean) args[0];
             if (TextUtils.equals("0", res.getErrCode())) {
-                mPresenter.getRouterList(mActivity);
+                mPresenter.updateCacheData(routerSn, routerNewName);
             } else {
                 shortTip(R.string.ipc_setting_fail);
             }
+            routerSn = "";
+            routerNewName = "";
         }
     }
 
@@ -686,7 +689,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     private void updateDeviceName(SunmiDevice device) {
         new InputDialog.Builder(mActivity)
                 .setTitle(R.string.str_comment_name)
-                .setHint(R.string.tip_input_comment_name)
+                .setHint(R.string.str_tip_input32)
                 .setInitInputContent(device.getName())
                 .setInputWatcher(new InputDialog.TextChangeListener() {
                     @Override
@@ -716,6 +719,8 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                         return;
                     }
                     showLoadingDialog();
+                    routerSn = device.getDeviceid();
+                    routerNewName = input;
                     mPresenter.updateName(mActivity, device, input);
                     dialog.dismiss();
                 }).create().show();

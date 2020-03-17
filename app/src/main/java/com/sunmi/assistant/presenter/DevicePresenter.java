@@ -603,4 +603,16 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
         }
     }
 
+    /**
+     * 更新路由器名称
+     */
+    public void updateCacheData(String sn, String newName) {
+        if (routerNames.containsKey(sn)) {
+            routerNames.put(sn, newName);
+        }
+        if (isViewAttached()) {
+            mView.getRouterNameSuccess(sn, newName, "");
+        }
+    }
+
 }
