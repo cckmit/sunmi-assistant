@@ -165,6 +165,9 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
                 }
                 mList.addAll(list);
                 if (isViewAttached()) {
+                    for (BaseRefreshCard card : list) {
+                        card.init(mView.getContext());
+                    }
                     mView.addFrequencyCard(list);
                 }
             }

@@ -61,7 +61,6 @@ public class PerformanceRankActivity extends BaseMvpActivity<PerformanceRankPres
     @ViewById(R.id.layout_error)
     View layoutError;
 
-
     @Extra
     DashboardCondition mCondition;
 
