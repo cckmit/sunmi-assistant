@@ -2,6 +2,7 @@ package com.sunmi.assistant.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -16,7 +17,7 @@ import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
 import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
-import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity_;
+import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
@@ -646,7 +647,11 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     private void gotoRouterManager(String sn, int status) {
-        RouterManagerActivity_.intent(mActivity).shopId(SpUtils.getShopId()).sn(sn).status(status).start();
+        Bundle bundle = new Bundle();
+        bundle.putString("shopId", SpUtils.getShopId() + "");
+        bundle.putString("sn", sn);
+        bundle.putInt("status", status);
+        openActivity(mActivity, RouterManagerActivity.class, bundle);
     }
 
     private void deleteDevice(SunmiDevice device) {
