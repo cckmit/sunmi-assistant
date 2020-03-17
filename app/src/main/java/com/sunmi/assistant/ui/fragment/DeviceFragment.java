@@ -423,10 +423,12 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 shortTip(getString(R.string.str_cannot_manager_device));
             }
         } else if (type == 3) {
-            if (IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
-                updateDeviceName(device);
-            } else {
+            if ((TextUtils.equals(device.getType(), DeviceType.ROUTER)
+                    && device.getStatus() != DeviceStatus.ONLINE.ordinal())
+                    || IpcUtils.isIpcManageable(device.getDeviceid(), device.getStatus())) {
                 shortTip(R.string.str_cannot_update_name);
+            } else {
+                updateDeviceName(device);
             }
         }
     }
