@@ -4,8 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.ui.activity.merchant.AuthDialog;
@@ -16,6 +17,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,9 @@ import sunmi.common.view.dialog.CommonDialog;
 @EActivity(R.layout.import_order_activity_preview)
 public class ImportOrderPreviewActivity extends BaseActivity {
 
+    @ViewById(R.id.btn_import_current_mobile)
+    Button btnImportCurrent;
+
     @Extra
     int importOrderType;
 
@@ -57,6 +62,9 @@ public class ImportOrderPreviewActivity extends BaseActivity {
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
+        if (TextUtils.isEmpty(SpUtils.getMobile())) {
+            btnImportCurrent.setVisibility(View.GONE);
+        }
     }
 
     @Click(R.id.btn_import_current_mobile)

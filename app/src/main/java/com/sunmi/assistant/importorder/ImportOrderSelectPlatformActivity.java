@@ -73,6 +73,7 @@ public class ImportOrderSelectPlatformActivity extends BaseActivity {
             @Override
             public void onFail(int code, String msg, PlatformInfo data) {
                 LogCat.e(TAG, "data onFail code=" + code + "," + msg);
+                shortTip(R.string.toast_network_error);
                 hideLoadingDialog();
             }
         });
