@@ -65,8 +65,7 @@ public class MyApplication extends BaseApplication {
             com.baidu.mobstat.StatService.autoTrace(this);
             com.baidu.mobstat.StatService.enableDeviceMac(this, false);
         }
-        // Java JSR-310 时间库
-        AndroidThreeTen.init(this);
+        AndroidThreeTen.init(this); // Java JSR-310 时间库
     }
 
     class HhActivityLifecycleCallbacks implements ActivityLifecycleCallbacks {
