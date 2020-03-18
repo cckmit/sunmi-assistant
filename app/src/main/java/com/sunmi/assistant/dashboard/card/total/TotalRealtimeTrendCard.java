@@ -240,6 +240,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
 
         // Calculate min & max of axis value.
         int max = 0;
+        float min = 0;
         float lastX = 0;
         for (ChartEntry entry : dataSet) {
             if (entry.getX() > lastX) {
@@ -248,12 +249,15 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
             if (entry.getY() > max) {
                 max = (int) Math.ceil(entry.getY());
             }
+            if (entry.getY() < min) {
+                min = entry.getY();
+            }
         }
 
         Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(Constants.TIME_PERIOD_DAY);
         line.getXAxis().setAxisMinimum(xAxisRange.first);
         line.getXAxis().setAxisMaximum(xAxisRange.second + 1);
-        if (model.type == TYPE_CUSTOMER) {
+        if (min >= 0) {
             line.getAxisLeft().setAxisMinimum(0f);
         } else {
             line.getAxisLeft().resetAxisMinimum();

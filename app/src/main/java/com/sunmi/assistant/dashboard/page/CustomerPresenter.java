@@ -165,12 +165,15 @@ public class CustomerPresenter extends BasePresenter<CustomerContract.View>
                 }
                 mList.addAll(list);
                 if (isViewAttached()) {
+                    for (BaseRefreshCard card : list) {
+                        card.init(mView.getContext());
+                    }
                     mView.addFrequencyCard(list);
                 }
             }
         }
         for (BaseRefreshCard card : mList) {
-            card.setPeriod(period, periodTime, false);
+            card.setPeriod(period, periodTime, true);
         }
         if (isViewAttached()) {
             mView.updateTab(period);
