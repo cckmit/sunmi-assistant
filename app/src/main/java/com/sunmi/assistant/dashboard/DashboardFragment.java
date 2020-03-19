@@ -309,7 +309,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     }
 
     @Override
-    public void setShopList(List<FilterItem> list) {
+    public void setShopList(int authority, List<FilterItem> list) {
+        mShopMenuAdapter.setAuthority(authority);
         mShopMenuAdapter.setData(list);
     }
 
@@ -551,9 +552,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Override
     public void didReceivedNotification(int id, Object... args) {
-        if (id == CommonNotifications.netConnected) {
-            mPresenter.load(Constants.FLAG_ALL_MASK, true, true, true);
-        } else if (id == CommonNotifications.companySwitch) {
+        if (id == CommonNotifications.companySwitch) {
             isInit = false;
             mShopMenuAdapter.setCompanyName(SpUtils.getCompanyName());
             mPresenter.load(Constants.FLAG_ALL_MASK, true, true, true);

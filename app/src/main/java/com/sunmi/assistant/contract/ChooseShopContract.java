@@ -6,7 +6,6 @@ import sunmi.common.base.BaseView;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopInfo;
-import sunmi.common.model.ShopListResp;
 
 /**
  * Description: ChooseShopContract
@@ -15,9 +14,9 @@ import sunmi.common.model.ShopListResp;
 public interface ChooseShopContract {
 
     interface View extends BaseView {
-        void getShopListSuccess(List<ShopInfo> shopList);
+        void getShopListSuccess(int authority, List<ShopInfo> shopList);
 
-        void getShopListFail(int code, String msg, ShopListResp data);
+        void getShopListFail();
 
         void getCompanyListSuccess(List<CompanyInfoResp> companyList);
 

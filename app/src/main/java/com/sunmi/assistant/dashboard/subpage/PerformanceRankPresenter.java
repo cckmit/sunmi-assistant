@@ -2,9 +2,9 @@ package com.sunmi.assistant.dashboard.subpage;
 
 import android.util.SparseArray;
 
-import com.sunmi.assistant.dashboard.data.Callback;
-import com.sunmi.assistant.dashboard.data.DashboardModel;
-import com.sunmi.assistant.dashboard.data.DashboardModelImpl;
+import com.sunmi.assistant.data.AppModel;
+import com.sunmi.assistant.data.AppModelImpl;
+import com.sunmi.assistant.data.Callback;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.CustomerShopDataResp;
@@ -22,10 +22,10 @@ import sunmi.common.utils.SpUtils;
 public class PerformanceRankPresenter extends BasePresenter<PerformanceRankContract.View>
         implements PerformanceRankContract.Presenter {
 
-    private DashboardModel model;
+    private AppModel model;
 
     public PerformanceRankPresenter() {
-        model = DashboardModelImpl.get();
+        model = AppModelImpl.get();
     }
 
     @Override
@@ -68,7 +68,7 @@ public class PerformanceRankPresenter extends BasePresenter<PerformanceRankContr
 
     @Override
     public void getShopList() {
-        model.loadShopList(SpUtils.getCompanyId(), new Callback<SparseArray<ShopInfo>>() {
+        model.getShopList(SpUtils.getCompanyId(), false, new Callback<SparseArray<ShopInfo>>() {
             @Override
             public void onLoaded(SparseArray<ShopInfo> result) {
                 if (isViewAttached()){

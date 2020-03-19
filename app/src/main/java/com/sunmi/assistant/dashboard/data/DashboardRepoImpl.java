@@ -4,6 +4,7 @@ import android.util.SparseArray;
 
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
+import com.sunmi.assistant.data.Callback;
 import com.sunmi.bean.BundleServiceMsg;
 import com.sunmi.ipc.rpc.IpcCloudApi;
 import com.sunmi.rpc.ServiceApi;
@@ -24,8 +25,6 @@ import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.IpcDevice;
 import sunmi.common.model.SaasStatus;
 import sunmi.common.model.ShopBundledCloudInfo;
-import sunmi.common.model.ShopInfo;
-import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
@@ -41,7 +40,6 @@ public class DashboardRepoImpl implements DashboardRepo, BaseNotification.Notifi
 
     private static final String TAG = DashboardRepoImpl.class.getSimpleName();
 
-    private SparseArray<ShopInfo> shopMap;
     private SparseArray<List<SaasStatus>> saasMap;
     private SparseArray<List<IpcDevice>> deviceMap;
     private CustomerHistoryResp customer;
@@ -57,36 +55,6 @@ public class DashboardRepoImpl implements DashboardRepo, BaseNotification.Notifi
 
     private DashboardRepoImpl() {
         BaseNotification.newInstance().addStickObserver(this, CommonNotifications.logout);
-    }
-
-    @Override
-    public void getShopList(int companyId, Callback<SparseArray<ShopInfo>> callback) {
-        if (shopMap != null) {
-            callback.onLoaded(shopMap);
-            return;
-        }
-        SunmiStoreApi.getInstance().getShopList(companyId, new RetrofitCallback<ShopListResp>() {
-            @Override
-            public void onSuccess(int code, String msg, ShopListResp data) {
-                if (data == null || data.getShop_list() == null) {
-                    onFail(code, msg, null);
-                    return;
-                }
-                List<ShopInfo> list = data.getShop_list();
-                shopMap = new SparseArray<>(list.size());
-                for (ShopInfo shopInfo : list) {
-                    shopMap.put(shopInfo.getShopId(), shopInfo);
-                }
-                callback.onLoaded(shopMap);
-            }
-
-            @Override
-            public void onFail(int code, String msg, ShopListResp data) {
-                LogCat.e(TAG, "Load shop list Failed. " + code + ":" + msg);
-                shopMap = null;
-                callback.onFail();
-            }
-        });
     }
 
     @Override
@@ -261,9 +229,6 @@ public class DashboardRepoImpl implements DashboardRepo, BaseNotification.Notifi
 
     @Override
     public void clearCache(int flag) {
-        if ((flag & Constants.FLAG_SHOP) != 0) {
-            shopMap = null;
-        }
         if ((flag & Constants.FLAG_SAAS) != 0) {
             saasMap = null;
         }

@@ -1,13 +1,19 @@
 package com.sunmi.assistant.presenter;
 
-import com.sunmi.assistant.contract.ChooseShopContract;
+import android.util.Pair;
+import android.util.SparseArray;
 
+import com.sunmi.assistant.contract.ChooseShopContract;
+import com.sunmi.assistant.data.AppModel;
+import com.sunmi.assistant.data.AppModelImpl;
+import com.sunmi.assistant.data.Callback;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BasePresenter;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopInfo;
-import sunmi.common.model.ShopListResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 
@@ -18,28 +24,33 @@ import sunmi.common.rpc.retrofit.RetrofitCallback;
 public class ChooseShopPresenter extends BasePresenter<ChooseShopContract.View>
         implements ChooseShopContract.Presenter {
 
+    private AppModel model = AppModelImpl.get();
+
     @Override
     public void getShopList(int companyId) {
         if (isViewAttached()) {
             mView.showLoadingDialog();
         }
-        SunmiStoreApi.getInstance().getShopList(companyId, new RetrofitCallback<ShopListResp>() {
+        model.getShopListWithAuth(companyId, true, new Callback<Pair<Integer, SparseArray<ShopInfo>>>() {
             @Override
-            public void onSuccess(int code, String msg, ShopListResp data) {
+            public void onLoaded(Pair<Integer, SparseArray<ShopInfo>> result) {
                 if (isViewAttached()) {
-                    mView.hideLoadingDialog();
-                    List<ShopInfo> shopList = data.getShop_list();
-                    if (shopList != null) {
-                        mView.getShopListSuccess(shopList);
+                    SparseArray<ShopInfo> shopMap = result.second;
+                    int size = shopMap.size();
+                    List<ShopInfo> list = new ArrayList<>(size);
+                    for (int i = 0; i < size; i++) {
+                        list.add(shopMap.valueAt(i));
                     }
+                    mView.hideLoadingDialog();
+                    mView.getShopListSuccess(result.first, list);
                 }
             }
 
             @Override
-            public void onFail(int code, String msg, ShopListResp data) {
+            public void onFail() {
                 if (isViewAttached()) {
                     mView.hideLoadingDialog();
-                    mView.getShopListFail(code, msg, data);
+                    mView.getShopListFail();
                 }
             }
         });

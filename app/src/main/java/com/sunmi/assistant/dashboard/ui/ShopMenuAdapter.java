@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.util.Utils;
+import com.sunmi.assistant.utils.AppConstants;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import sunmi.common.view.SettingItemLayout;
 
 public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
 
+    private int authority;
     private boolean isTotalPerspective = true;
     private FilterItem last;
 
@@ -65,6 +67,9 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
         });
 
         silName.setOnClickListener(v -> {
+            if (this.authority != AppConstants.ACCOUNT_AUTH_COMPANY) {
+                return;
+            }
             last = null;
             if (!isTotalPerspective) {
                 getMenu().dismiss(true);
@@ -91,6 +96,15 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
         SettingItemLayout item = holder.getView(R.id.dropdown_item);
         item.setTitle(model.getItemName());
         item.setChecked(model.isChecked());
+    }
+
+    public void setAuthority(int authority) {
+        this.authority = authority;
+        DropdownMenuNew.ViewHolder<FilterItem> content = getContent();
+        if (content != null) {
+            SettingItemLayout silName = content.getView(R.id.sil_company);
+            silName.setEnabled(authority == AppConstants.ACCOUNT_AUTH_COMPANY);
+        }
     }
 
     public void setCompanyName(String name) {
@@ -131,10 +145,11 @@ public class ShopMenuAdapter extends DropdownMenuNew.Adapter<FilterItem> {
 
     /**
      * 切换到门店视角
+     *
      * @param shopId 门店ID
      */
     private void switchToShopPerspective(int shopId) {
-        LogCat.i(Utils.TAG, "adapter: switch to shop.");
+        LogCat.i(Utils.TAG, "adapter: switch to shop:" + shopId);
         isTotalPerspective = false;
         updateShopSelected(shopId);
         updateCompanySelected(false);

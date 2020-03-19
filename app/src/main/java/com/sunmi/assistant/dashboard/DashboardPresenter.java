@@ -2,10 +2,10 @@ package com.sunmi.assistant.dashboard;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Pair;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.R;
-import com.sunmi.assistant.dashboard.data.Callback;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
 import com.sunmi.assistant.dashboard.data.DashboardModel;
 import com.sunmi.assistant.dashboard.data.DashboardModelImpl;
@@ -21,6 +21,10 @@ import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment;
 import com.sunmi.assistant.dashboard.page.TotalRealtimeFragment_;
 import com.sunmi.assistant.dashboard.util.Constants;
 import com.sunmi.assistant.dashboard.util.Utils;
+import com.sunmi.assistant.data.AppModel;
+import com.sunmi.assistant.data.AppModelImpl;
+import com.sunmi.assistant.data.Callback;
+import com.sunmi.assistant.utils.AppConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +45,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private static final int REFRESH_TIME_PERIOD = 120_000;
 
+    private AppModel appModel;
     private DashboardModel model;
 
     private int mCompanyId;
     private int mShopId;
-    private int mPerspective = CommonConstants.PERSPECTIVE_TOTAL;
+    private int mAuthority = AppConstants.ACCOUNT_AUTH_NONE;
+    private int mPerspective = CommonConstants.PERSPECTIVE_NONE;
 
     private DashboardCondition mCondition;
     private boolean mFloatingAdClosed = false;
@@ -58,15 +64,17 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void init() {
+        appModel = AppModelImpl.get();
         model = DashboardModelImpl.get();
-
-        switchPerspective(CommonConstants.PERSPECTIVE_TOTAL, -1, false);
+        mPerspective = SpUtils.getPerspective();
         load(Constants.FLAG_ALL_MASK, false, false, true);
     }
 
     @Override
     public DashboardCondition onChildCreate(PageContract.PagePresenter presenter) {
-        mPages.put(presenter.getType(), presenter);
+        int type = presenter.getType();
+        mPages.put(type, presenter);
+        LogCat.i(Utils.TAG, "Create page:" + type);
         return mCondition == null ? null : mCondition.copy();
     }
 
@@ -114,19 +122,29 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void loadShop(boolean clearCache, Callback<?> callback) {
-        if (clearCache) {
-            model.clearCache(Constants.FLAG_SHOP);
-        }
-        model.loadShopList(mCompanyId, new Callback<SparseArray<ShopInfo>>() {
+        appModel.getShopListWithAuth(mCompanyId, clearCache, new Callback<Pair<Integer, SparseArray<ShopInfo>>>() {
             @Override
-            public void onLoaded(SparseArray<ShopInfo> result) {
-                List<FilterItem> list = new ArrayList<>(result.size());
-                for (int i = 0, size = result.size(); i < size; i++) {
-                    ShopInfo shop = result.valueAt(i);
-                    list.add(new FilterItem(shop.getShopId(), shop.getShopName()));
+            public void onLoaded(Pair<Integer, SparseArray<ShopInfo>> result) {
+                int authority = result.first;
+                SparseArray<ShopInfo> shopMap = result.second;
+                List<FilterItem> list = new ArrayList<>(shopMap.size());
+                for (int i = 0, size = shopMap.size(); i < size; i++) {
+                    ShopInfo info = shopMap.valueAt(i);
+                    boolean checked = authority == AppConstants.ACCOUNT_AUTH_SHOP && info.getShopId() == mShopId;
+                    list.add(new FilterItem(info.getShopId(), info.getShopName(), checked));
                 }
                 if (isViewAttached()) {
-                    mView.setShopList(list);
+                    mView.setShopList(authority, list);
+                }
+                if (mAuthority != authority) {
+                    mAuthority = authority;
+                    if (authority == AppConstants.ACCOUNT_AUTH_COMPANY) {
+                        SpUtils.setPerspective(CommonConstants.PERSPECTIVE_TOTAL);
+                        switchPerspective(CommonConstants.PERSPECTIVE_TOTAL, -1, false);
+                    } else {
+                        SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+                        switchPerspective(CommonConstants.PERSPECTIVE_SHOP, mShopId, false);
+                    }
                 }
                 if (callback != null) {
                     callback.onLoaded(null);
@@ -143,6 +161,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
             }
         });
+
     }
 
     private void loadCondition(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading) {
@@ -271,6 +290,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void switchPage(int type) {
+        LogCat.i(Utils.TAG, "Switch page:" + type);
         scrollToTop(mPerspective != CommonConstants.PERSPECTIVE_TOTAL);
         mPageType = type;
         getCurrent().refresh(false, true);
@@ -329,6 +349,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     @Override
     public void detachView() {
         super.detachView();
+        LogCat.i(Utils.TAG, "Dashboard detached.");
         stopAutoRefresh();
         for (int i = 0, size = mPages.size(); i < size; i++) {
             PageContract.PagePresenter page = mPages.valueAt(i);

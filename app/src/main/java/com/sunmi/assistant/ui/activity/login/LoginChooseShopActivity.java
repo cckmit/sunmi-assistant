@@ -13,6 +13,7 @@ import com.sunmi.assistant.contract.ChooseShopContract;
 import com.sunmi.assistant.mine.shop.CreateShopPreviewActivity_;
 import com.sunmi.assistant.presenter.ChooseShopPresenter;
 import com.sunmi.assistant.ui.activity.merchant.CreateCompanyActivity_;
+import com.sunmi.assistant.utils.AppConstants;
 import com.sunmi.assistant.utils.GetUserInfoUtils;
 import com.xiaojinzi.component.impl.Router;
 
@@ -34,7 +35,6 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
 import sunmi.common.model.ShopInfo;
-import sunmi.common.model.ShopListResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.utils.CommonHelper;
@@ -212,15 +212,21 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     }
 
     @Override
-    public void getShopListSuccess(List<ShopInfo> shopList) {
+    public void getShopListSuccess(int authority, List<ShopInfo> shopList) {
         if (shopList.size() == 0) {
+            // 当前商户没有门店，跳转创建门店
+            SpUtils.setPerspective(CommonConstants.PERSPECTIVE_TOTAL);
+            llBottomBtn.setVisibility(View.GONE);
             CreateShopPreviewActivity_.intent(context)
                     .companyId(companyId)
                     .companyName(companyName)
                     .saasExist(saasExist)
                     .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                     .start();
-        } else {
+        } else if (authority == AppConstants.ACCOUNT_AUTH_SHOP) {
+            // 门店视角，跳转选择门店
+            SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
+            llBottomBtn.setVisibility(View.GONE);
             LoginChooseShopActivity_.intent(context)
                     .companyId(companyId)
                     .companyName(companyName)
@@ -228,11 +234,19 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     .shopList((ArrayList<ShopInfo>) shopList)
                     .isLoginSuccessSwitchCompany(isLoginSuccessSwitchCompany)
                     .action(CommonConstants.ACTION_LOGIN_CHOOSE_SHOP).start();
+        } else {
+            // 总部视角，跳转主页
+            SpUtils.setPerspective(CommonConstants.PERSPECTIVE_TOTAL);
+            ShopInfo info = shopList.get(0);
+            shopId = info.getShopId();
+            shopName = info.getShopName();
+            llBottomBtn.setVisibility(View.VISIBLE);
+            btnEnterMain.setEnabled(true);
         }
     }
 
     @Override
-    public void getShopListFail(int code, String msg, ShopListResp data) {
+    public void getShopListFail() {
         if (action == CommonConstants.ACTION_LOGIN_CHOOSE_COMPANY ||
                 action == CommonConstants.ACTION_CHANGE_COMPANY) {
             shortTip(R.string.tip_get_shop_list_fail);
@@ -245,7 +259,10 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
     void initCompanyList(List<CompanyInfoResp> companyList) {
         activityVisible();
         rvChoose.setAdapter(new CommonListAdapter<CompanyInfoResp>(context,
-                R.layout.item_common_arrow, companyList) {
+                R.layout.item_common_checked, companyList) {
+
+            private int selectedIndex = companyList.size() == 1 ? 0 : -1;
+
             @Override
             public void convert(ViewHolder holder, final CompanyInfoResp item) {
                 SettingItemLayout silItem = holder.getView(R.id.sil_item);
@@ -254,11 +271,14 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
                     if (isFastClick(1200)) {
                         return;
                     }
+                    selectedIndex = holder.getAdapterPosition();
                     companyId = item.getCompany_id();
                     companyName = item.getCompany_name();
                     saasExist = item.getSaas_exist();
+                    notifyDataSetChanged();
                     mPresenter.getShopList(item.getCompany_id());
                 });
+                silItem.setChecked(selectedIndex == holder.getAdapterPosition());
             }
         });
     }
