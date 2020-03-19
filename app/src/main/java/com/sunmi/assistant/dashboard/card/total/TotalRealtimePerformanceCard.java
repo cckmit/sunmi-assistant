@@ -12,11 +12,11 @@ import android.widget.TextView;
 
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
-import com.sunmi.assistant.dashboard.data.Callback;
 import com.sunmi.assistant.dashboard.data.DashboardCondition;
-import com.sunmi.assistant.dashboard.data.DashboardModelImpl;
 import com.sunmi.assistant.dashboard.subpage.PerformanceRankActivity_;
 import com.sunmi.assistant.dashboard.util.Utils;
+import com.sunmi.assistant.data.AppModelImpl;
+import com.sunmi.assistant.data.Callback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +85,7 @@ public class TotalRealtimePerformanceCard extends BaseRefreshCard<TotalRealtimeP
     @Override
     protected Call<BaseResponse<CustomerHistoryTrendResp>> load(int companyId, int shopId, int period, Interval periodTime,
                                                                 CardCallback callback) {
-        DashboardModelImpl.get().loadShopList(companyId, new Callback<SparseArray<ShopInfo>>() {
+        AppModelImpl.get().getShopList(companyId, false, new Callback<SparseArray<ShopInfo>>() {
             @Override
             public void onLoaded(SparseArray<ShopInfo> result) {
                 shopList = result;

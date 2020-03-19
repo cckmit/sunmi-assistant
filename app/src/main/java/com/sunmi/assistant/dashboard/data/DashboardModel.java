@@ -1,16 +1,12 @@
 package com.sunmi.assistant.dashboard.data;
 
-import android.util.SparseArray;
-
-import sunmi.common.model.ShopInfo;
+import com.sunmi.assistant.data.Callback;
 
 /**
  * @author yinhui
  * @date 2020-03-04
  */
 public interface DashboardModel {
-
-    void loadShopList(int companyId, Callback<SparseArray<ShopInfo>> callback);
 
     void hasSaasState(int companyId, Callback<Integer> callback);
 

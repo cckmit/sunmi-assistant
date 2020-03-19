@@ -4,12 +4,12 @@ import android.annotation.SuppressLint;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.dashboard.data.AgeCustomer;
-import com.sunmi.assistant.dashboard.data.Callback;
-import com.sunmi.assistant.dashboard.data.DashboardModel;
-import com.sunmi.assistant.dashboard.data.DashboardModelImpl;
 import com.sunmi.assistant.dashboard.data.GenderCustomer;
 import com.sunmi.assistant.dashboard.data.NewOldCustomer;
 import com.sunmi.assistant.dashboard.util.Utils;
+import com.sunmi.assistant.data.AppModel;
+import com.sunmi.assistant.data.AppModelImpl;
+import com.sunmi.assistant.data.Callback;
 import com.sunmi.ipc.face.model.FaceAge;
 import com.sunmi.ipc.model.FaceAgeRangeResp;
 import com.sunmi.ipc.rpc.IpcCloudApi;
@@ -31,12 +31,12 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
 
     private String startTime;
     private int period;
-    private DashboardModel model;
+    private AppModel model;
 
     public CustomerDistributionPresenter(long startTime, int period) {
         this.startTime = Utils.formatTime(Utils.FORMAT_API_DATE, startTime);
         this.period = period;
-        model = DashboardModelImpl.get();
+        model = AppModelImpl.get();
     }
 
     @Override
@@ -157,7 +157,7 @@ public class CustomerDistributionPresenter extends BasePresenter<CustomerDistrib
 
     @Override
     public void getShopList() {
-        model.loadShopList(SpUtils.getCompanyId(), new Callback<SparseArray<ShopInfo>>() {
+        model.getShopList(SpUtils.getCompanyId(), false, new Callback<SparseArray<ShopInfo>>() {
             @Override
             public void onLoaded(SparseArray<ShopInfo> result) {
                 if (isViewAttached()) {

@@ -16,7 +16,7 @@ public interface DashboardContract {
 
         int getHeaderHeight();
 
-        void setShopList(List<FilterItem> list);
+        void setShopList(int authority, List<FilterItem> list);
 
         void setPages(List<PageHost> pages, int perspective);
 

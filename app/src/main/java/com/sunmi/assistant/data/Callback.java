@@ -1,4 +1,4 @@
-package com.sunmi.assistant.dashboard.data;
+package com.sunmi.assistant.data;
 
 /**
  * @author yinhui

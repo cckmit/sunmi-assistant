@@ -426,6 +426,7 @@ public class CommonHelper {
 
     public static void logout() {
         MiPushClient.unsetAlias(BaseApplication.getInstance(), SpUtils.getUID(), null);
+        SpUtils.setPerspective(CommonConstants.PERSPECTIVE_NONE);
         SpUtils.setLoginStatus("");
         SpUtils.setSsoToken("");
         SpUtils.setStoreToken("");

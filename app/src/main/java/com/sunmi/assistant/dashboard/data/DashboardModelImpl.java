@@ -3,6 +3,7 @@ package com.sunmi.assistant.dashboard.data;
 import android.util.SparseArray;
 
 import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.data.Callback;
 
 import java.util.List;
 
@@ -10,7 +11,6 @@ import sunmi.common.model.CustomerHistoryResp;
 import sunmi.common.model.IpcDevice;
 import sunmi.common.model.SaasStatus;
 import sunmi.common.model.ShopBundledCloudInfo;
-import sunmi.common.model.ShopInfo;
 import sunmi.common.utils.CommonHelper;
 
 /**
@@ -34,11 +34,6 @@ public class DashboardModelImpl implements DashboardModel {
 
     private DashboardModelImpl() {
         repo = DashboardRepoImpl.get();
-    }
-
-    @Override
-    public void loadShopList(int companyId, Callback<SparseArray<ShopInfo>> callback) {
-        repo.getShopList(companyId, callback);
     }
 
     @Override
