@@ -475,6 +475,28 @@ public class SunmiStoreApi {
         }
     }
 
+    /**
+     * 获取商户下所有门店列表
+     *
+     * @param companyId
+     * @param callback
+     */
+    public void getTotalShopList(int companyId, RetrofitCallback<ShopListResp> callback) {
+        try {
+            String params = new JSONObject()
+                    .put("company_id", companyId)
+                    .put("page_num", 1)
+                    .put("page_size", 999)
+                    .toString();
+            SunmiStoreRetrofitClient.getInstance().create(CompanyInterface.class)
+                    .getTotalShopList(new BaseRequest(params))
+                    .enqueue(callback);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     //****************************** 门店相关 ******************************
 
     public void getShopList(int companyId, RetrofitCallback<ShopListResp> callback) {

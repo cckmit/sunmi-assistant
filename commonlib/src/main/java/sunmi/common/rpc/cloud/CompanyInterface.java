@@ -6,6 +6,7 @@ import retrofit2.http.Body;
 import retrofit2.http.POST;
 import sunmi.common.model.CompanyInfoResp;
 import sunmi.common.model.CompanyListResp;
+import sunmi.common.model.ShopListResp;
 import sunmi.common.rpc.retrofit.BaseRequest;
 import sunmi.common.rpc.retrofit.BaseResponse;
 
@@ -49,4 +50,7 @@ public interface CompanyInterface {
      */
     @POST(companyPath + "update")
     Call<BaseResponse<CompanyInfoResp>> updateCompany(@Body BaseRequest request);
+
+    @POST(companyPath + "shop/getList")
+    Call<BaseResponse<ShopListResp>> getTotalShopList(@Body BaseRequest request);
 }
