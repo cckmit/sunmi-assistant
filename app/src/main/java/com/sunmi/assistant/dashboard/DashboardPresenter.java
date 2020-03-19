@@ -273,6 +273,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void switchPage(int type) {
+        LogCat.i(Utils.TAG, "Switch page:" + type);
         scrollToTop(mPerspective != CommonConstants.PERSPECTIVE_TOTAL);
         mPageType = type;
         getCurrent().refresh(false, true);
