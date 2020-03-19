@@ -261,7 +261,7 @@ public class LoginChooseShopActivity extends BaseMvpActivity<ChooseShopPresenter
         rvChoose.setAdapter(new CommonListAdapter<CompanyInfoResp>(context,
                 R.layout.item_common_checked, companyList) {
 
-            private int selectedIndex = companyList.size() == 1 ? 0 : -1;
+            private int selectedIndex = -1;
 
             @Override
             public void convert(ViewHolder holder, final CompanyInfoResp item) {

@@ -94,7 +94,11 @@ public class AppModelImpl implements AppModel, BaseNotification.NotificationCent
                                 return;
                             }
                         }
-                        authority = AppConstants.ACCOUNT_AUTH_COMPANY;
+                        if (shopList.size() == 1) {
+                            authority = AppConstants.ACCOUNT_AUTH_SHOP;
+                        } else {
+                            authority = AppConstants.ACCOUNT_AUTH_COMPANY;
+                        }
                         callback.onLoaded(new Pair<>(authority, shopMap));
                     }
 
