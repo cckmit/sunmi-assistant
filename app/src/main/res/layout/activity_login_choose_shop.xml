@@ -52,7 +52,7 @@
         android:id="@+id/bgarl_choose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/btn_enter_main"
+        android:layout_above="@id/llBottomBtn"
         android:layout_below="@id/tv_select_type">
 
         <sunmi.common.view.SmRecyclerView
