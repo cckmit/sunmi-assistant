@@ -48,6 +48,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     private AppModel appModel;
     private DashboardModel model;
 
+    private boolean mInit = false;
+
     private int mCompanyId;
     private int mShopId;
     private int mAuthority = AppConstants.ACCOUNT_AUTH_NONE;
@@ -68,6 +70,28 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         model = DashboardModelImpl.get();
         mPerspective = SpUtils.getPerspective();
         load(Constants.FLAG_ALL_MASK, false, false, true);
+    }
+
+    private void initPerspective() {
+        if (mInit) {
+            return;
+        }
+        if (mPerspective == CommonConstants.PERSPECTIVE_NONE) {
+            // 第一次登陆，根据权限自动选择视角
+            if (mAuthority == AppConstants.ACCOUNT_AUTH_COMPANY) {
+                switchPerspective(CommonConstants.PERSPECTIVE_TOTAL, -1, false);
+            } else {
+                switchPerspective(CommonConstants.PERSPECTIVE_SHOP, mShopId, false);
+            }
+        } else {
+            // 非第一次登陆，根据SP缓存，加载上一次选择的视角
+            if (mPerspective == CommonConstants.PERSPECTIVE_TOTAL && mAuthority == AppConstants.ACCOUNT_AUTH_SHOP) {
+                // 权限降级，原总部视角因为外部原因，降级为门店视角
+                mPerspective = CommonConstants.PERSPECTIVE_SHOP;
+            }
+            switchPerspective(mPerspective, mShopId, false);
+        }
+        mInit = true;
     }
 
     @Override
@@ -127,6 +151,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             public void onLoaded(Pair<Integer, SparseArray<ShopInfo>> result) {
                 int authority = result.first;
                 SparseArray<ShopInfo> shopMap = result.second;
+                mAuthority = authority;
+                // 构建门店列表筛选项
                 List<FilterItem> list = new ArrayList<>(shopMap.size());
                 for (int i = 0, size = shopMap.size(); i < size; i++) {
                     ShopInfo info = shopMap.valueAt(i);
@@ -136,16 +162,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 if (isViewAttached()) {
                     mView.setShopList(authority, list);
                 }
-                if (mAuthority != authority) {
-                    mAuthority = authority;
-                    if (authority == AppConstants.ACCOUNT_AUTH_COMPANY) {
-                        SpUtils.setPerspective(CommonConstants.PERSPECTIVE_TOTAL);
-                        switchPerspective(CommonConstants.PERSPECTIVE_TOTAL, -1, false);
-                    } else {
-                        SpUtils.setPerspective(CommonConstants.PERSPECTIVE_SHOP);
-                        switchPerspective(CommonConstants.PERSPECTIVE_SHOP, mShopId, false);
-                    }
-                }
+                initPerspective();
                 if (callback != null) {
                     callback.onLoaded(null);
                 }
@@ -231,8 +248,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private void switchToTotalPerspective(boolean refresh) {
         LogCat.i(Utils.TAG, "presenter: switch to total. Refresh=" + refresh);
-        mCondition = null;
         mPerspective = CommonConstants.PERSPECTIVE_TOTAL;
+        SpUtils.setPerspective(mPerspective);
+        mCondition = null;
         mPages.clear();
 
         List<PageHost> pages = new ArrayList<>();
@@ -256,8 +274,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     private void switchToShopPerspective(boolean refresh) {
         LogCat.i(Utils.TAG, "presenter: switch to shop. Refresh=" + refresh);
-        mCondition = null;
         mPerspective = CommonConstants.PERSPECTIVE_SHOP;
+        SpUtils.setPerspective(mPerspective);
+        mCondition = null;
         mPages.clear();
 
         List<PageHost> pages = new ArrayList<>();
