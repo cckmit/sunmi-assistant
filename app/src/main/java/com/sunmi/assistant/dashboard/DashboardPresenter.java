@@ -123,10 +123,8 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 + "; Clear=" + clearCache + "; Current=" + onlyCurrentPage);
         mCompanyId = SpUtils.getCompanyId();
         mShopId = SpUtils.getShopId();
-        if (needLoadShop(flag) && needLoadCondition(flag)) {
+        if (needLoadShop(flag)) {
             loadShopAndCondition(flag, clearCache, onlyCurrentPage, showLoading);
-        } else if (needLoadShop(flag)) {
-            loadShop(clearCache, null);
         } else if (needLoadCondition(flag)) {
             loadCondition(flag, clearCache, onlyCurrentPage, showLoading);
         }
@@ -136,7 +134,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         loadShop(clearCache, new Callback<Object>() {
             @Override
             public void onLoaded(Object result) {
-                loadCondition(flag, clearCache, onlyCurrentPage, showLoading);
+                if (needLoadCondition(flag)) {
+                    loadCondition(flag, clearCache, onlyCurrentPage, showLoading);
+                }
             }
 
             @Override
