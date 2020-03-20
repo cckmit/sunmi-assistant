@@ -72,7 +72,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         load(Constants.FLAG_ALL_MASK, false, false, true);
     }
 
-    private void initPerspective() {
+    private void initPerspective(SparseArray<ShopInfo> shopMap) {
         if (mInit) {
             return;
         }
@@ -88,6 +88,13 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             if (mPerspective == CommonConstants.PERSPECTIVE_TOTAL && mAuthority == AppConstants.ACCOUNT_AUTH_SHOP) {
                 // 权限降级，原总部视角因为外部原因，降级为门店视角
                 mPerspective = CommonConstants.PERSPECTIVE_SHOP;
+            }
+            // 如果为门店视角，则校验是否有该门店权限，若没有，重新预设门店
+            if (mPerspective == CommonConstants.PERSPECTIVE_SHOP && shopMap.indexOfKey(mShopId) < 0) {
+                ShopInfo shopInfo = shopMap.valueAt(0);
+                mShopId = shopInfo.getShopId();
+                SpUtils.setShopId(shopInfo.getShopId());
+                SpUtils.setShopName(shopInfo.getShopName());
             }
             switchPerspective(mPerspective, mShopId, false);
         }
@@ -149,20 +156,20 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         appModel.getShopListWithAuth(mCompanyId, clearCache, new Callback<Pair<Integer, SparseArray<ShopInfo>>>() {
             @Override
             public void onLoaded(Pair<Integer, SparseArray<ShopInfo>> result) {
-                int authority = result.first;
+                mAuthority = result.first;
                 SparseArray<ShopInfo> shopMap = result.second;
-                mAuthority = authority;
+                // 权限和视角校验，初始化页面
+                initPerspective(shopMap);
                 // 构建门店列表筛选项
                 List<FilterItem> list = new ArrayList<>(shopMap.size());
                 for (int i = 0, size = shopMap.size(); i < size; i++) {
                     ShopInfo info = shopMap.valueAt(i);
-                    boolean checked = authority == AppConstants.ACCOUNT_AUTH_SHOP && info.getShopId() == mShopId;
+                    boolean checked = mAuthority == AppConstants.ACCOUNT_AUTH_SHOP && info.getShopId() == mShopId;
                     list.add(new FilterItem(info.getShopId(), info.getShopName(), checked));
                 }
                 if (isViewAttached()) {
-                    mView.setShopList(authority, list);
+                    mView.setShopList(mAuthority, list);
                 }
-                initPerspective();
                 if (callback != null) {
                     callback.onLoaded(null);
                 }
