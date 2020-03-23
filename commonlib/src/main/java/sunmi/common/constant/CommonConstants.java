@@ -19,7 +19,7 @@ public class CommonConstants {
     /**
      * 视角（总部视角/门店视角）
      */
-    public static final int PERSPECTIVE_NONE = 0;
+    public static final int PERSPECTIVE_NONE = -1;
     public static final int PERSPECTIVE_TOTAL = 1;
     public static final int PERSPECTIVE_SHOP = 2;
 
