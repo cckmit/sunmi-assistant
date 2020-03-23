@@ -7,7 +7,7 @@ public class NewOldCustomer implements Comparable<NewOldCustomer> {
     private int newCount;
     private int oldCount;
 
-    public static boolean isDesc = true;
+    public static boolean isDesc;
     public static boolean isSortByNew;
 
     public NewOldCustomer(int shopId, String shopName, int newCount, int oldCount) {

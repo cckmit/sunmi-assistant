@@ -7,7 +7,7 @@ public class GenderCustomer implements Comparable<GenderCustomer> {
     private int maleCount;
     private int femaleCount;
 
-    public static boolean isDesc = true;
+    public static boolean isDesc;
     public static boolean isSortByMale;
 
     public GenderCustomer(int shopId, String shopName, int maleCount, int femaleCount) {

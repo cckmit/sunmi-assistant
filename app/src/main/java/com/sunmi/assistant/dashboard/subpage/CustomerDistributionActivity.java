@@ -88,6 +88,9 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         initRadioButton();
+        NewOldCustomer.isDesc = true;
+        GenderCustomer.isDesc = true;
+        AgeCustomer.isDesc = true;
         mPresenter = new CustomerDistributionPresenter(startTime, period);
         mPresenter.attachView(this);
         mPresenter.getShopList();
@@ -205,8 +208,8 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
             showDarkLoading();
             mPresenter.getCustomerShopAgeDistribution();
         }
-        switchType(Constants.DATA_TYPE_NEW_OLD);
         initSort(NewOldCustomer.isDesc);
+        switchType(Constants.DATA_TYPE_NEW_OLD);
     }
 
     @Click(R.id.rb_gender)
@@ -215,8 +218,8 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
             showDarkLoading();
             mPresenter.getCustomerShopAgeGenderDistribution();
         }
-        switchType(Constants.DATA_TYPE_GENDER);
         initSort(GenderCustomer.isDesc);
+        switchType(Constants.DATA_TYPE_GENDER);
     }
 
     @Click(R.id.rb_age)
@@ -229,8 +232,8 @@ public class CustomerDistributionActivity extends BaseMvpActivity<CustomerDistri
             showDarkLoading();
             mPresenter.getCustomerShopAgeDistribution();
         }
+        initSort(AgeCustomer.isDesc);
         switchType(Constants.DATA_TYPE_AGE);
-        initSort(GenderCustomer.isDesc);
     }
 
     @Click(R.id.dm_motion_sort)
