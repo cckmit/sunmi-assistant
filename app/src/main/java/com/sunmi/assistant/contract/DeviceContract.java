@@ -42,7 +42,7 @@ public interface DeviceContract {
 
         void getCheckApLoginFail(String type);
 
-        void gotoPrimaryRouteStartActivity();
+        void gotoPrimaryRouteStartActivity(String model);
 
         void getRouterNameSuccess(String sn, String name, String mac);
     }
