@@ -73,10 +73,9 @@ public abstract class HttpCallback<T> extends StringCallback {
                 .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
-    public void onFail(int code, String msg, String data) {
-
-    }
-
     public abstract void onSuccess(int code, String msg, T data);
+
+    public void onFail(int code, String msg, String data) {
+    }
 
 }

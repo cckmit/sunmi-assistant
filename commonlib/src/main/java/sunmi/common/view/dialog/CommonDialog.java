@@ -20,7 +20,7 @@ import com.commonlibrary.R;
 
 public class CommonDialog extends Dialog {
 
-    private CommonDialog(Context context, int theme) {
+    public CommonDialog(Context context, int theme) {
         super(context, theme);
     }
 

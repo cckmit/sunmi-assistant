@@ -2,6 +2,7 @@ package sunmi.common.router;
 
 import android.content.Context;
 
+import com.xiaojinzi.component.anno.ParameterAnno;
 import com.xiaojinzi.component.anno.router.HostAnno;
 import com.xiaojinzi.component.anno.router.PathAnno;
 import com.xiaojinzi.component.anno.router.RouterApiAnno;
@@ -18,5 +19,6 @@ import sunmi.common.constant.RouterConfig;
 public interface ApManagerApi {
 
     @PathAnno(RouterConfig.ApManager.PRIMARY_ROUTE_SEARCH)
-    void goToPrimaryRouteSearch(Context context);
+    void goToPrimaryRouteSearch(Context context, @ParameterAnno("modelType") int modelType);
+
 }

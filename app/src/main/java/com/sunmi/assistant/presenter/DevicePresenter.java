@@ -92,7 +92,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 apCheckLogin(context, RouterDBHelper.queryApPassword(clickedDevice.getDeviceid()));
             } else {
                 if (isViewAttached()) {
-                    mView.getApConfigSuccess();
+                    mView.gotoPrimaryRouteStartActivity();
                 }
             }
         }

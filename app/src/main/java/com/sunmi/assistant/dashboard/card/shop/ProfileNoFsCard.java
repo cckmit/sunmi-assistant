@@ -15,6 +15,7 @@ import retrofit2.Call;
 import sunmi.common.base.recycle.BaseViewHolder;
 import sunmi.common.base.recycle.ItemType;
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.model.Interval;
 import sunmi.common.router.IpcApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
@@ -82,7 +83,7 @@ public class ProfileNoFsCard extends BaseRefreshCard<ProfileNoFsCard.Model, Obje
         view.setPaddingRelative(0, 0, 0, (int) context.getResources().getDimension(R.dimen.dp_32));
 
         holder.addOnClickListener(R.id.btn_dashboard_add, (h, model, position) ->
-                Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_FS, CommonConstants.CONFIG_IPC_FROM_COMMON));
+                Router.withApi(IpcApi.class).goToIpcStartConfig(context, ModelType.MODEL_FS, CommonConstants.CONFIG_IPC_FROM_COMMON));
         return holder;
     }
 

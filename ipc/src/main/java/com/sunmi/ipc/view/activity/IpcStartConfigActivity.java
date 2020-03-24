@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.RouterConfig;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ViewUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -66,16 +66,15 @@ public class IpcStartConfigActivity extends BaseActivity {
             path = RouterConfig.Ipc.IPC_START_CONFIG
     )
     public static Intent start(RouterRequest request) {
-        Intent intent = new Intent(request.getRawContext(), IpcStartConfigActivity_.class);
-        return intent;
+        return new Intent(request.getRawContext(), IpcStartConfigActivity_.class);
     }
 
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        if (ipcType == CommonConstants.TYPE_IPC_FS) {
+        if (ipcType == ModelType.MODEL_FS) {
             ivIpc.setBackgroundResource(R.drawable.ipc_config_fs);
-        } else if (ipcType == CommonConstants.TYPE_IPC_SS) {
+        } else if (ipcType == ModelType.MODEL_SS) {
             ivIpc.setBackgroundResource(R.drawable.ipc_config_ss);
         }
         drawable = (AnimationDrawable) ivIpc.getBackground();

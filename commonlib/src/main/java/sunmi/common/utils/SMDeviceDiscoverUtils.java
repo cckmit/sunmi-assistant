@@ -27,11 +27,13 @@ import static sunmi.common.utils.ByteUtils.bytesToHex;
  * Created by bruce on 2019/4/1.
  */
 public class SMDeviceDiscoverUtils {
-
+    //UDP发送端口号
+    public final static int SEND_PORT = 10001;
     //本机发送的data
     private static String data = "{\"reserve\":\"111\"}";
     private static byte[] dataByte = SafeUtils.encodeBase64ToByte(data);
     private static byte[] baseLength = ByteUtils.intToByte2L(dataByte.length);
+
     //header：4字节
     private static final byte[] HEADER = {(byte) 0xFF, (byte) 0xFF, 0x33, (byte) 0xFF};
     //协议版本号：1字节
@@ -45,23 +47,19 @@ public class SMDeviceDiscoverUtils {
     //crc校验：4字节
     private static byte[] CRC_NUMBER = null;
 
-    //发送消息类型
-    private static byte[] send_type = {0x01};
     //接收消息数据类型
     private static byte[] receive_type = {0x02};
 
     //接收线程的循环标识
     private static boolean listenStatus = true;
-    //接收报文信息
-    private static byte[] receiveInfo;
 
     //针对部分手机无法接收udp问题
     private static WifiManager.MulticastLock lock;
 
     //初始化
-    public static void scanDevice(Context context, int notify) {
+    public static void scanDevice(Context context, int notify, boolean isSaveDevice) {
         initStart(context);
-        UdpRunnable task = new UdpRunnable(notify);
+        UdpRunnable task = new UdpRunnable(notify, isSaveDevice);
         ScheduledExecutorService pool = Executors.newScheduledThreadPool(3);
         pool.schedule(task, 0, TimeUnit.MILLISECONDS);
         pool.schedule(task, 500, TimeUnit.MILLISECONDS);
@@ -83,27 +81,28 @@ public class SMDeviceDiscoverUtils {
     //UDP数据发送线程
     public static class UdpRunnable implements Runnable {
         private int notify;
+        private boolean isSaveDevice;
 
-        UdpRunnable(int notify) {
+        UdpRunnable(int notify, boolean isSaveDevice) {
             this.notify = notify;
+            this.isSaveDevice = isSaveDevice;
         }
 
         @Override
         public void run() {
             try {
                 //报文协议
-                    byte[] buf = ByteUtils.byteMergerAll(HEADER, PROTOCOL_VERSION, MESSAGE_TYPE, LENGTH, DATA, CRC_NUMBER);
+                byte[] buf = ByteUtils.byteMergerAll(HEADER, PROTOCOL_VERSION, MESSAGE_TYPE, LENGTH, DATA, CRC_NUMBER);
                 // 创建DatagramSocket对象，端口
                 //方法一添加port
                 //sendSocket = new DatagramSocket(AppConfig.SEND_PORT);
                 //方法二添加port
                 DatagramSocket sendSocket = new DatagramSocket(null);
                 sendSocket.setReuseAddress(true);
-                sendSocket.bind(new InetSocketAddress(CommonConstants.SEND_PORT));
+                sendSocket.bind(new InetSocketAddress(SEND_PORT));
 
                 InetAddress serverAddr = InetAddress.getByName(CommonConstants.SEND_IP);
-                DatagramPacket outPacket = new DatagramPacket(buf, buf.length, serverAddr,
-                        CommonConstants.SEND_PORT);
+                DatagramPacket outPacket = new DatagramPacket(buf, buf.length, serverAddr, SEND_PORT);
                 lock.acquire();
                 sendSocket.send(outPacket);
 
@@ -143,6 +142,9 @@ public class SMDeviceDiscoverUtils {
                             System.arraycopy(rd, 8, data, 0, (len - 12));
                             String jm = new String(Base64.decode(data, Base64.NO_WRAP));
                             SunmiDevice device = new GsonBuilder().create().fromJson(jm, SunmiDevice.class);
+                            if (isSaveDevice) {
+                                CommonConstants.SUNMI_DEVICE_MAP.put(device.getDeviceid(), device);
+                            }
                             BaseNotification.newInstance().postNotificationName(notify, device);
                         } else {
                             closeSocket(sendSocket);
@@ -161,10 +163,6 @@ public class SMDeviceDiscoverUtils {
 //        if (socket != null) {
 //            socket.close();
 //        }
-    }
-
-    public static void saveInfo(SunmiDevice bean) {
-        CommonConstants.SUNMI_DEVICE_MAP.put(bean.getDeviceid(), bean);
     }
 
 }

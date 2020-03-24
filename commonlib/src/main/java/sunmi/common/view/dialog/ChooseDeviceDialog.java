@@ -15,6 +15,7 @@ import com.commonlibrary.R;
 import com.xiaojinzi.component.impl.Router;
 
 import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.router.CloudPrinterApi;
 import sunmi.common.router.IpcApi;
 import sunmi.common.utils.CommonHelper;
@@ -61,11 +62,12 @@ public class ChooseDeviceDialog extends Dialog {
     private SimpleRecyclerViewAdapter getAdapter() {
         int[] imageIds;
         if (CommonHelper.isGooglePlay()) {
-            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_ss,
-                    R.mipmap.ic_add_sunmi_fs, R.mipmap.ic_add_more};
+            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_w1s,
+                    R.mipmap.ic_add_sunmi_ss, R.mipmap.ic_add_sunmi_fs, R.mipmap.ic_add_more};
         } else {
-            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_ss,
-                    R.mipmap.ic_add_sunmi_fs, R.mipmap.ic_add_sunmi_printer, R.mipmap.ic_add_more};
+            imageIds = new int[]{R.mipmap.ic_add_sunmi_ap, R.mipmap.ic_add_sunmi_w1s,
+                    R.mipmap.ic_add_sunmi_ss, R.mipmap.ic_add_sunmi_fs,
+                    R.mipmap.ic_add_sunmi_printer, R.mipmap.ic_add_more};
         }
         final String[] names = getContext().getResources().getStringArray(
                 CommonHelper.isGooglePlay() ? R.array.sunmi_devices_google_play : R.array.sunmi_devices);
@@ -76,9 +78,9 @@ public class ChooseDeviceDialog extends Dialog {
                 return;
             }
             dismiss();
-            if (pos == CommonConstants.TYPE_PRINTER) {
+            if (pos == ModelType.MODEL_PRINTER) {
                 Router.withApi(CloudPrinterApi.class).goToSartConfigPrinter(getContext(), shopId);
-            } else if (pos == CommonConstants.TYPE_IPC_FS || pos == CommonConstants.TYPE_IPC_SS) {
+            } else if (pos == ModelType.MODEL_FS|| pos == ModelType.MODEL_SS) {
                 Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), pos, CommonConstants.CONFIG_IPC_FROM_COMMON);
             } else {
                 StartConfigSMDeviceActivity_.intent(getContext())

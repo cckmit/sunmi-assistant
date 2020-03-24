@@ -34,8 +34,6 @@ public interface DeviceContract {
 
         void getPosListSuccess(List<SunmiDevice> devices);
 
-        void getApConfigSuccess();
-
         void apEventStatus(String sn, boolean isOnline);
 
         void refreshApEventStatus(Map<String, SunmiDevice> map);

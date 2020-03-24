@@ -10,7 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
-import com.sunmi.apmanager.utils.DialogUtils;
+import com.sunmi.apmanager.ui.view.ConfirmDialog;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.R;
 
@@ -41,8 +41,7 @@ import sunmi.common.view.TitleBarView;
  */
 @SuppressLint("Registered")
 @EActivity(R.layout.activity_change_username)
-public class CompanyUpdateActivity extends BaseActivity
-        implements View.OnClickListener, TextWatcher {
+public class CompanyUpdateActivity extends BaseActivity implements View.OnClickListener, TextWatcher {
     private static final int CREATE_SHOP_ALREADY_EXIST = 5035;
     private static final int COMPANY_NAME_MAX_LENGTH = 40;
     private static final int EMAIL_MAX_LENGTH = 100;
@@ -55,7 +54,8 @@ public class CompanyUpdateActivity extends BaseActivity
     @Extra
     CompanyInfoResp mInfo;
     @Extra
-    int type;
+    int updateType;
+
     private String companyInfo;
 
     @AfterViews
@@ -63,7 +63,7 @@ public class CompanyUpdateActivity extends BaseActivity
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         titleBar.getLeftLayout().setOnClickListener(v -> onBackPressed());
         titleBar.getRightTextView().setOnClickListener(this);
-        if (type == CompanyDetailActivity.TYPE_EMAIL) {
+        if (updateType == CompanyDetailActivity.TYPE_EMAIL) {
             cetUserInfo.getEditText().setFilters(new InputFilter[]{new InputFilter.LengthFilter(EMAIL_MAX_LENGTH)});
         } else {
             cetUserInfo.getEditText().addTextChangedListener(new TextLengthWatcher(cetUserInfo.getEditText(),
@@ -76,15 +76,15 @@ public class CompanyUpdateActivity extends BaseActivity
         }
         cetUserInfo.getEditText().addTextChangedListener(this);
         cetUserInfo.requestFocus();
-        if (type == CompanyDetailActivity.TYPE_NAME) {
+        if (updateType == CompanyDetailActivity.TYPE_NAME) {
             initData(R.string.str_change_company_name, R.string.tip_input_company_name, mInfo.getCompany_name());
-        } else if (type == CompanyDetailActivity.TYPE_CONTACT) {
+        } else if (updateType == CompanyDetailActivity.TYPE_CONTACT) {
             initData(R.string.str_change_company_contact, R.string.tip_input_company_contact, mInfo.getContact_person());
-        } else if (type == CompanyDetailActivity.TYPE_CONTACT_TEL) {
+        } else if (updateType == CompanyDetailActivity.TYPE_CONTACT_TEL) {
             cetUserInfo.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
             cetUserInfo.getEditText().setFilters(new InputFilter[]{new InputFilter.LengthFilter(11)});
             initData(R.string.str_change_company_tel, R.string.tip_input_company_tel, mInfo.getContact_tel());
-        } else if (type == CompanyDetailActivity.TYPE_EMAIL) {
+        } else if (updateType == CompanyDetailActivity.TYPE_EMAIL) {
             initData(R.string.str_change_company_email, R.string.tip_input_company_email, mInfo.getContact_email());
         }
     }
@@ -109,17 +109,17 @@ public class CompanyUpdateActivity extends BaseActivity
             public void onSuccess(int code, String msg, CompanyInfoResp data) {
                 hideLoadingDialog();
                 Intent intent = getIntent();
-                if (type == CompanyDetailActivity.TYPE_NAME) {
+                if (updateType == CompanyDetailActivity.TYPE_NAME) {
                     if (data.getCompany_id() == SpUtils.getCompanyId()) {
                         SpUtils.setCompanyName(data.getCompany_name());
                         BaseNotification.newInstance().postNotificationName(CommonNotifications.companyNameChanged);
                     }
                     intent.putExtra(CompanyDetailActivity.INTENT_EXTRA_NAME, companyInfo);
-                } else if (type == CompanyDetailActivity.TYPE_CONTACT) {
+                } else if (updateType == CompanyDetailActivity.TYPE_CONTACT) {
                     intent.putExtra(CompanyDetailActivity.INTENT_EXTRA_CONTACT, companyInfo);
-                } else if (type == CompanyDetailActivity.TYPE_CONTACT_TEL) {
+                } else if (updateType == CompanyDetailActivity.TYPE_CONTACT_TEL) {
                     intent.putExtra(CompanyDetailActivity.INTENT_EXTRA_CONTACT_TEL, companyInfo);
-                } else if (type == CompanyDetailActivity.TYPE_EMAIL) {
+                } else if (updateType == CompanyDetailActivity.TYPE_EMAIL) {
                     intent.putExtra(CompanyDetailActivity.INTENT_EXTRA_EMAIL, companyInfo);
                 }
                 setResult(RESULT_OK, intent);
@@ -142,7 +142,7 @@ public class CompanyUpdateActivity extends BaseActivity
 
     private boolean isUpdateMessage() {
         companyInfo = cetUserInfo.getEditTextText().trim();
-        if (type == CompanyDetailActivity.TYPE_NAME) {
+        if (updateType == CompanyDetailActivity.TYPE_NAME) {
             if (TextUtils.isEmpty(companyInfo)) {
                 shortTip(R.string.tip_input_company_name);
                 return true;
@@ -156,7 +156,7 @@ public class CompanyUpdateActivity extends BaseActivity
                 return true;
             }
             mInfo.setCompany_name(companyInfo);
-        } else if (type == CompanyDetailActivity.TYPE_CONTACT) {
+        } else if (updateType == CompanyDetailActivity.TYPE_CONTACT) {
             if (TextUtils.isEmpty(companyInfo)) {
                 shortTip(getString(R.string.company_shop_contact_tip));
                 return true;
@@ -170,7 +170,7 @@ public class CompanyUpdateActivity extends BaseActivity
                 return true;
             }
             mInfo.setContact_person(companyInfo);
-        } else if (type == CompanyDetailActivity.TYPE_CONTACT_TEL) {
+        } else if (updateType == CompanyDetailActivity.TYPE_CONTACT_TEL) {
             if (TextUtils.isEmpty(companyInfo)) {
                 shortTip(getString(R.string.company_shop_contact_tel_tip));
                 return true;
@@ -184,7 +184,7 @@ public class CompanyUpdateActivity extends BaseActivity
                 return true;
             }
             mInfo.setContact_tel(companyInfo);
-        } else if (type == CompanyDetailActivity.TYPE_EMAIL) {
+        } else if (updateType == CompanyDetailActivity.TYPE_EMAIL) {
             if (TextUtils.isEmpty(companyInfo)) {
                 shortTip(getString(R.string.tip_input_company_email));
                 return true;
@@ -226,18 +226,18 @@ public class CompanyUpdateActivity extends BaseActivity
     @Override
     public void onBackPressed() {
         String companyInfo = cetUserInfo.getEditTextText().trim();
-        if (type == CompanyDetailActivity.TYPE_NAME &&
+        if (updateType == CompanyDetailActivity.TYPE_NAME &&
                 TextUtils.equals(mInfo.getCompany_name(), companyInfo)
-                || type == CompanyDetailActivity.TYPE_CONTACT &&
+                || updateType == CompanyDetailActivity.TYPE_CONTACT &&
                 TextUtils.equals(mInfo.getContact_person(), companyInfo)
-                || type == CompanyDetailActivity.TYPE_CONTACT_TEL &&
+                || updateType == CompanyDetailActivity.TYPE_CONTACT_TEL &&
                 TextUtils.equals(mInfo.getContact_tel(), companyInfo)
-                || type == CompanyDetailActivity.TYPE_EMAIL &&
+                || updateType == CompanyDetailActivity.TYPE_EMAIL &&
                 TextUtils.equals(mInfo.getContact_email(), companyInfo)) {
             super.onBackPressed();
             return;
         }
-        DialogUtils.isCancelSetting(this);
+        new ConfirmDialog(context);
     }
 
 }

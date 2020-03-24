@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
 import sunmi.common.router.IpcApi;
@@ -180,7 +181,7 @@ public class JSCall extends BaseJSCall {
                 @Override
                 public void run() {
                     if (TextUtils.equals(url, SsConstants.JS_BIND_SS)) {
-                        Router.withApi(IpcApi.class).goToIpcStartConfig(context, CommonConstants.TYPE_IPC_SS, CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO);
+                        Router.withApi(IpcApi.class).goToIpcStartConfig(context, ModelType.MODEL_SS, CommonConstants.CONFIG_IPC_FROM_CASH_VIDEO);
                     } else if (TextUtils.equals(url, SsConstants.JS_BIND_SAAS)) {
                         Router.withApi(AppApi.class).gotoImportOrderPreview(context, CommonConstants.IMPORT_ORDER_FROM_CASH_VIDEO);
                     } else if (TextUtils.equals(url, SsConstants.JS_MALL_ORDER)) {

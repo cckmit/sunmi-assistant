@@ -32,7 +32,7 @@ import java.util.Map;
 
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.rpc.RpcErrorCode;
 import sunmi.common.rpc.sunmicall.ResponseBean;
@@ -86,9 +86,9 @@ public class IPCSearchActivity extends BaseActivity
     @AfterViews
     void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
-        if (CommonConstants.TYPE_IPC_FS == deviceType) {
+        if (ModelType.MODEL_FS == deviceType) {
             tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_fs, 0, 0);
-        } else if (CommonConstants.TYPE_IPC_SS == deviceType) {
+        } else if (ModelType.MODEL_SS == deviceType) {
             tvNoIpc.setCompoundDrawablesWithIntrinsicBounds(0, R.mipmap.ic_no_ss, 0, 0);
         }
         if (network == IpcConstants.IPC_CONFIG_MODE_WIRED) {
@@ -104,7 +104,7 @@ public class IPCSearchActivity extends BaseActivity
     private void startScan() {
         rlNoWifi.setVisibility(View.GONE);
         rlSearch.setVisibility(View.VISIBLE);
-        SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
+        SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered, false);
         new Handler().postDelayed(() -> {
             if (ipcList.size() <= 0) {
                 rlSearch.setVisibility(View.GONE);
@@ -257,9 +257,9 @@ public class IPCSearchActivity extends BaseActivity
 
     //1 udp搜索到设备
     private synchronized void ipcFound(SunmiDevice ipc) {
-        if ((CommonConstants.TYPE_IPC_FS == deviceType
+        if ((ModelType.MODEL_FS == deviceType
                 && DeviceTypeUtils.getInstance().isSS1(ipc.getModel()))
-                || (CommonConstants.TYPE_IPC_SS == deviceType
+                || (ModelType.MODEL_SS == deviceType
                 && DeviceTypeUtils.getInstance().isFS1(ipc.getModel()))) {
             return;
         }

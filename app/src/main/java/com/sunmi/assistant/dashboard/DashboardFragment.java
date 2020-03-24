@@ -42,6 +42,7 @@ import java.util.List;
 import sunmi.common.base.BaseMvpFragment;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.model.FilterItem;
 import sunmi.common.router.IpcApi;
 import sunmi.common.utils.SpUtils;
@@ -274,7 +275,7 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     @Click(R.id.btn_dashboard_tip_add_fs)
     void clickAddFs() {
-        Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), CommonConstants.TYPE_IPC_FS, CommonConstants.CONFIG_IPC_FROM_COMMON);
+        Router.withApi(IpcApi.class).goToIpcStartConfig(getContext(), ModelType.MODEL_FS, CommonConstants.CONFIG_IPC_FROM_COMMON);
     }
 
     @Click(R.id.btn_refresh)
