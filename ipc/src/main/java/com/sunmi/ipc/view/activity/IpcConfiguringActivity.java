@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Set;
 
 import sunmi.common.base.BaseMvpActivity;
-import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.router.AppApi;
@@ -68,7 +68,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
 
     @AfterViews
     void init() {
-        if (CommonConstants.TYPE_IPC_FS == deviceType) {
+        if (ModelType.MODEL_FS == deviceType) {
             ivDevice.setImageResource(R.mipmap.ic_no_fs);
         }
         mPresenter = new IpcConfiguringPresenter();

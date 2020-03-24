@@ -121,21 +121,8 @@ public class SpUtils {
         return SharedManager.getValue(BaseApplication.getContext(), HAS_LOGIN);
     }
 
-    /**
-     * udp
-     *
-     * @param name
-     */
-    public static void saveUDPName(String name) {
-        SharedManager.putValue(BaseApplication.getContext(), UDP_ROUTER, name);
-    }
-
     public static void clearUDPName() {
         SharedManager.clearValue(BaseApplication.getContext(), UDP_ROUTER);
-    }
-
-    public static String getUDPName() {
-        return SharedManager.getValue(BaseApplication.getContext(), UDP_ROUTER);
     }
 
     /**
@@ -289,12 +276,12 @@ public class SpUtils {
         return SharedManager.getStringSetValue(BaseApplication.getContext(), AD_LOAN_UIDS);
     }
 
-    public static void setLoanStatus(boolean status){
-        SharedManager.putValue(BaseApplication.getContext(),LOAN_STATUS,status);
+    public static void setLoanStatus(boolean status) {
+        SharedManager.putValue(BaseApplication.getContext(), LOAN_STATUS, status);
     }
 
-    public static boolean getLoanStatus(){
-        return SharedManager.getBooleanValue(BaseApplication.getContext(),LOAN_STATUS);
+    public static boolean getLoanStatus() {
+        return SharedManager.getBooleanValue(BaseApplication.getContext(), LOAN_STATUS);
     }
 
     public static void setPerspective(int perspective) {

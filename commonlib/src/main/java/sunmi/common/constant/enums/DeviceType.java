@@ -26,8 +26,8 @@ public class DeviceType {
     }
 
     // Mark the argument as restricted to these enumerated types
-    public DeviceType(@DeviceTypeDef String filterColor) {
-        this.type = filterColor;
+    public DeviceType(@DeviceTypeDef String deviceType) {
+        this.type = deviceType;
     }
 
     // get data

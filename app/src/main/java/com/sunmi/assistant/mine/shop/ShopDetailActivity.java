@@ -135,8 +135,8 @@ public class ShopDetailActivity extends BaseActivity {
 
     @Click(R.id.sil_shop_name)
     public void toModifyName() {
-        ShopContactsAreaActivity_.intent(this).info(info)
-                .type(SHOP_CHANGE_NAME).startForResult(REQUEST_CODE_NAME);
+        ShopContactsAreaActivity_.intent(context).info(info)
+                .operationType(SHOP_CHANGE_NAME).startForResult(REQUEST_CODE_NAME);
     }
 
     @Click(R.id.sil_shop_category)
@@ -157,19 +157,19 @@ public class ShopDetailActivity extends BaseActivity {
     @Click(R.id.sil_shop_contact)
     public void toModifyContact() {
         ShopContactsAreaActivity_.intent(context).info(info)
-                .type(SHOP_CHANGE_CONTACT).startForResult(REQUEST_CODE_CONTACT);
+                .operationType(SHOP_CHANGE_CONTACT).startForResult(REQUEST_CODE_CONTACT);
     }
 
     @Click(R.id.sil_shop_mobile)
     public void toModifyContactTel() {
         ShopContactsAreaActivity_.intent(context).info(info)
-                .type(SHOP_CHANGE_CONTACT_TEL).startForResult(REQUEST_CODE_CONTACT_TEL);
+                .operationType(SHOP_CHANGE_CONTACT_TEL).startForResult(REQUEST_CODE_CONTACT_TEL);
     }
 
     @Click(R.id.sil_shop_area)
     public void toModifyArea() {
         ShopContactsAreaActivity_.intent(context).info(info)
-                .type(SHOP_CHANGE_AREA).startForResult(REQUEST_CODE_AREA);
+                .operationType(SHOP_CHANGE_AREA).startForResult(REQUEST_CODE_AREA);
     }
 
     @OnActivityResult(REQUEST_CODE_NAME)

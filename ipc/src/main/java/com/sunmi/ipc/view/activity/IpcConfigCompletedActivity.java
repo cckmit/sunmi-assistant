@@ -33,6 +33,7 @@ import sunmi.common.base.BaseActivity;
 import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceType;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.router.AppApi;
@@ -112,12 +113,12 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 btnFinish.setVisibility(View.VISIBLE);
                 btnRetry.setVisibility(View.VISIBLE);
             } else {
-                if (CommonConstants.TYPE_IPC_FS == deviceType) {
+                if (ModelType.MODEL_FS == deviceType) {
                     tvTip.setVisibility(View.VISIBLE);
                     btnComplete.setText(R.string.str_adjust_screen);
                     btnComplete.setVisibility(View.VISIBLE);
                     btnFinish.setVisibility(View.VISIBLE);
-                } else if (CommonConstants.TYPE_IPC_SS == deviceType && snList.size() > 0) {
+                } else if (ModelType.MODEL_SS == deviceType && snList.size() > 0) {
                     initSs();
                 } else {
                     btnComplete.setVisibility(View.VISIBLE);
@@ -130,12 +131,12 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             tvResult.setText(getString(R.string.str_wifi_config_finish));
         }
         initList();
-        SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
+        SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered, true);
     }
 
     @Click(resName = "btn_complete")
     void completeClick() {
-        if (CommonConstants.TYPE_IPC_FS == deviceType) {
+        if (ModelType.MODEL_FS == deviceType) {
             if (successList.size() == 1) {
                 fsAdjustPrepare(successList.get(0));
             } else if (successList.size() > 1) {
@@ -188,7 +189,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
     @Override
     public int[] getUnStickNotificationId() {
-        return new int[]{IpcConstants.getSdcardStatus, IpcConstants.ipcDiscovered};
+        return new int[]{IpcConstants.getSdcardStatus};
     }
 
     @Override
@@ -202,10 +203,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
         if (args == null) {
             return;
         }
-        if (IpcConstants.ipcDiscovered == id) {
-            SMDeviceDiscoverUtils.saveInfo((SunmiDevice) args[0]);
-            return;
-        } else if (CommonNotifications.cloudStorageChange == id) {
+        if (CommonNotifications.cloudStorageChange == id) {
             initSs();
             return;
         }

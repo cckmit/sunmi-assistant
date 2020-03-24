@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.view.CommonListAdapter;
@@ -56,7 +56,7 @@ public class IpcStartLinkedActivity extends BaseActivity {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         tvContent.setText(R.string.str_confirm_ipc_linked);
         tvConfigTip.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_4)));
-        if (ipcType == CommonConstants.TYPE_IPC_FS) {
+        if (ipcType == ModelType.MODEL_FS) {
             ivIpc.setBackgroundResource(R.drawable.ic_ipc_config_fs_blue);
         } else {
             ivIpc.setBackgroundResource(R.drawable.ic_ipc_config_ss_blue);

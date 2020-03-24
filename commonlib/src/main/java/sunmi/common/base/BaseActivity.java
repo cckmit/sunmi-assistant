@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import butterknife.ButterKnife;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.GotoActivityUtils;
+import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.ToastUtils;
 import sunmi.common.view.dialog.LoadingDialog;
 
@@ -65,6 +66,10 @@ public abstract class BaseActivity extends FragmentActivity
         return false;
     }
 
+    //RouterManagerActivity/TestSpeedActivity/QueryDevListDetailsActivity/FaultDiagnosisActivity/ChildRouterActivity
+    protected void initStatusBar(){
+        StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

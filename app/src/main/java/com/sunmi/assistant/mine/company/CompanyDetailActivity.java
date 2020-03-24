@@ -140,9 +140,8 @@ public class CompanyDetailActivity extends BaseActivity {
         if (mCompanyInfo == null) {
             return;
         }
-        CompanyUpdateActivity_.intent(this).mInfo(mCompanyInfo)
-                .type(TYPE_NAME)
-                .startForResult(REQUEST_CODE_NAME);
+        CompanyUpdateActivity_.intent(context).mInfo(mCompanyInfo)
+                .updateType(TYPE_NAME).startForResult(REQUEST_CODE_NAME);
     }
 
     @Click(R.id.sil_company_contact)
@@ -150,9 +149,8 @@ public class CompanyDetailActivity extends BaseActivity {
         if (mCompanyInfo == null) {
             return;
         }
-        CompanyUpdateActivity_.intent(this).mInfo(mCompanyInfo)
-                .type(TYPE_CONTACT)
-                .startForResult(REQUEST_CODE_CONTACT);
+        CompanyUpdateActivity_.intent(context).mInfo(mCompanyInfo)
+                .updateType(TYPE_CONTACT).startForResult(REQUEST_CODE_CONTACT);
     }
 
     @Click(R.id.sil_company_contact_tel)
@@ -160,9 +158,8 @@ public class CompanyDetailActivity extends BaseActivity {
         if (mCompanyInfo == null) {
             return;
         }
-        CompanyUpdateActivity_.intent(this).mInfo(mCompanyInfo)
-                .type(TYPE_CONTACT_TEL)
-                .startForResult(REQUEST_CODE_CONTACT_TEL);
+        CompanyUpdateActivity_.intent(context).mInfo(mCompanyInfo)
+                .updateType(TYPE_CONTACT_TEL).startForResult(REQUEST_CODE_CONTACT_TEL);
     }
 
     @Click(R.id.sil_company_email)
@@ -170,9 +167,8 @@ public class CompanyDetailActivity extends BaseActivity {
         if (mCompanyInfo == null) {
             return;
         }
-        CompanyUpdateActivity_.intent(this).mInfo(mCompanyInfo)
-                .type(TYPE_EMAIL)
-                .startForResult(REQUEST_CODE_EMAIL);
+        CompanyUpdateActivity_.intent(context).mInfo(mCompanyInfo)
+                .updateType(TYPE_EMAIL).startForResult(REQUEST_CODE_EMAIL);
     }
 
     @OnActivityResult(REQUEST_CODE_NAME)

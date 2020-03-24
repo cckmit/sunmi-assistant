@@ -439,7 +439,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
                 .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
                     //发送udp
-                    SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
+                    SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered,true);
                     setResult(RESULT_OK, new Intent());
                     finish();
                 }).create();

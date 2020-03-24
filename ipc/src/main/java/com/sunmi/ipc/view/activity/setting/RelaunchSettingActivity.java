@@ -86,7 +86,7 @@ public class RelaunchSettingActivity extends BaseActivity {
                 String sn = object.getString("sn");
                 if (TextUtils.equals(sn, mDevice.getDeviceid())) {
                     //发送udp
-                    SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered);
+                    SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered, true);
                     BaseNotification.newInstance().postNotificationName(IpcConstants.ipcRelaunchSuccess);
                 }
             } catch (JSONException e) {

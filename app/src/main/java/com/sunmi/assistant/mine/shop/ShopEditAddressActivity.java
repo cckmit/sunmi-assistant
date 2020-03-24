@@ -27,7 +27,7 @@ import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sunmi.apmanager.utils.DialogUtils;
+import com.sunmi.apmanager.ui.view.ConfirmDialog;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopRegionContract;
 import com.sunmi.assistant.mine.model.RegionProvince;
@@ -145,7 +145,7 @@ public class ShopEditAddressActivity extends BaseMvpActivity<ShopRegionPresenter
                 info.getArea() == mAreaId && TextUtils.equals(info.getAddress(), address)) {
             super.onBackPressed();
         } else {
-            DialogUtils.isCancelSetting(this);
+            new ConfirmDialog(context);
         }
     }
 

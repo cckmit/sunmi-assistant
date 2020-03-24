@@ -8,7 +8,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.widget.EditText;
 
-import com.sunmi.apmanager.utils.DialogUtils;
+import com.sunmi.apmanager.ui.view.ConfirmDialog;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ShopContactAreaContract;
@@ -54,7 +54,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
     @Extra
     ShopInfo info;
     @Extra
-    int type;
+    int operationType;
 
     @AfterViews
     void init() {
@@ -67,21 +67,28 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
     }
 
     private void initShopMessage() {
-        if (type == ShopDetailActivity.SHOP_CHANGE_NAME) {
-            initData(R.string.company_shop_create_name, R.string.company_shop_create_hint, info.getShopName());
-        } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT) {
-            initData(R.string.company_shop_contact, R.string.company_shop_contact_tip, info.getContactPerson());
-        } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL) {
-            etShopMessage.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
-            initData(R.string.company_shop_mobile, R.string.company_shop_contact_tel_tip, info.getContactTel());
-        } else if (type == ShopDetailActivity.SHOP_CHANGE_AREA) {
-            etShopMessage.setRightText(R.string.company_square);
-            etShopMessage.setRightTextColor(ContextCompat.getColor(context, R.color.text_main));
-            etShopMessage.setRightTextSize(R.dimen.sp_20);
-            etShopMessage.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            //默认两位小数
-            etShopMessage.getEditText().setFilters(new InputFilter[]{new NumberValueFilter(info.getBusinessArea() >= 100000 ? 7 : 6)});
-            initData(R.string.company_shop_area, R.string.company_shop_area_tip, info.getBusinessArea() > 0 ? floatTrans(info.getBusinessArea()) : "");
+        switch (operationType) {
+            case ShopDetailActivity.SHOP_CHANGE_NAME:
+                initData(R.string.company_shop_create_name, R.string.company_shop_create_hint, info.getShopName());
+                break;
+            case ShopDetailActivity.SHOP_CHANGE_CONTACT:
+                initData(R.string.company_shop_contact, R.string.company_shop_contact_tip, info.getContactPerson());
+                break;
+            case ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL:
+                etShopMessage.getEditText().setInputType(InputType.TYPE_CLASS_PHONE);
+                initData(R.string.company_shop_mobile, R.string.company_shop_contact_tel_tip, info.getContactTel());
+                break;
+            case ShopDetailActivity.SHOP_CHANGE_AREA:
+                etShopMessage.setRightText(R.string.company_square);
+                etShopMessage.setRightTextColor(ContextCompat.getColor(context, R.color.text_main));
+                etShopMessage.setRightTextSize(R.dimen.sp_20);
+                etShopMessage.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                //默认两位小数
+                etShopMessage.getEditText().setFilters(new InputFilter[]{new NumberValueFilter(info.getBusinessArea() >= 100000 ? 7 : 6)});
+                initData(R.string.company_shop_area, R.string.company_shop_area_tip, info.getBusinessArea() > 0 ? floatTrans(info.getBusinessArea()) : "");
+                break;
+            default:
+                break;
         }
     }
 
@@ -105,12 +112,12 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             return;
         }
         String input = etShopMessage.getEditTextText();
-        if (type == ShopDetailActivity.SHOP_CHANGE_NAME) {
+        if (operationType == ShopDetailActivity.SHOP_CHANGE_NAME) {
             if (isEmptyOrNoChanged(input, info.getShopName(), R.string.company_shop_create_hint)) {
                 return;
             }
             info.setShopName(input);
-        } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT) {
+        } else if (operationType == ShopDetailActivity.SHOP_CHANGE_CONTACT) {
             if (isEmptyOrNoChanged(input, info.getContactPerson(), R.string.company_shop_contact_tip)) {
                 return;
             }
@@ -119,7 +126,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 return;
             }
             info.setContactPerson(input);
-        } else if (type == ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL) {
+        } else if (operationType == ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL) {
             if (isEmptyOrNoChanged(input, info.getContactTel(), R.string.company_shop_contact_tel_tip)) {
                 return;
             }
@@ -128,7 +135,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 return;
             }
             info.setContactTel(input);
-        } else if (type == ShopDetailActivity.SHOP_CHANGE_AREA) {
+        } else if (operationType == ShopDetailActivity.SHOP_CHANGE_AREA) {
             if (isEmptyOrNoChanged(input, String.valueOf(info.getBusinessArea()),
                     R.string.company_shop_area_tip)) {
                 return;
@@ -141,7 +148,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
             }
             info.setBusinessArea(Double.parseDouble(input));
         }
-        mPresenter.editShopMessage(type, info);
+        mPresenter.editShopMessage(operationType, info);
     }
 
     private boolean isEmptyOrNoChanged(String newInfo, String originalInfo, int resIdTip) {
@@ -196,16 +203,16 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
     @Override
     public void onBackPressed() {
         if (TextUtils.isEmpty(etShopMessage.getEditTextText())
-                || (type == ShopDetailActivity.SHOP_CHANGE_NAME &&
+                || (operationType == ShopDetailActivity.SHOP_CHANGE_NAME &&
                 TextUtils.equals(info.getShopName(), etShopMessage.getEditTextText()))
-                || (type == ShopDetailActivity.SHOP_CHANGE_CONTACT &&
+                || (operationType == ShopDetailActivity.SHOP_CHANGE_CONTACT &&
                 TextUtils.equals(info.getContactPerson(), etShopMessage.getEditTextText()))
-                || (type == ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL &&
+                || (operationType == ShopDetailActivity.SHOP_CHANGE_CONTACT_TEL &&
                 TextUtils.equals(info.getContactTel(), etShopMessage.getEditTextText()))) {
             super.onBackPressed();
             return;
         }
-        if (type == ShopDetailActivity.SHOP_CHANGE_AREA) {
+        if (operationType == ShopDetailActivity.SHOP_CHANGE_AREA) {
             if (TextUtils.equals(floatTrans(info.getBusinessArea()), etShopMessage.getEditTextText())) {
                 super.onBackPressed();
                 return;
@@ -218,7 +225,7 @@ public class ShopContactsAreaActivity extends BaseMvpActivity<ShopContactAreaPre
                 }
             }
         }
-        DialogUtils.isCancelSetting(this);
+        new ConfirmDialog(context);
     }
 
 }

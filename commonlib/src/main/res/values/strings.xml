@@ -53,6 +53,8 @@
     <string name="str_config_tip_ap">Prepare to set up the router</string>
     <string name="str_config_tip_ap_1"><![CDATA[1. Connect the power supply and network cable to the router, then wait till the system indicator stop blinking.]]></string>
     <string name="str_config_tip_ap_2"><![CDATA[2. Connect your mobile phone to<font color= \'#FF6000\'>「SUNMI_XX」</font> Wi-Fi]]></string>
+    <string name="str_config_tip_w1s_1"><![CDATA[1. 接通电源并连接网线，待信号灯呈<font color= \'#FF6000\'>「蓝色」</font>]]></string>
+    <string name="str_config_tip_w1s_2"><![CDATA[2. 将手机连接到<font color= \'#FF6000\'>「SUNMI_XX」</font>无线网络]]></string>
     <string name="str_config_tip_ipc">Connect to the IP camera you need to setup</string>
     <string name="str_config_tip_ipc_1"><![CDATA[Power on the IPC and wait for 20s to see the <b><font color= \'#FF6000\'>「green indicator blinks」</font></b>，and then click「NEXT」]]></string>
     <string name="str_config_tip_ipc_2">Plug in the network cable to the IPC and connect your phone to the same network.\n Click「NEXT」</string>
@@ -115,6 +117,7 @@
     <string name="ipc_setting_detection_day_saturday">Sat</string>
     <string name="ipc_setting_detection_day_sunday">Sun</string>
     <string name="sunmi_device_w1">W1 Router</string>
+    <string name="sunmi_device_w1s">W1s Router</string>
     <string name="sunmi_device_printer">Cloud Printer</string>
     <string name="sunmi_device_fs">Face Sense Camera</string>
     <string name="sunmi_device_ss">Store Sense Camera</string>
