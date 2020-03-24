@@ -79,6 +79,11 @@
         <activity
             android:name=".ui.activity.login.InputMobileActivity_"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.login.UserMergeActivity_"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|adjustPan" />
         <!-- 首页 -->
         <activity
             android:name=".ui.activity.MainActivity_"
