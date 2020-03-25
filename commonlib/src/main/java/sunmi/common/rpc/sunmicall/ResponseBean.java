@@ -17,7 +17,7 @@ public class ResponseBean {
 
     private String returnData;
     private String msgId;
-    private String errCode;
+    private int errCode;
 
     private String opcode;
     private int dataErrCode;
@@ -65,11 +65,15 @@ public class ResponseBean {
         this.msgId = msgId;
     }
 
-    public String getErrCode() {
+    public int getErrCode() {
         return errCode;
     }
 
-    public void setErrCode(String errCode) {
+    public boolean isErrCodeZero() {
+        return 0 == errCode;
+    }
+
+    public void setErrCode(int errCode) {
         this.errCode = errCode;
     }
 
@@ -110,7 +114,7 @@ public class ResponseBean {
             }
             try {
                 if (object.has("errcode")) {
-                    errCode = object.getInt("errcode") + "";
+                    errCode = object.getInt("errcode");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -509,7 +509,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (NotificationConstant.apRename == id) {
             hideLoadingDialog();
             ResponseBean res = (ResponseBean) args[0];
-            if (TextUtils.equals("0", res.getErrCode())) {
+            if (res.isErrCodeZero()) {
                 mPresenter.updateCacheData(routerSn, routerNewName);
             } else {
                 shortTip(R.string.ipc_setting_fail);

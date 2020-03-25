@@ -347,7 +347,7 @@ public class SunmiLinkSearchActivity extends BaseMvpActivity<IpcConfiguringPrese
     }
 
     private void apGetSearchResult(ResponseBean res) {
-        if (TextUtils.equals(res.getErrCode(), "0")) {
+        if (res.isErrCodeZero()) {
             try {
                 JSONObject objectResult = res.getResult();
                 JSONObject jsonObject2 = objectResult.getJSONObject("sunmimesh");

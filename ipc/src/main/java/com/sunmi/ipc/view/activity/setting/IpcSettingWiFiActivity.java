@@ -206,7 +206,7 @@ public class IpcSettingWiFiActivity extends BaseMvpActivity<IpcSettingWifiPresen
         hideLoadingDialog();
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
+        if (RpcErrorCode.RPC_COMMON_ERROR == res.getErrCode()) {
             netExceptionView(true);
         } else if (id == OpcodeConstants.getWifiList) {
             getWifiList(res);
