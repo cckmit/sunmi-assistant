@@ -53,6 +53,7 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.constant.enums.DeviceType;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
@@ -300,8 +301,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void gotoPrimaryRouteStartActivity() {
-        PrimaryRouteStartActivity_.intent(mActivity).start();
+    public void gotoPrimaryRouteStartActivity(String model) {
+        PrimaryRouteStartActivity_.intent(mActivity)
+                .modelType(TextUtils.equals(model, "W1s") ? ModelType.MODEL_W1S : ModelType.MODEL_W1)
+                .start();
     }
 
     @Override

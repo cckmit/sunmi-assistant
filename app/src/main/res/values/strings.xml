@@ -11,6 +11,7 @@
     <string name="str_sunmi_copyright_sound">©2019 Shanghai Sunmi Technology Co., Ltd. All Rights Reserved.</string>
     <string name="str_open_permission_to_update">Enable the permission to unknown source, so as to update the APP</string>
     <string name="str_no_sd">No SD card found in this device！</string>
+    <string name="dialog_msg_merge">You have registered multiple accounts in different Sunmi platforms, for the safety of your accounts, need to merge your accounts. Click OK to merge.</string>
 
     <string name="str_please_open_sd">Please allow to operate the SD Card！！</string>
     <string name="str_password_no_contains_blank">Not allow any blank space in a password</string>

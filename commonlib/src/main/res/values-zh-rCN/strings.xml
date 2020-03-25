@@ -130,7 +130,7 @@
     <string name="str_num_people">%d人</string>
     <string name="str_num_10_thousands_people">%s万人</string>
     <string name="str_num_people_total">总人数</string>
-    <string name="str_cancel_setting">确定取消设置吗?</string>
+    <string name="str_cancel_setting">确定放弃修改吗?</string>
     <string name="str_sunmi_link">SUNMI Link</string>
     <string name="str_tab_support">服务</string>
     <string name="str_support_manage">服务管理</string>
@@ -199,4 +199,6 @@
     <string name="str_renew_now">立即续订</string>
     <string name="tip_renew_service">服务已过期，请尽快续订</string>
     <string name="sm_watch">查看</string>
+    <string name="dialog_title_warm_tip">温馨提示</string>
+
 </resources>

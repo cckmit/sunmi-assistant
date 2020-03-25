@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.ui.view.MergeDialog;
+import com.sunmi.assistant.ui.MergeDialog;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.apmanager.utils.SomeMonitorEditText;
 import com.sunmi.assistant.R;

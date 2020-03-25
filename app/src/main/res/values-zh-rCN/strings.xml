@@ -31,6 +31,7 @@
     <string name="str_choose_please">请选择</string>
     <string name="str_selected">请选择</string>
     <string name="tip_addr_empty">请输入详细地址</string>
+    <string name="dialog_msg_merge">检测到您在商米不同平台中注册了多套账户，为了更好的维护账户安全，需要对您的账户进行合并，点击确定前往合并</string>
 
     <string name="dashboard_shop_menu_tip">以下是本企业的各个子门店</string>
 
