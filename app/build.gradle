@@ -36,6 +36,7 @@ android {
                 ENV_VALUE       : "ENV_TEST",
                 DB_VERSION_VALUE: "2",
                 APP_NAME        : "@string/app_name",
+                BAIDU_STAT_ID   : "d88e0c2263",
                 MTA_APPKEY      : "A6INR132MGAI",
                 MTA_CHANNEL     : "myapp"]
     }
@@ -53,9 +54,10 @@ android {
         debug {
             applicationIdSuffix ".dev"
             manifestPlaceholders = [
-                    ENV_VALUE       : "ENV_DEV",
+                    ENV_VALUE       : "ENV_TEST",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手dev",
+                    BAIDU_STAT_ID   : "416f7bee22",
                     MTA_APPKEY      : "A6INR132MGAI"]
         }
 
@@ -65,6 +67,7 @@ android {
                     ENV_VALUE       : "ENV_TEST",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手test",
+                    BAIDU_STAT_ID   : "416f7bee22",
                     MTA_APPKEY      : "A6INR132MGAI"]
             zipAlignEnabled true
             minifyEnabled false
@@ -77,6 +80,7 @@ android {
                     ENV_VALUE       : "ENV_UAT",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手UAT",
+                    BAIDU_STAT_ID   : "d88e0c2263",
                     MTA_APPKEY      : "A6INR132MGAI"]
             zipAlignEnabled true
             minifyEnabled false
@@ -89,14 +93,13 @@ android {
                     ENV_VALUE       : "ENV_RELEASE",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "@string/app_name",
+                    BAIDU_STAT_ID   : "d88e0c2263",
                     MTA_APPKEY      : "A6INR132MGAI"]
-            //Zipalign优化
             zipAlignEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.sign
         }
-
     }
 
     flavorDimensions "default"
