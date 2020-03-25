@@ -2,6 +2,7 @@ package com.sunmi.assistant.dashboard;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.util.SparseArray;
 
@@ -319,7 +320,10 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         LogCat.i(Utils.TAG, "Switch page:" + type);
         scrollToTop(mPerspective != CommonConstants.PERSPECTIVE_TOTAL);
         mPageType = type;
-        getCurrent().refresh(false, true);
+        PageContract.PagePresenter current = getCurrent();
+        if (current != null) {
+            current.refresh(false, true);
+        }
     }
 
     @Override
@@ -364,6 +368,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         mHandler.removeCallbacks(mTask);
     }
 
+    @Nullable
     private PageContract.PagePresenter getCurrent() {
         PageContract.PagePresenter current = mPages.get(mPageType);
         if (current == null) {
