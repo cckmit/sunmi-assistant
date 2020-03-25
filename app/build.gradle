@@ -54,7 +54,7 @@ android {
         debug {
             applicationIdSuffix ".dev"
             manifestPlaceholders = [
-                    ENV_VALUE       : "ENV_TEST",
+                    ENV_VALUE       : "ENV_DEV",
                     DB_VERSION_VALUE: "2",
                     APP_NAME        : "商米助手dev",
                     BAIDU_STAT_ID   : "416f7bee22",
