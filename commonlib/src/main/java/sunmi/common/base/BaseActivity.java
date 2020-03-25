@@ -9,7 +9,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 
-import butterknife.ButterKnife;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.utils.GotoActivityUtils;
 import sunmi.common.utils.StatusBarUtils;
@@ -36,21 +35,8 @@ public abstract class BaseActivity extends FragmentActivity
         }
         context = this;
         addObserver();
-        if (activityLayoutId() > 0) {
-            setContentView(activityLayoutId());
-            ButterKnife.bind(this);
-        }
         initDialog();
-        initView();
         BaseApplication.getInstance().addActivity(this);
-    }
-
-    protected int activityLayoutId() {
-        return 0;
-    }
-
-    protected void initView() {
-
     }
 
     @Override
@@ -67,9 +53,10 @@ public abstract class BaseActivity extends FragmentActivity
     }
 
     //RouterManagerActivity/TestSpeedActivity/QueryDevListDetailsActivity/FaultDiagnosisActivity/ChildRouterActivity
-    protected void initStatusBar(){
+    protected void initStatusBar() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);//状态栏
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

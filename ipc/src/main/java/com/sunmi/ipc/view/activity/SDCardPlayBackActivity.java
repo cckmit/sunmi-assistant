@@ -650,11 +650,11 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
         hideLoading();
         stopPlay();
         if (PLAY_FAIL_STATUS_OFFLINE == type) {
-            showGotoCloudPlayback(isSS1() ? tipResId : R.string.tip_device_offline);
+            showGotoCloudPlayback(tipResId);
         } else if (PLAY_FAIL_STATUS_NO_SD == type) {
-            showGotoCloudPlayback(!CommonHelper.isGooglePlay() && isSS1() ? tipResId : R.string.tip_no_sd_to_cloud_playback_fs);
+            showGotoCloudPlayback(!CommonHelper.isGooglePlay() ? tipResId : R.string.tip_no_sd_to_cloud_playback_fs);
         } else if (PLAY_FAIL_STATUS_SD_EXCEPTION == type) {
-            showGotoCloudPlayback(!CommonHelper.isGooglePlay() && isSS1() ? tipResId : R.string.tip_sd_exception_to_cloud_playback_fs);
+            showGotoCloudPlayback(!CommonHelper.isGooglePlay() ? tipResId : R.string.tip_sd_exception_to_cloud_playback_fs);
         } else {
             btnRetry.setVisibility(PLAY_FAIL_STATUS_NET_EXCEPTION == type ? View.VISIBLE : View.GONE);
             tvPlayFail.setText(tipResId);
@@ -663,7 +663,7 @@ public class SDCardPlayBackActivity extends BaseMvpActivity<SDCardPlaybackPresen
     }
 
     private void showGotoCloudPlayback(@StringRes int tipResId) {
-        if (!CommonHelper.isGooglePlay() && isSS1()) {
+        if (!CommonHelper.isGooglePlay()) {
             btnGotoCloudPlayback.setVisibility(View.VISIBLE);
             btnGotoCloudPlayback.setText(isServiceUnopened()
                     ? R.string.str_open_cloud_storage : R.string.str_view_cloup_playback);
