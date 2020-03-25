@@ -85,7 +85,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
      */
     @Override
     public void getApConfig(Context context, ResponseBean res, SunmiDevice clickedDevice) {
-        if (TextUtils.equals("0", res.getErrCode())) {
+        if (res.isErrCodeZero()) {
             ApConfigResp resp = new Gson().fromJson(res.getResult().toString(), ApConfigResp.class);
             String factory = resp.getSystem().getFactory();
             if (TextUtils.equals("0", factory)) {
@@ -144,23 +144,23 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
      */
     @Override
     public void checkApLoginPassword(Context context, ResponseBean res, SunmiDevice clickedDevice) {
-        String errorCode = res.getErrCode();
-        if (TextUtils.equals(errorCode, "0")) {
+        int errorCode = res.getErrCode();
+        if (0 == errorCode) {
             ApLoginResp resp = new Gson().fromJson(res.getResult().toString(), ApLoginResp.class);
             SpUtils.saveRouterToken(resp.getAccount().getToken());
             if (isViewAttached()) {
                 mView.getCheckApLoginSuccess(false);
             }
-        } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_ERROR)
-                || TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_INVALID)) {// 账户密码错误 ,账户登录缺少密码
+        } else if (AppConfig.ERROR_CODE_PASSWORD_ERROR == errorCode
+                || AppConfig.ERROR_CODE_PASSWORD_INVALID == errorCode) {// 账户密码错误 ,账户登录缺少密码
             if (isViewAttached()) {
-                mView.getCheckApLoginFail(TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_ERROR) ? "1" : "0");
+                mView.getCheckApLoginFail(AppConfig.ERROR_CODE_PASSWORD_ERROR == errorCode ? "1" : "0");
             }
-        } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
+        } else if (AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY == errorCode) { // 账户密码错误次数过多
             if (isViewAttached()) {
                 mView.shortTip(R.string.tip_password_fail_too_often);
             }
-        } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_UNSET_PASSWORD)) { // 账户密码未设置
+        } else if (AppConfig.ERROR_CODE_UNSET_PASSWORD == errorCode) { // 账户密码未设置
             if (isViewAttached()) {
                 mView.gotoPrimaryRouteStartActivity(clickedDevice.getModel());
             }
@@ -172,19 +172,19 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
      */
     @Override
     public void checkApLoginPasswordAgain(Context context, ResponseBean res, SunmiDevice clickedDevice, String password) {
-        String errorCode = res.getErrCode();
-        if (TextUtils.equals(errorCode, "0")) {
+        int errorCode = res.getErrCode();
+        if (0 == errorCode) {
             ApLoginResp resp = new Gson().fromJson(res.getResult().toString(), ApLoginResp.class);
             SpUtils.saveRouterToken(resp.getAccount().getToken());
             RouterDBHelper.saveLocalMangerPassword(clickedDevice.getDeviceid(), password);//保存本地管理密码
             if (isViewAttached()) {
                 mView.getCheckApLoginSuccess(true);
             }
-        } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_ERROR)) {// 账户密码错误
+        } else if (AppConfig.ERROR_CODE_PASSWORD_ERROR == errorCode) {// 账户密码错误
             if (isViewAttached()) {
                 mView.shortTip(R.string.tip_password_error);
             }
-        } else if (TextUtils.equals(res.getErrCode(), AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY)) { // 账户密码错误次数过多
+        } else if (AppConfig.ERROR_CODE_PASSWORD_INCORRECT_MANY == errorCode) { // 账户密码错误次数过多
             if (isViewAttached()) {
                 mView.shortTip(R.string.tip_password_fail_too_often);
             }

@@ -310,7 +310,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
             //查询升级状态0x3141
             stopTimeoutTimer();
             setLayoutVisible();
-            if (TextUtils.equals("1", res.getErrCode())) {
+            if (1 == res.getErrCode()) {
                 try {
                     JSONObject object = res.getResult();
                     int status = object.getInt("status");
@@ -439,7 +439,7 @@ public class IpcSettingVersionActivity extends BaseActivity implements View.OnCl
                 .setMessage(getString(R.string.ipc_setting_dialog_upgrade_success_content))
                 .setConfirmButton(R.string.str_confirm, (dialog, which) -> {
                     //发送udp
-                    SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered,true);
+                    SMDeviceDiscoverUtils.scanDevice(context, IpcConstants.ipcDiscovered, true);
                     setResult(RESULT_OK, new Intent());
                     finish();
                 }).create();

@@ -7,8 +7,9 @@ package sunmi.common.rpc;
 public class RpcErrorCode {
     public static final int RPC_COMMON_ERROR = 990; //访问失败或无网络
     public static final int RPC_ERR_TIMEOUT = 991; //自定义的请求超时
+    public static final int WHAT_ERROR = 997; //局域网访问设备失败或无网络
 
-    public static final int OPCODE_RESPONSE_NULL = 980; //opcode请求返回为空
+    public static final int HTTP_RESP_OK = 200; //请求成功
 
     //云端http请求 网关错误
     public static int HTTP_RESP_UNKNOWN_REQUEST = 400;//服务器不理解请求的语法

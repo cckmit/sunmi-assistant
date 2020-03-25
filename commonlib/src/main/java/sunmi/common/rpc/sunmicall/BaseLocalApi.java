@@ -92,7 +92,7 @@ public abstract class BaseLocalApi extends BaseApi {
                     errorTip(BaseApplication.getContext());
                 }
                 ResponseBean res = new ResponseBean();
-                res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR + "");
+                res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR);
                 BaseNotification.newInstance().postNotificationName(opCode, res);
                 onFail(res);
             }
@@ -111,7 +111,7 @@ public abstract class BaseLocalApi extends BaseApi {
                 if (TextUtils.isEmpty(result)) {
                     LogCat.e(TAG, "execute fail.");
                     ResponseBean res = new ResponseBean();
-                    res.setErrCode(RpcErrorCode.RPC_ERR_TIMEOUT + "");
+                    res.setErrCode(RpcErrorCode.RPC_ERR_TIMEOUT);
                     res.setDataErrCode(RpcErrorCode.RPC_ERR_TIMEOUT);
                     BaseNotification.newInstance().postNotificationName(opCode, res);
                     onFail(res);

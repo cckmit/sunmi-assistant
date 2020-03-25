@@ -69,8 +69,8 @@ public class IpcSettingSdcardActivity extends BaseActivity {
             progressDialogDismiss();
             if (args == null) return;
             ResponseBean res = (ResponseBean) args[0];
-            if (TextUtils.equals(RpcErrorCode.RPC_COMMON_ERROR + "", res.getErrCode())
-                    || TextUtils.equals(RpcErrorCode.RPC_ERR_TIMEOUT + "", res.getErrCode())) {
+            if (RpcErrorCode.RPC_COMMON_ERROR == res.getErrCode()
+                    || RpcErrorCode.RPC_ERR_TIMEOUT == res.getErrCode()) {
                 shortTip(R.string.toast_networkIsExceptional);
                 return;
             }
