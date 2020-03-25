@@ -417,7 +417,7 @@
 
     <dimen name="loading_pb_size">60dp</dimen>
 
-    <dimen name="pop_item_padding">13dp</dimen>
+    <dimen name="pop_item_padding">10dp</dimen>
     <dimen name="pop_line_height">1dp</dimen>
     <dimen name="pop_radius">8dp</dimen>
 

@@ -14,7 +14,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import sunmi.common.base.BaseActivity;
-import sunmi.common.constant.CommonConstants;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 
@@ -46,7 +46,7 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
         if (network == IpcConstants.IPC_CONFIG_MODE_WIRED) {
             tvContent.setText(R.string.tip_use_wired_network);
             tvConfigTip.setText(R.string.str_config_tip_ipc_2);
-            if (ipcType == CommonConstants.TYPE_IPC_FS) {
+            if (ipcType == ModelType.MODEL_FS) {
                 ivIpc.setBackgroundResource(R.mipmap.ic_ipc_config_fs_wired);
             } else {
                 ivIpc.setBackgroundResource(R.mipmap.ic_ipc_config_ss_wired);
@@ -54,7 +54,7 @@ public class IpcStartConfigNetworkActivity extends BaseActivity {
         } else {
             tvContent.setText(R.string.tip_use_wireless_network);
             tvConfigTip.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_3)));
-            if (ipcType == CommonConstants.TYPE_IPC_FS) {
+            if (ipcType == ModelType.MODEL_FS) {
                 ivIpc.setBackgroundResource(R.mipmap.ic_ipc_config_fs_wireless);
             } else {
                 ivIpc.setBackgroundResource(R.mipmap.ic_ipc_config_ss_wireless);

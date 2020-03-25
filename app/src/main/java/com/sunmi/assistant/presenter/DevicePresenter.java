@@ -92,7 +92,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
                 apCheckLogin(context, RouterDBHelper.queryApPassword(clickedDevice.getDeviceid()));
             } else {
                 if (isViewAttached()) {
-                    mView.getApConfigSuccess();
+                    mView.gotoPrimaryRouteStartActivity(clickedDevice.getModel());
                 }
             }
         }
@@ -162,7 +162,7 @@ public class DevicePresenter extends BasePresenter<DeviceContract.View>
             }
         } else if (TextUtils.equals(errorCode, AppConfig.ERROR_CODE_UNSET_PASSWORD)) { // 账户密码未设置
             if (isViewAttached()) {
-                mView.gotoPrimaryRouteStartActivity();
+                mView.gotoPrimaryRouteStartActivity(clickedDevice.getModel());
             }
         }
     }

@@ -2,7 +2,6 @@ package com.sunmi.assistant.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -16,8 +15,8 @@ import android.widget.TextView;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
-import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity;
-import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity;
+import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity_;
+import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity_;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
@@ -54,13 +53,13 @@ import sunmi.common.constant.CommonConstants;
 import sunmi.common.constant.CommonNotifications;
 import sunmi.common.constant.enums.DeviceStatus;
 import sunmi.common.constant.enums.DeviceType;
+import sunmi.common.constant.enums.ModelType;
 import sunmi.common.model.ShopInfo;
 import sunmi.common.model.SunmiDevice;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.NetworkUtils;
-import sunmi.common.utils.SMDeviceDiscoverUtils;
 import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
@@ -250,14 +249,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     /**
-     * W1是否配置
-     */
-    @Override
-    public void getApConfigSuccess() {
-        openActivity(mActivity, PrimaryRouteStartActivity.class);
-    }
-
-    /**
      * 推送W1状态
      */
     @UiThread
@@ -310,8 +301,10 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void gotoPrimaryRouteStartActivity() {
-        openActivity(mActivity, PrimaryRouteStartActivity.class);
+    public void gotoPrimaryRouteStartActivity(String model) {
+        PrimaryRouteStartActivity_.intent(mActivity)
+                .modelType(TextUtils.equals(model, "W1s") ? ModelType.MODEL_W1S : ModelType.MODEL_W1)
+                .start();
     }
 
     @Override
@@ -463,7 +456,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 NotificationConstant.connectedTosunmiDevice, NotificationConstant.unBindRouterChanged,
                 CommonNotifications.ipcUpgradeComplete, CommonNotifications.ipcUpgrade,
                 CommonNotifications.companyNameChanged, CommonNotifications.companySwitch,
-                CommonNotifications.shopNameChanged, IpcConstants.ipcDiscovered, IpcConstants.refreshIpcList,
+                CommonNotifications.shopNameChanged, IpcConstants.refreshIpcList,
                 NotificationConstant.apPostStatus, NotificationConstant.apRename};
     }
 
@@ -511,9 +504,6 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
             mPresenter.getPrinterList();
         } else if (IpcConstants.refreshIpcList == id) {
             mPresenter.getIpcList();
-        } else if (IpcConstants.ipcDiscovered == id) {//上线成功发送udp保存设备数据
-            SunmiDevice bean = (SunmiDevice) args[0];
-            SMDeviceDiscoverUtils.saveInfo(bean);
         } else if (NotificationConstant.apGetRouter == id) {
             mPresenter.setRouterInfo(routerList, (ResponseBean) args[0]);
         } else if (NotificationConstant.apRename == id) {
@@ -647,11 +637,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     private void gotoRouterManager(String sn, int status) {
-        Bundle bundle = new Bundle();
-        bundle.putString("shopId", SpUtils.getShopId() + "");
-        bundle.putString("sn", sn);
-        bundle.putInt("status", status);
-        openActivity(mActivity, RouterManagerActivity.class, bundle);
+        RouterManagerActivity_.intent(mActivity).shopId(SpUtils.getShopId()).sn(sn).status(status).start();
     }
 
     private void deleteDevice(SunmiDevice device) {

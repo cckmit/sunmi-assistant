@@ -34,8 +34,6 @@ public interface DeviceContract {
 
         void getPosListSuccess(List<SunmiDevice> devices);
 
-        void getApConfigSuccess();
-
         void apEventStatus(String sn, boolean isOnline);
 
         void refreshApEventStatus(Map<String, SunmiDevice> map);
@@ -44,7 +42,7 @@ public interface DeviceContract {
 
         void getCheckApLoginFail(String type);
 
-        void gotoPrimaryRouteStartActivity();
+        void gotoPrimaryRouteStartActivity(String model);
 
         void getRouterNameSuccess(String sn, String name, String mac);
     }

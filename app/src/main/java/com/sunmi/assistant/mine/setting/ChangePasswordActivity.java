@@ -6,7 +6,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.sunmi.apmanager.utils.DialogUtils;
+import com.sunmi.apmanager.ui.view.ConfirmDialog;
 import com.sunmi.apmanager.utils.HelpUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.mine.contract.ChangePasswordContract;
@@ -160,32 +160,8 @@ public class ChangePasswordActivity extends BaseMvpActivity<ChangePasswordPresen
         if (TextUtils.isEmpty(oldPassword) && TextUtils.isEmpty(newPassword) && TextUtils.isEmpty(confirmPassword)) {
             finish();
         } else {
-            DialogUtils.isCancelSetting(this);
+            new ConfirmDialog(context);
         }
     }
-
-    /*private void changePassword(String old, String new_psd) {
-        showLoadingDialog();
-        CloudApi.changePassword(old, new_psd, new RpcCallback(context) {
-            @Override
-            public void onSuccess(int code, String msg, String data) {
-                hideLoadingDialog();
-                if (code == 1) {
-                    shortTip(R.string.tip_password_change_success);
-                    CommonUtils.logout();
-                    LoginActivity_.intent(context).start();
-                    finish();
-                } else if (code == 201) {
-                    shortTip(R.string.tip_old_password_error);
-                } else if (code == 3604) {
-                    shortTip(R.string.tip_old_and_new_psw_same);
-                } else if (code == 2066) {
-                    shortTip(getString(R.string.str_password_fomat_error));
-                } else {
-                    shortTip(R.string.tip_password_change_fail);
-                }
-            }
-        });
-    }*/
 
 }

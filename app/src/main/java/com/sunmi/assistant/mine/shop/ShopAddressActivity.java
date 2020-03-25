@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.sunmi.apmanager.utils.DialogUtils;
+import com.sunmi.apmanager.ui.view.ConfirmDialog;
 import com.sunmi.assistant.R;
 
 import org.androidannotations.annotations.AfterViews;
@@ -102,7 +102,7 @@ public class ShopAddressActivity extends BaseActivity {
                 TextUtils.equals(info.getAddress(), etAddress.getText() == null ? null : etAddress.getText().toString().trim())) {
             super.onBackPressed();
         } else {
-            DialogUtils.isCancelSetting(this);
+            new ConfirmDialog(context);
         }
     }
 
