@@ -76,7 +76,6 @@ import sunmi.common.utils.DeviceTypeUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.VolumeHelper;
 import sunmi.common.utils.WebViewParamsUtils;
-import sunmi.common.utils.log.LogCat;
 import sunmi.common.view.CommonListAdapter;
 import sunmi.common.view.SmRecyclerView;
 import sunmi.common.view.TitleBarView;
@@ -232,18 +231,15 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         initSurfaceView();
         initManageList();
-        if (isSS1()) {
-            mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
-            ivCloudPlayback.setVisibility(View.VISIBLE);
-            if (!CommonHelper.isGooglePlay()) {
-                mPresenter.getCashVideoService(device.getId());
-            }
-        } else {
-            if (IpcUtils.isNewVersion(device.getFirmware(), IpcConstants.IPC_VERSION_VIDEO_ADJUST)) {
-                initVideoAdjust();
-                isShowAdjust = true;
-                ivAdjust.setVisibility(View.VISIBLE);
-            }
+        mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
+        if (!CommonHelper.isGooglePlay()) {
+            mPresenter.getCashVideoService(device.getId());
+        }
+        if (!isSS1() &&
+                IpcUtils.isNewVersion(device.getFirmware(), IpcConstants.IPC_VERSION_VIDEO_ADJUST)) {
+            initVideoAdjust();
+            isShowAdjust = true;
+            ivAdjust.setVisibility(View.VISIBLE);
         }
         initVolume();
     }
@@ -971,7 +967,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private void initManageList() {
         rvManager.init(0);
-        if (isSS1() && !CommonHelper.isGooglePlay()) {
+        if (!CommonHelper.isGooglePlay()) {
             cashVideoItem = new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_CASH, R.mipmap.ipc_manage_cashier, getString(R.string.cash_video),
                     getString(R.string.cash_video_item_content), getString(R.string.str_learn_more), true);
             list.add(cashVideoItem);
@@ -979,12 +975,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         }
         list.add(new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_DETECT, R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
                 getString(R.string.str_md_exception), getString(R.string.str_setting_detail), true));
-        if (isSS1()) {
-            cloudStorageItem = new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_CLOUD, R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
-                    context.getString(R.string.str_setting_detail));
-            cloudStorageItem.setEnabled(false);
-            list.add(cloudStorageItem);
-        }
+        cloudStorageItem = new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_CLOUD, R.mipmap.ipc_cloud_storage, context.getString(R.string.str_cloud_storage),
+                context.getString(R.string.str_setting_detail));
+        cloudStorageItem.setEnabled(false);
+        list.add(cloudStorageItem);
         adapter = new CommonListAdapter<IpcManageBean>(context, R.layout.item_ipc_manager, list) {
             @Override
             public void convert(ViewHolder holder, IpcManageBean bean) {
