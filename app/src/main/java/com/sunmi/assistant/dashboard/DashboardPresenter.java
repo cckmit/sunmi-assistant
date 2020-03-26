@@ -127,6 +127,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void load(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading) {
+        if (isViewAttached()) {
+            mView.showLoadingDialog();
+        }
         LogCat.i(Utils.TAG, "Loading. Flag=" + flag
                 + "; Clear=" + clearCache + "; Current=" + onlyCurrentPage);
         mCompanyId = SpUtils.getCompanyId();
@@ -154,9 +157,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void loadShop(boolean clearCache, Callback<?> callback) {
+        LogCat.i(Utils.TAG, "Load shop list.");
         appModel.getShopListWithAuth(mCompanyId, clearCache, new Callback<Pair<Integer, SparseArray<ShopInfo>>>() {
             @Override
             public void onLoaded(Pair<Integer, SparseArray<ShopInfo>> result) {
+                LogCat.i(Utils.TAG, "Load shop list complete.");
                 mAuthority = result.first;
                 SparseArray<ShopInfo> shopMap = result.second;
                 // 权限和视角校验，初始化页面
@@ -207,7 +212,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
                 for (int i = 0, size = mPages.size(); i < size; i++) {
                     PageContract.PagePresenter page = mPages.valueAt(i);
-                    LogCat.i(Utils.TAG, "Page:" + page.getType());
+                    LogCat.i(Utils.TAG, "Set condition page:" + page.getType());
                     page.setCondition(mCondition.copy());
                     if (!onlyCurrentPage || page.getType() == mPageType) {
                         page.refresh(true, showLoading);
@@ -251,7 +256,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (isViewAttached()) {
             mView.switchShop(shopId);
         }
-        refresh(true, false, false, true);
+        refresh(true, true, false, true);
     }
 
     private void switchToTotalPerspective(boolean refresh) {
@@ -276,7 +281,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             mView.setPages(pages, mPerspective);
         }
         if (refresh) {
-            refresh(true, false, false, true);
+            refresh(true, true, false, true);
         }
     }
 
@@ -303,7 +308,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             mView.setPages(pages, mPerspective);
         }
         if (refresh) {
-            refresh(true, false, false, true);
+            refresh(true, true, false, true);
         }
     }
 

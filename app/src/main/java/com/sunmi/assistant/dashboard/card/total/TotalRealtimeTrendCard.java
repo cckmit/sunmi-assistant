@@ -148,8 +148,8 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
                         List<TotalRealtimeCustomerTrendResp.Item> list = data.getList();
                         try {
                             for (TotalRealtimeCustomerTrendResp.Item item : list) {
-                                long time = Utils.parseTime(Utils.FORMAT_API_TIME, item.getTime()) + Utils.MILLIS_OF_HOUR;
-                                float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time);
+                                long time = Utils.parseTime(Utils.FORMAT_API_TIME, item.getTime());
+                                float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time) + 1;
                                 dataSet.add(new ChartEntry(x, item.getTotalCount(), time));
                             }
                         } catch (DateTimeException e) {
@@ -189,8 +189,8 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
                         List<TotalRealtimeSalesTrendResp.Item> list = data.getList();
                         try {
                             for (TotalRealtimeSalesTrendResp.Item item : list) {
-                                long time = Utils.parseTime(Utils.FORMAT_API_TIME, item.getTime()) + Utils.MILLIS_OF_HOUR;
-                                float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time);
+                                long time = Utils.parseTime(Utils.FORMAT_API_TIME, item.getTime());
+                                float x = Utils.encodeChartXAxisFloat(callback.getPeriod(), time) + 1;
                                 dataSet.add(new ChartEntry(x, (float) item.getOrderAmount(), time));
                             }
                         } catch (DateTimeException e) {
