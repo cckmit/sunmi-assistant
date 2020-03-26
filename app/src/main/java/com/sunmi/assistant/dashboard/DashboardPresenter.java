@@ -127,6 +127,9 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
 
     @Override
     public void load(int flag, boolean clearCache, boolean onlyCurrentPage, boolean showLoading) {
+        if (isViewAttached()) {
+            mView.showLoadingDialog();
+        }
         LogCat.i(Utils.TAG, "Loading. Flag=" + flag
                 + "; Clear=" + clearCache + "; Current=" + onlyCurrentPage);
         mCompanyId = SpUtils.getCompanyId();
