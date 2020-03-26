@@ -1,5 +1,7 @@
 package com.sunmi.ipc.presenter;
 
+import android.content.Context;
+
 import com.sunmi.ipc.R;
 import com.sunmi.ipc.config.IpcConstants;
 import com.sunmi.ipc.contract.IpcSettingContract;
@@ -26,15 +28,15 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
     private SunmiDevice mDevice;
 
     @Override
-    public void loadConfig(SunmiDevice device) {
+    public void loadConfig(Context context, SunmiDevice device) {
         this.mDevice = device;
         mView.showLoadingDialog();
-        IPCCall.getInstance().getIpcNightIdeRotation(mView.getContext(), mDevice.getModel(), mDevice.getDeviceid());
+        IPCCall.getInstance().getIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid());
         SunmiDevice localDevice = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (localDevice != null) {
             // ipc连接wifi信息 有线.无线
-            IPCCall.getInstance().getIsWire(mView.getContext(), bean.getIp());
+            IPCCall.getInstance().getIsWire(context, bean.getIp());
         }
     }
 
@@ -66,24 +68,25 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
 
     @Override
     public void currentVersion() {
-        IpcCloudApi.getInstance().newFirmware(SpUtils.getCompanyId(), SpUtils.getShopId(), mDevice.getId(), new RetrofitCallback<IpcNewFirmwareResp>() {
-            @Override
-            public void onSuccess(int code, String msg, IpcNewFirmwareResp data) {
-                if (isViewAttached()) {
-                    mView.currentVersionView(data);
-                }
-            }
+        IpcCloudApi.getInstance().newFirmware(SpUtils.getCompanyId(), SpUtils.getShopId(),
+                mDevice.getId(), new RetrofitCallback<IpcNewFirmwareResp>() {
+                    @Override
+                    public void onSuccess(int code, String msg, IpcNewFirmwareResp data) {
+                        if (isViewAttached()) {
+                            mView.currentVersionView(data);
+                        }
+                    }
 
-            @Override
-            public void onFail(int code, String msg, IpcNewFirmwareResp data) {
-                LogCat.e(TAG, "IPC currentVersion Failed. code=" + code + "; msg=" + msg);
-                if (isViewAttached()) {
-                    mView.hideLoadingDialog();
-                    mView.currentVersionFailView();
-                    mView.shortTip(R.string.str_net_exception);
-                }
-            }
-        });
+                    @Override
+                    public void onFail(int code, String msg, IpcNewFirmwareResp data) {
+                        LogCat.e(TAG, "IPC currentVersion Failed. code=" + code + "; msg=" + msg);
+                        if (isViewAttached()) {
+                            mView.hideLoadingDialog();
+                            mView.currentVersionFailView();
+                            mView.shortTip(R.string.str_net_exception);
+                        }
+                    }
+                });
     }
 
 }
