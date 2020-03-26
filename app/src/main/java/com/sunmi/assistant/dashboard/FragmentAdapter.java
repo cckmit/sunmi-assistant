@@ -24,7 +24,7 @@ import java.util.Iterator;
 
 import sunmi.common.utils.log.LogCat;
 
-public abstract class FragmentPageAdapter extends PagerAdapter {
+public abstract class FragmentAdapter extends PagerAdapter {
     private static final String TAG = "FragmentStatePagerAdapt";
     private static final boolean DEBUG = false;
     private final FragmentManager mFragmentManager;
@@ -33,7 +33,7 @@ public abstract class FragmentPageAdapter extends PagerAdapter {
     private ArrayList<Fragment> mFragments = new ArrayList();
     private Fragment mCurrentPrimaryItem = null;
 
-    public FragmentPageAdapter(FragmentManager fm) {
+    public FragmentAdapter(FragmentManager fm) {
         this.mFragmentManager = fm;
     }
 
@@ -129,7 +129,9 @@ public abstract class FragmentPageAdapter extends PagerAdapter {
     }
 
     protected void clearCache() {
-        mFragments.clear();
+        for (int i = 0, size = mFragments.size(); i < size; i++) {
+            mFragments.set(i, null);
+        }
     }
 
     @Override

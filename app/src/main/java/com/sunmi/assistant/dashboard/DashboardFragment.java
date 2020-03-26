@@ -137,15 +137,6 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
 
     private Dialog switchPageLoading;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            // remove saved fragment, will new fragment in mPagerAdapter
-            savedInstanceState.remove("android:support:fragments");
-        }
-        super.onCreate(savedInstanceState);
-    }
-
     @AfterViews
     void init() {
         mPresenter = new DashboardPresenter();

@@ -3,7 +3,6 @@ package com.sunmi.assistant.dashboard;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
  * @author yinhui
  * @date 2020-02-28
  */
-public class PageAdapter extends FragmentPagerAdapter {
+public class PageAdapter extends FragmentAdapter {
 
     private int perspective;
     private List<PageHost> data = new ArrayList<>();
@@ -25,6 +24,7 @@ public class PageAdapter extends FragmentPagerAdapter {
         if (pages == null || pages.isEmpty()) {
             return;
         }
+        clearCache();
         this.perspective = perspective;
         data = pages;
         notifyDataSetChanged();
