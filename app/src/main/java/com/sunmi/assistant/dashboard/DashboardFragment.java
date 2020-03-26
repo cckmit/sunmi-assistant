@@ -449,10 +449,8 @@ public class DashboardFragment extends BaseMvpFragment<DashboardPresenter>
     @UiThread
     @Override
     public void updateFloating(boolean showFloating) {
-        if (showFloating) {
-            llFloating.setVisibility(View.VISIBLE);
-        } else {
-            llFloating.setVisibility(View.GONE);
+        if (llFloating != null) {
+            llFloating.setVisibility(showFloating ? View.VISIBLE : View.GONE);
         }
     }
 
