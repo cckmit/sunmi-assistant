@@ -15,8 +15,6 @@ public interface IpcSettingContract {
 
     interface View extends BaseView {
 
-        Context getContext();
-
         void updateNameView(String name);
 
         void currentVersionView(IpcNewFirmwareResp resp);
@@ -27,7 +25,7 @@ public interface IpcSettingContract {
 
     interface Presenter {
 
-        void loadConfig(SunmiDevice device);
+        void loadConfig(Context context, SunmiDevice device);
 
         void updateName(String name);
 

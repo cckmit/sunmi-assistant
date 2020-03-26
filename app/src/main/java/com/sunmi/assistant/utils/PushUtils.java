@@ -13,15 +13,17 @@ import sunmi.common.utils.SpUtils;
 public class PushUtils {
 
     public static void resetUnReadCount(MessageCountBean data) {
-        int unreadMsg = data.getUnreadCount();
-        int remindUnreadMsg = data.getRemindUnreadCount();
-        SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
-        SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
-        MsgCommonCache.getInstance().setMsgCount(data);
-        if (SpUtils.getUnreadMsg() != unreadMsg || SpUtils.getRemindUnreadMsg() != remindUnreadMsg) {
-            SpUtils.setUnreadMsg(unreadMsg);
-            SpUtils.setRemindUnreadMsg(remindUnreadMsg);
-            ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
+        if (data.getModelCountList() != null && data.getModelCountList().size() > 1) {
+            int unreadMsg = data.getUnreadCount();
+            int remindUnreadMsg = data.getRemindUnreadCount();
+            SpUtils.setUnreadDeviceMsg(data.getModelCountList().get(0).getUnreadCount());
+            SpUtils.setUnreadSystemMsg(data.getModelCountList().get(1).getUnreadCount());
+            MsgCommonCache.getInstance().setMsgCount(data);
+            if (SpUtils.getUnreadMsg() != unreadMsg || SpUtils.getRemindUnreadMsg() != remindUnreadMsg) {
+                SpUtils.setUnreadMsg(unreadMsg);
+                SpUtils.setRemindUnreadMsg(remindUnreadMsg);
+                ShortcutBadger.applyCount(BaseApplication.getInstance(), SpUtils.getRemindUnreadMsg());
+            }
         }
     }
 

@@ -39,7 +39,6 @@ import sunmi.common.model.TotalRealtimeSalesTrendResp;
 import sunmi.common.rpc.cloud.SunmiStoreApi;
 import sunmi.common.rpc.retrofit.BaseResponse;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
-import sunmi.common.utils.DateTimeUtils;
 
 /**
  * @author yinhui
@@ -156,7 +155,6 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
                         } catch (DateTimeException e) {
                             e.printStackTrace();
                         }
-                        dataSet.add(new ChartEntry(1f, 0f, DateTimeUtils.getToday().getTime()));
                         Collections.sort(dataSet, (o1, o2) -> Long.compare(o1.getTime(), o2.getTime()));
                         float total = 0;
                         for (ChartEntry entry : dataSet) {
@@ -198,7 +196,6 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
                         } catch (DateTimeException e) {
                             e.printStackTrace();
                         }
-                        dataSet.add(new ChartEntry(1f, 0f, DateTimeUtils.getToday().getTime()));
                         Collections.sort(dataSet, (o1, o2) -> Long.compare(o1.getTime(), o2.getTime()));
                         float total = 0;
                         for (ChartEntry entry : dataSet) {
@@ -256,7 +253,7 @@ public class TotalRealtimeTrendCard extends BaseRefreshCard<TotalRealtimeTrendCa
 
         Pair<Integer, Integer> xAxisRange = Utils.calcChartXAxisRange(Constants.TIME_PERIOD_DAY);
         line.getXAxis().setAxisMinimum(xAxisRange.first);
-        line.getXAxis().setAxisMaximum(xAxisRange.second + 1);
+        line.getXAxis().setAxisMaximum(xAxisRange.second + 2);
         if (min >= 0) {
             line.getAxisLeft().setAxisMinimum(0f);
         } else {
