@@ -251,7 +251,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
         if (isViewAttached()) {
             mView.switchShop(shopId);
         }
-        refresh(true, false, false, true);
+        refresh(true, true, false, true);
     }
 
     private void switchToTotalPerspective(boolean refresh) {
@@ -276,7 +276,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             mView.setPages(pages, mPerspective);
         }
         if (refresh) {
-            refresh(true, false, false, true);
+            refresh(true, true, false, true);
         }
     }
 
@@ -303,7 +303,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
             mView.setPages(pages, mPerspective);
         }
         if (refresh) {
-            refresh(true, false, false, true);
+            refresh(true, true, false, true);
         }
     }
 
