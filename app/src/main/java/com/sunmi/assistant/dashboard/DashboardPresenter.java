@@ -207,7 +207,7 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
                 }
                 for (int i = 0, size = mPages.size(); i < size; i++) {
                     PageContract.PagePresenter page = mPages.valueAt(i);
-                    LogCat.i(Utils.TAG, "Page:" + page.getType());
+                    LogCat.i(Utils.TAG, "Set condition page:" + page.getType());
                     page.setCondition(mCondition.copy());
                     if (!onlyCurrentPage || page.getType() == mPageType) {
                         page.refresh(true, showLoading);
