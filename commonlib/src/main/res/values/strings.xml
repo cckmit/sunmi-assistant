@@ -199,4 +199,5 @@
     <string name="str_renew_now">立即续订</string>
     <string name="tip_renew_service">服务已过期，请尽快续订</string>
     <string name="sm_watch">查看</string>
+    <string name="dialog_title_warm_tip">Warm tips</string>
 </resources>
