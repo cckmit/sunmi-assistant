@@ -195,44 +195,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         initTimeLine();
     }
 
-    private void setCalendarEnable(boolean enable) {
-        ivPreDay.setEnabled(enable);
-        tvCalendar.setEnabled(enable);
-    }
-
-    private boolean isServiceUnopened() {
-        return cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED;
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    void initTimeLine() {
-        timeLine.setInterval(300, 6);// 设置时间轴每个小刻度5分钟，每个大刻度包含6个小刻度
-        timeLine.setListener(this);
-    }
-
-    void initData() {
-        screenW = CommonHelper.getScreenWidth(context);
-        if (currentTime > 0) {//指定某天开始
-            startTimeCurrentDate = DateTimeUtils.getDayStart(new Date(currentTime * 1000)).getTime() / 1000;
-            endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
-        } else {
-            startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime() / 1000;
-            endTimeCurrentDate = System.currentTimeMillis() / 1000;
-        }
-        refreshDay();
-        if (cloudStorageServiceStatus != CommonConstants.SERVICE_NOT_OPENED) {
-            initTimeSlotData(true);
-            if (currentTime <= 0) {
-                mPresenter.getTimeSlots(device.getId(),
-                        startTimeCurrentDate - 30 * SECONDS_IN_ONE_DAY, endTimeCurrentDate);
-            }
-        }
-    }
-
-    private void refreshDay() {
-        tvCalendar.setText(DateTimeUtils.formatDateTime(new Date(startTimeCurrentDate * 1000)));
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -296,10 +258,6 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         overridePendingTransition(0, R.anim.slide_out_right);
     }
 
-    private void updateCalendarBtnEnable() {
-        ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
-    }
-
     @Click(resName = "iv_pre_day")
     void preDayClick() {
         if (isFastClick(1000) || isServiceUnopened()) {
@@ -352,37 +310,11 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
         calendarDialog.show();
     }
 
-    private List<Calendar> getTimeSlotOfCalendar(List<VideoTimeSlotBean> slots) {
-        List<Calendar> result = new ArrayList<>();
-        Calendar c = Calendar.getInstance();
-        for (VideoTimeSlotBean slot : slots) {
-            long start = slot.getStartTime() * 1000;
-            long end = slot.getEndTime() * 1000;
-            c.clear();
-            c.setTimeInMillis(start);
-            while (c.getTimeInMillis() < end) {
-                result.add((Calendar) c.clone());
-                c.add(Calendar.DATE, 1);
-            }
-            c.setTimeInMillis(end);
-            result.add((Calendar) c.clone());
-        }
-        return result;
-    }
-
-    private void switchDay(long currentDay) {
-        startTimeCurrentDate = currentDay;
-        hidePlayFail();
-        endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
-        refreshDay();
-        updateCalendarBtnEnable();
-        initTimeSlotData(false);
-    }
-
     @Click(resName = "btn_open_service")
     void openServiceClick() {
         Router.withApi(SunmiServiceApi.class)
-                .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE, WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(), ""));
+                .goToWebViewCloud(context, CommonConstants.H5_CLOUD_STORAGE,
+                        WebViewParamsUtils.getCloudStorageParams(device.getDeviceid(), ""));
     }
 
     @Click(resName = "rl_top")
@@ -542,7 +474,77 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
             }
         } else if (id == CommonNotifications.cloudStorageChange) {
             cloudStorageServiceOpened();
+            initTimeSlotData(false);
         }
+    }
+
+    private void setCalendarEnable(boolean enable) {
+        ivPreDay.setEnabled(enable);
+        tvCalendar.setEnabled(enable);
+    }
+
+    private boolean isServiceUnopened() {
+        return cloudStorageServiceStatus == CommonConstants.SERVICE_NOT_OPENED;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    void initTimeLine() {
+        timeLine.setInterval(300, 6);// 设置时间轴每个小刻度5分钟，每个大刻度包含6个小刻度
+        timeLine.setListener(this);
+    }
+
+    void initData() {
+        screenW = CommonHelper.getScreenWidth(context);
+        if (currentTime > 0) {//指定某天开始
+            startTimeCurrentDate = DateTimeUtils.getDayStart(new Date(currentTime * 1000)).getTime() / 1000;
+            endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
+        } else {
+            startTimeCurrentDate = DateTimeUtils.getDayStart(new Date()).getTime() / 1000;
+            endTimeCurrentDate = System.currentTimeMillis() / 1000;
+        }
+        refreshDay();
+        if (cloudStorageServiceStatus != CommonConstants.SERVICE_NOT_OPENED) {
+            initTimeSlotData(true);
+            if (currentTime <= 0) {
+                mPresenter.getTimeSlots(device.getId(),
+                        startTimeCurrentDate - 30 * SECONDS_IN_ONE_DAY, endTimeCurrentDate);
+            }
+        }
+    }
+
+    private void refreshDay() {
+        tvCalendar.setText(DateTimeUtils.formatDateTime(new Date(startTimeCurrentDate * 1000)));
+    }
+
+    private void updateCalendarBtnEnable() {
+        ivNextDay.setEnabled(endTimeCurrentDate <= System.currentTimeMillis() / 1000);
+    }
+
+    private List<Calendar> getTimeSlotOfCalendar(List<VideoTimeSlotBean> slots) {
+        List<Calendar> result = new ArrayList<>();
+        Calendar c = Calendar.getInstance();
+        for (VideoTimeSlotBean slot : slots) {
+            long start = slot.getStartTime() * 1000;
+            long end = slot.getEndTime() * 1000;
+            c.clear();
+            c.setTimeInMillis(start);
+            while (c.getTimeInMillis() < end) {
+                result.add((Calendar) c.clone());
+                c.add(Calendar.DATE, 1);
+            }
+            c.setTimeInMillis(end);
+            result.add((Calendar) c.clone());
+        }
+        return result;
+    }
+
+    private void switchDay(long currentDay) {
+        startTimeCurrentDate = currentDay;
+        hidePlayFail();
+        endTimeCurrentDate = startTimeCurrentDate + SECONDS_IN_ONE_DAY;
+        refreshDay();
+        updateCalendarBtnEnable();
+        initTimeSlotData(false);
     }
 
     @UiThread
@@ -903,4 +905,5 @@ public class CloudPlaybackActivity extends BaseMvpActivity<CloudPlaybackPresente
     public void onVolumeChanged(int volume) {
         setVolumeViewImage(volume);
     }
+
 }
