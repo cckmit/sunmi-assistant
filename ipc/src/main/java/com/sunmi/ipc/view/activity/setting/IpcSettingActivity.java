@@ -1,6 +1,5 @@
 package com.sunmi.ipc.view.activity.setting;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.StringRes;
@@ -105,18 +104,15 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         TimeoutTimer.getInstance().start();
         mPresenter = new IpcSettingPresenter();
         mPresenter.attachView(this);
-        mPresenter.loadConfig(mDevice);
+        mPresenter.loadConfig(context, mDevice);
         mPresenter.currentVersion();
         mVersion.setEndContent(mDevice.getFirmware());
         mNameView.setEndContent(mDevice.getName());
         if (!CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
             setWifiUnknown();
         }
-        if (!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())) {
-            mAdjustScreen.setVisibility(View.GONE);
-        } else {
-            mAdjustScreen.setVisibility(View.VISIBLE);
-        }
+        mAdjustScreen.setVisibility(!DeviceTypeUtils.getInstance().isFS1(mDevice.getModel())
+                ? View.GONE : View.VISIBLE);
         silWdr.setOnCheckedChangeListener((buttonView, isChecked) -> setWDR(isChecked));
         silLight.setOnCheckedChangeListener((buttonView, isChecked) -> setSwLight(isChecked));
     }
@@ -135,10 +131,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         isRun = false;
     }
 
-    private void timeoutStop() {
-        TimeoutTimer.getInstance().stop();
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -146,23 +138,15 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
     }
 
     @Override
-    public Context getContext() {
-        return this;
-    }
-
-    @Override
     public void updateNameView(String name) {
         mDevice.setName(name);
         mNameView.setEndContent(name);
-        BaseNotification.newInstance().postNotificationName(
-                IpcConstants.ipcNameChanged, mDevice);
+        BaseNotification.newInstance().postNotificationName(IpcConstants.ipcNameChanged, mDevice);
     }
 
     /**
      * ipc固件升级
      * upgrade_required是否需要更新，0-不需要，1-需要
-     *
-     * @param resp
      */
     @Override
     public void currentVersionView(IpcNewFirmwareResp resp) {
@@ -203,34 +187,9 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
     }
 
-    private boolean noNetCannotClick(boolean isOnlyHttp) {
-        if (!NetworkUtils.isNetworkAvailable(context)) {
-            if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
-                return false;
-            }
-            shortTip(R.string.str_net_exception);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * 获取wifi信息 有线时显示有线  无线时获取无线wifi name
-     * 是否远程
-     */
-    private void getWifiMessage() {
-        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        if (bean == null) {
-            setWifiUnknown();
-        } else {
-            showLoadingDialog();
-            IPCCall.getInstance().getIpcConnectApMsg(context, bean.getIp());
-        }
-    }
-
     @Click(resName = "btn_refresh")
     void btnRefreshClick() {
-        mPresenter.loadConfig(mDevice);
+        mPresenter.loadConfig(context, mDevice);
         mPresenter.currentVersion();
     }
 
@@ -325,22 +284,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 .startForResult(REQUEST_COMPLETE);
     }
 
-    @OnActivityResult(REQUEST_COMPLETE)
-    void onResult(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            nightMode = Objects.requireNonNull(data.getExtras()).getInt("nightMode");
-            wdrMode = Objects.requireNonNull(data.getExtras()).getInt("wdrMode");
-            mNightStyle.setEndContent(nightMode(nightMode));
-            //夜视模式开启，此时wrd关闭
-            if (wdrMode == 0 && silWdr.isChecked()) {
-                isAuthSetWdr = true;
-                isSetWdr = false;
-                silWdr.setChecked(false);
-            }
-            isCanSetWdr(nightMode);
-        }
-    }
-
     @Click(resName = "sil_ipc_version")
     void versionClick() {
         if (noNetCannotClick(true)) {
@@ -349,27 +292,6 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         isClickVersionUpgrade = true;
         showLoadingDialog();
         mPresenter.currentVersion();
-    }
-
-    private void gotoIpcSettingVersionActivity() {
-        IpcSettingVersionActivity_.intent(this)
-                .mResp(mResp)
-                .mDevice(mDevice)
-                .startForResult(REQUEST_VERSION);
-    }
-
-    @OnActivityResult(REQUEST_VERSION)
-    void onVersionUpgradeResult(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (mResp != null) {
-                mDevice.setFirmware(mResp.getLatest_bin_version());
-                mVersion.setEndContent(mResp.getLatest_bin_version());
-                mVersion.setTagText(null);
-                isClickVersionUpgrade = false;
-                mPresenter.currentVersion();
-            }
-            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
-        }
     }
 
     @Click(resName = "sil_wifi")
@@ -392,13 +314,59 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }, 2000);
     }
 
-    private void gotoIpcSettingWiFiActivity() {
-        IpcSettingWiFiActivity_.intent(this)
-                .mDevice(mDevice)
-                .wifiSsid(wifiSsid)
-                .wifiMgmt(wifiMgmt)
-                .wifiIsWire(wifiIsWire)
-                .startForResult(REQUEST_CODE_WIFI);
+    //画面旋转
+    @Click(resName = "sil_view_rotate")
+    void rotateClick() {
+        if (noNetCannotClick(false)) {
+            return;
+        }
+        IpcSettingRotateActivity_.intent(this).mDevice(mDevice).nightMode(nightMode)
+                .wdrMode(wdrMode).ledIndicator(ledIndicator).rotation(rotation)
+                .startForResult(REQUEST_CODE_ROTATE);
+    }
+
+    @Click(resName = "sil_sd_manager")
+    void sdManagerClick() {
+        showLoadingDialog();
+        IPCCall.getInstance().getSdStatus(context, mDevice.getModel(), mDevice.getDeviceid());
+    }
+
+    /**
+     * 重启
+     */
+    @Click(resName = "sil_ipc_relaunch")
+    void relaunchClick() {
+        RelaunchSettingActivity_.intent(this).mDevice(mDevice).start();
+    }
+
+    @OnActivityResult(REQUEST_VERSION)
+    void onVersionUpgradeResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            if (mResp != null) {
+                mDevice.setFirmware(mResp.getLatest_bin_version());
+                mVersion.setEndContent(mResp.getLatest_bin_version());
+                mVersion.setTagText(null);
+                isClickVersionUpgrade = false;
+                mPresenter.currentVersion();
+            }
+            BaseNotification.newInstance().postNotificationName(CommonNotifications.ipcUpgradeComplete);
+        }
+    }
+
+    @OnActivityResult(REQUEST_COMPLETE)
+    void onResult(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            nightMode = Objects.requireNonNull(data.getExtras()).getInt("nightMode");
+            wdrMode = Objects.requireNonNull(data.getExtras()).getInt("wdrMode");
+            mNightStyle.setEndContent(nightMode(nightMode));
+            //夜视模式开启，此时wrd关闭
+            if (wdrMode == 0 && silWdr.isChecked()) {
+                isAuthSetWdr = true;
+                isSetWdr = false;
+                silWdr.setChecked(false);
+            }
+            isCanSetWdr(nightMode);
+        }
     }
 
     @OnActivityResult(REQUEST_CODE_WIFI)
@@ -415,115 +383,12 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
         }
     }
 
-    //指示灯
-    private void setSwLight(boolean isChecked) {
-        if (noNetCannotClick(false)) {
-            silWdr.setChecked(!isChecked);
-            return;
-        }
-        if (isSetLight == isChecked) {
-            return;
-        }
-        isSetLight = isChecked;
-        isOnClickLight = true;
-        isOnClickWdr = false;
-        showLoadingDialog();
-        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(),
-                mDevice.getDeviceid(), nightMode, wdrMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, rotation);
-    }
-
-    /**
-     * 夜视模式 0:始终关闭/1:始终开启/2:自动切换
-     * 当夜视模式开启不能设置wdr
-     */
-    @UiThread
-    void isCanSetWdr(int nightMode) {
-        silWdr.setEnabled(nightMode != 1);
-    }
-
-    //宽动态WDR
-    private void setWDR(boolean isChecked) {
-        if (isAuthSetWdr) {
-            isAuthSetWdr = false;
-            return;
-        }
-        if (nightMode == 1) {
-            silWdr.setChecked(!isChecked);
-            return;
-        }
-        if (noNetCannotClick(false)) {
-            silLight.setChecked(!isChecked);
-            return;
-        }
-        if (isSetWdr == isChecked) {
-            return;
-        }
-        isSetWdr = isChecked;
-        isOnClickWdr = true;
-        isOnClickLight = false;
-        showLoadingDialog();
-        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
-                nightMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, ledIndicator, rotation);
-    }
-
-
-    //画面旋转
-    @Click(resName = "sil_view_rotate")
-    void rotateClick() {
-        if (noNetCannotClick(false)) {
-            return;
-        }
-        IpcSettingRotateActivity_.intent(this)
-                .mDevice(mDevice)
-                .nightMode(nightMode)
-                .wdrMode(wdrMode)
-                .ledIndicator(ledIndicator)
-                .rotation(rotation)
-                .startForResult(REQUEST_CODE_ROTATE);
-    }
-
     @OnActivityResult(REQUEST_CODE_ROTATE)
     void onRotateResult(int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             rotation = data.getIntExtra("rotate", 0);
             rotateDegree(rotation);
         }
-    }
-
-    @Click(resName = "sil_sd_manager")
-    void sdManagerClick() {
-        showLoadingDialog();
-        IPCCall.getInstance().getSdStatus(context, mDevice.getModel(), mDevice.getDeviceid());
-    }
-
-    /**
-     * FS画面调整入口，需要判断版本，新版无需SD卡就绪
-     */
-    private void fsAdjust(SunmiDevice device) {
-        String versionName = device.getFirmware();
-        if (IpcUtils.isNewVersion(versionName, IpcConstants.IPC_VERSION_NO_SDCARD_CHECK)) {
-            startFsAdjust(device);
-        } else {
-            getSdCardStatus(device);
-        }
-    }
-
-    private void getSdCardStatus(SunmiDevice device) {
-        IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
-    }
-
-    private void startFsAdjust(SunmiDevice device) {
-        hideLoadingDialog();
-        ScreenAdjustSettingActivity_.intent(this).mDevice(device).isFromLive(isFromLive)
-                .mVideoRatio(16f / 9f).start();
-    }
-
-    /**
-     * 重启
-     */
-    @Click(resName = "sil_ipc_relaunch")
-    void relaunchClick() {
-        RelaunchSettingActivity_.intent(this).mDevice(mDevice).start();
     }
 
     @Override
@@ -631,6 +496,119 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 }
             }
         }
+    }
+
+    private void timeoutStop() {
+        TimeoutTimer.getInstance().stop();
+    }
+
+    private void gotoIpcSettingVersionActivity() {
+        IpcSettingVersionActivity_.intent(this).mResp(mResp)
+                .mDevice(mDevice).startForResult(REQUEST_VERSION);
+    }
+
+    private void gotoIpcSettingWiFiActivity() {
+        IpcSettingWiFiActivity_.intent(this).mDevice(mDevice).wifiSsid(wifiSsid)
+                .wifiMgmt(wifiMgmt).wifiIsWire(wifiIsWire).startForResult(REQUEST_CODE_WIFI);
+    }
+
+    private boolean noNetCannotClick(boolean isOnlyHttp) {
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
+                return false;
+            }
+            shortTip(R.string.str_net_exception);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取wifi信息 有线时显示有线  无线时获取无线wifi name
+     * 是否远程
+     */
+    private void getWifiMessage() {
+        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
+        if (bean == null) {
+            setWifiUnknown();
+        } else {
+            showLoadingDialog();
+            IPCCall.getInstance().getIpcConnectApMsg(context, bean.getIp());
+        }
+    }
+
+    //指示灯
+    private void setSwLight(boolean isChecked) {
+        if (noNetCannotClick(false)) {
+            silWdr.setChecked(!isChecked);
+            return;
+        }
+        if (isSetLight == isChecked) {
+            return;
+        }
+        isSetLight = isChecked;
+        isOnClickLight = true;
+        isOnClickWdr = false;
+        showLoadingDialog();
+        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(),
+                mDevice.getDeviceid(), nightMode, wdrMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, rotation);
+    }
+
+    /**
+     * 夜视模式 0:始终关闭/1:始终开启/2:自动切换
+     * 当夜视模式开启不能设置wdr
+     */
+    @UiThread
+    void isCanSetWdr(int nightMode) {
+        silWdr.setEnabled(nightMode != 1);
+    }
+
+    //宽动态WDR
+    private void setWDR(boolean isChecked) {
+        if (isAuthSetWdr) {
+            isAuthSetWdr = false;
+            return;
+        }
+        if (nightMode == 1) {
+            silWdr.setChecked(!isChecked);
+            return;
+        }
+        if (noNetCannotClick(false)) {
+            silLight.setChecked(!isChecked);
+            return;
+        }
+        if (isSetWdr == isChecked) {
+            return;
+        }
+        isSetWdr = isChecked;
+        isOnClickWdr = true;
+        isOnClickLight = false;
+        showLoadingDialog();
+        IPCCall.getInstance().setIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid(),
+                nightMode, isChecked ? SWITCH_CHECK : SWITCH_UNCHECK, ledIndicator, rotation);
+    }
+
+
+    /**
+     * FS画面调整入口，需要判断版本，新版无需SD卡就绪
+     */
+    private void fsAdjust(SunmiDevice device) {
+        String versionName = device.getFirmware();
+        if (IpcUtils.isNewVersion(versionName, IpcConstants.IPC_VERSION_NO_SDCARD_CHECK)) {
+            startFsAdjust(device);
+        } else {
+            getSdCardStatus(device);
+        }
+    }
+
+    private void getSdCardStatus(SunmiDevice device) {
+        IPCCall.getInstance().getSdState(context, device.getModel(), device.getDeviceid());
+    }
+
+    private void startFsAdjust(SunmiDevice device) {
+        hideLoadingDialog();
+        ScreenAdjustSettingActivity_.intent(this).mDevice(device).isFromLive(isFromLive)
+                .mVideoRatio(16f / 9f).start();
     }
 
     @UiThread

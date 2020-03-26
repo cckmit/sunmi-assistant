@@ -292,7 +292,7 @@ public class MqttManager {
                 || mqttClient == null || !mqttClient.isConnected()) {
             LogCat.e(TAG, "pubByPassMessage  no net or client is null ");
             ResponseBean res = new ResponseBean();
-            res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR + "");
+            res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR);
 //            BaseNotification.newInstance().postNotificationName(
 //                    NotificationConstant.dismissDialogException, res);
             return;
@@ -331,7 +331,7 @@ public class MqttManager {
         if (!NetworkUtils.isNetworkAvailable(BaseApplication.getContext())
                 || mqttClient == null || !mqttClient.isConnected()) {
             ResponseBean res = new ResponseBean();
-            res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR + "");
+            res.setErrCode(RpcErrorCode.RPC_COMMON_ERROR);
             return;
         }
         try {

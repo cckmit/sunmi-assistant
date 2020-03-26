@@ -33,7 +33,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<SunmiDevice, BaseViewHol
     @Override
     protected void convert(BaseViewHolder holder, SunmiDevice item) {
         String model;
-        if (DeviceType.POS.equals(item.getType()) && !TextUtils.isEmpty(item.getDisplayModel())) {
+        if (TextUtils.equals(DeviceType.POS, item.getType()) && !TextUtils.isEmpty(item.getDisplayModel())) {
             model = item.getDisplayModel();
         } else {
             model = item.getModel();

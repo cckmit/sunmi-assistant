@@ -104,7 +104,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
                     || retryCount == 20//20次已经尝试完
                     || code == 5501 || code == 5508 || code == 5509 || code == 5510
                     || code == 5511 || code == 5512 || code == 5013 || code == 5514
-            ) {
+                    ) {
                 startCountDown();
                 setDeviceStatus(sn, code);
                 return;
@@ -158,7 +158,7 @@ public class IpcConfiguringActivity extends BaseMvpActivity<IpcConfiguringPresen
     public void didReceivedNotification(int id, Object... args) {
         if (args == null) return;
         ResponseBean res = (ResponseBean) args[0];
-        if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
+        if (RpcErrorCode.RPC_COMMON_ERROR == res.getErrCode()) {
             configFailDialog(R.string.tip_set_fail, R.string.str_bind_net_error);
         } else if (id == OpcodeConstants.bindIpc) {
             try {

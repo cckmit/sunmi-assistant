@@ -163,7 +163,7 @@ public class WifiConfigActivity extends BaseActivity
     //{"data":[{"opcode":"0x3119","result":{"online":0,"wireless":{"connect_status":"0"}},"errcode":0}],"msg_id":"11111","errcode":0}
     @UiThread
     void wifiStatusGetSuccess(ResponseBean res) {
-        if (!TextUtils.equals("0", res.getErrCode())) {
+        if (!res.isErrCodeZero()) {
             countGetStatusFail();
             return;
         }
@@ -268,7 +268,7 @@ public class WifiConfigActivity extends BaseActivity
     @UiThread
     void wifiListGetSuccess(ResponseBean res) {
         setLoadingVisible(View.GONE);
-        if (res == null || TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
+        if (res == null || RpcErrorCode.RPC_COMMON_ERROR ==res.getErrCode()) {
             setNoWifiVisible(View.VISIBLE);
             return;
         }

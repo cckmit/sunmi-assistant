@@ -147,7 +147,7 @@
             android:gravity="center"
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
-            android:textColor="@color/text_main"
+            android:textColor="@color/text_common_main"
             android:textSize="@dimen/sp_14"
             android:visibility="gone" />
 

@@ -287,7 +287,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         if (isAgainCheck) {
             dialogPasswordDismiss();
         }
-        checkApVersion(clickedDevice.getDeviceid(), clickedDevice.getStatus());
+        checkApVersion(clickedDevice);
     }
 
     /**
@@ -363,9 +363,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
                 if (TextUtils.equals(device.getDeviceid(), MyNetworkCallback.CURRENT_ROUTER)) {
                     mPresenter.apConfig(mActivity, device.getDeviceid());
                 } else if (device.getStatus() == DeviceStatus.ONLINE.ordinal()) {
-                    checkApVersion(device.getDeviceid(), device.getStatus());
+                    checkApVersion(device);
                 } else {
-                    gotoRouterManager(device.getDeviceid(), device.getStatus());
+                    gotoRouterManager(device);
                 }
                 break;
             case DeviceType.IPC:
@@ -509,7 +509,7 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
         } else if (NotificationConstant.apRename == id) {
             hideLoadingDialog();
             ResponseBean res = (ResponseBean) args[0];
-            if (TextUtils.equals("0", res.getErrCode())) {
+            if (res.isErrCodeZero()) {
                 mPresenter.updateCacheData(routerSn, routerNewName);
             } else {
                 shortTip(R.string.ipc_setting_fail);
@@ -631,13 +631,18 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     //检查ap版本
-    private void checkApVersion(String sn, int status) {
-        ApCompatibleUtils.getInstance().checkVersion(mActivity, sn, (isCompatible, currSn) ->
-                gotoRouterManager(sn, status));
+    private void checkApVersion(SunmiDevice device) {
+        ApCompatibleUtils.getInstance().checkVersion(mActivity, device.getDeviceid(), (isCompatible, currSn) ->
+                gotoRouterManager(device));
     }
 
-    private void gotoRouterManager(String sn, int status) {
-        RouterManagerActivity_.intent(mActivity).shopId(SpUtils.getShopId()).sn(sn).status(status).start();
+    private void gotoRouterManager(SunmiDevice device) {
+        RouterManagerActivity_.intent(mActivity)
+                .shopId(SpUtils.getShopId())
+                .sn(device.getDeviceid())
+                .status(device.getStatus())
+                .modelType(TextUtils.equals(device.getModel(), "W1s") ? ModelType.MODEL_W1S : ModelType.MODEL_W1)
+                .start();
     }
 
     private void deleteDevice(SunmiDevice device) {

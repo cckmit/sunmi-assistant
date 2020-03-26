@@ -232,7 +232,7 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
         initSurfaceView();
         initManageList();
         mPresenter.getStorageList(device.getDeviceid(), cloudStorageItem);
-        if (!CommonHelper.isGooglePlay()) {
+        if (!CommonHelper.isGooglePlay() && isSS1()) {
             mPresenter.getCashVideoService(device.getId());
         }
         if (!isSS1() &&
@@ -967,11 +967,10 @@ public class IpcManagerActivity extends BaseMvpActivity<IpcManagerPresenter>
 
     private void initManageList() {
         rvManager.init(0);
-        if (!CommonHelper.isGooglePlay()) {
+        if (!CommonHelper.isGooglePlay() && isSS1()) {
             cashVideoItem = new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_CASH, R.mipmap.ipc_manage_cashier, getString(R.string.cash_video),
                     getString(R.string.cash_video_item_content), getString(R.string.str_learn_more), true);
             list.add(cashVideoItem);
-
         }
         list.add(new IpcManageBean(IpcConstants.IPC_MANAGE_TYPE_DETECT, R.mipmap.ipc_manage_md, getString(R.string.str_motion_detection),
                 getString(R.string.str_md_exception), getString(R.string.str_setting_detail), true));

@@ -197,7 +197,7 @@ public class IPCSearchActivity extends BaseActivity
         } else if (id == OpcodeConstants.getIpcToken) {
             ResponseBean res = (ResponseBean) args[0];
             try {
-                if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
+                if (RpcErrorCode.RPC_COMMON_ERROR ==res.getErrCode()) {
                     hideLoadingDialog();
                     return;
                 }
@@ -218,7 +218,7 @@ public class IPCSearchActivity extends BaseActivity
         } else if (id == OpcodeConstants.getIsWire) {
             ResponseBean res = (ResponseBean) args[0];
             try {
-                if (TextUtils.equals(res.getErrCode(), RpcErrorCode.RPC_COMMON_ERROR + "")) {
+                if (RpcErrorCode.RPC_COMMON_ERROR ==res.getErrCode()) {
                     hideLoadingDialog();
                     return;
                 }
