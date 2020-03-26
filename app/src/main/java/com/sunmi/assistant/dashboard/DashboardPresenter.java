@@ -154,9 +154,11 @@ class DashboardPresenter extends BasePresenter<DashboardContract.View>
     }
 
     private void loadShop(boolean clearCache, Callback<?> callback) {
+        LogCat.i(Utils.TAG, "Load shop list.");
         appModel.getShopListWithAuth(mCompanyId, clearCache, new Callback<Pair<Integer, SparseArray<ShopInfo>>>() {
             @Override
             public void onLoaded(Pair<Integer, SparseArray<ShopInfo>> result) {
+                LogCat.i(Utils.TAG, "Load shop list complete.");
                 mAuthority = result.first;
                 SparseArray<ShopInfo> shopMap = result.second;
                 // 权限和视角校验，初始化页面
