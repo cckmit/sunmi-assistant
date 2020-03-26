@@ -86,7 +86,7 @@ public class TimeMarkerFormatter implements IMarkerFormatter {
                 break;
             case TIME_TYPE_HOUR_TOTAL_SPAN:
                 hour = temp.get(Calendar.HOUR_OF_DAY);
-                valueStr = String.format(Locale.getDefault(), "00:00-%02d:00", hour);
+                valueStr = String.format(Locale.getDefault(), "00:00-%02d:00", hour + 1);
                 break;
             case TIME_TYPE_WEEK:
                 valueStr = weekName[temp.get(Calendar.DAY_OF_WEEK) - 1];
