@@ -276,10 +276,6 @@ public class IPCSearchActivity extends BaseActivity
         IPCCall.getInstance().getToken(context, ipc.getIp());
     }
 
-    private void getIsWire() {
-        IPCCall.getInstance().getIsWire(context, ipcList.get(0).getIp());
-    }
-
     private void gotoWifiConfigActivity() {
         hideLoadingDialog();
         if (ipcList != null && ipcList.size() > 0)

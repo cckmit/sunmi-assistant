@@ -33,10 +33,9 @@ public class IpcSettingPresenter extends BasePresenter<IpcSettingContract.View>
         mView.showLoadingDialog();
         IPCCall.getInstance().getIpcNightIdeRotation(context, mDevice.getModel(), mDevice.getDeviceid());
         SunmiDevice localDevice = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
-        SunmiDevice bean = CommonConstants.SUNMI_DEVICE_MAP.get(mDevice.getDeviceid());
         if (localDevice != null) {
             // ipc连接wifi信息 有线.无线
-            IPCCall.getInstance().getIsWire(context, bean.getIp());
+            IPCCall.getInstance().getIsWire(mDevice.getModel(), mDevice.getDeviceid());
         }
     }
 
