@@ -72,7 +72,6 @@
     <string name="str_start_set">Start</string>
     <string name="str_config_child_tip">If you already had a connected Sunmi router, you could add more routers in「Router Management」</string>
     <string name="btn_start_config">Start configuration</string>
-    <string name="textView_config_title">Setup wizard</string>
     <string name="str_primary_search_check_line">Please check whether the router has been powered on with the network cable connected</string>
     <string name="str_primary_search_on_find">No router found</string>
     <string name="str_primary_search_searching_ap">Searching your router</string>
