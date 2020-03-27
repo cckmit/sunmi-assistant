@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.commonlibrary.R;
 
+import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.Utils;
 
 public class TitleBarView extends RelativeLayout {
@@ -125,6 +126,9 @@ public class TitleBarView extends RelativeLayout {
         float titleTextSize = typedArray.getDimensionPixelSize(R.styleable.TitleBarView_titleTextSize, -1);
         if (titleTextSize != -1) {
             midTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
+        }
+        if (CommonHelper.isChinese()) {
+            midTitle.setAllCaps(false);
         }
 
         int statusBarColor = typedArray.getResourceId(R.styleable.TitleBarView_statusBarColor, -1);
