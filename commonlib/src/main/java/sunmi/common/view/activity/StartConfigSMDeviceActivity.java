@@ -71,55 +71,39 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
     protected void init() {
         StatusBarUtils.setStatusBarColor(this, StatusBarUtils.TYPE_DARK);
         if (deviceType == ModelType.MODEL_W1) {
-            titleBar.setAppTitle(R.string.str_title_ap_set);
-            if (CommonHelper.isGooglePlay()) {
-                ivImage.setImageResource(R.mipmap.ic_device_config_ap_foreign);
-            } else {
-                ivImage.setImageResource(R.mipmap.ic_device_config_ap);
-            }
-            tvTip1.setText(R.string.str_config_tip_ap);
-            tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_1)));
-            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ap_2)));
+            initView(R.string.str_title_ap_set,
+                    CommonHelper.isGooglePlay() ? R.mipmap.ic_device_config_ap_foreign : R.mipmap.ic_device_config_ap,
+                    R.string.str_config_tip_ap, R.string.str_config_tip_ap_1, R.string.str_config_tip_ap_2);
+            tvConfigTip.setVisibility(View.VISIBLE);
+        } else if (deviceType == ModelType.MODEL_W1S) {
+            initView(R.string.str_title_ap_set, R.mipmap.ic_device_config_w1s,
+                    R.string.str_config_tip_ap, R.string.str_config_tip_ap_1, R.string.str_config_tip_ap_2);
             tvConfigTip.setVisibility(View.VISIBLE);
         } else if (deviceType == ModelType.MODEL_FS) {
-            titleBar.setAppTitle(R.string.str_title_ipc_set);
-            ivImage.setImageResource(R.mipmap.ic_device_config_ipc_fs);
-            tvTip1.setText(R.string.str_config_tip_ipc);
-            tvTip2.setText(getString(R.string.str_config_tip_fs_1));
-            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_fs_2)));
+            initView(R.string.str_title_ipc_set, R.mipmap.ic_device_config_ipc_fs,
+                    R.string.str_config_tip_ipc, R.string.str_config_tip_fs_1, R.string.str_config_tip_fs_2);
             tvTip4.setVisibility(View.VISIBLE);
             tvTip4.setText(getString(R.string.str_config_tip_fs_3));
             tvTip5.setVisibility(View.VISIBLE);
             tvTip5.setText(Html.fromHtml(getString(R.string.str_config_tip_fs_4)));
         } else if (deviceType == ModelType.MODEL_SS) {
-            titleBar.setAppTitle(R.string.str_title_ipc_set);
-            ivImage.setImageResource(R.mipmap.ic_device_config_ipc_ss);
-            tvTip1.setText(R.string.str_config_tip_ipc);
-            tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_1)));
-            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_2)));
+            initView(R.string.str_title_ipc_set, R.mipmap.ic_device_config_ipc_ss,
+                    R.string.str_config_tip_ipc, R.string.str_config_tip_ipc_1, R.string.str_config_tip_ipc_2);
             tvTip4.setVisibility(View.VISIBLE);
             tvTip4.setText(Html.fromHtml(getString(R.string.str_config_tip_ipc_3)));
         } else if (deviceType == ModelType.MODEL_PRINTER) {
-            titleBar.setAppTitle(R.string.str_title_printer_set);
-            ivImage.setImageResource(R.mipmap.ic_device_config_printer);
-            tvTip1.setText(R.string.str_config_tip_printer);
-            tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_1)));
-            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_printer_2)));
-        } else if (deviceType == ModelType.MODEL_W1S) {
-            titleBar.setAppTitle(R.string.str_title_ap_set);
-            ivImage.setImageResource(R.mipmap.ic_device_config_w1s);
-            tvTip1.setText(R.string.str_config_tip_ap);
-            tvTip2.setText(Html.fromHtml(getString(R.string.str_config_tip_w1s_1)));
-            tvTip3.setText(Html.fromHtml(getString(R.string.str_config_tip_w1s_2)));
-            tvConfigTip.setVisibility(View.VISIBLE);
+            initView(R.string.str_title_printer_set, R.mipmap.ic_device_config_printer,
+                    R.string.str_config_tip_printer, R.string.str_config_tip_printer_1, R.string.str_config_tip_printer_2);
         }
         setViewDividerVisible();
-        /*ViewUtils.setPrivacy(this, ctvPrivacy, R.color.white_40a, USER_PROTOCOL, USER_PRIVATE);
-        btnStart.setEnabled(ctvPrivacy.isChecked());
-        ctvPrivacy.setOnClickListener(v -> {
-            ctvPrivacy.toggle();
-            btnStart.setEnabled(ctvPrivacy.isChecked());
-        });*/
+    }
+
+    private void initView(int titleRes, int imageRes, int tip1Res, int tip2Res, int tip3Res) {
+        titleBar.setAppTitle(titleRes);
+        ivImage.setImageResource(imageRes);
+        tvTip1.setText(tip1Res);
+        tvTip2.setText(Html.fromHtml(getString(tip2Res)));
+        tvTip3.setText(Html.fromHtml(getString(tip3Res)));
     }
 
     @UiThread
@@ -138,10 +122,6 @@ public class StartConfigSMDeviceActivity extends BaseActivity {
 
     @Click(resName = "btn_start")
     public void nextClick(View v) {
-        /*if (!ctvPrivacy.isChecked()) {
-            shortTip(R.string.tip_agree_protocol);
-            return;
-        }*/
         if (deviceType == ModelType.MODEL_W1 || deviceType == ModelType.MODEL_W1S) {
             startPrimaryRouteSearchActivity();
         }

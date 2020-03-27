@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
-import com.sunmi.apmanager.ui.activity.config.PrimaryRouteStartActivity_;
 import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity_;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.assistant.R;
@@ -64,6 +63,7 @@ import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.StatusBarUtils;
 import sunmi.common.utils.Utils;
 import sunmi.common.view.SmRecyclerView;
+import sunmi.common.view.activity.StartConfigSMDeviceActivity_;
 import sunmi.common.view.dialog.ChooseDeviceDialog;
 import sunmi.common.view.dialog.CommonDialog;
 import sunmi.common.view.dialog.InputDialog;
@@ -301,10 +301,9 @@ public class DeviceFragment extends BaseMvpFragment<DevicePresenter>
     }
 
     @Override
-    public void gotoPrimaryRouteStartActivity(String model) {
-        PrimaryRouteStartActivity_.intent(mActivity)
-                .modelType(TextUtils.equals(model, "W1s") ? ModelType.MODEL_W1S : ModelType.MODEL_W1)
-                .start();
+    public void gotoRouteConfigActivity(String model) {
+        StartConfigSMDeviceActivity_.intent(getContext()).deviceType(TextUtils.equals(model, "W1s")
+                ? ModelType.MODEL_W1S : ModelType.MODEL_W1).start();
     }
 
     @Override
