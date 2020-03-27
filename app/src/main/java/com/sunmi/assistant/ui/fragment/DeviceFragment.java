@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.sunmi.apmanager.config.AppConfig;
 import com.sunmi.apmanager.constant.NotificationConstant;
 import com.sunmi.apmanager.receiver.MyNetworkCallback;
-import com.sunmi.apmanager.ui.activity.router.RouterManagerActivity_;
+import com.sunmi.apmanager.ui.activity.RouterManagerActivity_;
 import com.sunmi.apmanager.utils.ApCompatibleUtils;
 import com.sunmi.assistant.R;
 import com.sunmi.assistant.contract.DeviceContract;
