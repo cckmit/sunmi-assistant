@@ -18,6 +18,7 @@ import com.sunmi.assistant.dashboard.card.BaseRefreshCard;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshLayout;
 import com.sunmi.assistant.dashboard.ui.refresh.RefreshViewHolder;
 import com.sunmi.assistant.dashboard.util.Constants;
+import com.sunmi.assistant.dashboard.util.Utils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -65,13 +66,15 @@ public class TotalCustomerFragment extends BaseMvpFragment<TotalCustomerPresente
 
     @AfterViews
     void init() {
+        LogCat.d(Utils.TAG, TAG + ":init. " + this);
         Context context = getContext();
         if (context == null) {
+            LogCat.e(Utils.TAG, TAG + ":Context is null.");
             return;
         }
         Fragment parent = getParentFragment();
         if (!(parent instanceof DashboardContract.View)) {
-            LogCat.e(TAG, "Parent is not DashboardFragment. RealtimeFragment must be used in dashboard.");
+            LogCat.e(Utils.TAG, "Parent is not DashboardFragment. RealtimeFragment must be used in dashboard.");
             return;
         }
         mParent = (DashboardContract.View) parent;
