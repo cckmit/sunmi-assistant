@@ -96,10 +96,29 @@ public class IPCCall extends BaseIpcApi {
     }
 
     /**
+     * 获取IPC设备网络状态信息
+     *
+     * @param model IPC的型号
+     * @param sn    IPC的型号
+     */
+    public void getIsWire(String model, String sn) {
+        try {
+            int opCode = OpcodeConstants.getIsWire;
+            JSONObject object = new JSONObject();
+            object.put("sn", sn);
+            RequestBean requestBean = new RequestBean(Utils.getMsgId(),
+                    "0x" + Integer.toHexString(opCode), object);
+            post(null, sn, requestBean.getMsgId(), opCode, model, requestBean.serialize(), 8);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 设置缩放
      *
      * @param model IPC的型号
-     * @param sn    IPC的SN
+     * @param sn    IPC的型号
      * @param zoom  0-500
      */
     public void fsZoom(String model, String sn, int zoom) {
