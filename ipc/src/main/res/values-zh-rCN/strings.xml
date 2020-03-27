@@ -409,4 +409,7 @@
     <string name="tip_other_anomalies">今日门店内其他异常</string>
     <string name="str_abnormal_behavior_list">异常行为视频列表</string>
     <string name="str_tip_use_wired_network">请确认摄像机插入网线，并将手机连接至同一网络</string>
+    <string name="str_net_access_method">网络接入方式</string>
+    <string name="str_wired_connect">有线连接</string>
+    <string name="str_wireless_connect">无线连接</string>
 </resources>

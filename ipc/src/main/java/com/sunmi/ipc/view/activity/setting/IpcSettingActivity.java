@@ -310,7 +310,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
                 return;
             }
             showLoadingDialog();
-            IPCCall.getInstance().getIsWire(context, bean.getIp());
+            IPCCall.getInstance().getIsWire(mDevice.getModel(), mDevice.getDeviceid());
         }, 2000);
     }
 
@@ -676,7 +676,7 @@ public class IpcSettingActivity extends BaseMvpActivity<IpcSettingPresenter>
             if (bean == null) {
                 setWifiUnknown();
             } else {
-                IPCCall.getInstance().getIsWire(IpcSettingActivity.this, bean.getIp());
+                IPCCall.getInstance().getIsWire(mDevice.getModel(), mDevice.getDeviceid());
                 if (CommonConstants.SUNMI_DEVICE_MAP.containsKey(mDevice.getDeviceid())) {
                     mWifiName.setEnabled(true);
                 }
