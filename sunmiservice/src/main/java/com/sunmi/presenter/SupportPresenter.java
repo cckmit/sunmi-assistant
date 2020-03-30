@@ -16,6 +16,7 @@ import sunmi.common.model.ServiceResp;
 import sunmi.common.router.IpcCloudApiAnno;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
 import sunmi.common.utils.ConfigManager;
+import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -45,7 +46,7 @@ public class SupportPresenter extends BasePresenter<SupportContract.View> implem
     }
 
     private void getCashVideoService() {
-        ipcCloudApi.getAuditVideoServiceList(null, new RetrofitCallback<ServiceResp>() {
+        ipcCloudApi.getAuditVideoServiceList(SpUtils.getCompanyId(), SpUtils.getShopId(), null, new RetrofitCallback<ServiceResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceResp data) {
                 // 响应校验
@@ -113,7 +114,7 @@ public class SupportPresenter extends BasePresenter<SupportContract.View> implem
         }
 
         List<String> snList = getDeviceSnList();
-        ipcCloudApi.getAuditSecurityPolicyList(snList, new RetrofitCallback<ServiceResp>() {
+        ipcCloudApi.getAuditSecurityPolicyList(SpUtils.getCompanyId(), SpUtils.getShopId(), snList, new RetrofitCallback<ServiceResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceResp data) {
                 // 响应校验，如果列表为空则说明没有设备开通收银防损，直接下一步获取云存储开通状态
@@ -150,7 +151,7 @@ public class SupportPresenter extends BasePresenter<SupportContract.View> implem
             return;
         }
         List<String> snList = getDeviceSnList();
-        ipcCloudApi.getStorageList(snList, new RetrofitCallback<ServiceResp>() {
+        ipcCloudApi.getStorageList(SpUtils.getCompanyId(), SpUtils.getShopId(), snList, new RetrofitCallback<ServiceResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceResp data) {
                 if (data == null || data.getList() == null) {

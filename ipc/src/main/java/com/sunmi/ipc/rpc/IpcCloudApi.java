@@ -641,12 +641,12 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * device_id	否	int64	设备id 不传为查询所有设
      */
     @Override
-    public void getStorageList(List<String> snList, RetrofitCallback<ServiceResp> callback) {
+    public void getStorageList(int companyId, int shopId, List<String> snList, RetrofitCallback<ServiceResp> callback) {
         try {
             JSONArray array = new JSONArray(snList);
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("device_sn_list", array)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(DeviceInterface.class)
@@ -663,11 +663,11 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * device_id	否	int64	设备id 不传为查询所有设
      */
     @Override
-    public void getAuditVideoServiceList(List<String> snList, RetrofitCallback<ServiceResp> callback) {
+    public void getAuditVideoServiceList(int companyId, int shopId, List<String> snList, RetrofitCallback<ServiceResp> callback) {
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId);
             if (snList != null) {
                 JSONArray array = new JSONArray(snList);
                 jsonObject.put("device_sn_list", array);
@@ -687,11 +687,11 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * shop_id	是	int64	店铺id
      * order_no	是	string	订单编号
      */
-    public void getOrderInfo(String orderNo, RetrofitCallback<CashOrderResp> callback) {
+    public void getOrderInfo(int companyId, int shopId, String orderNo, RetrofitCallback<CashOrderResp> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("order_no", orderNo)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
@@ -710,11 +710,11 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * time_range_start	是	int64
      * time_range_end	是	int64
      */
-    public void getCashVideoTimeSlots(int deviceId, long startTime, long endTime, RetrofitCallback<CashVideoTimeSlotBean> callback) {
+    public void getCashVideoTimeSlots(int companyId, int shopId, int deviceId, long startTime, long endTime, RetrofitCallback<CashVideoTimeSlotBean> callback) {
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId);
             if (deviceId != -1) {
                 jsonObject.put("device_id", deviceId);
             }
@@ -740,11 +740,11 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * @param endTime
      * @param callback
      */
-    public void getShopCashVideoCount(long startTime, long endTime, RetrofitCallback<CashVideoListBean> callback) {
+    public void getShopCashVideoCount(int companyId, int shopId, long startTime, long endTime, RetrofitCallback<CashVideoListBean> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("time_range_start", startTime)
                     .put("time_range_end", endTime)
                     .toString();
@@ -769,11 +769,11 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * @param endTime
      * @param callback
      */
-    public void getIpcCashVideoCount(List<Integer> deviceId, long startTime, long endTime, RetrofitCallback<CashVideoCountResp> callback) {
+    public void getIpcCashVideoCount(int companyId, int shopId, List<Integer> deviceId, long startTime, long endTime, RetrofitCallback<CashVideoCountResp> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("device_id_list", deviceId)
                     .put("time_range_start", startTime)
                     .put("time_range_end", endTime)
@@ -796,13 +796,13 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * page_size	否	int32	页码
      * page_num	否	int32	每页条数
      */
-    public void getCashVideoList(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize,
+    public void getCashVideoList(int companyId, int shopId, int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize,
                                  RetrofitCallback<CashVideoResp> callback) {
 
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId);
             if (deviceId != -1) {
                 jsonObject.put("device_id", deviceId);
             }
@@ -829,11 +829,11 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * @param callback
      */
     @Override
-    public void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceResp> callback) {
+    public void getAuditSecurityPolicyList(int companyId, int shopId, List<String> snList, RetrofitCallback<ServiceResp> callback) {
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId);
             if (snList != null) {
                 JSONArray array = new JSONArray(snList);
                 jsonObject.put("device_sn_list", array);
@@ -857,12 +857,12 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * @param pageSize  否
      * @param callback
      */
-    public void getAbnormalBehaviorVideoList(int deviceId, long startTime, long endTime, int pageNum, int pageSize,
+    public void getAbnormalBehaviorVideoList(int companyId, int shopId, int deviceId, long startTime, long endTime, int pageNum, int pageSize,
                                              RetrofitCallback<CashVideoResp> callback) {
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId);
             if (deviceId != -1) {
                 jsonObject.put("device_id", deviceId);
             }
@@ -880,11 +880,11 @@ public class IpcCloudApi implements IpcCloudApiAnno {
         }
     }
 
-    public void getCashVideoAbnormalEvent(long eventId, RetrofitCallback<CashVideoEventResp> callback) {
+    public void getCashVideoAbnormalEvent(int companyId, int shopId, long eventId, RetrofitCallback<CashVideoEventResp> callback) {
         try {
             String params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("event_id", eventId)
                     .toString();
             SunmiStoreRetrofitClient.getInstance().create(CashInterface.class)
@@ -905,12 +905,12 @@ public class IpcCloudApi implements IpcCloudApiAnno {
      * video_type	    是	int32	标记类型 1:正常视频，2:异常视频
      * video_tag	    否	array[integer]	标记类型 1:自定义类型，2:飞单，3:钱箱未关，4:偷钱，5:漏扫，6:偷换条码，7:交易类型不匹配
      */
-    public void updateTag(long videoId, int source, int type, List<Integer> tags, String desc,
+    public void updateTag(int companyId, int shopId, long videoId, int source, int type, List<Integer> tags, String desc,
                           RetrofitCallback<Object> callback) {
         try {
             JSONObject params = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId())
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId)
                     .put("audit_video_id", videoId)
                     .put("video_source", source)
                     .put("video_type", type);
@@ -977,8 +977,8 @@ public class IpcCloudApi implements IpcCloudApiAnno {
                                    RetrofitCallback<MotionVideoListResp> callback) {
         try {
             JSONObject jsonObject = new JSONObject()
-                    .put("company_id", SpUtils.getCompanyId())
-                    .put("shop_id", SpUtils.getShopId());
+                    .put("company_id", companyId)
+                    .put("shop_id", shopId);
             if (deviceId != -1) {
                 jsonObject.put("id", deviceId);
             }

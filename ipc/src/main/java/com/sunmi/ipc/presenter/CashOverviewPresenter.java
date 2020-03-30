@@ -28,6 +28,7 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.ThreadPool;
 
 /**
@@ -49,7 +50,7 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
 
     @Override
     public void getCashVideoTimeSlots(int deviceId, long startTime, long endTime) {
-        IpcCloudApi.getInstance().getCashVideoTimeSlots(deviceId, startTime, endTime, new RetrofitCallback<CashVideoTimeSlotBean>() {
+        IpcCloudApi.getInstance().getCashVideoTimeSlots(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId, startTime, endTime, new RetrofitCallback<CashVideoTimeSlotBean>() {
             @Override
             public void onSuccess(int code, String msg, CashVideoTimeSlotBean data) {
                 if (isViewAttached()) {
@@ -66,7 +67,7 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
 
     @Override
     public void getShopCashVideoCount(long startTime, long endTime) {
-        IpcCloudApi.getInstance().getShopCashVideoCount(startTime, endTime, new RetrofitCallback<CashVideoListBean>() {
+        IpcCloudApi.getInstance().getShopCashVideoCount(SpUtils.getCompanyId(), SpUtils.getShopId(), startTime, endTime, new RetrofitCallback<CashVideoListBean>() {
             @Override
             public void onSuccess(int code, String msg, CashVideoListBean data) {
                 if (isViewAttached()) {
@@ -85,7 +86,7 @@ public class CashOverviewPresenter extends BasePresenter<CashOverviewContract.Vi
 
     @Override
     public void getIpcCashVideoCount(List<Integer> deviceId, long startTime, long endTime) {
-        IpcCloudApi.getInstance().getIpcCashVideoCount(deviceId, startTime, endTime, new RetrofitCallback<CashVideoCountResp>() {
+        IpcCloudApi.getInstance().getIpcCashVideoCount(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId, startTime, endTime, new RetrofitCallback<CashVideoCountResp>() {
             @Override
             public void onSuccess(int code, String msg, CashVideoCountResp data) {
                 ThreadPool.getCachedThreadPool().submit(() -> {

@@ -10,6 +10,7 @@ import java.util.List;
 
 import sunmi.common.model.CashServiceInfo;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -26,7 +27,7 @@ public class CashVideoModel {
     }
 
     public void loadCashVideo(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize, CallBack callBack) {
-        IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
+        IpcCloudApi.getInstance().getCashVideoList(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId, videoType, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
@@ -42,7 +43,7 @@ public class CashVideoModel {
     }
 
     public void loadAbnormalBehaviorVideo(int deviceId, long startTime, long endTime, int pageNum, int pageSize, CallBack callBack) {
-        IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(deviceId, startTime, endTime, pageNum,
+        IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId, startTime, endTime, pageNum,
                 pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {

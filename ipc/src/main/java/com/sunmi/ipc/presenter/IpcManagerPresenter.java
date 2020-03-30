@@ -31,6 +31,7 @@ import sunmi.common.rpc.sunmicall.ResponseBean;
 import sunmi.common.utils.CommonHelper;
 import sunmi.common.utils.ConfigManager;
 import sunmi.common.utils.DateTimeUtils;
+import sunmi.common.utils.SpUtils;
 
 /**
  * Description:
@@ -86,7 +87,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     public void getStorageList(String deviceSn, final IpcManageBean item) {
         List<String> snList = new ArrayList<>();
         snList.add(deviceSn);
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceResp>() {
+        IpcCloudApi.getInstance().getStorageList(SpUtils.getCompanyId(), SpUtils.getShopId(), snList, new RetrofitCallback<ServiceResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceResp data) {
                 if (isViewAttached()) {
@@ -111,7 +112,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
 
     @Override
     public void getCashVideoService(final int deviceId) {
-        IpcCloudApi.getInstance().getAuditVideoServiceList(null,
+        IpcCloudApi.getInstance().getAuditVideoServiceList(SpUtils.getCompanyId(), SpUtils.getShopId(), null,
                 new RetrofitCallback<ServiceResp>() {
 
                     @Override
@@ -163,7 +164,7 @@ public class IpcManagerPresenter extends BasePresenter<IpcManagerContract.View>
     public void getCashPreventService(String deviceSn) {
         List<String> snList = new ArrayList<>();
         snList.add(deviceSn);
-        IpcCloudApi.getInstance().getAuditSecurityPolicyList(snList, new RetrofitCallback<ServiceResp>() {
+        IpcCloudApi.getInstance().getAuditSecurityPolicyList(SpUtils.getCompanyId(), SpUtils.getShopId(), snList, new RetrofitCallback<ServiceResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceResp data) {
                 List<ServiceResp.Info> beans = data.getList();

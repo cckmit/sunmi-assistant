@@ -268,7 +268,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
 
 
     protected void getStorageStatus() {
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceResp>() {
+        IpcCloudApi.getInstance().getStorageList(SpUtils.getCompanyId(), SpUtils.getShopId(), snList, new RetrofitCallback<ServiceResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceResp data) {
                 List<ServiceResp.Info> beans = data.getList();

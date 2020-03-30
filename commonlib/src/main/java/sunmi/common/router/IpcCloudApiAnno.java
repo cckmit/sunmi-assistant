@@ -15,9 +15,9 @@ public interface IpcCloudApiAnno {
 
     void getDetailList(int companyId, int shopId, RetrofitCallback<IpcListResp> callback);
 
-    void getAuditVideoServiceList(List<String> snList, RetrofitCallback<ServiceResp> callback);
+    void getAuditVideoServiceList(int companyId, int shopId, List<String> snList, RetrofitCallback<ServiceResp> callback);
 
-    void getStorageList(List<String> snList, RetrofitCallback<ServiceResp> callback);
+    void getStorageList(int companyId, int shopId, List<String> snList, RetrofitCallback<ServiceResp> callback);
 
-    void getAuditSecurityPolicyList(List<String> snList, RetrofitCallback<ServiceResp> callback);
+    void getAuditSecurityPolicyList(int companyId, int shopId, List<String> snList, RetrofitCallback<ServiceResp> callback);
 }

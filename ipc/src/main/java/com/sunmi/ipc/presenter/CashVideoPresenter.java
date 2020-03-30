@@ -30,6 +30,7 @@ import sunmi.common.constant.CommonNotifications;
 import sunmi.common.model.ServiceResp;
 import sunmi.common.notification.BaseNotification;
 import sunmi.common.rpc.retrofit.RetrofitCallback;
+import sunmi.common.utils.SpUtils;
 import sunmi.common.utils.log.LogCat;
 
 /**
@@ -56,7 +57,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
             }
         }
 
-        IpcCloudApi.getInstance().updateTag(videoId, source, videoType, videoTags, desc, new RetrofitCallback<Object>() {
+        IpcCloudApi.getInstance().updateTag(SpUtils.getCompanyId(), SpUtils.getShopId(), videoId, source, videoType, videoTags, desc, new RetrofitCallback<Object>() {
             @Override
             public void onSuccess(int code, String msg, Object data) {
                 if (isViewAttached()) {
@@ -75,7 +76,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
 
     @Override
     public void getOrderInfo(String orderNo) {
-        IpcCloudApi.getInstance().getOrderInfo(orderNo, new RetrofitCallback<CashOrderResp>() {
+        IpcCloudApi.getInstance().getOrderInfo(SpUtils.getCompanyId(), SpUtils.getShopId(), orderNo, new RetrofitCallback<CashOrderResp>() {
             @Override
             public void onSuccess(int code, String msg, CashOrderResp data) {
                 if (isViewAttached()) {
@@ -98,7 +99,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
      */
     @Override
     public void getCashVideoList(int deviceId, int videoType, long startTime, long endTime, int pageNum, int pageSize) {
-        IpcCloudApi.getInstance().getCashVideoList(deviceId, videoType, startTime,
+        IpcCloudApi.getInstance().getCashVideoList(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId, videoType, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
@@ -121,7 +122,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
     @Override
     public void getAbnormalBehaviorList(int deviceId, int videoType, long startTime, long endTime,
                                         int pageNum, int pageSize) {
-        IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(deviceId, startTime,
+        IpcCloudApi.getInstance().getAbnormalBehaviorVideoList(SpUtils.getCompanyId(), SpUtils.getShopId(), deviceId, startTime,
                 endTime, pageNum, pageSize, new RetrofitCallback<CashVideoResp>() {
                     @Override
                     public void onSuccess(int code, String msg, CashVideoResp data) {
@@ -145,7 +146,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
     public void getStorageList(String deviceSn) {
         List<String> snList = new ArrayList<>();
         snList.add(deviceSn);
-        IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceResp>() {
+        IpcCloudApi.getInstance().getStorageList(SpUtils.getCompanyId(), SpUtils.getShopId(), snList, new RetrofitCallback<ServiceResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceResp data) {
                 if (isViewAttached()) {
@@ -169,7 +170,7 @@ public class CashVideoPresenter extends BasePresenter<CashVideoContract.View>
     @Override
     public void getAbnormalEvent(long eventId, long beginTime) {
         final long begin = beginTime * 1000;
-        IpcCloudApi.getInstance().getCashVideoAbnormalEvent(eventId, new RetrofitCallback<CashVideoEventResp>() {
+        IpcCloudApi.getInstance().getCashVideoAbnormalEvent(SpUtils.getCompanyId(), SpUtils.getShopId(), eventId, new RetrofitCallback<CashVideoEventResp>() {
             @Override
             public void onSuccess(int code, String msg, CashVideoEventResp data) {
                 if (data == null) {
