@@ -291,12 +291,11 @@ public class SupportFragment extends BaseMvpFragment<SupportPresenter> implement
         } else if (id == CommonNotifications.cashVideoSubscribe
                 || id == CommonNotifications.shopSwitched
                 || id == CommonNotifications.perspectiveSwitch
-                || id == CommonNotifications.cashPreventSubscribe) {
+                || id == CommonNotifications.cashPreventSubscribe
+                || id == CommonNotifications.cloudStorageChange) {
             showDarkLoading();
             cashServiceInfoList.clear();
             mPresenter.load();
-        } else if (id == CommonNotifications.cloudStorageChange) {
-            hasCloudService = true;
         }
     }
 
