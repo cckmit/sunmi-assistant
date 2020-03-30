@@ -60,8 +60,8 @@ public class PosGuaranteeActivity extends BaseMvpActivity<PosPresenter> implemen
             silStatus.setEndContent(R.string.pos_expire);
             silStatus.getEndTextView().setTextColor(ContextCompat.getColor(this, R.color.caution_primary));
         }
-        silActivatedTime.setEndContent(TextUtils.isEmpty(resp.getActivatedTime()) ? getString(R.string.pos_text_empty) : resp.getActivatedTime());
-        silExpireTime.setEndContent(TextUtils.isEmpty(resp.getExpireTime()) ? getString(R.string.pos_text_empty) : resp.getExpireTime());
+        silActivatedTime.setEndContent(TextUtils.isEmpty(resp.getActivatedTime()) ? getString(R.string.device_status_unknown) : resp.getActivatedTime());
+        silExpireTime.setEndContent(TextUtils.isEmpty(resp.getExpireTime()) ? getString(R.string.device_status_unknown) : resp.getExpireTime());
     }
 
     @Override

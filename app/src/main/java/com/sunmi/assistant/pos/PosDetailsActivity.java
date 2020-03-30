@@ -98,7 +98,7 @@ public class PosDetailsActivity extends BaseActivity {
     }
 
     private String posInfo(String str) {
-        return TextUtils.isEmpty(str) ? getString(R.string.pos_text_empty) : str;
+        return TextUtils.isEmpty(str) ? getString(R.string.device_status_unknown) : str;
     }
 
     private void getPosType() {
