@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        app:endContentText="--"
+        app:endContentText="@string/device_status_unknown"
         app:title="@string/str_ip_address" />
 
     <sunmi.common.view.SettingItemLayout
@@ -46,15 +46,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        app:endContentText="--"
+        app:endContentText="@string/device_status_unknown"
         app:title="@string/str_mac_address" />
 
     <sunmi.common.view.SettingItemLayout
         android:id="@+id/sil_camera_net"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:endContentText="--"
-        app:title="@string/str_net_access_method"
-        app:showDivider="top" />
+        app:endContentText="@string/device_status_unknown"
+        app:showDivider="top"
+        app:title="@string/str_net_access_method" />
 
 </LinearLayout>

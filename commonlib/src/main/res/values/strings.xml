@@ -153,7 +153,7 @@
     <string name="device_status_online">Online</string>
     <string name="device_status_offline">Offline</string>
     <string name="device_status_exception">Exception</string>
-    <string name="device_status_unknown">——</string>
+    <string name="device_status_unknown">--</string>
     <string name="str_save">Save</string>
     <string name="cash_video">Checkout Video</string>
     <string name="str_learn_more">Details</string>

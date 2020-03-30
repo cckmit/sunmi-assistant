@@ -126,7 +126,7 @@ public class IpcSettingDetailActivity extends BaseActivity {
         try {
             JSONObject ap = res.getJSONObject("network").getJSONObject("ap");
             String ipAddress = ap.getString("ipaddr");
-            silCameraIp.setEndContent(TextUtils.isEmpty(ipAddress) ? "--" : ipAddress);
+            silCameraIp.setEndContent(TextUtils.isEmpty(ipAddress) ? getString(R.string.device_status_unknown) : ipAddress);
             if (res.has("mac")) {
                 silCameraMac.setEndContent(IpcUtils.formatMac(res.getString("mac"), ":"));
             }

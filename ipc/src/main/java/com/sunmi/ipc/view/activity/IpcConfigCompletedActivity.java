@@ -113,13 +113,14 @@ public class IpcConfigCompletedActivity extends BaseActivity {
                 btnFinish.setVisibility(View.VISIBLE);
                 btnRetry.setVisibility(View.VISIBLE);
             } else {
+                if (snList.size() > 0) {
+                    getStorageStatus();
+                }
                 if (ModelType.MODEL_FS == deviceType) {
                     tvTip.setVisibility(View.VISIBLE);
                     btnComplete.setText(R.string.str_adjust_screen);
                     btnComplete.setVisibility(View.VISIBLE);
                     btnFinish.setVisibility(View.VISIBLE);
-                } else if (ModelType.MODEL_SS == deviceType && snList.size() > 0) {
-                    initSs();
                 } else {
                     btnComplete.setVisibility(View.VISIBLE);
                 }
@@ -204,7 +205,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
             return;
         }
         if (CommonNotifications.cloudStorageChange == id) {
-            initSs();
+            getStorageStatus();
             return;
         }
         ResponseBean res = (ResponseBean) args[0];
@@ -266,7 +267,7 @@ public class IpcConfigCompletedActivity extends BaseActivity {
     }
 
 
-    protected void initSs() {
+    protected void getStorageStatus() {
         IpcCloudApi.getInstance().getStorageList(snList, new RetrofitCallback<ServiceResp>() {
             @Override
             public void onSuccess(int code, String msg, ServiceResp data) {

@@ -366,7 +366,6 @@
     <string name="pos_mobile_product">Mobile product</string>
     <string name="pos_smart_payment_product">Smart payment product</string>
     <string name="pos_desktop_product">Desktop product</string>
-    <string name="pos_text_empty">--</string>
     <string name="pos_wire">Wired network</string>
     <string name="str_agreement_manager">Agreement Management</string>
     <string name="tip_device_unbound_already">The device has been unbound</string>

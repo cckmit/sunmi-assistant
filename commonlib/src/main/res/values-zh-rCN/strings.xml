@@ -153,7 +153,7 @@
     <string name="device_status_online">在线</string>
     <string name="device_status_offline">离线</string>
     <string name="device_status_exception">异常</string>
-    <string name="device_status_unknown">——</string>
+    <string name="device_status_unknown">--</string>
     <string name="str_save">保存</string>
     <string name="cash_video">收银视频</string>
     <string name="str_learn_more">了解详情</string>

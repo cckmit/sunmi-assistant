@@ -92,7 +92,7 @@ public class CashVideoAdapter extends RecyclerView.Adapter<CashVideoAdapter.View
             viewHolder.tvDescription.setVisibility(View.GONE);
         }
         CashServiceInfo info = serviceInfo.get(bean.getDeviceId());
-        viewHolder.tvName.setText(info == null ? "--" : info.getDeviceName());
+        viewHolder.tvName.setText(info == null ? context.getString(R.string.device_status_unknown) : info.getDeviceName());
         Glide.with(context).load(bean.getSnapshotUrl()).into(viewHolder.ivPreview);
         if (isAbnormalBehavior) {
             viewHolder.tvTime.setText(DateTimeUtils.secondToDate(bean.getStartTime(), "HH:mm:ss"));
